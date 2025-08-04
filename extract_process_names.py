@@ -76,11 +76,28 @@ def get_el_abbadi_code_mapping(process_name, unitprocess_keywords):
     return None
 
 ca_cwns_results_df = pd.DataFrame(0, index=[0], columns=process_names)
+# First, count individual processes (both parent and sub-categories)
 for process_name in process_names:
     el_abbadi_code = get_el_abbadi_code_mapping(process_name, unitprocess_keywords)
     if el_abbadi_code and el_abbadi_code in ca_cwns_data.columns:
         count = (ca_cwns_data[el_abbadi_code] > 0).sum()
         ca_cwns_results_df.loc[0, process_name] = count
+# Then, update parent categories to include sum of sub-categories
+for parent_name, parent_details in unitprocess_keywords['secondary'].items():
+    if isinstance(parent_details, dict) and 'alt_names' in parent_details:
+        has_sub_categories = 'sub_categories' in parent_details and any(
+            isinstance(sub_details, dict) and 'alt_names' in sub_details 
+            for sub_details in parent_details['sub_categories'].values()
+        )
+        if has_sub_categories and parent_name in ca_cwns_results_df.columns:
+            sub_category_sum = 0
+            for sub_name, sub_details in parent_details['sub_categories'].items():
+                if isinstance(sub_details, dict) and 'alt_names' in sub_details:
+                    if sub_name in ca_cwns_results_df.columns:
+                        sub_category_sum += ca_cwns_results_df.loc[0, sub_name]
+            # Add the parent's own count (if it has one) plus the sum of sub-categories
+            parent_own_count = ca_cwns_results_df.loc[0, parent_name]
+            ca_cwns_results_df.loc[0, parent_name] = parent_own_count + sub_category_sum
 
 
 # 2. CREATE EXAMPLE SCRAPED DATA
@@ -100,32 +117,91 @@ example_scraped_data_expanded['STATE_CODE'] = 'CA'
 
 
 # PLOT
-# Get secondary category processes (parent categories)
-secondary_processes = []
-for process_name, details in unitprocess_keywords['secondary'].items():
-    if isinstance(details, dict) and 'alt_names' in details:
-        secondary_processes.append(process_name)
-        # Note: Not adding sub-categories to keep only parent categories
+# Create plot data
+plot_data = []
+current_pos = 0
 
-# Create df for bar plot
-plot_data = pd.DataFrame({
-    'Process': secondary_processes,
-    'Dummy_Scraped': [(example_scraped_data_expanded[p] > 0).sum() if p in example_scraped_data_expanded.columns else 0 for p in secondary_processes],
-    'CWNS_Data': [ca_cwns_results_df.loc[0, p] if p in ca_cwns_results_df.columns else 0 for p in secondary_processes]
-})
+for parent_name, parent_details in unitprocess_keywords['secondary'].items():
+    if isinstance(parent_details, dict) and 'alt_names' in parent_details:
+        has_sub_categories = 'sub_categories' in parent_details and any(
+            isinstance(sub_details, dict) and 'alt_names' in sub_details 
+            for sub_details in parent_details['sub_categories'].values()
+        )
+        
+        if has_sub_categories:  # Add total first, then sub-categories
+            # Add parent category total first
+            plot_data.append({
+                'Category': 'Total',
+                'Parent': parent_name,
+                'Process': f'{parent_name} (Total)',
+                'Dummy_Scraped': (example_scraped_data_expanded[parent_name] > 0).sum() if parent_name in example_scraped_data_expanded.columns else 0,
+                'CWNS_Data': ca_cwns_results_df.loc[0, parent_name] if parent_name in ca_cwns_results_df.columns else 0,
+                'Position': current_pos
+            })
+            current_pos += 1
+            
+            # Then add sub-categories
+            for sub_name, sub_details in parent_details['sub_categories'].items():
+                if isinstance(sub_details, dict) and 'alt_names' in sub_details:
+                    plot_data.append({
+                        'Category': 'Sub-Category',
+                        'Parent': parent_name,
+                        'Process': sub_name,
+                        'Dummy_Scraped': (example_scraped_data_expanded[sub_name] > 0).sum() if sub_name in example_scraped_data_expanded.columns else 0,
+                        'CWNS_Data': ca_cwns_results_df.loc[0, sub_name] if sub_name in ca_cwns_results_df.columns else 0,
+                        'Position': current_pos
+                    })
+                    current_pos += 1
+        else:  # Parent category without sub-categories - just add total
+            plot_data.append({
+                'Category': 'Total',
+                'Parent': parent_name,
+                'Process': f'{parent_name} (Total)',
+                'Dummy_Scraped': (example_scraped_data_expanded[parent_name] > 0).sum() if parent_name in example_scraped_data_expanded.columns else 0,
+                'CWNS_Data': ca_cwns_results_df.loc[0, parent_name] if parent_name in ca_cwns_results_df.columns else 0,
+                'Position': current_pos
+            })
+            current_pos += 1
+        
+        current_pos += 0.5  # spacing
+
+plot_df = pd.DataFrame(plot_data)
 
 # Create bar plot
-fig, ax = plt.subplots(figsize=(12, 6))
+fig, ax = plt.subplots(figsize=(16, 6))
 width = 0.35
-ax.bar([i - width/2 for i in range(len(plot_data))], plot_data['Dummy_Scraped'], width, label='Dummy Scraped Data', alpha=0.8)
-ax.bar([i + width/2 for i in range(len(plot_data))], plot_data['CWNS_Data'], width, label='CWNS Data', alpha=0.8)
 
-ax.set_xlabel('Secondary Unit Processes')
-ax.set_ylabel('Count')
-ax.set_xticks(range(len(plot_data)))
-ax.set_xticklabels(plot_data['Process'], rotation=45, ha='right')
+# Plot bars with different colors for parent vs sub-categories
+for category in ['Total', 'Sub-Category']:
+    mask = plot_df['Category'] == category
+    if mask.any():
+        if category == 'Sub-Category':
+            ax.bar(plot_df[mask]['Position'] - width/2, plot_df[mask]['Dummy_Scraped'], width, 
+                   color='lightblue', alpha=0.6, label='Dummy Scraped (Sub-Category)' if category == 'Sub-Category' else "")
+            ax.bar(plot_df[mask]['Position'] + width/2, plot_df[mask]['CWNS_Data'], width, 
+                   color='lightcoral', alpha=0.6, label='CWNS Data (Sub-Category)' if category == 'Sub-Category' else "")
+        else:  # Totals
+            ax.bar(plot_df[mask]['Position'] - width/2, plot_df[mask]['Dummy_Scraped'], width, 
+                   color='blue', alpha=0.8, label='Dummy Scraped (Total)' if category == 'Total' else "")
+            ax.bar(plot_df[mask]['Position'] + width/2, plot_df[mask]['CWNS_Data'], width, 
+                   color='coral', alpha=0.8, label='CWNS Data (Total)' if category == 'Total' else "")
+
+# Set x-axis labels for sub-categories and totals
+all_positions = plot_df['Position'].tolist()
+all_labels = plot_df['Process'].tolist()
+
+# Make "(Total)" labels bold
+bold_labels = []
+for label in all_labels:
+    if "(Total)" in label:
+        bold_labels.append(f"$\\bf{{{label}}}$")  # LaTeX bold formatting
+    else:
+        bold_labels.append(label)
+
+ax.set_xticks(all_positions)
+ax.set_xticklabels(bold_labels, rotation=45, ha='right', fontsize=10)
+
+ax.set_ylabel('WWTP Count', fontsize=12)
 ax.legend()
-ax.grid(True, alpha=0.3)
-
-plt.tight_layout()
+plt.subplots_adjust(bottom=0.25)  # Reduce bottom margin
 plt.savefig('output/secondary_processes_comparison.png', dpi=300, bbox_inches='tight')

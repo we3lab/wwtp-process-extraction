@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 with open('data/unitprocess_keywords.json', 'r') as f:
-    data = json.load(f)
+    unitprocess_keywords = json.load(f)
 
 def search_processes(processes_dict, results, parent_name=None):
     """Recursively search through processes and their sub-categories"""
@@ -43,7 +43,6 @@ def search_processes(processes_dict, results, parent_name=None):
     return sub_category_found
 
 # Get all process names to create consistent column headers
-
 def extract_processes(processes_dict):
     """Function to recursively extract list of process details from json"""
     for process_name, details in processes_dict.items():
@@ -53,105 +52,74 @@ def extract_processes(processes_dict):
             if 'sub_categories' in details:
                 extract_processes(details['sub_categories'])
 
-process_names = []
-for category, processes in data.items():
-    if isinstance(processes, dict):
-        extract_processes(processes)
-    
 # Example sentence search
 example_sentence = """The facility has a headworks with grit and FOG removal, followed by a primary clarifier. 
 The secondary treatment includes four activated sludge basins and clarifiers. 
 The secondary effluent then passes through the chlorine contact tank before discharge."""
-example_results = {}
-for category, processes in data.items():
-    if isinstance(processes, dict):
-        search_processes(processes, example_results, None)
-
-# Create DataFrame for example sentence with all process columns
-example_scraped_data = pd.DataFrame([example_results])
-# print(example_scraped_data.head())
 
 # Load facility data from tt_assignment_2022 output
 cwns_data = pd.read_csv('output/unit_processes_by_facility.csv')
-ca_facilities = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
+ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
 
-# Load WERF code mapping from GitHub CSV
-def extract_werf_mapping(data_dict, parent_key=None):
-    """Recursively extract WERF code mappings from the JSON structure"""
-    for key, value in data_dict.items():
-        if isinstance(value, dict):
-            if 'EL_ABBADI_2024_CODE' in value and value['EL_ABBADI_2024_CODE'] != "None":
-                werf_code = value['EL_ABBADI_2024_CODE']
-                process_name = parent_key if parent_key else key
-                werf_to_process_mapping[werf_code] = process_name
-            
-            # Recursively check sub-categories
-            if 'sub_categories' in value:
-                for sub_key, sub_value in value['sub_categories'].items():
-                    if isinstance(sub_value, dict) and 'EL_ABBADI_2024_CODE' in sub_value and sub_value['EL_ABBADI_2024_CODE'] != "None":
-                        werf_code = sub_value['EL_ABBADI_2024_CODE']
-                        werf_to_process_mapping[werf_code] = sub_key
-            else:
-                # Continue recursion for nested structures
-                extract_werf_mapping(value, key)
-werf_mapping_url = "https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/refs/heads/main/treatment_train_assignment/input_data/UNIT_PROCESS_NAMES_2022.csv"
-werf_mapping_df = pd.read_csv(werf_mapping_url)
-
-# Create mapping from WERF codes to process names by extracting from unitprocess_keywords.json
-werf_to_process_mapping = {}
-for category, processes in data.items():
+# Extract process names for column headers then search for process in text
+process_names = []
+example_results = {}
+for category, processes in unitprocess_keywords.items():
     if isinstance(processes, dict):
-        extract_werf_mapping(processes)
+        extract_processes(processes)
+        search_processes(processes, example_results, None)
 
 # Count California facilities with each process
-facility_results_df = pd.DataFrame(0, index=[0], columns=process_names)
-for werf_code, process_name in werf_to_process_mapping.items():
-    if werf_code in ca_facilities.columns:
-        count = (ca_facilities[werf_code] > 0).sum()
-        if process_name in facility_results_df.columns:
-            facility_results_df.loc[0, process_name] = count
+def get_el_abbadi_code_mapping(process_name, unitprocess_keywords):
+    """Get EL_ABBADI_2024_CODE for a process name as needed"""
+    for category, processes in unitprocess_keywords.items():
+        if isinstance(processes, dict):
+            # Check parent categories then sub-categories
+            if process_name in processes and 'EL_ABBADI_2024_CODE' in processes[process_name]:
+                return processes[process_name]['EL_ABBADI_2024_CODE']
+            for parent_name, parent_details in processes.items():
+                if 'sub_categories' in parent_details and process_name in parent_details['sub_categories']:
+                    if 'EL_ABBADI_2024_CODE' in parent_details['sub_categories'][process_name]:
+                        return parent_details['sub_categories'][process_name]['EL_ABBADI_2024_CODE']
+    return None
+ca_cwns_results_df = pd.DataFrame(0, index=[0], columns=process_names)
+for process_name in process_names:
+    el_abbadi_code = get_el_abbadi_code_mapping(process_name, unitprocess_keywords)
+    if el_abbadi_code and el_abbadi_code in ca_cwns_data.columns:
+        count = (ca_cwns_data[el_abbadi_code] > 0).sum()
+        ca_cwns_results_df.loc[0, process_name] = count
 
-# DUMMY DATA - Duplicate example scraped data for every CA facility
-ca_cwns_ids = ca_facilities['CWNS_ID'].tolist()
-example_scraped_data_expanded = pd.DataFrame()
-for cwns_id in ca_cwns_ids:
-    facility_data = example_scraped_data.copy()    
-    facility_data['CWNS_ID'] = cwns_id
-    facility_data['STATE_CODE'] = 'CA'    
-    example_scraped_data_expanded = pd.concat([example_scraped_data_expanded, facility_data], ignore_index=True)
+# Create dummy scraped data DataFrame for all CA facilities
+example_scraped_data = pd.DataFrame([example_results])
+example_scraped_data_expanded = pd.concat([example_scraped_data] * len(ca_cwns_data), ignore_index=True)
+example_scraped_data_expanded['CWNS_ID'] = ca_cwns_data['CWNS_ID'].values
+example_scraped_data_expanded['STATE_CODE'] = 'CA'
 
 # Get secondary category processes (parent categories)
 secondary_processes = []
-if 'secondary' in data:
-    for process_name, details in data['secondary'].items():
+if 'secondary' in unitprocess_keywords:
+    for process_name, details in unitprocess_keywords['secondary'].items():
         if isinstance(details, dict) and 'alt_names' in details:
             secondary_processes.append(process_name)
             # Note: Not adding sub-categories to keep only parent categories
 
-# Create bar plot for secondary processes
-fig, ax = plt.subplots(figsize=(15, 8))
+# Create df for bar plot
+plot_data = pd.DataFrame({
+    'Process': secondary_processes,
+    'Dummy_Scraped': [(example_scraped_data_expanded[p] > 0).sum() if p in example_scraped_data_expanded.columns else 0 for p in secondary_processes],
+    'CWNS_Data': [ca_cwns_results_df.loc[0, p] if p in ca_cwns_results_df.columns else 0 for p in secondary_processes]
+})
 
-# Get counts from both DataFrames using all secondary processes
-# Count how many facilities have each process in the expanded dummy data
-dummy_scraped_counts = []
-for p in secondary_processes:
-    if p in example_scraped_data_expanded.columns:
-        count = (example_scraped_data_expanded[p] > 0).sum()
-    else:
-        count = 0
-    dummy_scraped_counts.append(count)
-
-cwns_counts = [facility_results_df.loc[0, p] if p in facility_results_df.columns else 0 for p in secondary_processes]
-
-# Create bars
+# Create bar plot
+fig, ax = plt.subplots(figsize=(12, 6))
 width = 0.35
-ax.bar([i - width/2 for i in range(len(secondary_processes))], dummy_scraped_counts, width, label='Dummy Scraped Data', alpha=0.8)
-ax.bar([i + width/2 for i in range(len(secondary_processes))], cwns_counts, width, label='CWNS Data', alpha=0.8)
+ax.bar([i - width/2 for i in range(len(plot_data))], plot_data['Dummy_Scraped'], width, label='Dummy Scraped Data', alpha=0.8)
+ax.bar([i + width/2 for i in range(len(plot_data))], plot_data['CWNS_Data'], width, label='CWNS Data', alpha=0.8)
 
 ax.set_xlabel('Secondary Unit Processes')
 ax.set_ylabel('Count')
-ax.set_xticks(range(len(secondary_processes)))
-ax.set_xticklabels(secondary_processes, rotation=45, ha='right')
+ax.set_xticks(range(len(plot_data)))
+ax.set_xticklabels(plot_data['Process'], rotation=45, ha='right')
 ax.legend()
 ax.grid(True, alpha=0.3)
 

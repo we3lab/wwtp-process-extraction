@@ -1,12 +1,11 @@
 import json
-import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
 with open('data/unitprocess_keywords.json', 'r') as f:
     unitprocess_keywords = json.load(f)
 
-def search_processes(processes_dict, results, parent_name=None):
+def search_processes_in_text(processes_dict, results, parent_name=None):
     """Recursively search through processes and their sub-categories"""
     sub_category_found = False
     
@@ -32,7 +31,7 @@ def search_processes(processes_dict, results, parent_name=None):
             
             # Search sub-categories (if they exist) and recursively add to results
             if 'sub_categories' in details:
-                sub_found = search_processes(details['sub_categories'], results, process_name)
+                sub_found = search_processes_in_text(details['sub_categories'], results, process_name)
                 if sub_found:
                     sub_category_found = True
     
@@ -42,32 +41,25 @@ def search_processes(processes_dict, results, parent_name=None):
     
     return sub_category_found
 
-# Get all process names to create consistent column headers
-def extract_processes(processes_dict):
+# Get all process names, to become column names
+def extract_process_names(processes_dict):
     """Function to recursively extract list of process details from json"""
     for process_name, details in processes_dict.items():
         if isinstance(details, dict) and 'alt_names' in details:
             process_names.append(process_name)
             # Recursively extract sub-categories
             if 'sub_categories' in details:
-                extract_processes(details['sub_categories'])
+                extract_process_names(details['sub_categories'])
 
-# Example sentence search
-example_sentence = """The facility has a headworks with grit and FOG removal, followed by a primary clarifier. 
-The secondary treatment includes four activated sludge basins and clarifiers. 
-The secondary effluent then passes through the chlorine contact tank before discharge."""
-
-# Load facility data from tt_assignment_2022 output
+# 1. LOAD AND ORGANIZE CWNS DATA
 cwns_data = pd.read_csv('output/unit_processes_by_facility.csv')
 ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
 
-# Extract process names for column headers then search for process in text
+# Extract all process names for column headers
 process_names = []
-example_results = {}
 for category, processes in unitprocess_keywords.items():
     if isinstance(processes, dict):
-        extract_processes(processes)
-        search_processes(processes, example_results, None)
+        extract_process_names(processes)
 
 # Count California facilities with each process
 def get_el_abbadi_code_mapping(process_name, unitprocess_keywords):
@@ -75,13 +67,14 @@ def get_el_abbadi_code_mapping(process_name, unitprocess_keywords):
     for category, processes in unitprocess_keywords.items():
         if isinstance(processes, dict):
             # Check parent categories then sub-categories
-            if process_name in processes and 'EL_ABBADI_2024_CODE' in processes[process_name]:
+            if process_name in processes: # if it's a parent category
                 return processes[process_name]['EL_ABBADI_2024_CODE']
             for parent_name, parent_details in processes.items():
                 if 'sub_categories' in parent_details and process_name in parent_details['sub_categories']:
                     if 'EL_ABBADI_2024_CODE' in parent_details['sub_categories'][process_name]:
                         return parent_details['sub_categories'][process_name]['EL_ABBADI_2024_CODE']
     return None
+
 ca_cwns_results_df = pd.DataFrame(0, index=[0], columns=process_names)
 for process_name in process_names:
     el_abbadi_code = get_el_abbadi_code_mapping(process_name, unitprocess_keywords)
@@ -89,19 +82,30 @@ for process_name in process_names:
         count = (ca_cwns_data[el_abbadi_code] > 0).sum()
         ca_cwns_results_df.loc[0, process_name] = count
 
+
+# 2. CREATE EXAMPLE SCRAPED DATA
+example_sentence = """The facility has a headworks with grit and FOG removal, followed by a primary clarifier. 
+The secondary treatment includes four activated sludge basins and clarifiers. 
+The secondary effluent then passes through the chlorine contact tank before discharge."""
+
 # Create dummy scraped data DataFrame for all CA facilities
+example_results = {}
+for category, processes in unitprocess_keywords.items():
+    if isinstance(processes, dict):
+        search_processes_in_text(processes, example_results, None)
 example_scraped_data = pd.DataFrame([example_results])
 example_scraped_data_expanded = pd.concat([example_scraped_data] * len(ca_cwns_data), ignore_index=True)
 example_scraped_data_expanded['CWNS_ID'] = ca_cwns_data['CWNS_ID'].values
 example_scraped_data_expanded['STATE_CODE'] = 'CA'
 
+
+# PLOT
 # Get secondary category processes (parent categories)
 secondary_processes = []
-if 'secondary' in unitprocess_keywords:
-    for process_name, details in unitprocess_keywords['secondary'].items():
-        if isinstance(details, dict) and 'alt_names' in details:
-            secondary_processes.append(process_name)
-            # Note: Not adding sub-categories to keep only parent categories
+for process_name, details in unitprocess_keywords['secondary'].items():
+    if isinstance(details, dict) and 'alt_names' in details:
+        secondary_processes.append(process_name)
+        # Note: Not adding sub-categories to keep only parent categories
 
 # Create df for bar plot
 plot_data = pd.DataFrame({

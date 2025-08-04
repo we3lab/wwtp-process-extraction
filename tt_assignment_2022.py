@@ -5,9 +5,10 @@
 import pandas as pd
 import numpy as np
 
-# Base GitHub URL for input data
+# ADDED Base GitHub URL for input data
 GITHUB_BASE_URL = "https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/refs/heads/main/treatment_train_assignment/input_data"
 
+# FROM SOURCE with changes to data path
 def create_wwtp_inventory():
   '''
   Function that creates an inventory of active wwtps in the United States for 2022 using CWNS data
@@ -354,8 +355,8 @@ disposal_2022 = disposal_2022.loc[(disposal_2022['PRES_IND'] == 1)]
 disposal_2022 = disposal_2022.dropna(subset = ['DISPOSAL_CODE'])
 disposal_2022.sort_values(by = ['CWNS_NUM','REPORT_YEAR'], ascending = False, inplace = True, ignore_index = True)
 disposal_2022.drop_duplicates(subset = 'CWNS_NUM', inplace = True, ignore_index = False, keep = "first")
-disposal_2022_pvt = pd.pivot_table(disposal_2022, index = 'CWNS_NUM', values = 'PRES_IND',  columns = 'DISPOSAL_CODE', aggfunc = np.sum, fill_value = 0)
-disposal_2022_pvt.to_csv('disposal_2022.csv')
+# disposal_2022_pvt = pd.pivot_table(disposal_2022, index = 'CWNS_NUM', values = 'PRES_IND',  columns = 'DISPOSAL_CODE', aggfunc = np.sum, fill_value = 0)
+# disposal_2022_pvt.to_csv('disposal_2022.csv')
                          
 #drop unit processes that do not have an associated WERF code, as these are not necessary to form treatment train assignments
 uplist_eicodes.dropna(subset = 'WERF_CODE', inplace = True)

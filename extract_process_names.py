@@ -5,43 +5,7 @@ import pandas as pd
 with open('data/unitprocess_keywords.json', 'r') as f:
     unitprocess_keywords = json.load(f)
 
-def search_processes_in_text(processes_dict, results, parent_name=None):
-    """Recursively search through processes and their sub-categories"""
-    sub_category_found = False
-    
-    for process_name, details in processes_dict.items():
-        if isinstance(details, dict) and 'alt_names' in details:
-            # Initialize unit process key to 0
-            if process_name not in results:
-                results[process_name] = 0
-            
-            # Check each alt_name for each process
-            for i, alt_name in enumerate(details['alt_names']):
-                case_sensitive = details['alt_names_case_sensitive'][i] if i < len(details['alt_names_case_sensitive']) else "N"
-                
-                if case_sensitive == "Y":
-                    found = alt_name in example_sentence
-                else:
-                    found = alt_name.lower() in example_sentence.lower()
-                
-                if found:
-                    results[process_name] = 1
-                    sub_category_found = True
-                    break  # Found one alt_name, don't need to check others
-            
-            # Search sub-categories (if they exist) and recursively add to results
-            if 'sub_categories' in details:
-                sub_found = search_processes_in_text(details['sub_categories'], results, process_name)
-                if sub_found:
-                    sub_category_found = True
-    
-    # If this is a parent category and any sub-category was found, set parent to 1
-    if parent_name and sub_category_found:
-        results[parent_name] = 1
-    
-    return sub_category_found
-
-# Get all process names, to become column names
+# 1. LOAD AND ORGANIZE CWNS DATA FROM EL ABBADI 2024
 def extract_process_names(processes_dict):
     """Function to recursively extract list of process details from json"""
     for process_name, details in processes_dict.items():
@@ -51,17 +15,6 @@ def extract_process_names(processes_dict):
             if 'sub_categories' in details:
                 extract_process_names(details['sub_categories'])
 
-# 1. LOAD AND ORGANIZE CWNS DATA
-cwns_data = pd.read_csv('output/unit_processes_by_facility.csv')
-ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
-
-# Extract all process names for column headers
-process_names = []
-for category, processes in unitprocess_keywords.items():
-    if isinstance(processes, dict):
-        extract_process_names(processes)
-
-# Count California facilities with each process
 def get_el_abbadi_code_mapping(process_name, unitprocess_keywords):
     """Get EL_ABBADI_2024_CODE for a process name as needed"""
     for category, processes in unitprocess_keywords.items():
@@ -75,7 +28,16 @@ def get_el_abbadi_code_mapping(process_name, unitprocess_keywords):
                         return parent_details['sub_categories'][process_name]['EL_ABBADI_2024_CODE']
     return None
 
+cwns_data = pd.read_csv('output/unit_processes_by_facility.csv')
+ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
+process_names = []
+for category, processes in unitprocess_keywords.items():
+    if isinstance(processes, dict):
+        extract_process_names(processes)
+
+# Count California facilities with each process
 ca_cwns_results_df = pd.DataFrame(0, index=[0], columns=process_names)
+
 # First, count individual processes (both parent and sub-categories)
 for process_name in process_names:
     el_abbadi_code = get_el_abbadi_code_mapping(process_name, unitprocess_keywords)
@@ -105,7 +67,41 @@ example_sentence = """The facility has a headworks with grit and FOG removal, fo
 The secondary treatment includes four activated sludge basins and clarifiers. 
 The secondary effluent then passes through the chlorine contact tank before discharge."""
 
-# Create dummy scraped data DataFrame for all CA facilities
+def search_processes_in_text(processes_dict, results, parent_name=None):
+    """Recursively search through processes and their sub-categories"""
+    sub_category_found = False
+    for process_name, details in processes_dict.items():
+        if isinstance(details, dict) and 'alt_names' in details:
+            # Initialize unit process key to 0
+            if process_name not in results:
+                results[process_name] = 0
+            
+            # Check each alt_name for each process
+            for i, alt_name in enumerate(details['alt_names']):
+                case_sensitive = details['alt_names_case_sensitive'][i] if i < len(details['alt_names_case_sensitive']) else "N"
+                
+                if case_sensitive == "Y":
+                    found = alt_name in example_sentence
+                else:
+                    found = alt_name.lower() in example_sentence.lower()
+                
+                if found:
+                    results[process_name] = 1
+                    sub_category_found = True
+                    break  # Found one alt_name, don't need to check others
+            
+            # Search sub-categories (if they exist) and recursively add to results
+            if 'sub_categories' in details:
+                sub_found = search_processes_in_text(details['sub_categories'], results, process_name)
+                if sub_found:
+                    sub_category_found = True
+    
+    if parent_name and sub_category_found:  # if this is parent category and any sub-category found
+        results[parent_name] = 1
+    
+    return sub_category_found
+
+# Create dummy scraped data DataFrame
 example_results = {}
 for category, processes in unitprocess_keywords.items():
     if isinstance(processes, dict):
@@ -164,14 +160,11 @@ for parent_name, parent_details in unitprocess_keywords['secondary'].items():
             current_pos += 1
         
         current_pos += 0.5  # spacing
-
 plot_df = pd.DataFrame(plot_data)
 
-# Create bar plot
+# Plot bars with different colors for parent vs sub-categories
 fig, ax = plt.subplots(figsize=(16, 6))
 width = 0.35
-
-# Plot bars with different colors for parent vs sub-categories
 for category in ['Total', 'Sub-Category']:
     mask = plot_df['Category'] == category
     if mask.any():

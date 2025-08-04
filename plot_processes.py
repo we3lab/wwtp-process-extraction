@@ -3,7 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
-with open('unitprocess_keywords.json', 'r') as f:
+with open('data/unitprocess_keywords.json', 'r') as f:
     data = json.load(f)
     # Create schematic diagram
 G = nx.DiGraph()
@@ -72,4 +72,4 @@ nx.draw_networkx_edges(G, pos, edge_color='black', arrows=True, arrowsize=30,
 # Save plot
 plt.axis('off')
 plt.tight_layout()
-plt.savefig('unit_process_search_schematic.png')
+plt.savefig('output/unit_process_search_schematic.png')

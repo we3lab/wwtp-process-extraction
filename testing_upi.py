@@ -12,9 +12,14 @@ def get_all_keys(dictionary):
     keys =[]
     for key, value in dictionary.items():
         if isinstance(value, dict):
-            for nested_key in value.keys():
-                if nested_key != 'alt_names' and nested_key != 'alt_names_case_sensitive' and nested_key != 'CWNS_2022_code' and nested_key != 'CWNS_2012_code':
+            for nested_key, details in value.items():
+                if isinstance(details, dict) and 'alt_names' in details:
                     keys.append(nested_key)
+                    # Also add sub-category process names if they exist
+                    if 'sub_categories' in details:
+                        for sub_nested_key, sub_details in details['sub_categories'].items():
+                            if isinstance(sub_details, dict) and 'alt_names' in sub_details:
+                                keys.append(sub_nested_key)
     return keys
 
 # Returns string of all text in PDF
@@ -23,7 +28,22 @@ def pdf_string(pdf):
     text = ''
     for page in reader.pages:
         text += page.extract_text()
-    return text
+    # Remove line breaks in PDF text and replace with spaces
+    text = text.replace('\n', ' ').replace('\r', ' ')
+    text = ' '.join(text.split())  # clean up duplicate spaces
+    
+    # Find the 2nd instance of "FACILITY DESCRIPTION"
+    first_occurrence = text.find("FACILITY DESCRIPTION")
+    if first_occurrence != -1:
+        second_occurrence = text.find("FACILITY DESCRIPTION", first_occurrence + 50)
+        if second_occurrence != -1:
+            start_pos = second_occurrence + 50
+            extracted_text = text[start_pos:-1].strip()
+            return extracted_text
+    
+    # If markers not found, return blank text
+    print("FACILITY DESCRIPTION not found")
+    return ""
 
 # Method that returns T/F if agency name is found
 def track_class(pdf, class_code):
@@ -35,11 +55,68 @@ def track_class(pdf, class_code):
    else:
        return False
 
+def search_processes_in_text(processes_dict, results, parent_name=None):
+    """    
+    This function performs a hierarchical search through the unit process keywords json,
+    checking for matches in the text. It handles parent categories and their nested
+    sub-categories, automatically updating parent categories when sub-categories are found.
+    
+    Args:
+        processes_dict (dict): Dictionary containing process definitions with 'alt_names' 
+                              and optional 'sub_categories' keys
+        results (dict): Dictionary to store search results, where keys are process names 
+                       and values are 0 (not found) or 1 (found)
+        parent_name (str, optional): Name of the parent category being processed. 
+                                   Used for updating parent categories when sub-categories are found.
+    
+    Returns:
+        bool: True if any sub-category was found in the current level, False otherwise.
+              This return value is used to update parent categories in recursive calls.
+    
+    Note:
+        - The function modifies the 'results' dictionary in-place
+        - Case sensitivity is determined by the 'alt_names_case_sensitive' field in the process definition
+        - When a sub-category is found, the parent category is automatically marked as present
+    """
+    sub_category_found = False  # Initialize as false
+
+    for process_name, details in processes_dict.items():  # Loop through items in json
+        if isinstance(details, dict) and 'alt_names' in details:
+            # Initialize unit process key to 0
+            if process_name not in results:
+                results[process_name] = 0
+            
+            # Check each alt_name for each process
+            for i, alt_name in enumerate(details['alt_names']):
+                case_sensitive = details['alt_names_case_sensitive'][i] if i < len(details['alt_names_case_sensitive']) else "N"
+                
+                if case_sensitive == "Y":
+                    found = alt_name in text
+                else:
+                    found = alt_name.lower() in text.lower()
+                
+                if found:
+                    # print(f' found {process_name}')
+                    results[process_name] = 1
+                    sub_category_found = True
+                    break  # Found one alt_name, don't need to check others
+            
+            # Search sub-categories (if they exist) and recursively add to results
+            if 'sub_categories' in details:
+                sub_found = search_processes_in_text(details['sub_categories'], results, process_name)
+                if sub_found:
+                    sub_category_found = True
+    
+    if parent_name and sub_category_found:  # if this is parent category and any sub-category found
+        results[parent_name] = 1
+    
+    return sub_category_found
+
 # Opens JSON file with keywords
-with open('unitprocess_keywords.json', 'r') as f:
+with open('data/unitprocess_keywords.json', 'r') as f:
     keywords = json.load(f)
 # Creates mock data for later use
-file = open('mock_data.csv', 'w', newline = '')
+file = open('output/mock_data.csv', 'w', newline = '')
 mock_csv = csv.writer(file)
 mock_csv.writerow(['Agency', 'Email', 'TEueXT', 'Numbers'])
 mock_csv.writerow(['Benicia', 'NONE', 'dfhjdskf', '10'])
@@ -47,17 +124,17 @@ mock_csv.writerow(['County', 'NONE', 'dfhjdskf', '0'])
 file.close()
 
 # Name of the CSV to be used
-csv_name = 'test_results.csv'
+csv_name = 'output/test_results.csv'
 # Reopens CSV to write data
 csv_file = open(csv_name, 'w', newline ='')
 wd_csv = csv.writer(csv_file)
 
 # Directory where PDFS are stored
-directory = '/Users/ashleyramirez/Documents/TEST/PDFs'
+directory = 'data/pdfs'
 
 # Get first column of a previously created CSV
 data = []
-with open('mock_data.csv', 'r') as f:
+with open('output/mock_data.csv', 'r') as f:
    for line in csv.reader(f):
        data.append(line[0])
 
@@ -66,43 +143,29 @@ all_keys = (get_all_keys(keywords))
 # Creates header for CSV
 headers = []
 headers.append(data[0])
+headers.append('PERMIT_NUMBER')  # Add permit number column
 for i in range(len(all_keys)):
     headers.append(all_keys[i])
 wd_csv.writerow(headers)
 
 
-print(data)
+# print(data)
 # MAIN CODE
 file_list = glob.glob(directory + '/*.pdf')
-print(pdf_string(file_list[1]))
+# print(pdf_string(file_list[1]))
 for pdf in file_list: # Loops through all PDFs in the diretory
     text = pdf_string(pdf)
     for i in range(1, len(data)): # Checks if PDF and left column match
        if track_class(pdf, data[i]): 
         trial = [data[i]]# If match is found 
         print('Match was found for ' + data[i] + ' in ' + pdf)
+        permit_no = pdf.split("/")[2] # assuming filename is NPDES #
+        trial.append(permit_no.split(".")[0])
+
         results = {}
         for category, processes in keywords.items():
             if isinstance(processes, dict):
-                for process_name, details in processes.items():
-                    if isinstance(details, dict) and 'alt_names' in details:
-                        # Initialize unit process key to 0
-                        if process_name not in results:
-                            results[process_name] = 0
-                        
-                        # Check each alt_name for each process
-                        for k, alt_name in enumerate(details['alt_names']):
-                            case_sensitive = details['alt_names_case_sensitive'][k] if k < len(details['alt_names_case_sensitive']) else "N"
-                            
-                            if case_sensitive == "Y":
-                                found = alt_name in text
-                            else:
-                                found = alt_name.lower() in text.lower()
-                            if found:
-                                results[process_name] = 1
-                                break
-                    print(process_name)
-                                  # Found one alt_name, don't need to check others
+                search_processes_in_text(processes, results, None)
         for process_name in results:
             trial.append(results[process_name])
         wd_csv.writerow(trial)

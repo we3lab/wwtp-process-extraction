@@ -7,20 +7,7 @@ import json
 import re
 import pandas as pd
 
-# Method that returns list of all keys in a dictionar, includding nested keys
-def get_all_keys(dictionary, keys=None):
-    if keys is None:
-        keys = []
-    
-    for key, value in dictionary.items():
-        if isinstance(value, dict):
-            if 'alt_names' in value:  # Check if this is a process at lowest-level of dict
-                keys.append(key)
-            else:  # This is a parent category. Recursively get child keys
-                # This is a parent category, recursively search its children
-                get_all_keys(value, keys)
-    
-    return keys
+from utils import *
 
 # Returns string of all text in PDF
 def pdf_string(pdf):
@@ -82,7 +69,7 @@ def search_processes_in_text(processes_dict, results, parent_name=None):
     for process_name, details in processes_dict.items():  # Loop through items in json
         if isinstance(details, dict):
             # Check if this is a process with alt_names (lowest level)
-            if 'alt_names' in details and details['alt_names']:
+            if 'alt_names' in details:
                 # Initialize unit process key to 0
                 if process_name not in results:
                     results[process_name] = 0  # Initialize unit process to zero
@@ -114,6 +101,7 @@ def search_processes_in_text(processes_dict, results, parent_name=None):
 # Opens JSON file with keywords
 with open('data/unitprocess_keywords.json', 'r') as f:
     keywords = json.load(f)
+
 # Creates mock data for later use
 file = open('output/mock_data.csv', 'w', newline = '')
 mock_csv = csv.writer(file)
@@ -137,8 +125,8 @@ with open('output/mock_data.csv', 'r') as f:
    for line in csv.reader(f):
        data.append(line[0])
 
-# Variable for all UPI names
-all_keys = (get_all_keys(keywords))
+# Get all process names
+all_keys = get_all_keys(keywords)
 
 # Creates header for CSV
 headers = []

@@ -8,18 +8,18 @@ import re
 import pandas as pd
 
 # Method that returns list of all keys in a dictionar, includding nested keys
-def get_all_keys(dictionary):
-    keys =[]
+def get_all_keys(dictionary, keys=None):
+    if keys is None:
+        keys = []
+    
     for key, value in dictionary.items():
         if isinstance(value, dict):
-            for nested_key, details in value.items():
-                if isinstance(details, dict) and 'alt_names' in details:
-                    keys.append(nested_key)
-                    # Also add sub-category process names if they exist
-                    if 'sub_categories' in details:
-                        for sub_nested_key, sub_details in details['sub_categories'].items():
-                            if isinstance(sub_details, dict) and 'alt_names' in sub_details:
-                                keys.append(sub_nested_key)
+            if 'alt_names' in value:  # Check if this is a process at lowest-level of dict
+                keys.append(key)
+            else:  # This is a parent category. Recursively get child keys
+                # This is a parent category, recursively search its children
+                get_all_keys(value, keys)
+    
     return keys
 
 # Returns string of all text in PDF
@@ -63,7 +63,6 @@ def search_processes_in_text(processes_dict, results, parent_name=None):
     
     Args:
         processes_dict (dict): Dictionary containing process definitions with 'alt_names' 
-                              and optional 'sub_categories' keys
         results (dict): Dictionary to store search results, where keys are process names 
                        and values are 0 (not found) or 1 (found)
         parent_name (str, optional): Name of the parent category being processed. 
@@ -81,29 +80,29 @@ def search_processes_in_text(processes_dict, results, parent_name=None):
     sub_category_found = False  # Initialize as false
 
     for process_name, details in processes_dict.items():  # Loop through items in json
-        if isinstance(details, dict) and 'alt_names' in details:
-            # Initialize unit process key to 0
-            if process_name not in results:
-                results[process_name] = 0
-            
-            # Check each alt_name for each process
-            for i, alt_name in enumerate(details['alt_names']):
-                case_sensitive = details['alt_names_case_sensitive'][i] if i < len(details['alt_names_case_sensitive']) else "N"
+        if isinstance(details, dict):
+            # Check if this is a process with alt_names (lowest level)
+            if 'alt_names' in details and details['alt_names']:
+                # Initialize unit process key to 0
+                if process_name not in results:
+                    results[process_name] = 0  # Initialize unit process to zero
                 
-                if case_sensitive == "Y":
-                    found = alt_name in text
-                else:
-                    found = alt_name.lower() in text.lower()
-                
-                if found:
-                    # print(f' found {process_name}')
-                    results[process_name] = 1
-                    sub_category_found = True
-                    break  # Found one alt_name, don't need to check others
-            
-            # Search sub-categories (if they exist) and recursively add to results
-            if 'sub_categories' in details:
-                sub_found = search_processes_in_text(details['sub_categories'], results, process_name)
+                # Check each alt_name for each process
+                for i, alt_name in enumerate(details['alt_names']):
+                    case_sensitive = details['alt_names_case_sensitive'][i] if i < len(details['alt_names_case_sensitive']) else "N"
+                    
+                    if case_sensitive == "Y":
+                        found = alt_name in text
+                    else:
+                        found = alt_name.lower() in text.lower()
+                    
+                    if found:
+                        # print(f' found {process_name}')
+                        results[process_name] = 1
+                        sub_category_found = True
+                        break  # Found one alt_name, don't need to check others
+            else:  # This is a parent category. Recursively search children's keywords
+                sub_found = search_processes_in_text(details, results, process_name)
                 if sub_found:
                     sub_category_found = True
     
@@ -140,12 +139,14 @@ with open('output/mock_data.csv', 'r') as f:
 
 # Variable for all UPI names
 all_keys = (get_all_keys(keywords))
+
 # Creates header for CSV
 headers = []
 headers.append(data[0])
 headers.append('PERMIT_NUMBER')  # Add permit number column
 for i in range(len(all_keys)):
     headers.append(all_keys[i])
+
 wd_csv.writerow(headers)
 
 
@@ -166,8 +167,9 @@ for pdf in file_list: # Loops through all PDFs in the diretory
         for category, processes in keywords.items():
             if isinstance(processes, dict):
                 search_processes_in_text(processes, results, None)
-        for process_name in results:
-            trial.append(results[process_name])
+        for process_name in all_keys: # Add results in the same order as headers
+            trial.append(results.get(process_name, 0))
+        
         wd_csv.writerow(trial)
 
 

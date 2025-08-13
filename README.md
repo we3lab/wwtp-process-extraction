@@ -9,7 +9,6 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
 - There are two distinct locations where permit_scrape.py is slow:
     1. After Region selection
     2. Selection of "ALL" Display range
-- 
 
 ## Contact 
 Ashley Ramirez - ashlecr3@uci.edu

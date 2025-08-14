@@ -5,10 +5,11 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
 ## Getting Started 
 
 ## Known issues and limitations
-- When first running permit_scrape.py, a Timeout Error may appear. Continue to rerun until the program successfully opens ChromeDriver
+- When first running permit_scrape.py, a Timeout Error may appear. Continue to rerun until the program successfully opens ChromeDrive **(Ensure that the "MM-DD-YYYY" Folder is deleted before rerunning)**.
 - There are two distinct locations where permit_scrape.py is slow:
     1. After Region selection
     2. Selection of "ALL" Display range
+- ...
 
 ## Contact 
 Ashley Ramirez - ashlecr3@uci.edu

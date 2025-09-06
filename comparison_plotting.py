@@ -44,19 +44,33 @@ for process_name in process_names:
                 count += (matching_cwns_data[code] > 0).sum()
         matching_cwns_results_df.loc[0, process_name] = count
 
-# Create parent category columns by summing their child processes
+# Create parent category columns by counting facilities that have ANY child process
 for parent_name, child_processes in parent_child_mapping.items():
-    # Sum child processes for test results
-    test_sub_category_sum = sum(test_results_df.loc[0, child] for child in child_processes 
-                               if child in test_results_df.columns)
+    # For test results: count facilities that have any child process
+    test_facilities_with_parent = set()
+    for child in child_processes:
+        if child in test_results.columns:
+            facilities_with_child = test_results[test_results[child] > 0]['PERMIT_NUMBER'].tolist()
+            test_facilities_with_parent.update(facilities_with_child)
+    test_parent_count = len(test_facilities_with_parent)
     
-    # Sum child processes for CWNS results  
-    cwns_sub_category_sum = sum(matching_cwns_results_df.loc[0, child] for child in child_processes 
-                               if child in matching_cwns_results_df.columns)
+    # For CWNS results: count facilities that have any child process
+    cwns_facilities_with_parent = set()
+    for child in child_processes:
+        if child in process_names:
+            el_abbadi_codes = get_el_abbadi_code_mapping(child, unitprocess_keywords)
+            if el_abbadi_codes:
+                for code in el_abbadi_codes:
+                    if code in matching_cwns_data.columns:
+                        facilities_with_child = matching_cwns_data[matching_cwns_data[code] > 0]['PERMIT_NUMBER'].tolist()
+                        cwns_facilities_with_parent.update(facilities_with_child)
+    cwns_parent_count = len(cwns_facilities_with_parent)
     
-    # Create parent columns and set values
-    test_results_df[parent_name] = test_sub_category_sum
-    matching_cwns_results_df[parent_name] = cwns_sub_category_sum
+    test_results_df[parent_name] = test_parent_count
+    matching_cwns_results_df[parent_name] = cwns_parent_count
+
+print(matching_cwns_results_df.head())
+print(test_results_df.head())
 
 # 3. CREATE COMPARISON PLOTS FOR SECONDARY PROCESSES
 test_processes = [process for process, count in test_results_aggregated.items() if count > 0]
@@ -100,6 +114,7 @@ for parent_name, child_processes in parent_child_mapping.items():
     current_pos += 0.5  # spacing
 
 plot_df = pd.DataFrame(plot_data)
+print(plot_df.head())
 
 fig, ax = plt.subplots(figsize=(16, 6))
 width = 0.35

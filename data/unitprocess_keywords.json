@@ -3,23 +3,74 @@
     "Primary Clarifier": {
       "CWNS_2022_code": ["Primary Clarification or Sedimentation"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["PRIMARY"],
+      "EL_ABBADI_2024_CODE": ["PRIMARY", "MOD_CLAR"],
       "alt_names": ["Primary Settling Tank"],
       "alt_names_case_sensitive": ["N"]
     },
     "Screening": {
-      "CWNS_2022_code": ["Screening"],
+      "CWNS_2022_code": ["Screening", "Screen (Bar Rack and Coarse)", "Screen (Fine and Microstrainers)", "Screen, Bar", "Screen, Mechanical Bar", "Other Screening"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": [],
-      "alt_names_case_sensitive": []
+      "EL_ABBADI_2024_CODE": ["MOD_SCREEN"],
+      "alt_names": ["Screening", "Bar Screen", "Fine Screen", "Mechanical Screen"],
+      "alt_names_case_sensitive": ["N", "N", "N", "N"]
+    },
+    "Microstrainer": {
+      "CWNS_2022_code": ["Microstrainer, Secondary"],
+      "CWNS_2012_code": ["None"],
+      "EL_ABBADI_2024_CODE": ["MOD_SCREEN"],
+      "alt_names": ["Microstrainer", "Fine Screening"],
+      "alt_names_case_sensitive": ["N", "N"]
     },
     "Flow Equalization": {
-      "CWNS_2022_code": ["Flow Equalization"],
+      "CWNS_2022_code": ["Flow Equalization", "Equalization, at POTW", "Equalization, Flow"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": [],
-      "alt_names_case_sensitive": []
+      "EL_ABBADI_2024_CODE": ["MOD_EQUALIZATION"],
+      "alt_names": ["Flow Equalization", "Equalization"],
+      "alt_names_case_sensitive": ["N", "N"]
+    },
+    "Grit Removal": {
+      "CWNS_2022_code": ["Grit Removal", "Aerated Grit Chambers"],
+      "CWNS_2012_code": ["None"],
+      "EL_ABBADI_2024_CODE": ["MOD_GRIT"],
+      "alt_names": ["Grit Removal", "Grit Chambers"],
+      "alt_names_case_sensitive": ["N", "N"]
+    },
+    "Chemical Dosing": {
+      "Alum Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Alum), Primary"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["PRIMARY"],
+        "alt_names": ["Alum Addition", "Aluminum Sulfate"],
+        "alt_names_case_sensitive": ["N", "N"]
+      },
+      "Ferric Chloride Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Ferric Chloride), Primary"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["PRIMARY"],
+        "alt_names": ["Ferric Chloride Addition", "Iron Chloride"],
+        "alt_names_case_sensitive": ["N", "N"]
+      },
+      "Other Chemical Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Other)"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM"],
+        "alt_names": ["Other Chemical Addition"],
+        "alt_names_case_sensitive": ["N"]
+      },
+      "Flotation": {
+        "CWNS_2022_code": ["Flotation"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM"],
+        "alt_names": ["Flotation", "Dissolved Air Flotation"],
+        "alt_names_case_sensitive": ["N", "N"]
+      },
+      "Neutralization": {
+        "CWNS_2022_code": ["Neutralization"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM"],
+        "alt_names": ["Neutralization", "pH Adjustment"],
+        "alt_names_case_sensitive": ["N", "N"]
+      }
     }
   },
   "secondary": {
@@ -42,7 +93,7 @@
         "CWNS_2022_code": ["Reactor (Oxidation Ditch)"],
         "CWNS_2012_code": ["None"],
         "EL_ABBADI_2024_CODE": ["AS-OD"],
-        "alt_names": ["Oxidation Ditch", "OD"],
+        "alt_names": ["Oxidation Ditch", " OD"],
         "alt_names_case_sensitive": ["N", "Y"]
       },
       "Pure Oxygen Activated Sludge": {
@@ -123,8 +174,8 @@
         "CWNS_2022_code": ["Lagoon"],
         "CWNS_2012_code": ["None"],
         "EL_ABBADI_2024_CODE": ["LAGOON"],
-        "alt_names": ["Lagoon"],
-        "alt_names_case_sensitive": ["N"]
+        "alt_names": [],
+        "alt_names_case_sensitive": []
       }
     },
     "Modifications": {
@@ -143,32 +194,57 @@
         "alt_names_case_sensitive": ["N"]
       }
     },
-    "AlternativeAS": {
+    "Alternative Biological": {
+      "Unspecified Biologicsl": {
       "CWNS_2022_code": ["Biological Treatment, Other"],
       "CWNS_2012_code": ["None"],
       "EL_ABBADI_2024_CODE": ["None"],
       "alt_names": [],
       "alt_names_case_sensitive": []
-    },
-    "Membrane Bioreactor": {
-      "CWNS_2022_code": ["Membrane Bioreactor"],
-      "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["MBR-BNR", "MBR"],
-      "alt_names": ["MBR", "Membrane Bioreactor"],
-      "alt_names_case_sensitive": ["Y", "N"]
-    },
+      },
+      "Membrane Bioreactor": {
+        "CWNS_2022_code": ["Membrane Bioreactor"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MBR-BNR"],
+        "alt_names": ["MBR", "Membrane Bioreactor"],
+        "alt_names_case_sensitive": ["Y", "N"]
+      },
     "Membrane Aerated Biofilm Rioreactor": {
-      "CWNS_2022_code": ["None"],
-      "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["MABR", "Membrane Aerated Biofilm Reactor"],
-      "alt_names_case_sensitive": ["Y", "N"]
+        "CWNS_2022_code": ["None"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["None"],
+        "alt_names": ["MABR", "Membrane Aerated Biofilm Reactor"],
+        "alt_names_case_sensitive": ["Y", "N"]
+      }
+    },
+    "Chemical Dosing": {
+      "Alum Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Alum), Secondary"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM_SEC"],
+        "alt_names": ["Alum Addition", "Aluminum Sulfate"],
+        "alt_names_case_sensitive": ["N", "N"]
+      },
+      "Ferric Chloride Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Ferric Chloride), Secondary"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM_SEC"],
+        "alt_names": ["Ferric Chloride Addition", "Iron Chloride"],
+        "alt_names_case_sensitive": ["N", "N"]
+      },
+      "Polymer Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Polymer)"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM_PRIM"],
+        "alt_names": ["Polymer Addition", "Polymer"],
+        "alt_names_case_sensitive": ["N", "N"]
+      }
     },
     "Nutrient Removal": {
       "Biological N Removal": {
         "CWNS_2022_code": ["Activated Sludge, With Biological Denitrification"],
         "CWNS_2012_code": ["None"],
-        "EL_ABBADI_2024_CODE": ["BNIT", "MBR-BNR", "BNR", "AS-BDENIT"],
+        "EL_ABBADI_2024_CODE": ["BNIT", "BDENIT", "MBR-BNR", "BNR", "AS-BDENIT"],
         "alt_names": ["Nutrient Removal", "Nitrification", "BNR"],
         "alt_names_case_sensitive": ["N", "N", "Y"]
       },
@@ -218,12 +294,28 @@
         "alt_names": ["nature-based", "nature based"],
         "alt_names_case_sensitive": ["N", "N"]
     },
+    "Chemical Dosing": {
+      "Alum Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Alum), Tertiary"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM_TERT"],
+        "alt_names": ["Alum Addition", "Aluminum Sulfate"],
+        "alt_names_case_sensitive": ["N", "N"]
+      },
+      "Ferric Chloride Addition": {
+        "CWNS_2022_code": ["Chemical Addition (Ferric Chloride), Tertiary"],
+        "CWNS_2012_code": ["None"],
+        "EL_ABBADI_2024_CODE": ["MOD_CHEM_TERT"],
+        "alt_names": ["Ferric Chloride Addition", "Iron Chloride"],
+        "alt_names_case_sensitive": ["N", "N"]
+      }
+    },
     "Tertiary Filtration": {
-      "CWNS_2022_code": ["Filtration"],
+      "CWNS_2022_code": ["Filtration", "Filter (Activated Bio-)", "Filter (Gravity Sand Beds, single media)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)", "Filter (Sand-Recirculating)", "Filter, Denitrification with Coarse Media", "Filter, Denitrification with Fine Media", "Filter, Mixed Media", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure", "Filter, Rapid Sand", "Filter, Rock", "Filter, Slow Sand"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Sand Filter", "Disc Filter"],
-      "alt_names_case_sensitive": ["N"]
+      "EL_ABBADI_2024_CODE": ["MOD_BIO_FILTER", "MOD_SAND_FILTER", "MOD_DN_FILTER", "MOD_MM_FILTER", "MOD_MB_FILTER", "MOD_OTH_FILTER"],
+      "alt_names": ["Sand Filter", "Disc Filter", "Activated Bio-Filter", "Denitrification Filter", "Mixed Media Filter", "Moving Bed Filter", "Pressure Filter", "Rapid Sand Filter", "Slow Sand Filter"],
+      "alt_names_case_sensitive": ["N", "N", "N", "N", "N", "N", "N", "N", "N"]
     }
   }
 },
@@ -283,9 +375,9 @@
     "Flocculation": {
       "CWNS_2022_code": ["Flocculation"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": [],
-      "alt_names_case_sensitive": []
+      "EL_ABBADI_2024_CODE": ["MOD_CHEM"],
+      "alt_names": ["Flocculation"],
+      "alt_names_case_sensitive": ["N"]
     },
     "Biologically Active Filter": {
       "CWNS_2022_code": ["Biologically Active Filtration (BAF)"],
@@ -295,18 +387,18 @@
       "alt_names_case_sensitive": ["N", "Y"]
     },
     "Ion Exchange": {
-      "CWNS_2022_code": ["Ion exchange"],
+      "CWNS_2022_code": ["Ion Exchange"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Ion exchange", "IX"],
-      "alt_names_case_sensitive": ["N", "Y"]
+      "EL_ABBADI_2024_CODE": ["MOD_IX"],
+      "alt_names": ["Ion exchange", "exchange resin", " IX ", "(IX)"],
+      "alt_names_case_sensitive": ["N", "N", "Y", "Y"]
     },
-    "Granular Activated Carbon": {
-      "CWNS_2022_code": ["Granular activated carbon (GAC)"],
+    "Activated Carbon": {
+      "CWNS_2022_code": ["Granular activated carbon (GAC)", "Activated Carbon, Granular", "Activated Carbon, Powdered"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Granular Activated Carbon", "GAC"],
-      "alt_names_case_sensitive": ["N", "Y"]
+      "EL_ABBADI_2024_CODE": ["MOD_GAC"],
+      "alt_names": ["Activated Carbon", "Granular Activated Carbon", "Powdered Activated Carbon"],
+      "alt_names_case_sensitive": ["N", "N", "N"]
     },
     "Media Filtration": {
       "CWNS_2022_code": ["Media Filtration"],
@@ -319,7 +411,7 @@
       "CWNS_2022_code": ["Nanofiltration (NF)"],
       "CWNS_2012_code": ["None"],
       "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Nanofilter", "Nanofiltration", "NF"],
+      "alt_names": ["Nanofilter", "Nanofiltration", " NF"],
       "alt_names_case_sensitive": ["N", "N", "Y"]
     },
     "Electrodialysis Reversal": {
@@ -333,14 +425,14 @@
       "CWNS_2022_code": ["Electrodialysis (ED)"],
       "CWNS_2012_code": ["None"],
       "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Electrodialysis", "ED "],
-      "alt_names_case_sensitive": ["N", "Y"]
+      "alt_names": ["Electrodialysis"],
+      "alt_names_case_sensitive": ["N"]
     },
     "Reverse Osmosis": {
       "CWNS_2022_code": ["Reverse Osmosis (RO)"],
       "CWNS_2012_code": ["None"],
       "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Reverse Osmosis", "RO "],
+      "alt_names": ["Reverse Osmosis", " RO "],
       "alt_names_case_sensitive": ["N", "Y"]
     },
     "Ultrafiltration": {
@@ -371,22 +463,22 @@
         "CWNS_2022_code": ["Biosolids Anaerobic Digestion, Other", "Biosolids Anaerobic Digestion without Energy Recovery", "Biosolids Anaerobic Digestion with Energy Recovery"],
         "CWNS_2012_code": ["None"],
         "EL_ABBADI_2024_CODE": ["AND"],
-        "alt_names": ["Anaerobic Digestion"],
+        "alt_names": ["Anaerobic Digestion", "Anaerobic Digester"],
         "alt_names_case_sensitive": ["N"]
       },
       "Aerobic Digestion": {
         "CWNS_2022_code": ["Biosolids Aerobic Digestion"],
         "CWNS_2012_code": ["None"],
         "EL_ABBADI_2024_CODE": ["AED"],
-        "alt_names": ["Aerobic Digestion"],
+        "alt_names": [" Aerobic Digestion", " Aerobic Digester"],
         "alt_names_case_sensitive": ["N"]
       },
       "Unspecified Digestion": {
         "CWNS_2022_code": ["None"],
         "CWNS_2012_code": ["None"],
         "EL_ABBADI_2024_CODE": ["None"],
-        "alt_names": ["Digestion"],
-        "alt_names_case_sensitive": ["N"]
+        "alt_names": [],
+        "alt_names_case_sensitive": []
       }
     },
     "Chemical Addition": {
@@ -434,11 +526,11 @@
       "alt_names_case_sensitive": ["N", "N", "N", "N"]
     },
     "Thickening": {
-      "CWNS_2022_code": ["Biosolids Thickening"],
+      "CWNS_2022_code": ["Biosolids Thickening", "Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other", "Biosolids Thickening, tank"],
       "CWNS_2012_code": ["None"],
-      "EL_ABBADI_2024_CODE": ["None"],
-      "alt_names": ["Thickening"],
-      "alt_names_case_sensitive": ["N"]
+      "EL_ABBADI_2024_CODE": ["MOD_THICKEN"],
+      "alt_names": ["Thickening", "Dissolved Air Flotation Thickening", "Gravity Thickening"],
+      "alt_names_case_sensitive": ["N", "N", "N"]
     },
     "Biosolids Lagoon": {
       "CWNS_2022_code": ["Biosolids Lagoon"],

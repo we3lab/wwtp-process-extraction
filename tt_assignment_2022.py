@@ -5,8 +5,8 @@
 import pandas as pd
 import numpy as np
 
-# ADDED Base GitHub URL for input data
-GITHUB_BASE_URL = "https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/refs/heads/main/treatment_train_assignment/input_data"
+# Use local input data from el_abbadi/input_data directory
+INPUT_DATA_DIR = "data/el_abbadi/input_data"
 
 # FROM SOURCE with changes to data path
 def create_wwtp_inventory():
@@ -16,7 +16,7 @@ def create_wwtp_inventory():
       wwtps_all = dataframe containing the active wwtps and relevant characteristics (ie. location, flow rate, and nutrient removal flags) for 2022
   '''
   #upload facility flow rates from 2022 CWNS
-  flow = pd.read_csv(f'{GITHUB_BASE_URL}/FLOW_2022.csv', dtype = {'CWNS_ID':str})
+  flow = pd.read_csv(f'{INPUT_DATA_DIR}/FLOW_2022.csv', dtype = {'CWNS_ID':str})
 
   #filter to total flow
   flow = flow.loc[flow['FLOW_TYPE'] == 'Total Flow']
@@ -29,7 +29,7 @@ def create_wwtp_inventory():
   wwtps_all = flow[['CWNS_ID', 'CURRENT_DESIGN_FLOW', 'FUTURE_DESIGN_FLOW']].rename(columns = {'CURRENT_DESIGN_FLOW':'FLOW_2022_MGD', 'FUTURE_DESIGN_FLOW':'FLOW_PROJ_MGD'})
 
   #upload columns indicating nutrient removal in 2012 (note, 2022 CWNS does not include these columns, so we have to rely on outdated information)
-  nutr_rem = pd.read_excel(f'{GITHUB_BASE_URL}/2012_SUMMARY_EFFLUENT.xlsx', sheet_name = 'SUMMARY_EFFLUENT', dtype = {'CWNS_NUMBER':str})
+  nutr_rem = pd.read_excel(f'{INPUT_DATA_DIR}/2012_SUMMARY_EFFLUENT.xlsx', sheet_name = 'SUMMARY_EFFLUENT', dtype = {'CWNS_NUMBER':str})
   nutr_rem = nutr_rem[['CWNS_NUMBER','PRES_NITROGEN_REMOVAL','PRES_PHOSPHOROUS_REMOVAL','PRES_AMMONIA_REMOVAL']].rename(columns = {'CWNS_NUMBER':'CWNS_ID'})
 
   #merge nutrient removal information with main dataframe and rename columns
@@ -43,7 +43,7 @@ def create_wwtp_inventory():
   wwtps_all.rename(columns = {'CWNS_ID':'CWNS_NUM','STATE_CODE':'STATE'}, inplace = True)
 
   #upload facility types
-  types = pd.read_csv(f'{GITHUB_BASE_URL}/2022_FACILITY_TYPES.csv', dtype = {'CWNS_ID':str}).rename(columns= {'CWNS_ID':'CWNS_NUM'})
+  types = pd.read_csv(f'{INPUT_DATA_DIR}/2022_FACILITY_TYPES.csv', dtype = {'CWNS_ID':str}).rename(columns= {'CWNS_ID':'CWNS_NUM'})
 
   #filter to just treatment plants and honey bucket lagoons
   types = types.loc[(types['FACILITY_TYPE'] == 'Treatment Plant') | (types['FACILITY_TYPE'] == 'Honey Bucket Lagoon')].drop_duplicates(subset = 'CWNS_NUM')
@@ -71,7 +71,7 @@ def create_wwtp_inventory():
   wwtps_all.loc[(wwtps_all['FLOW_PROJ_MGD'] >= 100), 'PROJ_FLOW_CAT_MGD'] = '100 AND ABOVE'
 
   #upload EPA regions by state
-  epa_regions = pd.read_csv(f'{GITHUB_BASE_URL}/state_EPA_regions.csv', dtype = {'STATE':str})
+  epa_regions = pd.read_csv(f'{INPUT_DATA_DIR}/state_EPA_regions.csv', dtype = {'STATE':str})
 
   #add column for EPA region
   wwtps_all = wwtps_all.merge(epa_regions, on = 'STATE', how = 'left')
@@ -92,7 +92,7 @@ wwtps = wwtps.loc[(wwtps['STATE'] != 'PR') & (wwtps['STATE'] != 'AK') & (wwtps['
 wwtps.reset_index(inplace = True, drop = True)
 
 #read in data from the Water Environment Federation's (WEF) biogas database (https://app.powerbi.com/view?r=eyJrIjoiMGFjZDFjZmItMjQ5Yi00ZTlhLWJmNTQtODFiNjlkYjFlODJjIiwidCI6ImI3ZTk3ODAyLTJhNjktNDc3ZS1iN2QyLWY0ZDE2MWMyMTBjYiIsImMiOjF9) to identify wwtps that utilize biogas for electricity generation; note, data was pulled ~2018 before website switched to MS BI
-wef_biogas = pd.read_csv(f'{GITHUB_BASE_URL}/WERF_BIOGAS.csv', dtype = {'CWNS_NUM' : str}, encoding = 'latin1')
+wef_biogas = pd.read_csv(f'{INPUT_DATA_DIR}/WERF_BIOGAS.csv', dtype = {'CWNS_NUM' : str}, encoding = 'latin1')
 
 #change formatting of WEF data from string to binary
 wef_biogas.loc[wef_biogas['Electricity_from_combustion-engine'] != 'yes', 'Electricity_from_combustion-engine'] = 0
@@ -127,7 +127,7 @@ wwtps = pd.merge(left = wwtps, right = biogas_wef, how = 'left', on = 'CWNS_NUM'
 wwtps['BIOGASELEC_WERF'] = wwtps['BIOGASELEC_WERF'].fillna(0)
 
 #read in data from the Department of Energy's Combined Heat and Power Installation database (https://doe.icfwebservices.com/chp) to identify wwtps that utilize biogas for electricity generation
-doe_biogas = pd.read_csv(f'{GITHUB_BASE_URL}/doe_chpdb-WWTP.csv', dtype = {'CWNS_NUM' : str}, encoding = 'latin1')
+doe_biogas = pd.read_csv(f'{INPUT_DATA_DIR}/doe_chpdb-WWTP.csv', dtype = {'CWNS_NUM' : str}, encoding = 'latin1')
 
 #drop duplicate and nan values from biogas dataframe to avoid creating duplicates in wwtps dataframe post-merge
 doe_biogas.dropna(subset = 'CWNS_NUM', inplace = True)
@@ -158,7 +158,7 @@ up2022['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for 
 
 #change formatting of 2022 unit process names to match that of prior years
 #note: 'Biological Treatment, Other' was manually corrected to be more specific. 'Chemical N Removal' was assumed to be roughly the same energy intensity as 'Chemical P removal'
-upnames_2022 = pd.read_csv(f'{GITHUB_BASE_URL}/UNIT_PROCESS_NAMES_2022.csv')
+upnames_2022 = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_NAMES_2022.csv')
 up2022 = pd.merge(left = up2022, right = upnames_2022, how = 'left', left_on = 'UNIT_PROCESS', right_on = '2022_UNIT_PROCESS_NAME')
 
 #filter to relevant columns and rename to match the formatting of old unit process dataframes
@@ -173,9 +173,9 @@ up2022.loc[pd.isna(up2022['PROJ_IND']), 'PROJ_IND'] = 0
 up2022['REPORT_YEAR'] = 2022
 
 #read in unit processs reported in the 2004, 2008, and 2012 releases of CWNS
-up2012 = pd.read_csv(f'{GITHUB_BASE_URL}/2012_SUMMARY_UNIT_PROCESS.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
-up2008 = pd.read_csv(f'{GITHUB_BASE_URL}/2008_SUMMARY_UNIT_PROCESS.csv',dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
-up2004 = pd.read_csv(f'{GITHUB_BASE_URL}/2004_Unit_Processes.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
+up2012 = pd.read_csv(f'{INPUT_DATA_DIR}/2012_SUMMARY_UNIT_PROCESS.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
+up2008 = pd.read_csv(f'{INPUT_DATA_DIR}/2008_SUMMARY_UNIT_PROCESS.csv',dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
+up2004 = pd.read_csv(f'{INPUT_DATA_DIR}/2004_Unit_Processes.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
 
 #aggregate 2004, 2008, and 2012 unit process lists
 up_old = pd.concat([up2012, up2008,up2004], axis = 0)
@@ -186,7 +186,7 @@ up_old.rename(columns = {'CWNS_NUMBER':'CWNS_NUM'}, inplace = True)
 up_old['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up_old['CWNS_NUM']]
 
 #reconcile unit process naming conventions between report years
-upnames = pd.read_csv(f'{GITHUB_BASE_URL}/UNIT_PROCESS_NAMES.csv')
+upnames = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_NAMES.csv')
 up_old = pd.merge(left = up_old, right = upnames, how = 'left', left_on = 'UNIT_PROCESS', right_on = 'ORIGINAL_UP_NAME')
 up_old.drop(['ORIGINAL_UP_NAME'], inplace = True, axis = 1)
 
@@ -229,7 +229,7 @@ doe_biogas_ad['PROJ_IND'] = 1
 uplist_recent = pd.concat([uplist_recent, wef_biogas_ad, doe_biogas_ad], axis = 0, ignore_index = False)
 
 #assign key unit processes a code (ie. 'Activated Sludge' is assigned the code 'AS'); note, not all unit processes receive a code
-up_eicodes = pd.read_csv(f'{GITHUB_BASE_URL}/UNIT_PROCESS_EI_CODES_WERF.csv')
+up_eicodes = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_EI_CODES_WERF_modified.csv') # MODIFIED
 uplist_eicodes = uplist_recent.merge(up_eicodes[['FINAL_UNIT_PROCESS_NAME','WERF_CODE','DISPOSAL_CODE']].drop_duplicates(subset = ['FINAL_UNIT_PROCESS_NAME']), how = 'left', on = 'FINAL_UNIT_PROCESS_NAME')
 
 #create column to indicate if a unit process was present in 2022
@@ -305,7 +305,7 @@ uplist_eicodes['2022_MIN_IND'] = uplist_eicodes['PRES_IND']
 #here, we confirmed the presence of lagoons at facilities larger than 10 MGD using publicly available information
 
 #import list of lagoons to add from EPA lagoon inventory and manual checks
-lagoon_add = pd.read_csv(f'{GITHUB_BASE_URL}/cwns_lagoon_add_ttrains_info.csv', dtype = {'CWNS_NUM':str})
+lagoon_add = pd.read_csv(f'{INPUT_DATA_DIR}/cwns_lagoon_add_ttrains_info.csv', dtype = {'CWNS_NUM':str})
 
 #add leading zeros to CWNS ids to ensure proper merge with other datasets
 lagoon_add['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in lagoon_add['CWNS_NUM']]
@@ -329,7 +329,7 @@ uplist_eicodes.drop_duplicates(subset = ['CWNS_NUM','WERF_CODE','DISPOSAL_CODE',
 uplist_eicodes.reset_index(inplace = True, drop = True)
 
 #import list of lagoons to remove based on manual checks
-lagoon_removed = pd.read_csv(f'{GITHUB_BASE_URL}/cwns_lagoon_remove.csv', dtype = {'CWNS_NUM': str})
+lagoon_removed = pd.read_csv(f'{INPUT_DATA_DIR}/cwns_lagoon_remove.csv', dtype = {'CWNS_NUM': str})
 
 #add leading zeros to CWNS ids to ensure proper match with uplist_eicodes
 lagoon_removed['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in lagoon_removed['CWNS_NUM']]

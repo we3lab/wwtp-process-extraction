@@ -15,9 +15,10 @@ def pdf_string(pdf):
     text = ''
     for page in reader.pages:
         text += page.extract_text()
+
     # Remove line breaks in PDF text and replace with spaces
     text = text.replace('\n', ' ').replace('\r', ' ')
-    text = ' '.join(text.split())  # clean up duplicate spaces
+    text = text.replace('  ', ' ')
     
     # Find the 2nd instance of "FACILITY DESCRIPTION"
     first_occurrence = text.find("FACILITY DESCRIPTION")
@@ -27,10 +28,11 @@ def pdf_string(pdf):
             start_pos = second_occurrence + 50
             extracted_text = text[start_pos:-1].strip()
             return extracted_text
-    
-    # If markers not found, return blank text
-    print("FACILITY DESCRIPTION not found")
-    return ""
+        else:
+            start_pos = first_occurrence + 50
+            extracted_text = text[start_pos:-1].strip()
+    else:
+        return text
 
 # Method that returns T/F if agency name is found
 def track_class(pdf, class_code):

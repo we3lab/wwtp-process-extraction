@@ -105,7 +105,7 @@ with open('data/unitprocess_keywords.json', 'r') as f:
     keywords = json.load(f)
 
 # Creates mock data for later use
-file = open('output/mock_data.csv', 'w', newline = '')
+file = open('npdes_permits/output/mock_data.csv', 'w', newline = '')
 mock_csv = csv.writer(file)
 mock_csv.writerow(['Agency', 'Email', 'TEueXT', 'Numbers'])
 mock_csv.writerow(['Benicia', 'NONE', 'dfhjdskf', '10'])
@@ -113,7 +113,7 @@ mock_csv.writerow(['County', 'NONE', 'dfhjdskf', '0'])
 file.close()
 
 # Name of the CSV to be used
-csv_name = 'output/test_results.csv'
+csv_name = 'npdes_permits/output/test_results.csv'
 # Reopens CSV to write data
 csv_file = open(csv_name, 'w', newline ='')
 wd_csv = csv.writer(csv_file)
@@ -123,7 +123,7 @@ directory = 'data/pdfs'
 
 # Get first column of a previously created CSV
 data = []
-with open('output/mock_data.csv', 'r') as f:
+with open('npdes_permits/output/mock_data.csv', 'r') as f:
    for line in csv.reader(f):
        data.append(line[0])
 

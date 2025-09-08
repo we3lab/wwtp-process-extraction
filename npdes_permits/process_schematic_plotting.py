@@ -72,4 +72,4 @@ nx.draw_networkx_edges(G, pos, edge_color='black', arrows=True, arrowsize=30,
 # Save plot
 plt.axis('off')
 plt.tight_layout()
-plt.savefig('output/process_schematic.png')
+plt.savefig('npdes_permits/output/process_schematic.png')

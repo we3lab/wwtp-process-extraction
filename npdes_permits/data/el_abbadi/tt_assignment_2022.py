@@ -418,4 +418,4 @@ unit_processes_df = unit_processes_df.drop('CWNS_ID', axis=1)
 unit_processes_df = unit_processes_df.rename(columns={'CWNS_NUM': 'CWNS_ID'})
 
 # Save the DataFrame
-unit_processes_df.to_csv('output/unit_processes_by_facility.csv', index=False)
+unit_processes_df.to_csv('npdes_permits/output/unit_processes_by_facility.csv', index=False)

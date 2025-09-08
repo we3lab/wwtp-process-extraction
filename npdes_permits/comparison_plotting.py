@@ -14,7 +14,7 @@ with open('data/unitprocess_keywords.json', 'r') as f:
     unitprocess_keywords = json.load(f)
 
 # 1. LOAD TEST RESULTS DATA FROM PDF SCRAPING
-test_results = pd.read_csv('output/test_results.csv')  # TODO: update with final output file
+test_results = pd.read_csv('npdes_permits/output/test_results.csv')  # TODO: update with final output file
 test_permit_numbers = test_results['PERMIT_NUMBER'].unique()
 # Create aggregated test results (sum across all facilities for each process)
 test_results_aggregated = test_results.drop(['Agency', 'PERMIT_NUMBER'], axis=1).sum().to_dict()
@@ -22,7 +22,7 @@ test_results_df = pd.DataFrame([test_results_aggregated])
 
 
 # 2. LOAD AND ORGANIZE CWNS DATA FROM EL ABBADI 2024
-cwns_data = pd.read_csv('output/unit_processes_by_facility.csv')
+cwns_data = pd.read_csv('npdes_permits/output/unit_processes_by_facility.csv')
 ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
 matching_cwns_data = ca_cwns_data[ca_cwns_data['PERMIT_NUMBER'].isin(test_permit_numbers)].copy()
 
@@ -164,4 +164,4 @@ legend = ax.legend(handles=legend_elements, loc='upper right')
 legend.get_texts()[2].set_weight('bold')
 
 plt.subplots_adjust(bottom=0.25)  # Reduce bottom margin
-plt.savefig('output/test_results_vs_cwns_comparison.png', dpi=300, bbox_inches='tight')
+plt.savefig('npdes_permits/output/test_results_vs_cwns_comparison.png', dpi=300, bbox_inches='tight')

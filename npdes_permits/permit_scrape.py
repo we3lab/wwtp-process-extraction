@@ -4,9 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from datetime import datetime
 import uuid
 import os
@@ -14,7 +12,6 @@ import time
 import csv
 import glob
 import pandas as pd
-import requests
 
 # Function that selects options from filters
 def selection(name, text):
@@ -39,9 +36,6 @@ npdes_permits = csv.writer(file)
 pdfs = open('npdes_permits/output/site_data.csv', 'w', newline = '')
 rename_data = csv.writer(pdfs)
 
-# Write headers for OTHER_CSV.csv
-# OTHER_CSV_NAME.writerow(['Agency Name', 'NPDES No.'])
-
 # Sets up Chrome and folder for downloads
 options = webdriver.ChromeOptions()
 prefs = {
@@ -65,7 +59,6 @@ driver = webdriver.Chrome(service=service, options=options)
 
 # Software gets url 
 driver.get(rfr_url)
-driver.save_screenshot('npdes_permits/output/img1.png')
 
 # Wait for the page to load and form elements to be available
 wait = WebDriverWait(driver, 60)
@@ -75,11 +68,8 @@ wait.until(EC.presence_of_element_located((By.NAME, 'programDrop')))
 selection('programDrop','NPDES')
 selection('typeDrop','Wastewater Treatment Facility')
 selection('wasteTypeDrop','Domestic wastewater')
-# selection('regDrop', region)
-
 driver.find_element(By.NAME, 'enpRepButton').click()
 time.sleep(5)
-driver.save_screenshot('npdes_permits/output/img2.png')
 
 table_body = driver.find_element(By.CLASS_NAME, 'ciwqsReportDataTable')
 rows = table_body.find_elements(By.TAG_NAME, 'tr')
@@ -96,8 +86,8 @@ start_time = time.time()
 while True:
     if driver.current_url != initial_url:
         driver.save_screenshot('npdes_permits/output/img3a.png')
-        print('restarting driver with produced url')
         current_url = driver.current_url
+        print(current_url)
         driver.quit() 
         driver = webdriver.Chrome(service=service, options=options)
         wait = WebDriverWait(driver, 60)  # Re-initialize wait with new driver
@@ -107,83 +97,109 @@ while True:
         break
 
 time.sleep(5)
-selection('pagesizeselect', 'ALL')
+selection('pagesizeselect', 'ALL')  # Sort to "ALL" results on page
 table_body = driver.find_element(By.CLASS_NAME, 'ciwqsReportDataTable')
 table_rows = table_body.find_elements(By.TAG_NAME, 'tr')
 
-# Download the Excel file for all facilities
+# Export Excel file and create mapping from it
 export_link = wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
 export_link.click()
-time.sleep(10)  # Wait for download to complete
+time.sleep(10)
 excel_files = glob.glob(f'{full_path}/*.xlsx') + glob.glob(f'{full_path}/*.xls')
 if not excel_files:
     print("No Excel file found")
     exit()
 
-excel_file = max(excel_files, key=os.path.getctime)  # Get the most recent file
+# Read Excel and create mapping of Order No. to Agency, NPDES No., and Program
+excel_file = max(excel_files, key=os.path.getctime)
 df = pd.read_csv(excel_file, sep='\t', encoding='latin-1')
 print(f"Excel file length {len(df)}")
 
-# Create a mapping of Order No. to Agency and NPDES No.
 order_to_data = {}
 for _, row in df.iterrows():
     order_no = str(row['Order No.']).strip()
-    agency = str(row['Agency']).strip()
-    npdes_no = str(row['NPDES No.']).strip()
     if order_no and order_no != 'nan':
-        order_to_data[order_no] = {'agency': agency, 'npdes_no': npdes_no}
+        order_to_data[order_no] = {}
+        for key in ['Agency', 'NPDES No.', 'Program']:
+            order_to_data[order_no][key] = str(row[key]).strip()
 
-wait = WebDriverWait(driver, 5)
+# Process each row for PDF downloads
+target_order_nos = set()
+for order_no, data in order_to_data.items():
+    if 'NPDMUNILRG' in data['Program'] or 'NPDMUNIOTH' in data['Program']:
+        target_order_nos.add(order_no)
+print(f'{len(target_order_nos)} Order Nos matching criteria')
+
+# Find Order No. column dynamically
+order_no_any = driver.find_elements(By.XPATH, "//*[contains(text(), 'Order No.')]")
+for element in order_no_any:
+    if element.tag_name == 'a' and element.text.strip() == 'Order No.':
+        # find parent td cell for header
+        parent_td = element.find_element(By.XPATH, "./..")
+        if parent_td.tag_name == 'td':
+            order_no_col_index = driver.execute_script("return arguments[0].cellIndex + 1;", parent_td)
+            break
+
+# Find row indices that contain our target Order Nos
+target_row_indices = []
+print('looping through table rows to get indices')
 for i in range(2, len(table_rows) + 1):
-    # order_no_header = driver.find_element(By.XPATH, "//th[contains(text(), 'Order No.')]")
-    # order_no_col_index = driver.execute_script("return arguments[0].cellIndex + 1;", order_no_header)    
-    # pdf_link_elements = driver.find_elements(By.XPATH, f'/html/body/table/tbody/tr[3]/td/table/tbody/tr[1]/td/table[2]/tbody/tr[7]/td[2]/table[1]/tbody/tr[{i}]/td[{order_no_col_index}]/a')
-    # Look for "Order No." header (link to sort column)
-    order_no_any = driver.find_elements(By.XPATH, "//*[contains(text(), 'Order No.')]")
-    for element in order_no_any:
-        if element.tag_name == 'a' and element.text.strip() == 'Order No.':
-            # find parent td cell for header
-            parent_td = element.find_element(By.XPATH, "./..")
-            if parent_td.tag_name == 'td':
-                order_no_col_index = driver.execute_script("return arguments[0].cellIndex + 1;", parent_td)
-                pdf_link_elements = driver.find_elements(By.XPATH, f"//tr[{i}]/td[{order_no_col_index}]/a")
-                break
-    # # hardcoded column 14
-    # pdf_link_elements = driver.find_elements(By.XPATH, f"//tr[{i}]/td[14]/a")
+    try:
+        order_no_link_elements = driver.find_elements(By.XPATH, f"//tr[{i}]/td[{order_no_col_index}]/a")
+        if order_no_link_elements:
+            order_no = order_no_link_elements[0].text.strip()
+            if order_no in target_order_nos:
+                target_row_indices.append(i)
+            print(i)
+    except:
+        continue
+print(f'Found {len(target_row_indices)} rows with matching Order Nos')
+
+# Process the target rows
+wait = WebDriverWait(driver, 5)
+for row_index in target_row_indices:
+    try:  # Refresh table elements
+        table_body = driver.find_element(By.CLASS_NAME, 'ciwqsReportDataTable')
+        table_rows = table_body.find_elements(By.TAG_NAME, 'tr')
+    except:
+        print(f"Row {row_index}: Could not refresh table elements, continuing...")
+        continue
     
-    if pdf_link_elements:
-        pdf_link = pdf_link_elements[0]
-        order_no = pdf_link.text.strip()
-        pdf_link.click()
+    # Get Order No. from the specific row
+    order_no_link_elements = driver.find_elements(By.XPATH, f"//tr[{row_index}]/td[{order_no_col_index}]/a")
+    if order_no_link_elements:
+        order_no = order_no_link_elements[0].text.strip()
+        program = order_to_data[order_no]['Program']
+        print(f'Row {row_index}: Processing Order No. {order_no} with Program: {program}')
+        order_no_link_elements[0].click()
         time.sleep(1)
         driver.switch_to.window(driver.window_handles[1])
-        # pdf_documents = driver.find_elements(By.PARTIAL_LINK_TEXT, '.pdf')
-        # document_download = pdf_documents[0]
-        document_download = wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, '.pdf')))
-        pdf_name = document_download.text
-        print(f'downloading {pdf_name}')
-        document_download.click()
-        time.sleep(5)
+        time.sleep(1)
+
+        # Find all PDF links on the Order No. page
+        pdf_documents = driver.find_elements(By.PARTIAL_LINK_TEXT, '.pdf')
+        print(f'Row {row_index}: Found {len(pdf_documents)} PDFs for Order No. {order_no}')
+        for j, pdf_doc in enumerate(pdf_documents):
+            try:
+                pdf_name = pdf_doc.text
+                print(f'Row {row_index}: downloading {pdf_name}')
+                pdf_doc.click()
+                time.sleep(2)
+                
+                agency_name = order_to_data[order_no]['Agency']
+                npdes_no = order_to_data[order_no]['NPDES No.']
+                rename_data.writerow([agency_name, npdes_no, pdf_name])
+                print(f'Row {row_index}: processed {agency_name}, {npdes_no}, {pdf_name} pdf {j}')
+            except:
+                print(f'Row {row_index}: download {j} failed')
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
-            
-        agency_name = order_to_data[order_no]['agency']
-        npdes_no = order_to_data[order_no]['npdes_no']
-        rename_data.writerow([agency_name, npdes_no, pdf_name])
-        print(f'processed {agency_name}, {npdes_no}, {pdf_name}, {order_no}')
-        driver.execute_script("document.body.style.zoom='0.5'")
-        driver.save_screenshot('npdes_permits/output/img4a.png')
-    else:
-        print(f'No PDF for row {i}')
-        driver.execute_script("document.body.style.zoom='0.5'")
-        driver.save_screenshot('npdes_permits/output/img4b.png')
-    i += 1
+        time.sleep(2)
 
+# Save all table data to CSV
 for row in table_rows:
     table_data = row.find_elements(By.TAG_NAME, 'td')
-    row_data = []
-    for data in table_data:
-        row_data.append(data.text)
+    row_data = [data.text for data in table_data]
     npdes_permits.writerow(row_data)
 
 # Close CSV file and quit driver

@@ -31,9 +31,9 @@ if not os.path.exists(full_path):
     os.mkdir(full_path)
 
 # Opens all necessary CSV files
-file = open('npdes_permits/output/all_ca_npdes.csv', 'w', newline = '')
+file = open(os.path.join(full_path, 'all_ca_npdes.csv'), 'w', newline = '')
 npdes_permits = csv.writer(file)
-pdfs = open('npdes_permits/output/site_data.csv', 'w', newline = '')
+pdfs = open(os.path.join(full_path, 'site_data.csv'), 'w', newline = '')
 rename_data = csv.writer(pdfs)
 
 # Sets up Chrome and folder for downloads
@@ -123,6 +123,17 @@ for _, row in df.iterrows():
         for key in ['Agency', 'NPDES No.', 'Program']:
             order_to_data[order_no][key] = str(row[key]).strip()
 
+# PDF keywords to skip downloading
+skip_keywords = [
+    " noa ", "_noa_", "_noa.", " noa- ", "notice of",
+    " noi ", "_noi_", "_noi.", " noi.",
+    "report", " rpts ",
+    "_rowd_", " rowd ", "_rowd.",
+    "response to", "ratestudy", "rate study",
+     "financial",
+    ]
+    # cover both annual reports and quarterly / monitoring reports
+
 # Process each row for PDF downloads
 target_order_nos = set()
 for order_no, data in order_to_data.items():
@@ -182,6 +193,12 @@ for row_index in target_row_indices:
         for j, pdf_doc in enumerate(pdf_documents):
             try:
                 pdf_name = pdf_doc.text
+                # Skipped non-NPDES PDFs
+                should_skip = any(keyword.lower() in pdf_name.lower() for keyword in skip_keywords)
+                if should_skip:
+                    print(f'Row {row_index}: skipping {pdf_name} (contains skip keyword)')
+                    continue
+                
                 print(f'Row {row_index}: downloading {pdf_name}')
                 pdf_doc.click()
                 time.sleep(2)

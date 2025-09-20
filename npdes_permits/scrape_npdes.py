@@ -27,8 +27,11 @@ path = 'npdes_permits/output'
 now = datetime.now()
 pdf_folder = f'{now.year}-{now.month}-{now.day}'
 full_path = os.path.join(path, pdf_folder)
+pdfs_path = os.path.join(full_path, 'pdfs')
 if not os.path.exists(full_path):
     os.mkdir(full_path)
+if not os.path.exists(pdfs_path):
+    os.mkdir(pdfs_path)
 
 # Opens all necessary CSV files
 file = open(os.path.join(full_path, 'all_ca_npdes.csv'), 'w', newline = '')
@@ -39,7 +42,7 @@ rename_data = csv.writer(pdfs)
 # Sets up Chrome and folder for downloads
 options = webdriver.ChromeOptions()
 prefs = {
-    'download.default_directory': os.path.abspath(full_path),
+    'download.default_directory': os.path.abspath(pdfs_path),
     'download.prompt_for_download': False,
     'download.directory_upgrade': True,
     'safebrowsing.enabled': True,
@@ -85,14 +88,14 @@ total_cell.find_element(By.TAG_NAME, "a").click()
 start_time = time.time()
 while True:
     if driver.current_url != initial_url:
-        driver.save_screenshot('npdes_permits/output/img3a.png')
         current_url = driver.current_url
         print(current_url)
         driver.quit() 
         driver = webdriver.Chrome(service=service, options=options)
         wait = WebDriverWait(driver, 60)  # Re-initialize wait with new driver
         driver.get(current_url)
-        driver.save_screenshot('npdes_permits/output/img3b.png')
+        # screenshot for debugging
+        driver.save_screenshot('npdes_permits/output/web_page.png')
         time.sleep(30)
         break
 

@@ -115,8 +115,19 @@ excel_file = max(excel_files, key=os.path.getctime)
 df = pd.read_csv(excel_file, sep='\t', encoding='latin-1')
 print(f"Excel file length {len(df)}")
 
+# Handle duplicate WDIDs by keeping the most recent Expiration/Review Date
+def parse_date(date_str):
+    if pd.isna(date_str) or str(date_str).lower() == 'null':
+        return pd.NaT
+    return pd.to_datetime(date_str, errors='coerce')
+
+df['Expiration/Review Date'] = df['Expiration/Review Date'].apply(parse_date)
+df_sorted = df.sort_values(['WDID', 'Expiration/Review Date'], ascending=[True, False])
+df_deduplicated = df_sorted.drop_duplicates(subset=['WDID'], keep='first')
+print(f"After deduplication: {len(df_deduplicated)} rows (removed {len(df) - len(df_deduplicated)} duplicates)")
+
 order_to_data = {}
-for _, row in df.iterrows():
+for _, row in df_deduplicated.iterrows():
     order_no = str(row['Order No.']).strip()
     if order_no and order_no != 'nan':
         order_to_data[order_no] = {}
@@ -124,15 +135,25 @@ for _, row in df.iterrows():
             order_to_data[order_no][key] = str(row[key]).strip()
 
 # PDF keywords to skip downloading
-skip_keywords = [
-    " noa ", "_noa_", "_noa.", " noa- ", "notice of",
-    " noi ", "_noi_", "_noi.", " noi.",
-    "report", " rpts ",
-    "_rowd_", " rowd ", "_rowd.",
-    "response to", "ratestudy", "rate study",
-     "financial",
-    ]
-    # cover both annual reports and quarterly / monitoring reports
+base_keywords = ["noa", "noi", "rpts", "rowd"]
+separators = [" ", ".", "-", "_"]
+patterns = set()
+
+for keyword in base_keywords:
+    for sep1 in separators:
+        for sep2 in separators:
+            patterns.add(f"{sep1}{keyword}{sep2}")
+skip_keywords = list(patterns)
+
+# Patterns that should only match at beginning of filename
+beginning_patterns = []
+for keyword in base_keywords:
+    for sep in separators:
+        beginning_patterns.append(f"{keyword}{sep}")
+skip_keywords.extend([
+    "report", "reports", "financial", "notice of", "response to", 
+    "rate study", "ratestudy", "study", "studies"
+])
 
 # Process each row for PDF downloads
 target_order_nos = set()
@@ -151,20 +172,21 @@ for element in order_no_any:
             order_no_col_index = driver.execute_script("return arguments[0].cellIndex + 1;", parent_td)
             break
 
-# Find row indices that contain our target Order Nos
+# Find row indices that contain our target Order Nos using XPath
 target_row_indices = []
-print('looping through table rows to get indices')
-for i in range(2, len(table_rows) + 1):
-    try:
-        order_no_link_elements = driver.find_elements(By.XPATH, f"//tr[{i}]/td[{order_no_col_index}]/a")
-        if order_no_link_elements:
-            order_no = order_no_link_elements[0].text.strip()
-            if order_no in target_order_nos:
-                target_row_indices.append(i)
-            print(i)
-    except:
-        continue
-print(f'Found {len(target_row_indices)} rows with matching Order Nos')
+print('Finding rows with target Order Nos using XPath...')
+
+# Create XPath to find rows where Order No. is in our target list
+order_nos_xpath = " or ".join([f"td[{order_no_col_index}]/a[text()='{order_no}']" for order_no in target_order_nos])
+xpath_query = f"//tr[{order_nos_xpath}]"
+
+target_rows = driver.find_elements(By.XPATH, xpath_query)
+for row in target_rows:
+    # Get the row index
+    row_index = driver.execute_script("return arguments[0].rowIndex + 1;", row)
+    target_row_indices.append(row_index)
+
+print(f'Found {len(target_row_indices)} rows with matching Order Nos using XPath')
 
 # Process the target rows
 wait = WebDriverWait(driver, 5)
@@ -195,6 +217,8 @@ for row_index in target_row_indices:
                 pdf_name = pdf_doc.text
                 # Skipped non-NPDES PDFs
                 should_skip = any(keyword.lower() in pdf_name.lower() for keyword in skip_keywords)
+                if not should_skip:
+                    should_skip = any(pdf_name.lower().startswith(pattern.lower()) for pattern in beginning_patterns)
                 if should_skip:
                     print(f'Row {row_index}: skipping {pdf_name} (contains skip keyword)')
                     continue

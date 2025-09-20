@@ -63,7 +63,7 @@ def find_pages(pdf, text_section):
             return pg + 1
     return None
 
-def pdf_text(path, text_selection):
+def pdf_text(path):
     print(path)
     if not os.path.exists(path):
         print(f"Skipping {path} - file not found")
@@ -73,7 +73,7 @@ def pdf_text(path, text_selection):
         pdf = PdfReader(path)
         print(len(pdf.pages))
         
-        # Find the page with "FACILITY DESCRIPTION" first (efficient)
+        # Find the page with "FACILITY DESCRIPTION" first
         start_page = find_pages(path, 'FACILITY DESCRIPTION')
         if start_page is None:
             print(f"Skipping {path} - 'FACILITY DESCRIPTION' not found")
@@ -90,6 +90,7 @@ def pdf_text(path, text_selection):
         
         # Find the 2nd instance of "FACILITY DESCRIPTION" within extracted text
         first_occurrence = text.find("FACILITY DESCRIPTION")
+        print(first_occurrence)
         if first_occurrence != -1:
             second_occurrence = text.find("FACILITY DESCRIPTION", first_occurrence + 50)
             if second_occurrence != -1:
@@ -151,7 +152,7 @@ upi.writerow(headers)
 # Main code that executes keyword search 
 for i in range(len(pdfs)):
     path = directory + '/' + pdfs[i]
-    solid_text = pdf_text(path, 'Facility Description')
+    solid_text = pdf_text(path)
     if solid_text is None:  # Skip if 'Facility Description' not found
         continue
     data_row = []

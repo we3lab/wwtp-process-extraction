@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 import uuid
+import tempfile
 import os
 import time
 import csv
@@ -52,12 +53,16 @@ prefs = {
 options.add_experimental_option('prefs', prefs)
 options.page_load_strategy = "eager"
 options.add_argument('--blink-settings=imagesEnabled=false')
-options.add_argument(f'--user-data-dir=/tmp/chrome_user_data_{uuid.uuid4().hex}')
+user_data_dir = os.path.join(tempfile.gettempdir(), f"chrome_user_data_{uuid.uuid4().hex}")
+options.add_argument(f"--user-data-dir={user_data_dir}")
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--disable-gpu')
 options.add_argument('--headless')  # for server/SSH
 
 # Set Chrome binary and ChromeDriver paths
-options.binary_location = '/home/daly/bin/chrome/chrome-linux64/chrome'
-service = Service('/home/daly/bin/chrome/chromedriver-linux64/chromedriver')
+options.binary_location = '/home/constance/chrome/chrome-linux64/chrome'         # Must be changed to your Chrome binary path
+service = Service('/home/constance/chrome/chromedriver-linux64/chromedriver')    # Must be changed to your ChromeDriver path
 driver = webdriver.Chrome(service=service, options=options)
 
 # Software gets url 
@@ -71,6 +76,7 @@ wait.until(EC.presence_of_element_located((By.NAME, 'programDrop')))
 selection('programDrop','NPDES')
 selection('typeDrop','Wastewater Treatment Facility')
 selection('wasteTypeDrop','Domestic wastewater')
+selection('inStatus','Active')
 driver.find_element(By.NAME, 'enpRepButton').click()
 time.sleep(5)
 
@@ -107,8 +113,42 @@ table_rows = table_body.find_elements(By.TAG_NAME, 'tr')
 # Export Excel file and create mapping from it
 export_link = wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
 export_link.click()
-time.sleep(10)
-excel_files = glob.glob(f'{full_path}/*.xlsx') + glob.glob(f'{full_path}/*.xls')
+# Click export and wait for the Excel file to finish downloading into the Chrome download folder
+export_link = wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
+export_link.click()
+
+# function to wait for the download to complete
+def wait_for_downloads(directory, timeout=60):
+    """Wait for an .xls/.xlsx file to appear and finish downloading (no .crdownload)."""
+    end_time = time.time() + timeout
+    while time.time() < end_time:
+        files = glob.glob(os.path.join(directory, '*.xlsx')) + glob.glob(os.path.join(directory, '*.xls'))
+        # exclude partial files
+        files = [f for f in files if not f.lower().endswith('.crdownload')]
+        if files:
+            # ensure file sizes are stable (simple heuristic)
+            stable = True
+            for f in files:
+                try:
+                    s1 = os.path.getsize(f)
+                    time.sleep(0.5)
+                    s2 = os.path.getsize(f)
+                    if s1 != s2:
+                        stable = False
+                        break
+                except OSError:
+                    stable = False
+                    break
+            if stable:
+                return files
+        time.sleep(0.5)
+    return []
+
+# primary: Chrome downloads to pdfs_path (set in prefs). Fallback to full_path for older behavior.
+excel_files = wait_for_downloads(pdfs_path, timeout=60)
+if not excel_files:
+    excel_files = wait_for_downloads(full_path, timeout=5)
+
 if not excel_files:
     print("No Excel file found")
     exit()
@@ -155,7 +195,8 @@ for keyword in base_keywords:
         beginning_patterns.append(f"{keyword}{sep}")
 skip_keywords.extend([
     "report", "reports", "financial", "notice of", "response to", 
-    "rate study", "ratestudy", "study", "studies"
+    "rate study", "ratestudy", "study", "studies", "letter", 
+    "PER", "NOA", "NOI", "CI"
 ])
 
 # Process each row for PDF downloads
@@ -218,12 +259,16 @@ for row_index in target_row_indices:
         for j, pdf_doc in enumerate(pdf_documents):
             try:
                 pdf_name = pdf_doc.text
-                # Skipped non-NPDES PDFs
+
+                # Check if the PDF name contains any skip keyword
                 should_skip = any(keyword.lower() in pdf_name.lower() for keyword in skip_keywords)
-                if not should_skip:
-                    should_skip = any(pdf_name.lower().startswith(pattern.lower()) for pattern in beginning_patterns)
                 if should_skip:
-                    print(f'Row {row_index}: skipping {pdf_name} (contains skip keyword)')
+                    print(f"Skipping PDF: {pdf_name} (matched skip keyword)")
+                    continue
+                
+                should_skip = any(pdf_name.lower().startswith(pattern.lower()) for pattern in beginning_patterns)
+                if should_skip:
+                    print(f'Row {row_index}: skipping {pdf_name} (begins with skip pattern)')
                     continue
                 
                 print(f'Row {row_index}: downloading {pdf_name}')

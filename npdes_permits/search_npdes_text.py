@@ -7,8 +7,9 @@ import csv
 import glob
 import json
 from datetime import datetime
+from text_extraction import extract_permit_sections
 
-DATE_FOLDER = '2025-9-19'
+DATE_FOLDER = '2025-10-8'
 
 # Gets all keys from dictonary for CSV headers and key[value] = #  use
 def get_all_keys(processes_dict):
@@ -51,120 +52,111 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
     return sub_category_found
 
-    
-def find_pages(pdf, text_section):
-    """Find the page containing the text section (case-insensitive)"""
-    reader = PdfReader(pdf)
-    for pg in range(2, len(reader.pages)):  # Start from page 2
-        text = reader.pages[pg].extract_text()
-        res_search = re.search(text_section, text)
-        res_search_2 = re.search(text_section.upper(), text)
-        if res_search or res_search_2:
-            return pg + 1
-    return None
-
-def pdf_text(path):
-    print(path)
-    if not os.path.exists(path):
-        print(f"Skipping {path} - file not found")
-        # TODO: check why they're missing - download timed out?
-        return None
-    try:
-        pdf = PdfReader(path)
-        print(len(pdf.pages))
-        
-        # Find the page with "FACILITY DESCRIPTION" first
-        start_page = find_pages(path, 'FACILITY DESCRIPTION')
-        if start_page is None:
-            print(f"Skipping {path} - 'FACILITY DESCRIPTION' not found")
-            return None
-        
-        # Extract text from that page onwards (not all pages)
-        text = ''
-        for i in range(start_page - 1, len(pdf.pages)):  # Convert to 0-based index
-            text += pdf.pages[i].extract_text()
-        
-        # Clean up text, replacing line breaks and double spaces
-        text = text.replace('\n', ' ').replace('\r', ' ')
-        text = text.replace('  ', ' ')
-        
-        # Find the 2nd instance of "FACILITY DESCRIPTION" within extracted text
-        first_occurrence = text.find("FACILITY DESCRIPTION")
-        print(first_occurrence)
-        if first_occurrence != -1:
-            second_occurrence = text.find("FACILITY DESCRIPTION", first_occurrence + 50)
-            if second_occurrence != -1:
-                start_pos = second_occurrence + 50
-                extracted_text = text[start_pos:].strip()
-                return extracted_text
-            else:
-                start_pos = first_occurrence + 50
-                extracted_text = text[start_pos:].strip()
-                return extracted_text
-        else:
-            print(f"Skipping {path} - 'FACILITY DESCRIPTION' not found")
-            return None
-            
-    except Exception as e:
-        print(f"Skipping {path} - no PDF downloaded")
-        return None
 
 # CSV names
 file = f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv'
 rfr_data = f'npdes_permits/output/{DATE_FOLDER}/site_data.csv'
 
-csv_file = open(file, 'w', newline = '') # File that will store results
-ps_file = open(rfr_data, 'r', newline = '') # File that contains agency names, NPDES numbers, and PDF file names
+csv_file = open(file, 'w', newline='')
+ps_file = open(rfr_data, 'r', newline='')
 upi = csv.writer(csv_file)
 
 # Opens JSON file with keywords
 with open('npdes_permits/data/unitprocess_keywords.json', 'r') as f:
     keywords = json.load(f)
 
-# Directory where PDFS are stored
-directory = f'npdes_permits/output/{DATE_FOLDER}/pdfs'
+# Directory where PDFs are stored
+directory = f'npdes_permits/output/{DATE_FOLDER}/npdes'
 
-# Lists to store headers & first/second column data
+# Lists to store headers & data
 agency_name = []
 npdesNO = []
 pdfs = []
 
-# Reads rfr_data file and extracts agency names, NPDES numbers, and PDF file names
+# Read site data
 with open(rfr_data, 'r') as f:
-  for line in csv.reader(f):
-      agency_name.append(line[0])
+    for line in csv.reader(f):
+        agency_name.append(line[0])
 with open(rfr_data, 'r') as f:
-   for line in csv.reader(f):
-       npdesNO.append(line[1])
+    for line in csv.reader(f):
+        npdesNO.append(line[1])
 with open(rfr_data, 'r') as f:
-   for line in csv.reader(f):
-       pdfs.append(line[2]) 
- 
-# This segment creates the formatting of the CSV file
-headers = []
-all_keys = (get_all_keys(keywords))
-headers.append('AGENCY_NAME')  # Add agency name column
-headers.append('PERMIT_NUMBER')  # Add permit number column
-for i in range(len(all_keys)):
-    headers.append(all_keys[i])
+    for line in csv.reader(f):
+        pdfs.append(line[2])
+
+# Create CSV headers with status suffixes
+headers = ['AGENCY_NAME', 'PERMIT_NUMBER']
+all_keys = get_all_keys(keywords)
+
+# Add columns for each treatment: TREATMENT_NAME_status and TREATMENT_NAME_binary
+for key in all_keys:
+    headers.append(f'{key}_status')  # "present", "future", or "not_found"
+    headers.append(f'{key}_binary')  # 1 if found anywhere, 0 if not
+
 upi.writerow(headers)
 
-# Main code that executes keyword search 
+# Main processing loop
 for i in range(len(pdfs)):
-    path = directory + '/' + pdfs[i]
-    solid_text = pdf_text(path)
-    if solid_text is None:  # Skip if 'Facility Description' not found
+    path = os.path.join(directory, pdfs[i])
+    
+    print(f"\n{'='*80}")
+    print(f"Processing {pdfs[i]} ({i+1}/{len(pdfs)})")
+    print(f"{'='*80}")
+    
+    # Extract sections from PDF
+    extraction_result = extract_permit_sections(path)
+    
+    if extraction_result is None:
+        print(f"Skipping {pdfs[i]} - extraction failed")
         continue
-    data_row = []
-    results = {}
-    data_row.append(agency_name[i])  # Adds agency name
-    data_row.append(npdesNO[i]) # Adds NPDES No.
+    
+    # Search for treatments in both sections
+    present_results = {}
+    future_results = {}
+    
+    # Search Facility Description section (present treatments)
     for category, processes in keywords.items():
         if isinstance(processes, dict):
-            search_processes_in_text(solid_text, processes, results, None)
-    for keys in all_keys:
-        data_row.append(results[keys]) # For Loop appends all detection of unit process keywords
+            search_processes_in_text(
+                extraction_result['txt_section'], 
+                processes, 
+                present_results, 
+                None
+            )
+    
+    # Search Planned Changes section (future treatments)
+    if extraction_result['txt_changes']:
+        for category, processes in keywords.items():
+            if isinstance(processes, dict):
+                search_processes_in_text(
+                    extraction_result['txt_changes'], 
+                    processes, 
+                    future_results, 
+                    None
+                )
+    
+    # Build data row
+    data_row = [agency_name[i], npdesNO[i]]
+    for key in all_keys:
+        is_present = present_results.get(key, 0) == 1
+        is_future = future_results.get(key, 0) == 1
+        if is_present and is_future:
+            status = "present_and_future"
+        elif is_present:
+            status = "present"
+        elif is_future:
+            status = "future"
+        else:
+            status = "not_found"
+        binary = 1 if (is_present or is_future) else 0
+        data_row.append(status)
+        data_row.append(binary)
     upi.writerow(data_row)
+    print(f"✓ Processed {pdfs[i]}")
 
 csv_file.close()
 ps_file.close()
+
+print(f"\n{'='*80}")
+print(f"Processing complete! Results saved to: {file}")
+print(f"{'='*80}")

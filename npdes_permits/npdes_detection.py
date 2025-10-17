@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 def normalize_text(s: str) -> str:
-    """Normalize text for robust PDF sentence/phrase detection: remove all spaces."""
+    """Normalize text by removing special whitespace characters and lowercasing."""
     if not s:
         return ''
     # Normalize Unicode form
@@ -22,10 +22,6 @@ def normalize_text(s: str) -> str:
     return s.lower()
 
 def extract_pdf_text(pdf_path: str, max_pages=5) -> str:
-    """Extract and normalize text from the first `max_pages` pages of a PDF.
-    Returns the normalized, lowercased text (single-space collapsed). Returns
-    an empty string on error.
-    """
     page_texts = []
     try:
         with open(pdf_path, 'rb') as f:
@@ -70,31 +66,19 @@ def detect_text_from_pdf(pdf_path : str, text_searched : str, max_pages=5):
 
 def detect_npdes_pattern(pdf_path: str, max_pages=5) -> bool:
     """Detect flexible NPDES-like sentences in a PDF.
-
     Matches patterns like:
       "the following <...> subject to <...> set forth in this <...> order"
-
-    Where the <...> placeholders can be one or many words. The match is done on
-    normalized text and a spaceless fallback is attempted if needed.
     """
     txt = extract_pdf_text(pdf_path, max_pages)
     if not txt:
         return False
 
-    # tolerant regex: allow punctuation/newlines between words, non-greedy captures for the
-    # variable parts, and an optional 'general' (with or without parentheses). We allow up to
-    # 600 characters in captures to accommodate long permittee/descriptions.
-    # We'll construct 'fuzzy' tokens for the fixed keywords so that extractor-inserted
-    # separators inside words (e.g. 'followi ng', 'wdr s', 'wdr-s') are still matched.
-
-    # separator inside/between letters: any whitespace, soft-hyphen, zero-width, hyphen
+    # tolerant regex: allow spaces, lines changes and some special chars between letters
     inner_sep = r"(?:[\s\u00AD\u200B\-])*"
 
     def fuzzy(word: str) -> str:
         """Return a regex that matches `word` even if the extractor inserted
         whitespace, soft-hyphens, zero-width spaces or hyphens between letters.
-
-        Example: fuzzy('following') -> f[o][sep]l[sep]l... (joined)
         """
         parts = []
         for ch in word:
@@ -119,8 +103,6 @@ def detect_npdes_pattern(pdf_path: str, max_pages=5) -> bool:
         flags=re.I | re.DOTALL,
     )
 
-    # debug-friendly variant: if caller wants the match object returned for inspection,
-    # they can modify this function later to return groups. For now we keep boolean return.
     if pattern.search(txt):
         return True
     return False

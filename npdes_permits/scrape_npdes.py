@@ -13,6 +13,7 @@ import time
 import csv
 import glob
 import pandas as pd
+from npdes_detection import detect_npdes
 
 # Function that selects options from filters
 def selection(name, text):
@@ -295,3 +296,19 @@ for row in table_rows:
 file.close()
 pdfs.close()
 driver.close()
+
+# Move npdes-like pdfs to a NPDES path
+npdes_path = os.path.join(full_path, 'npdes')
+if not os.path.exists(npdes_path):
+    os.mkdir(npdes_path)
+
+for files in os.listdir(pdfs_path):
+    file_path = os.path.join(user_data_dir, files)
+    if detect_npdes(file_path):
+        # puttin non npdes-files in a separate folder for manual review
+        new_path = os.path.join(npdes_path, files)
+        os.rename(file_path, new_path)
+        print(f"Moving NPDES file {file_path} to {new_path}")
+        continue
+    else:
+        print(f"Detected non NPDES-like content in {file_path}, keeping file.")

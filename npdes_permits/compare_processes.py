@@ -6,7 +6,7 @@ import os
 
 from utils import *
 
-DATE_FOLDER = '2025-10-13'
+DATE_FOLDER = '2025-10-20'
 
 COLORS = {
     'cwns': '#8cd23c', 
@@ -284,16 +284,65 @@ print(f"Categories: {categories_to_plot}")
 
 # Load NPDES results data from the specified date folder (NEW FORMAT)
 unit_process_results = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv')
-print(f"Loaded {len(unit_process_results)} NPDES facilities")
+print(f"\n{'='*80}")
+print("DATA LOADING SUMMARY")
+print(f"{'='*80}")
+print(f"NPDES data: Loaded {len(unit_process_results)} facilities")
 print(f"Columns sample: {unit_process_results.columns[:10].tolist()}")
 
-test_permit_numbers = unit_process_results['PERMIT_NUMBER'].unique()
+# Get unique NPDES permit numbers
+npdes_permit_numbers = set(unit_process_results['PERMIT_NUMBER'].unique())
+print(f"Unique NPDES permit numbers: {len(npdes_permit_numbers)}")
 
-# Load and organize CWNS data from the specified date folder
+# Load and organize CWNS data
 cwns_data = pd.read_csv(f'npdes_permits/output/unit_processes_by_facility.csv')
+print(f"\nCWNS data: Total facilities: {len(cwns_data)}")
+
+# Filter for California only
 ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
-matching_cwns_data = ca_cwns_data[ca_cwns_data['PERMIT_NUMBER'].isin(test_permit_numbers)].copy()
-print(f"Matched {len(matching_cwns_data)} CWNS facilities")
+print(f"CWNS data: California facilities: {len(ca_cwns_data)}")
+
+# Get unique CWNS permit numbers (California only)
+cwns_permit_numbers = set(ca_cwns_data['PERMIT_NUMBER'].unique())
+print(f"Unique CWNS CA permit numbers: {len(cwns_permit_numbers)}")
+
+# Find matching permit numbers
+matching_permit_numbers = npdes_permit_numbers.intersection(cwns_permit_numbers)
+print(f"\n{'='*80}")
+print("PERMIT NUMBER MATCHING")
+print(f"{'='*80}")
+print(f"Facilities in BOTH datasets: {len(matching_permit_numbers)}")
+print(f"Facilities ONLY in NPDES: {len(npdes_permit_numbers - cwns_permit_numbers)}")
+print(f"Facilities ONLY in CWNS: {len(cwns_permit_numbers - npdes_permit_numbers)}")
+
+# Filter both datasets to only matching facilities
+unit_process_results_matched = unit_process_results[
+    unit_process_results['PERMIT_NUMBER'].isin(matching_permit_numbers)
+].copy()
+matching_cwns_data = ca_cwns_data[
+    ca_cwns_data['PERMIT_NUMBER'].isin(matching_permit_numbers)
+].copy()
+
+print(f"\nFiltered NPDES data: {len(unit_process_results_matched)} facilities")
+print(f"Filtered CWNS data: {len(matching_cwns_data)} facilities")
+
+# Show some example matching permit numbers
+if matching_permit_numbers:
+    examples = list(matching_permit_numbers)[:5]
+    print(f"\nExample matching permit numbers: {examples}")
+
+# Show some examples of non-matching
+npdes_only = npdes_permit_numbers - cwns_permit_numbers
+cwns_only = cwns_permit_numbers - npdes_permit_numbers
+if npdes_only:
+    print(f"\nExample NPDES-only permits: {list(npdes_only)[:5]}")
+if cwns_only:
+    print(f"Example CWNS-only permits: {list(cwns_only)[:5]}")
+
+print(f"{'='*80}\n")
+
+# Use matched data for the rest of the analysis
+unit_process_results = unit_process_results_matched
 
 figures_dir = f'npdes_permits/output/{DATE_FOLDER}/figures'
 if not os.path.exists(figures_dir):
@@ -356,6 +405,16 @@ create_plot(
     save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/all_categories_comparison.png'
 )
 print("\n✓ Comprehensive plot saved as 'all_categories_comparison.png'")
+
+# Create matching statistics report
+print("\n" + "="*80)
+print("FACILITY MATCHING REPORT")
+print("="*80)
+print(f"Total California CWNS facilities: {len(ca_cwns_data)}")
+print(f"Total NPDES facilities analyzed: {len(unit_process_results_matched)}")
+print(f"Facilities matched and compared: {len(matching_permit_numbers)}")
+print(f"Match rate: {len(matching_permit_numbers) / len(npdes_permit_numbers) * 100:.1f}% of NPDES facilities")
+print(f"Coverage: {len(matching_permit_numbers) / len(ca_cwns_data) * 100:.1f}% of CA CWNS facilities")
 
 # Create overall status summary
 print("\n" + "="*80)

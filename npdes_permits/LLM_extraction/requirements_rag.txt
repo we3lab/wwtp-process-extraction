@@ -1,0 +1,36 @@
+# RAG-based Treatment Process Extraction - Python Dependencies
+# Using LangChain's Ollama integration (no direct ollama/openai imports)
+
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# PDF processing
+PyPDF2>=3.0.0
+pdfminer.six>=20221105
+
+# LangChain for RAG (includes Ollama integration)
+langchain>=0.1.0
+langchain-community>=0.0.20
+langchain-core>=0.1.0
+
+# Vector database
+chromadb>=0.4.0
+
+# SQLite upgrade (for ChromaDB compatibility)
+pysqlite3-binary>=0.5.0
+
+# Text embeddings (used by sentence-transformers for HuggingFace embeddings if needed)
+sentence-transformers>=2.2.0
+
+# Vector operations (if using FAISS fallback)
+faiss-cpu>=1.7.4
+
+# Optional: for better performance
+# accelerate>=0.25.0  # Faster embeddings
+# torch>=2.0.0  # If you want GPU support for embeddings
+
+# Note: You still need to install Ollama separately:
+# curl -fsSL https://ollama.com/install.sh | sh
+# ollama pull mistral:7b
+# ollama pull nomic-embed-text

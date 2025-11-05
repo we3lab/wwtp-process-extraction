@@ -125,25 +125,4 @@ def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> bool:
     return has_pattern or has_pattern2
 
 
-full_path = "npdes_permits/output/2025-10-8"
-pdfs_path = os.path.join(full_path, 'pdfs')
-# Move npdes-like pdfs to a NPDES path
-npdes_path = os.path.join(full_path, 'npdes')
-if not os.path.exists(npdes_path):
-    os.mkdir(npdes_path)
-
-for files in os.listdir(pdfs_path):
-    # check if the file is a pdf
-    if not files.lower().endswith('.pdf'):
-        continue
-    file_path = os.path.join(pdfs_path, files)
-    if detect_npdes(file_path):
-        # putting non npdes-files in a separate folder for manual review
-        new_path = os.path.join(npdes_path, files)
-        os.rename(file_path, new_path)
-        print(f"Moving NPDES file {file_path} to {new_path}")
-        continue
-    else:
-        print(f"Detected non NPDES-like content in {file_path}, keeping file.")
-
 

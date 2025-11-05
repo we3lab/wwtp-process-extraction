@@ -1,0 +1,153 @@
+"""
+QUICK START GUIDE: Treatment Process Extraction
+================================================
+
+STEP 1: SETUP
+-------------
+# Install dependencies
+pip install pandas numpy scikit-learn PyPDF2 openai pdfminer.six
+
+# Set API key
+export OPENAI_API_KEY='your-key-here'
+
+
+STEP 2: PREPARE DATA
+--------------------
+You need three data files (templates provided):
+
+1. data/treatment_processes.json
+   → Defines all possible processes and their alternative names
+   
+2. data/training_chunks.csv  
+   → Example chunks showing what text is relevant vs not relevant
+   
+3. data/example_permits.csv
+   → Example permits with ground truth process lists
+
+
+STEP 3: RUN EXTRACTION
+----------------------
+# Single file:
+python npdes_permits/run_extraction.py \
+    --pdf path/to/permit.pdf \
+    --facility "Plant Name" \
+    --npdes CA0012345
+
+# Batch processing:
+python npdes_permits/run_extraction.py \
+    --input permits.csv \
+    --output results.csv
+
+
+INPUT CSV FORMAT (for batch)
+-----------------------------
+pdf_path,facility_name,npdes_no
+output/pdfs/permit1.pdf,Example WWTP,CA0012345
+output/pdfs/permit2.pdf,Another Plant,CA0067890
+
+
+OUTPUT CSV FORMAT
+-----------------
+facility_name,npdes_no,n_processes,process_list,confidence_scores,evidence_snippets
+Example WWTP,CA0012345,5,"preliminary_screening; activated_sludge; disinfection_uv","0.95; 0.92; 0.88","bar screens...; aeration basin...; UV..."
+
+
+WORKFLOW SUMMARY
+----------------
+1. PDF → Extract text → Split into chunks (~1000 chars each)
+2. Chunks → Score relevance → Select top 5 most relevant
+3. Full text → Find 2 most similar example permits (TF-IDF)
+4. Build prompt: relevant chunks + similar examples + process JSON
+5. LLM → Returns structured JSON with processes and confidence
+6. Parse → Export to CSV
+
+
+CUSTOMIZATION
+-------------
+Edit these in treatment_process_extractor.py:
+
+CHUNK_SIZE = 1000       # Size of text chunks
+OVERLAP = 200           # Overlap between chunks  
+TOP_K_CHUNKS = 5        # Number of chunks to analyze
+N_SIMILAR_EXAMPLES = 2  # Number of example permits to use
+
+
+ADDING MORE PROCESSES
+---------------------
+Edit data/treatment_processes.json:
+
+{
+  "treatment_processes": [
+    {
+      "generic_name": "your_process_name",
+      "category": "category_name",
+      "alternative_names": [
+        "variant 1",
+        "variant 2",
+        "abbreviation"
+      ]
+    }
+  ]
+}
+
+
+TROUBLESHOOTING
+---------------
+Problem: No processes found
+→ Check PDF extraction worked (print chunks)
+→ Add more training examples
+→ Try gpt-4 instead of gpt-3.5
+
+Problem: Wrong processes identified
+→ Add more example permits with ground truth
+→ Improve alternative names in JSON
+→ Add more specific training chunks
+
+Problem: Low confidence scores
+→ PDF text quality may be poor
+→ Try extracting more chunks (increase TOP_K_CHUNKS)
+→ Add more similar alternative names
+
+
+PYTHON USAGE
+------------
+from treatment_process_extractor import TreatmentExtractionPipeline
+
+pipeline = TreatmentExtractionPipeline(
+    process_json_path='data/treatment_processes.json',
+    training_chunks_path='data/training_chunks.csv',
+    example_database_path='data/example_permits.csv'
+)
+
+result = pipeline.process_permit(
+    pdf_path='permit.pdf',
+    facility_name='My WWTP',
+    npdes_no='CA0012345'
+)
+
+# Access results
+for proc in result['processes']:
+    print(f"{proc['generic_name']}: {proc['confidence']:.2f}")
+
+
+EVALUATION
+----------
+Compare results against manual labels:
+
+import pandas as pd
+
+results = pd.read_csv('results.csv')
+ground_truth = pd.read_csv('ground_truth.csv')
+
+# Calculate precision, recall, F1 per facility
+# (see README for full code)
+
+
+NEXT STEPS
+----------
+1. Label 50-100 chunks for training_chunks.csv
+2. Label 20-30 permits for example_permits.csv  
+3. Run on test set
+4. Evaluate and iterate
+5. Scale to full database
+"""

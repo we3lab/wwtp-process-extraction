@@ -8,7 +8,7 @@ import glob
 import json
 from datetime import datetime
 
-DATE_FOLDER = '2025-10-20'
+DATE_FOLDER = '2025-10-31'
 
 
 def normalize_text(text):
@@ -237,6 +237,7 @@ def main():
     
     # Lists to store headers & data
     agency_name = []
+    facility_name=[]
     npdesNO = []
     pdfs = []
     
@@ -244,21 +245,16 @@ def main():
     with open(rfr_data, 'r') as f:
         for line in csv.reader(f):
             agency_name.append(line[0])
-    with open(rfr_data, 'r') as f:
-        for line in csv.reader(f):
-            npdesNO.append(line[1])
-    with open(rfr_data, 'r') as f:
-        for line in csv.reader(f):
-            pdfs.append(line[2])
+            facility_name.append(line[1])
+            npdesNO.append(line[3])
+            pdfs.append(line[5])
     
-    # Create CSV headers with status suffixes
-    headers = ['AGENCY_NAME', 'PERMIT_NUMBER']
+    # Create CSV headers - one column per process
+    headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER']
     all_keys = get_all_keys(keywords)
     
-    # Add columns for each treatment: TREATMENT_NAME_status and TREATMENT_NAME_binary
-    for key in all_keys:
-        headers.append(f'{key}_status')  # "present", "future", or "not_found"
-        headers.append(f'{key}_binary')  # 1 if found anywhere, 0 if not
+    # Add one column for each treatment process
+    headers.extend(all_keys)
     
     upi.writerow(headers)
     
@@ -303,13 +299,13 @@ def main():
                     )
         
         # Build data row
-        data_row = [agency_name[i], npdesNO[i]]
+        data_row = [agency_name[i], facility_name[i], npdesNO[i]]
         
         for key in all_keys:
             is_present = present_results.get(key, 0) == 1
             is_future = future_results.get(key, 0) == 1
             
-            # Determine status
+            # Determine status: 0, "present", "future", or "present_and_future"
             if is_present and is_future:
                 status = "present_and_future"
             elif is_present:
@@ -317,13 +313,9 @@ def main():
             elif is_future:
                 status = "future"
             else:
-                status = "not_found"
-            
-            # Binary indicator (1 if found anywhere)
-            binary = 1 if (is_present or is_future) else 0
+                status = "0"
             
             data_row.append(status)
-            data_row.append(binary)
         
         upi.writerow(data_row)
         print(f"✓ Processed {pdfs[i]}")

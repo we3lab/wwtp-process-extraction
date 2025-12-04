@@ -197,11 +197,21 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
                 if process_name not in results:
                     results[process_name] = 0
                 for i, alt_name in enumerate(details['alt_names']):
-                    case_sensitive = details['alt_names_case_sensitive'][i] if 'alt_names_case_sensitive' in details and i < len(details['alt_names_case_sensitive']) else "N"
-                    if case_sensitive == "Y":
+                    # legacy format: parallel list of flags (Y/N)
+                    case_sensitive = None
+                    if 'alt_names_case_sensitive' in details and i < len(details['alt_names_case_sensitive']):
+                        case_sensitive = details['alt_names_case_sensitive'][i]
+
+                    # support either legacy flag-list or new-list-of-case-sensitive-names
+                    if isinstance(case_sensitive, str) and case_sensitive.upper() == "Y":
                         found = alt_name in text
                     else:
-                        found = alt_name.lower() in text.lower()
+                        # new format: alt_names_case_sensitive is a list of names that must be matched case-sensitively
+                        cs_list = details.get('alt_names_case_sensitive', []) or []
+                        if alt_name in cs_list:
+                            found = alt_name in text
+                        else:
+                            found = alt_name.lower() in text.lower()
                     if found:
                         results[process_name] = 1
                         sub_category_found = True
@@ -217,11 +227,57 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
     return sub_category_found
 
 
+def search_processes_in_text_v2(text, processes_dict, results, parent_name=None):
+    """Updated search that supports the new JSON structure.
+
+    - `alt_names` is a list of alternative strings.
+    - `alt_names_case_sensitive` is a list of alternative names that should be
+      matched using case-sensitive matching. If empty, matching is case-insensitive.
+    The function recurses through nested dicts and sets `results[process_name]=1`
+    when any of its alt names are found. If a subtree contains any matches,
+    the parent_name (if provided) is set to 1.
+    """
+    sub_category_found = False
+
+    for process_name, details in processes_dict.items():
+        if isinstance(details, dict):
+            # Leaf node with alt_names
+            if 'alt_names' in details:
+                if process_name not in results:
+                    results[process_name] = 0
+
+                alt_names = details.get('alt_names', []) or []
+                cs_list = details.get('alt_names_case_sensitive', []) or []
+
+                for alt_name in alt_names:
+                    # If the alt_name is listed in cs_list, match case-sensitively
+                    if alt_name in cs_list:
+                        found = alt_name in text
+                    else:
+                        found = alt_name.lower() in text.lower()
+
+                    if found:
+                        results[process_name] = 1
+                        sub_category_found = True
+                        break
+
+            else:
+                # Nested dictionary: recurse
+                sub_found = search_processes_in_text_v2(text, details, results, process_name)
+                if sub_found:
+                    sub_category_found = True
+
+    if parent_name and sub_category_found:
+        results[parent_name] = 1
+
+    return sub_category_found
+
+
 def main():
     """Main processing function with present/future treatment tracking"""
     
     # CSV names
-    file = f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv'
+    file = f'npdes_permits/output/{DATE_FOLDER}/unit_processes_v2.csv'
     rfr_data = f'npdes_permits/output/{DATE_FOLDER}/site_data.csv'
     
     csv_file = open(file, 'w', newline='')
@@ -229,7 +285,7 @@ def main():
     upi = csv.writer(csv_file)
     
     # Opens JSON file with keywords
-    with open('npdes_permits/data/unitprocess_keywords.json', 'r') as f:
+    with open('npdes_permits/data/unitprocess_keywords_v2.json', 'r') as f:
         keywords = json.load(f)
     
     # Directory where PDFs are stored
@@ -246,7 +302,7 @@ def main():
         for line in csv.reader(f):
             agency_name.append(line[0])
             facility_name.append(line[1])
-            npdesNO.append(line[3])
+            npdesNO.append(line[2])
             pdfs.append(line[5])
     
     # Create CSV headers - one column per process

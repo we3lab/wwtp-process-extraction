@@ -186,8 +186,8 @@ def extract_permit_sections(pdf_path):
             else:
                 return None
 
-        # Step 4: Find "Planned Changes" after Facility Description (with 200 char margin)
-        search_start = fac_desc_start + 200
+        # Step 4: Find "Planned Changes" after Facility Description (with 800 char margin)
+        search_start = fac_desc_start + 800
         planned_changes_pos = find_nth_occurrence(full_text, "Planned Changes", n=1, start_pos=search_start)
 
         if planned_changes_pos == -1:

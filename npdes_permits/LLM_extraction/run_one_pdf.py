@@ -17,16 +17,16 @@ from pathlib import Path
 import json
 import pandas as pd
 
-import llm_rag
+import llm_test2
 import llm_rag_loader as loader
 
-QUESTION = "What treatments are implemented in this facility based on the facility permit given?"
+QUESTION = "What treatments are implemented (or planned) in this facility based on the facility permit given?"
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pdf", required=True, help="PDF path (absolute or relative to repo root)")
-    parser.add_argument("--outdir", default="output/llm_results", help="Output folder for JSON results")
+    parser.add_argument("--outdir", default="output/llm_results2", help="Output folder for JSON results")
     args = parser.parse_args()
 
     pdf_path = args.pdf
@@ -51,7 +51,7 @@ def main():
         pass
 
     print("Running query...")
-    analysis, sources = llm_rag.query_rag(QUESTION, k=5, verbose=True)
+    analysis, sources = llm_test2.query_rag(QUESTION, k=5, verbose=True)
 
     if analysis is None:
         print("No analysis returned from query.")
@@ -72,7 +72,7 @@ def main():
         print(f"Saved analysis to {out_file}")
     except Exception as e:
         print("Failed to save analysis:", e)
-
+    """
     # Convert matched processes to a DataFrame and save as CSV
     try:
         rows = []
@@ -118,7 +118,7 @@ def main():
             print(f"Saved fallback CSV to {csv_file}")
         except Exception as e2:
             print("Failed fallback CSV write:", e2)
-
+    """
 
 if __name__ == "__main__":
     main()

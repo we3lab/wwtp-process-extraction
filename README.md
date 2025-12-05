@@ -12,8 +12,11 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
 - ...
 
 ## Contact 
+
+Constance Rouffet - rouffetc@stanford.edu
+
 Ashley Ramirez - ashlecr3@uci.edu
 
-Daly Wettermark - 
+Daly Wettermark - dalyw@stanford.edu
 
 ## Acknowledgements

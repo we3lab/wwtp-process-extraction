@@ -73,23 +73,6 @@
       "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix"]
     }
   },
-  "Fixed Film": {
-    "Trickling Filter": {
-      "alt_names": ["Biofilter", "Fixed Film Reactor", "Trickling Filt"],
-      "alt_names_case_sensitive": ["TF"],
-      "cwns_processes": []
-    },
-    "Rotating Biological Contactor": {
-      "alt_names": ["Rotating Biological Contactor"],
-      "alt_names_case_sensitive": ["RBC"],
-      "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors", "Package Plant, Rotating Biological Contractor (RBC)", "Rotating Biological Contractors"]
-    },
-    "Anaerobic Filter": {
-      "alt_names": ["Anaerobic Filt"],
-      "alt_names_case_sensitive": [],
-      "cwns_processes": []
-    }
-  },
   "Lagoon": {
     "Facultative Lagoon": {
       "alt_names": ["Facultative Lagoon", "Facultative Pond"],
@@ -142,7 +125,7 @@
         "Unspecified BNR": {
           "alt_names": ["Nutrient Removal", "Biological Nutrient Removal"],
           "alt_names_case_sensitive": ["BNR"],
-          "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal (BNR) - Aeration", "Phosphorus Removal, Biological", "Biological Nutrient Removal", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)"]
+          "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal (BNR) - Aeration", "Phosphorus Removal, Biological", "Biological Nutrient Removal", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media"]
         }      
     },
     "Chemical Nutrient Removal": {
@@ -160,19 +143,48 @@
   },
   "Filtration": {
     "Secondary Filtration": {
-      "alt_names": ["Sand Filter", "Disc Filter", "Activated Bio-Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter", "Rapid Sand Filter", "Slow Sand Filter", "Cloth Filter", "Membrane Filter", "Secondary Microstrainer"],
+      "alt_names": ["Secondary Filtration", "Secondary Filter", "Secondary Microstrainer"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": []
-    },
-    "Tertiary Filtration": {
-      "alt_names": ["Sand Filter", "Disc Filter", "Activated Bio-Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter", "Rapid Sand Filter", "Slow Sand Filter", "Cloth Filter", "Membrane Filter"],
-      "alt_names_case_sensitive": [],
-      "cwns_processes": []
+      "cwns_processes": ["Microstrainer, Secondary"]
     },
     "Media Filtration": {
-      "alt_names": ["Cloth Media", "Media Filt", "Mixed Media Filter"],
+      "alt_names": ["Media Filter", "Cloth Filter", "Cloth Media", "Media Filt", "Mixed Media Filter", "Sand Filter", "Rapid Sand Filter", "Slow Sand Filter"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": []
+      "cwns_processes": ["Filter (Gravity Sand Beds, single media)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Filter, Rock", "Filter (Sand-Recirculating)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)", "Filter (Gravity Sand Beds, single media)"]
+    },
+    "Biofiltration": {
+      "Biologically Active Filtration": {
+        "alt_names": ["Activated Bio-Filter"],
+        "alt_names_case_sensitive": ["BAF"],
+        "cwns_processes": ["Filter (Activated Bio-)"]
+      },
+      "Fixed Film": {
+        "Trickling Filter": {
+          "alt_names": ["Biofilter", "Trickling Filt"],
+          "alt_names_case_sensitive": ["TF"],
+          "cwns_processes": ["Trickling Filter, Biofilter", "Trickling Filter, Other Media", "Trickling Filter, Redwood Slats", "Trickling Filter, Plastic Media", "Trickling Filter, Rock Media", "Filter, Mixed Media", "Filter, Rapid Sand", "Filter, Slow Sand"]
+        },
+        "Rotating Biological Contactor": {
+          "alt_names": ["Rotating Biological Contactor"],
+          "alt_names_case_sensitive": ["RBC"],
+          "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors", "Package Plant, Rotating Biological Contractor (RBC)", "Rotating Biological Contractors"]
+        },
+        "Anaerobic Filter": {
+          "alt_names": ["Anaerobic Filt"],
+          "alt_names_case_sensitive": [],
+          "cwns_processes": []
+        },
+        "Membrane Aerated Biofilm Reactor": {
+          "alt_names": ["Membrane Aerated Biofilm Reactor"],
+          "alt_names_case_sensitive": ["MABR"],
+          "cwns_processes": []
+        },
+        "Unspecified FFR":{
+          "alt_names": ["Fixed Film Reactor"],
+          "alt_names_case_sensitive": ["FFR"],
+          "cwns_processes": ["Reactor (Fixed Film)"]
+        }
+      }
     },
     "Membrane Process": {
       "Nanofiltration": {
@@ -209,20 +221,16 @@
         "alt_names_case_sensitive": ["MBR"],
         "cwns_processes": ["Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)"]
       },
-      "Membrane Aerated Biofilm Rioreactor": {
-        "alt_names": ["Membrane Aerated Biofilm Reactor"],
-        "alt_names_case_sensitive": ["MABR"]
-      },
       "Unspecified Membrane Process": {
-        "alt_names": ["Membrane Process"],
+        "alt_names": ["Membrane Process", "Membrane Filter"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Membrane Process (Other)", "Membrane Process (Dialysis)"]
       }
     },
     "Unspecified Filtration": {
-      "alt_names": ["Filt"],
+      "alt_names": ["Disc Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter"],
       "alt_names_case_sensitive": ["MF"],
-      "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)"]
+      "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure", "Filter"]
     }
   },
   "Nature Based Solutions": {

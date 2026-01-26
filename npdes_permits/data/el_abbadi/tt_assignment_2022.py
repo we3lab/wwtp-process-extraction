@@ -150,27 +150,27 @@ wwtps['BIOGAS_EL_2022'] = 0
 wwtps.loc[((wwtps['BIOGASELEC_WERF'] + wwtps['BIOGAS_DOE_2022']) > 0), 'BIOGAS_EL_2022'] = 1
 
 #read in unit processes from the 2022 CWNS
-up2022 = pd.read_csv('data/cwns/2022/UNIT_PROCESSES.csv', dtype = {"CWNS_ID" : str})
-up2022.rename(columns = {'CWNS_ID':'CWNS_NUM'}, inplace = True)
+# up2022 = pd.read_csv('data/cwns/2022/UNIT_PROCESSES.csv', dtype = {"CWNS_ID" : str})
+# up2022.rename(columns = {'CWNS_ID':'CWNS_NUM'}, inplace = True)
 
-#add a leading zero to CWNS ids with a length less than 11 to ensure proper merge
-up2022['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up2022['CWNS_NUM']]
+# #add a leading zero to CWNS ids with a length less than 11 to ensure proper merge
+# up2022['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up2022['CWNS_NUM']]
 
 #change formatting of 2022 unit process names to match that of prior years
 #note: 'Biological Treatment, Other' was manually corrected to be more specific. 'Chemical N Removal' was assumed to be roughly the same energy intensity as 'Chemical P removal'
-upnames_2022 = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_NAMES_2022.csv')
-up2022 = pd.merge(left = up2022, right = upnames_2022, how = 'left', left_on = 'UNIT_PROCESS', right_on = '2022_UNIT_PROCESS_NAME')
+# upnames_2022 = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_NAMES_2022.csv')
+# up2022 = pd.merge(left = up2022, right = upnames_2022, how = 'left', left_on = 'UNIT_PROCESS', right_on = '2022_UNIT_PROCESS_NAME')
 
-#filter to relevant columns and rename to match the formatting of old unit process dataframes
-up2022 = up2022[['CWNS_NUM','FINAL_UNIT_PROCESS_NAME','EXISTING_FLAG','PLANNED_FLAG']]
-up2022.rename(columns = {'EXISTING_FLAG':'PRES_IND','PLANNED_FLAG':'PROJ_IND'}, inplace = True)
-up2022.loc[up2022['PRES_IND'] == 'Y', 'PRES_IND'] = 1
-up2022.loc[up2022['PRES_IND'] == 'N', 'PRES_IND'] = 0
-up2022.loc[pd.isna(up2022['PRES_IND']), 'PRES_IND'] = 0
-up2022.loc[up2022['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
-up2022.loc[up2022['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
-up2022.loc[pd.isna(up2022['PROJ_IND']), 'PROJ_IND'] = 0
-up2022['REPORT_YEAR'] = 2022
+# #filter to relevant columns and rename to match the formatting of old unit process dataframes
+# up2022 = up2022[['CWNS_NUM','FINAL_UNIT_PROCESS_NAME','EXISTING_FLAG','PLANNED_FLAG']]
+# up2022.rename(columns = {'EXISTING_FLAG':'PRES_IND','PLANNED_FLAG':'PROJ_IND'}, inplace = True)
+# up2022.loc[up2022['PRES_IND'] == 'Y', 'PRES_IND'] = 1
+# up2022.loc[up2022['PRES_IND'] == 'N', 'PRES_IND'] = 0
+# up2022.loc[pd.isna(up2022['PRES_IND']), 'PRES_IND'] = 0
+# up2022.loc[up2022['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
+# up2022.loc[up2022['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
+# up2022.loc[pd.isna(up2022['PROJ_IND']), 'PROJ_IND'] = 0
+# up2022['REPORT_YEAR'] = 2022
 
 #read in unit processs reported in the 2004, 2008, and 2012 releases of CWNS
 up2012 = pd.read_csv(f'{INPUT_DATA_DIR}/2012_SUMMARY_UNIT_PROCESS.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
@@ -202,7 +202,8 @@ up_old.loc[up_old['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
 up_old.loc[up_old['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
 
 #join 2022 unit process list and old unit process list
-uplist_all = pd.concat([up2022, up_old], axis = 0)
+# uplist_all = pd.concat([up2022, up_old], axis = 0)
+uplist_all = up_old
 
 #sort by CWNS ID and reporting year
 uplist_all.sort_values(by = ['CWNS_NUM','REPORT_YEAR'], ascending = True, inplace = True)

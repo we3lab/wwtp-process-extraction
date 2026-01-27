@@ -1,12 +1,17 @@
-# Adapted from Date: Abigayle Hodson, Abigayle_Hodson@lbl.gov
-# https://github.com/jiananf2/US_WWTP_GHG/tree/main/treatment_train_assignment/input_data
-# Publication https://eartharxiv.org/repository/view/7980/
+# Adapted from https://github.com/jiananf2/US_WWTP_GHG/tree/main/treatment_train_assignment/input_data
+# By Abigayle Hodson, Abigayle_Hodson@lbl.gov
+# Publication: https://eartharxiv.org/repository/view/7980/
 
 import pandas as pd
 import numpy as np
+import os
+
+# Change working directory to `data` folder
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Use local input data from el_abbadi/input_data directory
-INPUT_DATA_DIR = "data/el_abbadi/input_data"
+INPUT_DATA_DIR = os.path.join("data", "el_abbadi", "input")
+OUTPUT_DATA_DIR = os.path.join("data", "el_abbadi", "output")
 
 # FROM SOURCE with changes to data path
 def create_wwtp_inventory():
@@ -15,6 +20,7 @@ def create_wwtp_inventory():
     Returns:
       wwtps_all = dataframe containing the active wwtps and relevant characteristics (ie. location, flow rate, and nutrient removal flags) for 2022
   '''
+  print(os.getcwd())
   #upload facility flow rates from 2022 CWNS
   flow = pd.read_csv(f'{INPUT_DATA_DIR}/FLOW_2022.csv', dtype = {'CWNS_ID':str})
 
@@ -150,32 +156,32 @@ wwtps['BIOGAS_EL_2022'] = 0
 wwtps.loc[((wwtps['BIOGASELEC_WERF'] + wwtps['BIOGAS_DOE_2022']) > 0), 'BIOGAS_EL_2022'] = 1
 
 #read in unit processes from the 2022 CWNS
-up2022 = pd.read_csv('data/cwns/2022/UNIT_PROCESSES.csv', dtype = {"CWNS_ID" : str})
-up2022.rename(columns = {'CWNS_ID':'CWNS_NUM'}, inplace = True)
+# up2022 = pd.read_csv('data/cwns/2022/UNIT_PROCESSES.csv', dtype = {"CWNS_ID" : str})
+# up2022.rename(columns = {'CWNS_ID':'CWNS_NUM'}, inplace = True)
 
-#add a leading zero to CWNS ids with a length less than 11 to ensure proper merge
-up2022['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up2022['CWNS_NUM']]
+# #add a leading zero to CWNS ids with a length less than 11 to ensure proper merge
+# up2022['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up2022['CWNS_NUM']]
 
 #change formatting of 2022 unit process names to match that of prior years
 #note: 'Biological Treatment, Other' was manually corrected to be more specific. 'Chemical N Removal' was assumed to be roughly the same energy intensity as 'Chemical P removal'
-upnames_2022 = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_NAMES_2022.csv')
-up2022 = pd.merge(left = up2022, right = upnames_2022, how = 'left', left_on = 'UNIT_PROCESS', right_on = '2022_UNIT_PROCESS_NAME')
+# upnames_2022 = pd.read_csv(f'{INPUT_DATA_DIR}/UNIT_PROCESS_NAMES_2022.csv')
+# up2022 = pd.merge(left = up2022, right = upnames_2022, how = 'left', left_on = 'UNIT_PROCESS', right_on = '2022_UNIT_PROCESS_NAME')
 
-#filter to relevant columns and rename to match the formatting of old unit process dataframes
-up2022 = up2022[['CWNS_NUM','FINAL_UNIT_PROCESS_NAME','EXISTING_FLAG','PLANNED_FLAG']]
-up2022.rename(columns = {'EXISTING_FLAG':'PRES_IND','PLANNED_FLAG':'PROJ_IND'}, inplace = True)
-up2022.loc[up2022['PRES_IND'] == 'Y', 'PRES_IND'] = 1
-up2022.loc[up2022['PRES_IND'] == 'N', 'PRES_IND'] = 0
-up2022.loc[pd.isna(up2022['PRES_IND']), 'PRES_IND'] = 0
-up2022.loc[up2022['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
-up2022.loc[up2022['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
-up2022.loc[pd.isna(up2022['PROJ_IND']), 'PROJ_IND'] = 0
-up2022['REPORT_YEAR'] = 2022
+# #filter to relevant columns and rename to match the formatting of old unit process dataframes
+# up2022 = up2022[['CWNS_NUM','FINAL_UNIT_PROCESS_NAME','EXISTING_FLAG','PLANNED_FLAG']]
+# up2022.rename(columns = {'EXISTING_FLAG':'PRES_IND','PLANNED_FLAG':'PROJ_IND'}, inplace = True)
+# up2022.loc[up2022['PRES_IND'] == 'Y', 'PRES_IND'] = 1
+# up2022.loc[up2022['PRES_IND'] == 'N', 'PRES_IND'] = 0
+# up2022.loc[pd.isna(up2022['PRES_IND']), 'PRES_IND'] = 0
+# up2022.loc[up2022['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
+# up2022.loc[up2022['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
+# up2022.loc[pd.isna(up2022['PROJ_IND']), 'PROJ_IND'] = 0
+# up2022['REPORT_YEAR'] = 2022
 
 #read in unit processs reported in the 2004, 2008, and 2012 releases of CWNS
-up2012 = pd.read_csv(f'{INPUT_DATA_DIR}/2012_SUMMARY_UNIT_PROCESS.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
-up2008 = pd.read_csv(f'{INPUT_DATA_DIR}/2008_SUMMARY_UNIT_PROCESS.csv',dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
-up2004 = pd.read_csv(f'{INPUT_DATA_DIR}/2004_Unit_Processes.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding = 'latin1')
+up2012 = pd.read_csv(f'{INPUT_DATA_DIR}/2012_SUMMARY_UNIT_PROCESS.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding='latin1', on_bad_lines='warn')
+up2008 = pd.read_csv(f'{INPUT_DATA_DIR}/2008_SUMMARY_UNIT_PROCESS.csv',dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding='latin1')
+up2004 = pd.read_csv(f'{INPUT_DATA_DIR}/2004_Unit_Processes.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding='latin1')
 
 #aggregate 2004, 2008, and 2012 unit process lists
 up_old = pd.concat([up2012, up2008,up2004], axis = 0)
@@ -202,7 +208,8 @@ up_old.loc[up_old['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
 up_old.loc[up_old['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
 
 #join 2022 unit process list and old unit process list
-uplist_all = pd.concat([up2022, up_old], axis = 0)
+# uplist_all = pd.concat([up2022, up_old], axis = 0)
+uplist_all = up_old
 
 #sort by CWNS ID and reporting year
 uplist_all.sort_values(by = ['CWNS_NUM','REPORT_YEAR'], ascending = True, inplace = True)
@@ -235,74 +242,8 @@ uplist_eicodes = uplist_recent.merge(up_eicodes[['FINAL_UNIT_PROCESS_NAME','WERF
 #create column to indicate if a unit process was present in 2022
 uplist_eicodes['2022_MIN_IND'] = uplist_eicodes['PRES_IND']
 
-#manual corrections to cumulative unit process list (Christina Polcuch, 2023) for large facilities that were initially assigned multiple treatment trains
-#here, we conducted manual verification of unit processes for selected facilities using publicly available information. Relevant unit processes were updated accordingly in the unit process list, and the note "Corrected based on manual check of large facilities with multiple treatment train assignments (2023)" was added in the UP_ID_NOTE column.
-
-# REMOVED manual edits to the list 
-# #fix Lewiston, ME; no nutrient removal
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '23000011001') & ((uplist_eicodes['WERF_CODE'] == 'AS-A2O')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '23000011001') & ((uplist_eicodes['WERF_CODE'] == 'AS-A2O')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '23000011001') & ((uplist_eicodes['WERF_CODE'] == 'AS-A2O')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
-# #fix Brockton, MA; no TF, no incineration
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '25000024001') & ((uplist_eicodes['WERF_CODE'] == 'TF')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '25000024001') & ((uplist_eicodes['WERF_CODE'] == 'TF')), 'PROJ_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '25000024001') & ((uplist_eicodes['WERF_CODE'] == 'TF')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '25000024001') & ((uplist_eicodes['WERF_CODE'] == 'MHI')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '25000024001') & ((uplist_eicodes['WERF_CODE'] == 'MHI')), 'PROJ_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '25000024001') & ((uplist_eicodes['WERF_CODE'] == 'MHI')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
-# #fix GLWA plants; no phosphorus or nutrient removal
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '26000569001') & ((uplist_eicodes['WERF_CODE'] == 'AS-A2O')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '26000569001') & ((uplist_eicodes['WERF_CODE'] == 'AS-A2O')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '26000569001') & ((uplist_eicodes['WERF_CODE'] == 'AS-A2O')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
-# #fix WY WWTP; no trickling filter
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '26000334001') & ((uplist_eicodes['WERF_CODE'] == 'TF')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '26000334001') & ((uplist_eicodes['WERF_CODE'] == 'TF')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '26000334001') & ((uplist_eicodes['WERF_CODE'] == 'TF')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
-# #fix Mcalpine Creek WWTP; no BNIT, LAGOON_AER, NIT, or TF; add biogas utilization
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'BNIT')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'BNIT')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'BNIT')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'LAGOON_AER')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'LAGOON_AER')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'LAGOON_AER')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'NIT')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'NIT')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'NIT')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'TF')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'TF')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '37006001002') & ((uplist_eicodes['WERF_CODE'] == 'TF')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# wwtps.loc[wwtps['CWNS_NUM'] == '37006001002', 'BIOGAS_EL_2022'] = 1
-
-# #fix NEORSD Westerly WWTP; no AND, AS, or CHEM-P
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'AND')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'AND')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'AND')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'AS')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'AS')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'AS')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'CHEM-P')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'CHEM-P')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '39001666003') & ((uplist_eicodes['WERF_CODE'] == 'CHEM-P')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
-# #fix Hopewell Regional WWTP; no FBI, add MHI
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '51000238001') & ((uplist_eicodes['WERF_CODE'] == 'FBI')), '2022_MIN_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '51000238001') & ((uplist_eicodes['WERF_CODE'] == 'FBI')), 'PRES_IND'] = 0
-# uplist_eicodes.loc[(uplist_eicodes['CWNS_NUM'] == '51000238001') & ((uplist_eicodes['WERF_CODE'] == 'FBI')), 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-# hopewell_idx = uplist_eicodes[uplist_eicodes['CWNS_NUM'] == '51000238001'].index.max()
-# hopewell_add = pd.Series({'CWNS_NUM': '51000238001', 'WERF_CODE': 'MHI', '2022_MIN_IND': 1, 'PRES_IND': 1, 'FINAL_UNIT_PROCESS_NAME': 'Biosolids Incineration, Multiple Hearth', 'UP_ID_NOTE': 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'}).to_frame().T
-# uplist_eicodes = pd.concat([uplist_eicodes.iloc[:hopewell_idx], hopewell_add, uplist_eicodes.iloc[hopewell_idx:]], ignore_index=True)
-
-# #fix Arlington, CO WPCP; add LIME
-# arlington_idx = uplist_eicodes[uplist_eicodes['CWNS_NUM'] == '51000319001'].index.max()
-# arlington_add = pd.Series({'CWNS_NUM': '51000319001', 'WERF_CODE': 'LIME', '2022_MIN_IND': 1, 'PRES_IND': 1, 'FINAL_UNIT_PROCESS_NAME': 'Biosolids Lime Stabilization', 'UP_ID_NOTE': 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'}).to_frame().T
-# uplist_eicodes = pd.concat([uplist_eicodes.iloc[:arlington_idx], arlington_add, uplist_eicodes.iloc[arlington_idx:]], ignore_index=True)
-
 #manual updates to add and remove lagoons (Christina Polcuch, 2023)
-#here, we confirmed the presence of lagoons at facilities larger than 10 MGD using publicly available information
+# here, we confirmed the presence of lagoons at facilities larger than 10 MGD using publicly available information
 
 #import list of lagoons to add from EPA lagoon inventory and manual checks
 lagoon_add = pd.read_csv(f'{INPUT_DATA_DIR}/cwns_lagoon_add_ttrains_info.csv', dtype = {'CWNS_NUM':str})
@@ -361,21 +302,6 @@ disposal_2022.drop_duplicates(subset = 'CWNS_NUM', inplace = True, ignore_index 
 #drop unit processes that do not have an associated WERF code, as these are not necessary to form treatment train assignments
 uplist_eicodes.dropna(subset = 'WERF_CODE', inplace = True)
 
-#manual check for nutrient removal (Christina Polcuch, 2023)
-#for facilities where the cumulative unit process list was revised based on publicly available information, correct the nutrient removal flags in the main wwtps dataframe to remain consistent with uplist_eicodes
-
-# #fix Lewiston, ME; remove nutrient removal
-# wwtps.loc[wwtps['CWNS_NUM'] == '23000011001', 'PRES_NITROGEN_REMOVAL'] = 0
-# wwtps.loc[wwtps['CWNS_NUM'] == '23000011001', 'PRES_PHOSPHOROUS_REMOVAL'] = 0
-# wwtps.loc[wwtps['CWNS_NUM'] == '23000011001', 'PRES_AMMONIA_REMOVAL'] = 0
-# uplist_eicodes.loc[uplist_eicodes['CWNS_NUM'] == '23000011001', 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
-# #fix GLWA plants; no phosphorus or nutrient removal yet
-# wwtps.loc[wwtps['CWNS_NUM'] == '26000569001', 'PRES_NITROGEN_REMOVAL'] = 0
-# wwtps.loc[wwtps['CWNS_NUM'] == '26000569001', 'PRES_PHOSPHOROUS_REMOVAL'] = 0
-# wwtps.loc[wwtps['CWNS_NUM'] == '26000569001', 'PRES_AMMONIA_REMOVAL'] = 0
-# uplist_eicodes.loc[uplist_eicodes['CWNS_NUM'] == '26000569001', 'UP_ID_NOTE'] = 'Corrected based on manual check of large facilities with multiple treatment train assignments (2023)'
-
 #create table with manually corrected wwtps to later add UP_ID_NOTE column to treatment train assignment dataframe
 manual_check_ups = uplist_eicodes[['CWNS_NUM','UP_ID_NOTE']]
 manual_check_ups = manual_check_ups.dropna()
@@ -418,4 +344,4 @@ unit_processes_df = unit_processes_df.drop('CWNS_ID', axis=1)
 unit_processes_df = unit_processes_df.rename(columns={'CWNS_NUM': 'CWNS_ID'})
 
 # Save the DataFrame
-unit_processes_df.to_csv('npdes_permits/output/unit_processes_by_facility.csv', index=False)
+unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility.csv"), index=False)

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-Compare processes between `output/2025-10-31/cwns_process_presence.csv` and
-`output/2025-10-31/unit_processes_v2.csv` (or `unit_processes.csv` if v2 missing).
+Compare processes between CWNS unit_processes_by_facility.csv (mapped to taxonomy)
+and NPDES unit_processes.csv.
 
-Matches rows by `Agency` and `Facility_Name` (normalized), then compares the set
-of processes marked as present/planned in the CWNS-derived file vs the unit
-processes file.
+Uses unit_processes_by_facility.csv directly (filtered to CA, matched by permit number),
+then compares the set of processes marked as present vs the unit processes file.
 
 Outputs:
  - output/2025-10-31/compare_cwns_unitprocesses_detailed.csv : per-match detailed rows
@@ -17,21 +16,35 @@ from collections import defaultdict
 
 BASE = os.path.dirname(__file__)
 OUTDIR = os.path.join(BASE, 'output', '2025-10-31')
-CWNS_PATH = os.path.join(OUTDIR, 'cwns_process_presence.csv')
-UNIT_V2 = os.path.join(OUTDIR, 'unit_processes_v2.csv')
-UNIT = os.path.join(OUTDIR, 'unit_processes.csv')
-
-if os.path.exists(UNIT_V2):
-    UNIT_PATH = UNIT_V2
-elif os.path.exists(UNIT):
-    UNIT_PATH = UNIT
-else:
-    raise SystemExit('No unit_processes_v2.csv or unit_processes.csv found in output folder')
+UNIT_PATH = os.path.join(OUTDIR, 'unit_processes.csv')
+CWNS_PATH = os.path.join(BASE, 'output', 'unit_processes_by_facility.csv')
+SITE_DATA = os.path.join(OUTDIR, 'site_data.csv')
 
 os.makedirs(OUTDIR, exist_ok=True)
 
-cwns = pd.read_csv(CWNS_PATH, dtype=str).fillna('')
+# Load NPDES text extraction results
 unit = pd.read_csv(UNIT_PATH, dtype=str).fillna('')
+
+# Load CWNS data (already mapped to taxonomy by el_abbadi_tt_assignment.py)
+cwns_all = pd.read_csv(CWNS_PATH, dtype=str).fillna('')
+
+# Filter CWNS to California only
+cwns_ca = cwns_all[cwns_all['STATE_CODE'] == 'CA'].copy()
+print(f'CWNS CA facilities: {len(cwns_ca)}')
+
+# Load site_data to get Agency/Facility_Name for CWNS matching
+site_df = pd.read_csv(SITE_DATA, dtype=str).fillna('')
+site_df['NPDES_No'] = site_df['NPDES_No'].astype(str).str.strip()
+
+# Match CWNS to site_data by permit number
+cwns_ca['PERMIT_NUMBER'] = cwns_ca['PERMIT_NUMBER'].astype(str).str.strip()
+cwns = cwns_ca.merge(
+    site_df[['NPDES_No', 'Agency', 'Facility_Name']],
+    left_on='PERMIT_NUMBER',
+    right_on='NPDES_No',
+    how='inner'
+)
+print(f'CWNS matched to NPDES: {len(cwns)}')
 
 # normalize keys
 def norm(s):
@@ -45,10 +58,10 @@ cwns_map = {k:df for k, df in cwns.groupby('_key')}
 unit_map = {k:df for k, df in unit.groupby('_key')}
 
 # Determine process columns for each file (exclude meta)
-meta_cwns = {'CWNS Number','Permit Number_x','Agency','Facility_Name','PDF_File','_key'}
+meta_cwns = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'NPDES_No', 'Agency', 'Facility_Name', '_key'}
 proc_cols_cwns = [c for c in cwns.columns if c not in meta_cwns]
 
-meta_unit = {'AGENCY_NAME','FACILITY_NAME','PERMIT_NUMBER'}
+meta_unit = {'AGENCY_NAME','FACILITY_NAME','PERMIT_NUMBER', '_key'}
 proc_cols_unit = [c for c in unit.columns if c not in meta_unit]
 
 # We'll iterate over keys present in either set
@@ -70,7 +83,8 @@ for k in all_keys:
     if crow is not None:
         for p in proc_cols_cwns:
             v = str(crow.get(p, '')).strip().lower()
-            if v in {'present','planned','present_and_future','present_and_planned'} or v.startswith('present') or v=='planned':
+            # CWNS data uses numeric 0/1; treat any non-zero as present
+            if v not in {'', '0', '0.0', 'nan'}:
                 gt_set.add(p)
     else:
         no_gt += 1

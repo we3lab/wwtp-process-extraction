@@ -1,12 +1,9 @@
-import PyPDF2
 from PyPDF2 import PdfReader
-from pathlib import Path
 import re
 import os
 import csv
-import glob
 import json
-from datetime import datetime
+from utils import get_all_keys
 
 DATE_FOLDER = '2025-10-31'
 
@@ -176,59 +173,8 @@ def extract_permit_sections(pdf_path):
         return None
 
 
-def get_all_keys(processes_dict):
-    """Gets all keys from dictionary for CSV headers"""
-    processes = []
-    for process_name, details in processes_dict.items():
-        if isinstance(details, dict):
-            if 'alt_names' in details and details['alt_names']:
-                processes.append(process_name)
-            else:
-                processes.extend(get_all_keys(details))
-    return processes
-
-
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
-    """Function that finds all unit process keywords"""
-    sub_category_found = False
-    for process_name, details in processes_dict.items():
-        if isinstance(details, dict):
-            if 'alt_names' in details:
-                if process_name not in results:
-                    results[process_name] = 0
-                for i, alt_name in enumerate(details['alt_names']):
-                    # legacy format: parallel list of flags (Y/N)
-                    case_sensitive = None
-                    if 'alt_names_case_sensitive' in details and i < len(details['alt_names_case_sensitive']):
-                        case_sensitive = details['alt_names_case_sensitive'][i]
-
-                    # support either legacy flag-list or new-list-of-case-sensitive-names
-                    if isinstance(case_sensitive, str) and case_sensitive.upper() == "Y":
-                        found = alt_name in text
-                    else:
-                        # new format: alt_names_case_sensitive is a list of names that must be matched case-sensitively
-                        cs_list = details.get('alt_names_case_sensitive', []) or []
-                        if alt_name in cs_list:
-                            found = alt_name in text
-                        else:
-                            found = alt_name.lower() in text.lower()
-                    if found:
-                        results[process_name] = 1
-                        sub_category_found = True
-                        break
-            else:
-                sub_found = search_processes_in_text(text, details, results, process_name)
-                if sub_found:
-                    sub_category_found = True
-    
-    if parent_name and sub_category_found:
-        results[parent_name] = 1
-
-    return sub_category_found
-
-
-def search_processes_in_text_v2(text, processes_dict, results, parent_name=None):
-    """Updated search that supports the new JSON structure.
+    """Search that supports the JSON structure.
 
     - `alt_names` is a list of alternative strings.
     - `alt_names_case_sensitive` is a list of alternative names that should be
@@ -263,7 +209,7 @@ def search_processes_in_text_v2(text, processes_dict, results, parent_name=None)
 
             else:
                 # Nested dictionary: recurse
-                sub_found = search_processes_in_text_v2(text, details, results, process_name)
+                sub_found = search_processes_in_text(text, details, results, process_name)
                 if sub_found:
                     sub_category_found = True
 
@@ -277,7 +223,7 @@ def main():
     """Main processing function with present/future treatment tracking"""
     
     # CSV names
-    file = f'npdes_permits/output/{DATE_FOLDER}/unit_processes_v2.csv'
+    file = f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv'
     rfr_data = f'npdes_permits/output/{DATE_FOLDER}/site_data.csv'
     
     csv_file = open(file, 'w', newline='')
@@ -285,7 +231,7 @@ def main():
     upi = csv.writer(csv_file)
     
     # Opens JSON file with keywords
-    with open('npdes_permits/data/unitprocess_keywords_v2.json', 'r') as f:
+    with open('npdes_permits/data/unitprocess_keywords.json', 'r') as f:
         keywords = json.load(f)
     
     # Directory where PDFs are stored
@@ -296,6 +242,7 @@ def main():
     facility_name=[]
     npdesNO = []
     pdfs = []
+    shared_pdfs = []
     
     # Read site data
     with open(rfr_data, 'r') as f:
@@ -304,9 +251,10 @@ def main():
             facility_name.append(line[1])
             npdesNO.append(line[2])
             pdfs.append(line[5])
+            shared_pdfs.append(line[6] if len(line) > 6 else '')
     
     # Create CSV headers - one column per process
-    headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER']
+    headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'PDF_File', 'Shared_PDF']
     all_keys = get_all_keys(keywords)
     
     # Add one column for each treatment process
@@ -355,7 +303,7 @@ def main():
                     )
         
         # Build data row
-        data_row = [agency_name[i], facility_name[i], npdesNO[i]]
+        data_row = [agency_name[i], facility_name[i], npdesNO[i], pdfs[i], shared_pdfs[i] if len(shared_pdfs) > i else '']
         
         for key in all_keys:
             is_present = present_results.get(key, 0) == 1

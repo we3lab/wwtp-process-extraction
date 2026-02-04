@@ -6,18 +6,84 @@ import os
 
 from utils import *
 
-DATE_FOLDER = '2025-10-20'
+DATE_FOLDER = '2025-10-31'
 
 COLORS = {
-    'cwns': '#8cd23c', 
-    'npdes': '#1482a5ff',
-    'npdes_present': '#1482a5ff',
-    'npdes_future': '#87CEEB'  # Light blue for future/planned
+    'cwns': '#FFD700',           # Gold for CWNS
+    'npdes': '#1482a5ff',        # Dark blue for NPDES present
+}
+
+# Hatch patterns for status values
+HATCH_PATTERNS = {
+    'present': '',               # Solid fill
+    'future': '///',             # Diagonal lines
+    'present_and_future': 'xxx'  # Cross-hatch
 }
 
 
-def append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, parent_child_mapping, current_pos):
+def build_status_mask(df, process_name, unitprocess_keywords, status_filter):
+    if process_name in df.columns:
+        series = df[process_name].astype(str).str.lower()
+        if status_filter == 'any':
+            return series.isin(['present', 'future', 'present_and_future'])
+        return series == status_filter
+    return None
+
+
+def build_binary_mask(df, process_name, unitprocess_keywords):
+    if process_name in df.columns:
+        return build_status_mask(df, process_name, unitprocess_keywords, 'any')
+    return None
+
+
+def build_cwns_presence_mask(series):
+    """Return boolean mask for CWNS presence values (numeric or string)."""
+    s = series.astype(str).str.lower()
+    numeric = pd.to_numeric(series, errors='coerce')
+    return (numeric > 0) | s.isin({'present', 'planned', 'present_and_future', 'present_and_planned'}) | s.str.startswith('present')
+
+
+def get_status_counts(process_name, unit_process_results):
+    """Extract status breakdown for a process"""
+    status_data = {'present': 0, 'future': 0, 'present_and_future': 0}
+    if process_name in unit_process_results.columns:
+        status_series = unit_process_results[process_name].astype(str).str.lower()
+        status_data['present'] = (status_series == 'present').sum()
+        status_data['future'] = (status_series == 'future').sum()
+        status_data['present_and_future'] = (status_series == 'present_and_future').sum()
+    return status_data
+
+
+def plot_npdes_status_bars(ax, pos, width, status_data, alpha=1.0):
+    """Plot stacked NPDES bars with status-based hatching"""
+    bottom = 0
+    for status in ['present', 'future', 'present_and_future']:
+        if status_data[status] > 0:
+            ax.bar(pos - width/2, status_data[status], width,
+                   bottom=bottom,
+                   color=COLORS['npdes'],
+                   hatch=HATCH_PATTERNS[status],
+                   alpha=alpha,
+                   edgecolor='black',
+                   linewidth=0.5)
+            bottom += status_data[status]
+
+
+def create_status_legend(include_cwns=True):
+    """Create legend with status and data source information"""
+    list = [
+        Patch(facecolor=COLORS['npdes'], label='NPDES (Present)'),
+        Patch(facecolor=COLORS['npdes'], hatch=HATCH_PATTERNS['future'], label='NPDES (Future)'),
+        Patch(facecolor=COLORS['npdes'], hatch=HATCH_PATTERNS['present_and_future'], label='NPDES (Present & Future)'),
+        ]
+    if include_cwns:
+        list.extend([Patch(facecolor=COLORS['cwns'], label='CWNS')])
+    return list
+
+
+def append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, parent_child_mapping, current_pos, process_names=None):
     """Append plot data for a category to the given plot_data list"""
+    child_process_set = set()
     for parent_name, child_processes in parent_child_mapping.items():
         plot_data.append({
             'Category': 'Total',
@@ -42,58 +108,85 @@ def append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, pare
                 'Position': current_pos
             })
             current_pos += 1
+            child_process_set.add(process_name)
         
+        current_pos += 0.5
+
+    if process_names:
+        for process_name in process_names:
+            if process_name in child_process_set:
+                continue
+            test_count = npdes_results_df.loc[0, process_name] if process_name in npdes_results_df.columns else 0
+            cwns_count = matching_cwns_results_df.loc[0, process_name] if process_name in matching_cwns_results_df.columns else 0
+
+            plot_data.append({
+                'Category': 'Process',
+                'Parent': None,
+                'Process': process_name,
+                'Test_Results': test_count,
+                'CWNS_Data': cwns_count,
+                'Position': current_pos
+            })
+            current_pos += 1
+
         current_pos += 0.5
         
     return current_pos
 
 
-def create_plot(plot_data, category_name, title_suffix="", figsize=(16, 6), fontsize=14, save_path=None):
-    """Create and save a comparison plot"""
+def create_status_plot(plot_data, unit_process_results, category_name, 
+                       include_cwns=True, include_legend=True,
+                       title_suffix="", figsize=(16, 6), fontsize=14, save_path=None):
     if not plot_data:
         print(f"No processes found for '{category_name}'")
         return
 
     plot_df = pd.DataFrame(plot_data)
+    
+    # Add NPDES totals and sort descending
+    plot_df['npdes_total'] = plot_df['Process'].apply(
+        lambda p: sum(get_status_counts(p, unit_process_results).values())
+    )
+
+    plot_df = plot_df[plot_df['npdes_total'] > 0]
+    if include_cwns:
+        plot_df = plot_df[(plot_df['CWNS_Data'] > 0)]
+
+    if plot_df.empty:
+        print(f"No non-zero data to plot for '{category_name}'")
+        return
+
+    plot_df = plot_df.sort_values('npdes_total', ascending=False).reset_index(drop=True)
+    plot_df['Position'] = range(len(plot_df))
+    
     fig, ax = plt.subplots(figsize=figsize)
-    width = 0.35
+    width = 0.35 if include_cwns else 0.6
 
-    for data_category in ['Total', 'Process']:
-        mask = plot_df['Category'] == data_category
-    
-        alpha = 1.0
-        if data_category == 'Process':
-            alpha = 0.5
-    
-        ax.bar(plot_df[mask]['Position'] - width/2, plot_df[mask]['Test_Results'], width,
-               color=COLORS['npdes'], alpha=alpha)
-    
-        ax.bar(plot_df[mask]['Position'] + width/2, plot_df[mask]['CWNS_Data'], width,
-               color=COLORS['cwns'], alpha=alpha)
+    # Plot bars
+    for idx, row in plot_df.iterrows():
+        status_data = get_status_counts(row['Process'], unit_process_results)
+        alpha = 0.5 if row['Category'] == 'Process' else 1.0
+        
+        plot_npdes_status_bars(ax, row['Position'], width, status_data, alpha)
+        if include_cwns:
+            ax.bar(row['Position'] + width/2, row['CWNS_Data'], width,
+                   color=COLORS['cwns'], alpha=alpha, edgecolor='black', linewidth=0.5)
 
-    all_positions = plot_df['Position'].tolist()
-    all_labels = plot_df['Process'].tolist()
-
-    bold_labels = [f"$\\bf{{{label}}}$" if is_parent_category(label, unitprocess_keywords) 
-                    else label for label in all_labels]
-
-    ax.set_xticks(all_positions)
-    ax.set_xticklabels(bold_labels, rotation=45, ha='right', fontsize=fontsize)
+    # Format axes
+    ax.set_xticks(plot_df['Position'])
+    ax.set_xticklabels(plot_df['Process'], rotation=45, ha='right', fontsize=fontsize)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
-    plot_title = f'{category_name.replace("_", " ").title()} Treatment Process Comparison{title_suffix}'
-    ax.set_title(plot_title, fontsize=18)
+    # Titles and labels
+    if include_cwns:
+        plot_title = f'{category_name.replace("_", " ").title()} Treatment Process Comparison {title_suffix}'
+        ax.set_title(plot_title, fontsize=18)
+    
     ax.set_ylabel('WWTP Count', fontsize=16)
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
 
-    legend_elements = [
-        Patch(facecolor=COLORS['cwns'], label='CWNS'),
-        Patch(facecolor=COLORS['npdes'], label='NPDES'),
-        Patch(facecolor='black', label='Process Category Total'),
-        Patch(facecolor='grey', label='Process')
-    ]
-    legend = ax.legend(handles=legend_elements, loc='upper right')
-    legend.get_texts()[2].set_weight('bold')
+    if include_legend:
+        ax.legend(handles=create_status_legend(), loc='upper right', fontsize=11)
 
     plt.subplots_adjust(bottom=0.25)
     if save_path:
@@ -119,32 +212,26 @@ def count_facilities_with_processes(processes, data_source, process_names=None, 
         # NPDES data - use new _status and _binary columns
         for process in processes:
             if status_filter:
-                # Count based on status
-                status_col = f'{process}_status'
-                if status_col in data_source.columns:
-                    if status_filter == 'any':
-                        # Count present, future, or present_and_future
-                        mask = data_source[status_col].isin(['present', 'future', 'present_and_future'])
-                    else:
-                        # Count specific status
-                        mask = data_source[status_col] == status_filter
+                mask = build_status_mask(data_source, process, unitprocess_keywords, status_filter)
+                if mask is not None:
                     facilities = data_source[mask]['PERMIT_NUMBER'].tolist()
                     facilities_with_processes.update(facilities)
             else:
-                # Count based on binary column
-                binary_col = f'{process}_binary'
-                if binary_col in data_source.columns:
-                    facilities = data_source[data_source[binary_col] == 1]['PERMIT_NUMBER'].tolist()
+                mask = build_binary_mask(data_source, process, unitprocess_keywords)
+                if mask is not None:
+                    facilities = data_source[mask]['PERMIT_NUMBER'].tolist()
                     facilities_with_processes.update(facilities)
     else:
         # CWNS data
         for process in processes:
             if process_names and process in process_names:
-                el_abbadi_codes = get_el_abbadi_code_mapping(process, unitprocess_keywords)
-                if el_abbadi_codes:
-                    for code in el_abbadi_codes:
-                        if code in matching_cwns_data.columns:
-                            facilities_with_process = matching_cwns_data[matching_cwns_data[code] > 0]['PERMIT_NUMBER'].tolist()
+                process_details = find_process_details(process, unitprocess_keywords)
+                if process_details:
+                    cwns_names = get_cwns_unit_process_names(process, process_details)
+                    for cwns_name in cwns_names:
+                        if cwns_name in matching_cwns_data.columns:
+                            mask = build_cwns_presence_mask(matching_cwns_data[cwns_name])
+                            facilities_with_process = matching_cwns_data[mask]['PERMIT_NUMBER'].tolist()
                             facilities_with_processes.update(facilities_with_process)
     
     return len(facilities_with_processes)
@@ -162,17 +249,15 @@ def process_category_data(category, unitprocess_keywords, unit_process_results, 
         status_filter: 'present', 'future', 'present_and_future', or 'any' (default)
     """
     category_keywords = unitprocess_keywords[category]
-    process_names = get_all_keys(category_keywords)
+    process_names = get_process_names_for_category(category, category_keywords)
     parent_child_mapping = get_parent_child_mapping(category_keywords)
 
     # Create NPDES results DataFrame - count based on binary columns
     npdes_results_aggregated = {}
     for process_name in process_names:
-        binary_col = f'{process_name}_binary'
-        if binary_col in unit_process_results.columns:
-            # Count facilities where binary = 1
-            count = (unit_process_results[binary_col] == 1).sum()
-            npdes_results_aggregated[process_name] = count
+        binary_mask = build_binary_mask(unit_process_results, process_name, unitprocess_keywords)
+        if binary_mask is not None:
+            npdes_results_aggregated[process_name] = int(binary_mask.sum())
         else:
             npdes_results_aggregated[process_name] = 0
     
@@ -181,12 +266,12 @@ def process_category_data(category, unitprocess_keywords, unit_process_results, 
     # Count individual processes for CWNS data
     matching_cwns_results_df = pd.DataFrame(0, index=[0], columns=process_names)
     for process_name in process_names:
-        el_abbadi_codes = get_el_abbadi_code_mapping(process_name, unitprocess_keywords)
-        if el_abbadi_codes:
-            count = 0
-            for code in el_abbadi_codes:
-                if code in matching_cwns_data.columns:
-                    count += (matching_cwns_data[code] > 0).sum()
+        process_details = find_process_details(process_name, unitprocess_keywords)
+        if process_details:
+            cwns_names = get_cwns_unit_process_names(process_name, process_details)
+            count = sum(build_cwns_presence_mask(matching_cwns_data[cwns_name]).sum()
+                       for cwns_name in cwns_names 
+                       if cwns_name in matching_cwns_data.columns)
             matching_cwns_results_df.loc[0, process_name] = count
 
     # Count parent categories for both NPDES and CWNS data
@@ -213,65 +298,6 @@ def process_category_data(category, unitprocess_keywords, unit_process_results, 
     return npdes_results_df, matching_cwns_results_df, parent_child_mapping, process_names
 
 
-def create_status_breakdown_plot(unit_process_results, process_names, category_name, save_path=None):
-    """
-    Create a plot showing breakdown of present vs future treatments
-    
-    Args:
-        unit_process_results: DataFrame with _status columns
-        process_names: List of process names to plot
-        category_name: Name of the category for title
-        save_path: Path to save the plot
-    """
-    status_counts = {
-        'present': [],
-        'future': [],
-        'present_and_future': []
-    }
-    plot_processes = []
-    
-    for process_name in process_names:
-        status_col = f'{process_name}_status'
-        if status_col in unit_process_results.columns:
-            present = (unit_process_results[status_col] == 'present').sum()
-            future = (unit_process_results[status_col] == 'future').sum()
-            both = (unit_process_results[status_col] == 'present_and_future').sum()
-            
-            # Only include processes that have at least one facility
-            if present + future + both > 0:
-                status_counts['present'].append(present)
-                status_counts['future'].append(future)
-                status_counts['present_and_future'].append(both)
-                plot_processes.append(process_name)
-    
-    if not plot_processes:
-        print(f"No status data found for '{category_name}'")
-        return
-    
-    # Create stacked bar chart
-    fig, ax = plt.subplots(figsize=(16, 6))
-    
-    x_pos = range(len(plot_processes))
-    
-    # Stack the bars
-    ax.bar(x_pos, status_counts['present'], label='Present', color=COLORS['npdes_present'])
-    ax.bar(x_pos, status_counts['future'], bottom=status_counts['present'], 
-           label='Future/Planned', color=COLORS['npdes_future'])
-    ax.bar(x_pos, status_counts['present_and_future'], 
-           bottom=[p + f for p, f in zip(status_counts['present'], status_counts['future'])],
-           label='Present & Future', color='#FFD700')  # Gold color
-    
-    ax.set_xticks(x_pos)
-    ax.set_xticklabels(plot_processes, rotation=45, ha='right', fontsize=12)
-    ax.set_ylabel('Facility Count', fontsize=14)
-    ax.set_title(f'{category_name.replace("_", " ").title()} - Present vs Future Treatments', fontsize=16)
-    ax.legend(loc='upper right')
-    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    
-    plt.subplots_adjust(bottom=0.25)
-    if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    plt.close(fig)
 
 
 # Load all required data
@@ -282,8 +308,9 @@ with open('npdes_permits/data/unitprocess_keywords.json', 'r') as f:
 categories_to_plot = list(unitprocess_keywords.keys())
 print(f"Categories: {categories_to_plot}")
 
-# Load NPDES results data from the specified date folder (NEW FORMAT)
+# Load NPDES results data from the specified date folder
 unit_process_results = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv')
+
 print(f"\n{'='*80}")
 print("DATA LOADING SUMMARY")
 print(f"{'='*80}")
@@ -356,6 +383,7 @@ all_process_names = set()
 
 for category in categories_to_plot:
     print(f"\nProcessing category: {category}")
+    safe_category = category.replace("/", "_").replace(os.sep, "_")
     
     # Process data for this category
     npdes_results_df, matching_cwns_results_df, parent_child_mapping, process_names = process_category_data(
@@ -365,26 +393,29 @@ for category in categories_to_plot:
     all_process_names.update(process_names)
     all_parent_child_mappings.update(parent_child_mapping)
 
-    # Create comparison plot (NPDES vs CWNS)
-    plot_data = []
+    plot_data = []  # for this category
     current_pos = 0
-    current_pos = append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, parent_child_mapping, current_pos)
+    current_pos = append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, parent_child_mapping, current_pos, process_names)
 
-    create_plot(
+    # Create comparison plot with CWNS bars
+    create_status_plot(
         plot_data,
-        category,
-        save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{category}_comparison.png'
-    )
-    print(f"  ✓ Saved {category}_comparison.png")
-    
-    # Create status breakdown plot (Present vs Future)
-    create_status_breakdown_plot(
         unit_process_results,
-        process_names,
         category,
-        save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{category}_status_breakdown.png'
+        include_cwns=True,
+        save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{safe_category}_comparison_with_status.png'
     )
-    print(f"  ✓ Saved {category}_status_breakdown.png")
+    print(f"  Saved {safe_category}_comparison_with_status.png")
+    
+    # Create NPDES-only status breakdown plot
+    create_status_plot(
+        plot_data,
+        unit_process_results,
+        category,
+        include_cwns=False,
+        save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{safe_category}_status_breakdown.png'
+    )
+    print(f"  Saved {safe_category}_status_breakdown.png")
     
     # Add to all categories plot
     all_categories_current_pos = append_plot_data(
@@ -392,19 +423,24 @@ for category in categories_to_plot:
         npdes_results_df, 
         matching_cwns_results_df, 
         parent_child_mapping, 
-        all_categories_current_pos
+        all_categories_current_pos,
+        process_names
     )
 
-# Create comprehensive plot with all categories
-create_plot(
-    all_categories_plot_data, 
-    'all_categories', 
+# Create comprehensive plot with all categories (with status hatching)
+all_plot_df = pd.DataFrame(all_categories_plot_data)
+create_status_plot(
+    all_categories_plot_data,
+    unit_process_results,
+    'all_categories',
+    include_cwns=True,
     title_suffix=' - All Categories',
-    figsize=(24, 8), 
+    figsize=(24, 8),
     fontsize=10,
-    save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/all_categories_comparison.png'
+    save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/all_categories_comparison_with_status.png'
 )
-print("\n✓ Comprehensive plot saved as 'all_categories_comparison.png'")
+print("\n Comprehensive plot saved as 'all_categories_comparison_with_status.png'")
+
 
 # Create matching statistics report
 print("\n" + "="*80)
@@ -427,17 +463,15 @@ total_both = 0
 
 for category in categories_to_plot:
     category_keywords = unitprocess_keywords[category]
-    process_names = get_all_keys(category_keywords)
+    process_names = get_process_names_for_category(category, category_keywords)
     
     for process_name in process_names:
-        status_col = f'{process_name}_status'
-        if status_col in unit_process_results.columns:
-            total_present += (unit_process_results[status_col] == 'present').sum()
-            total_future += (unit_process_results[status_col] == 'future').sum()
-            total_both += (unit_process_results[status_col] == 'present_and_future').sum()
+        if process_name in unit_process_results.columns:
+            total_present += (unit_process_results[process_name] == 'present').sum()
+            total_future += (unit_process_results[process_name] == 'future').sum()
+            total_both += (unit_process_results[process_name] == 'present_and_future').sum()
 
 print(f"Total process instances marked as 'present': {total_present}")
 print(f"Total process instances marked as 'future': {total_future}")
 print(f"Total process instances marked as 'present_and_future': {total_both}")
 print(f"Grand total: {total_present + total_future + total_both}")
-print("="*80)

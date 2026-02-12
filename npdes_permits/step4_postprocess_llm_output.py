@@ -4,12 +4,12 @@ import os
 from pathlib import Path
 from collections import Counter
 from rdflib import Graph, Namespace
-from helpers.utils import get_all_keys, extract_process_rules
+from helpers.utils import get_all_keys
 
 WATR = Namespace("urn:nawi-water-ontology#")
 
 # GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
-GITHUB_BASE = "https://raw.githubusercontent.com/dalyw/water-ontology/constance/ontology_to_txt/water"
+GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
 def normalize(name):
     return name.lower().replace('-', '').replace(' ', '').replace('process', '').replace('role', '')
@@ -99,22 +99,19 @@ for filename in os.listdir(input_dir):
         if i.get('Equipment'):
             secondary_equipment.add(i['Equipment'])
 
-    # Direct processes and ontology parents
+    # For direct processes and ontology parents
     for proc in processes:
         if normalize(proc) in col_lookup:
             result[col_lookup[normalize(proc)]] = 'present'
-        try:
-            for row in ontology.query(
-                "SELECT DISTINCT ?parent WHERE { ?p rdfs:subClassOf+ ?parent }",
-                initBindings={"p": WATR[f"Process-{proc}"]}
-            ):
-                parent = str(row.parent).split("#")[-1].replace("Process-", "")
-                if normalize(parent) in col_lookup:
-                    result[col_lookup[normalize(parent)]] = 'present'
-        except Exception:
-            pass
+        for row in ontology.query(
+            "SELECT DISTINCT ?parent WHERE { ?p rdfs:subClassOf+ ?parent }",
+            initBindings={"p": WATR[f"Process-{proc}"]}
+        ):
+            parent = str(row.parent).split("#")[-1].replace("Process-", "")
+            if normalize(parent) in col_lookup:
+                result[col_lookup[normalize(parent)]] = 'present'
 
-    # Inherited: trigger_roles (all required) and trigger_equipment (any)
+    # For inherited processes: trigger_roles (all required) and trigger_equipment (any)
     for col, trigger_equipment, trigger_roles in inherited_rules:
         if col not in result:
             continue
@@ -133,9 +130,11 @@ for filename in os.listdir(input_dir):
             match = True
             for role_name, bounds in role_counts_spec.items():
                 count = role_counts.get(role_name, 0)
+                # must have at least the minimum count of units with this role 
                 if 'min' in bounds and count < bounds['min']:
                     match = False
                     break
+                # must not exceed the max count of units with this role
                 if 'max' in bounds and count > bounds['max']:
                     match = False
                     break
@@ -151,4 +150,4 @@ df = pd.DataFrame(results)
 id_cols = ['PERMIT_NUMBER', 'Agency', 'Facility_Name']
 cols = id_cols + [c for c in columns if c in df.columns]
 df[cols].to_csv(output_csv, index=False)
-print(f"Saved {len(results)} facilities → {output_csv}")
+print(f"Saved {len(results)} facilities")

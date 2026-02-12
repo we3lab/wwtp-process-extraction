@@ -4,7 +4,7 @@ from matplotlib.patches import Patch
 import pandas as pd
 import os
 
-from utils import *
+from helpers.utils import *
 
 DATE_FOLDER = '2025-10-31'
 
@@ -43,6 +43,26 @@ def build_cwns_presence_mask(series):
     return (numeric > 0) | s.isin({'present', 'planned', 'present_and_future', 'present_and_planned'}) | s.str.startswith('present')
 
 
+def get_process_names_for_category(category_name, category_keywords):
+    """Return process names for a category, including leaf categories with alt_names."""
+    if isinstance(category_keywords, dict) and 'alt_names' in category_keywords:
+        return [category_name]
+    return get_all_keys(category_keywords)
+
+
+def get_parent_child_mapping(processes_dict):
+    """Create mapping of parent processes to their child processes"""
+    mapping = {}
+    for parent_name, parent_details in processes_dict.items():
+        if isinstance(parent_details, dict) and 'alt_names' not in parent_details:
+            # This is a parent category
+            children = [child_name for child_name, child_details in parent_details.items()
+                       if isinstance(child_details, dict) and 'alt_names' in child_details]
+            if children:
+                mapping[parent_name] = children
+    return mapping
+
+    
 def get_status_counts(process_name, unit_process_results):
     """Extract status breakdown for a process"""
     status_data = {'present': 0, 'future': 0, 'present_and_future': 0}

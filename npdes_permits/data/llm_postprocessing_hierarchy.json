@@ -1,0 +1,81 @@
+{
+  "mutually_exclusive_processes": [
+    {
+      "priority": 1,
+      "process_name": "A2O",
+      "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+      "role_counts": {
+        "Anaerobic": {"min": 1},
+        "Anoxic": {"min": 1},
+        "Aerobic": {"min": 1}
+      }
+    },
+    {
+      "priority": 2,
+      "process_name": "MLE",
+      "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+      "role_counts": {
+        "Anaerobic": {"max": 0},
+        "Anoxic": {"min": 1},
+        "Aerobic": {"min": 1}
+      }
+    },
+    {
+      "priority": 3,
+      "process_name": "AO",
+      "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+      "role_counts": {
+        "Anaerobic": {"max": 0},
+        "Anoxic": {"min": 1},
+        "Aerobic": {"min": 1}
+      }
+    },
+    {
+      "priority": 4,
+      "process_name": "CAS",
+      "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+      "role_counts": {
+        "Anaerobic": {"max": 0},
+        "Anoxic": {"max": 0},
+        "Aerobic": {"min": 1}
+      }
+    },
+    {
+      "priority": 5,
+      "process_name": "Aerobic-Anoxic",
+      "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+      "role_counts": {
+        "Anaerobic": {"max": 0},
+        "Anoxic": {"min": 1},
+        "Aerobic": {"min": 1}
+      }
+    },
+    {
+      "priority": 6,
+      "process_name": "AO",
+      "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+      "role_counts": {
+        "Aerobic": {"min": 1}
+      }
+    }
+  ],
+  "inherited_processes": {
+    "Activated Sludge": {
+      "trigger_equipment": ["AerationBasin", "SequencingBatchReactor", "OxidationDitch"],
+      "trigger_roles": ["Secondary"]
+    },
+    "Nitrification": {
+      "trigger_roles": ["Secondary", "Aerobic"]
+    },
+    "Denitrification": {
+      "trigger_roles": ["Secondary", "Anoxic"]
+    },
+    "Chemical P Removal": {
+      "trigger_equipment": ["ChemicalFeedSystem"],
+      "trigger_roles": ["Secondary", "PhosphorusRemoval"]
+    },
+    "MABR": {
+      "trigger_equipment": ["MABR"]
+    }
+  }
+}

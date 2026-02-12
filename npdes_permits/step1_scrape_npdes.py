@@ -13,7 +13,7 @@ import time
 import csv
 import glob
 import pandas as pd
-from npdes_detection import detect_npdes
+from helpers.npdes_detection import detect_npdes
 
 # Function that selects options from filters
 def selection(name, text):

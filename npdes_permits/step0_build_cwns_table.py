@@ -7,7 +7,7 @@ import pandas as pd
 import os
 # WE3Lab additions
 import json
-from utils import get_all_keys, find_process_details, get_cwns_unit_process_names
+from helpers.utils import get_all_keys, find_process_details, get_cwns_unit_process_names
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))

@@ -5,10 +5,10 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Sedimentation, Primary"]
     },
-    "Secondary Clarification":{
-      "alt_names": ["Secondary Clarifier", "Secondary Clarification", "Secondary Settling","Secondary Sedimentation"],
+    "Secondary Clarification": {
+      "alt_names": ["Secondary Clarifier", "Secondary Clarification", "Secondary Settling", "Secondary Sedimentation"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Sedimentation, Secondary", "Sedimentation, Intermediate"]
+      "cwns_processes": ["Clarification, Secondary", "Clarification, Intermediate"]
     },
     "Chemical Precipitation": {
       "alt_names": ["Chemical Precipitation"],
@@ -25,7 +25,7 @@
     "alt_names": ["Screening", "Bar Screen", "Fine Screen", "Mechanical Screen", "Fine Screening", "Microstrainer"],
     "alt_names_case_sensitive": [],
     "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"]
-  }, 
+  },
   "Grit Removal": {
     "alt_names": ["Grit Removal", "Grit Chambers", "Grit Chamber"],
     "alt_names_case_sensitive": [],
@@ -67,10 +67,16 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Activated Sludge, Step Aeration"]
     },
-    "Unspecified CAS": {
-      "alt_names": ["CAS", "activated sludge", "Conventional Activated Sludge"],
+    "ActivatedSludge": {
+      "alt_names": ["CAS", "Activated Sludge", "Conventional Activated Sludge"],
       "alt_names_case_sensitive": ["CAS"],
-      "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Activated Sludge, With Biological Denitrification"]
+      "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Activated Sludge, With Biological Denitrification"],
+      "inference_mutually_exclusive": {
+        "priority": 4,
+        "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+        "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"max": 0}, "Aerobic": {"min": 1}}
+      },
+      "inference_inherited": {"trigger_equipment": ["AerationBasin", "SequencingBatchReactor", "OxidationDitch"], "trigger_roles": ["Secondary"]}
     }
   },
   "Lagoon": {
@@ -97,48 +103,73 @@
     "Unspecified Lagoon": {
       "alt_names": ["Lagoon", "Pond", "Other Lagoon"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Other", "Lagoon", "Duckweed (Lemna)"]
+      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)"]
     }
   },
   "Nutrient Removal": {
     "Biological Nutrient Removal": {
-        "AO": {
-          "alt_names": ["Anoxic-Oxic", "A/O", "Anoxic Oxic"],
-          "alt_names_case_sensitive": ["AO"],
-          "cwns_processes": []
-        },
-        "A2O": {
-          "alt_names": ["Anaerobic-Anoxic-Oxic", "A/A/O", "Anaerobic Anoxic Oxic"],
-          "alt_names_case_sensitive": ["A2O"],
-          "cwns_processes": ["Activated Sludge, Anaerobic/Anoxic/Oxic", "Activated Sludge, Anaerobic/Anoxic"]
-        },
-        "MLE": {
-          "alt_names": ["MLE", "Modified Ludzack-Ettinger", "Modified Ludzack Ettinger"],
-          "alt_names_case_sensitive": ["MLE"],
-          "cwns_processes": []
-        },
-        "Bardenpho": {
-          "alt_names": ["Bardenpho", "Five-Stage Bardenpho", "Four-Stage Bardenpho", "5-Stage Bardenpho", "4-Stage Bardenpho"],
-          "alt_names_case_sensitive": [],
-          "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"]
-        },
-        "Unspecified BNR": {
-          "alt_names": ["Nutrient Removal", "Biological Nutrient Removal"],
-          "alt_names_case_sensitive": ["BNR"],
-          "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal (BNR) - Aeration", "Phosphorus Removal, Biological", "Biological Nutrient Removal", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification"]
+      "AO": {
+        "alt_names": ["Anoxic-Oxic", "A/O", "Anoxic Oxic", "Anoxic-Aerobic", "Anoxic Aerobic"],
+        "alt_names_case_sensitive": ["AO"],
+        "cwns_processes": [],
+        "inference_mutually_exclusive": [
+          {"priority": 3, "equipment_types": ["AerationBasin", "Reactor", "Basin"], "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}},
+          {"priority": 6, "equipment_types": ["AerationBasin", "Reactor", "Basin"], "role_counts": {"Aerobic": {"min": 1}}}
+        ]
+      },
+      "A2O": {
+        "alt_names": ["Anaerobic-Anoxic-Oxic", "A/A/O", "Anaerobic Anoxic Oxic"],
+        "alt_names_case_sensitive": ["A2O"],
+        "cwns_processes": ["Activated Sludge, Anaerobic/Anoxic/Oxic", "Activated Sludge, Anaerobic/Anoxic"],
+        "inference_mutually_exclusive": {
+          "priority": 1,
+          "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+          "role_counts": {"Anaerobic": {"min": 1}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
         }
+      },
+      "MLE": {
+        "alt_names": ["MLE", "Modified Ludzack-Ettinger", "Modified Ludzack Ettinger"],
+        "alt_names_case_sensitive": ["MLE"],
+        "cwns_processes": [],
+        "inference_mutually_exclusive": {
+          "priority": 2,
+          "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+          "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
+        }
+      },
+      "UCT": {
+        "alt_names": ["University of Cape Town"],
+        "alt_names_case_sensitive": ["UCT"],
+        "cwns_processes": []
+      },
+      "FourStageBardenpho": {
+        "alt_names": ["4-Stage Bardenpho", "Four-Stage Bardenpho"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"]
+      },
+      "FiveStageBardenpho": {
+        "alt_names": ["Bardenpho"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"]
+      },
+      "Unspecified BNR": {
+        "alt_names": ["Nutrient Removal", "Biological Nutrient Removal"],
+        "alt_names_case_sensitive": ["BNR"],
+        "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal", "Phosphorus Removal, Biological", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification"]
+      }
     },
     "Chemical Nutrient Removal": {
-        "Chemical N Removal": {
-          "alt_names": ["Chemical Nitrogen Removal", "Ammonia Stripping", "Breakpoint Chlorination"],
-          "alt_names_case_sensitive": [],
-          "cwns_processes": ["Disinfection, Breakpoint Chlorination"]
-        },
-        "Chemical P Removal": {
-          "alt_names": ["Chemical Phosphorus Removal", "Phosphorus Precipitation", "Chemical Phosphorus Precipitation"],
-          "alt_names_case_sensitive": [],
-          "cwns_processes": ["Phosphorus Removal, Chemical", "Phosphorus Removal, Chemical "]
-        }
+      "Chemical N Removal": {
+        "alt_names": ["Chemical Nitrogen Removal", "Ammonia Stripping", "Breakpoint Chlorination"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Disinfection, Breakpoint Chlorination"]
+      },
+      "Chemical P Removal": {
+        "alt_names": ["Chemical Phosphorus Removal", "Phosphorus Precipitation", "P Precipitation"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Phosphorus Removal, Chemical"],
+        "inference_inherited": {"trigger_equipment": ["ChemicalFeedSystem"], "trigger_roles": ["Secondary", "PhosphorusRemoval"]}
+      }
     }
   },
   "Filtration": {
@@ -150,7 +181,7 @@
     "Media Filtration": {
       "alt_names": ["Media Filter", "Cloth Filter", "Cloth Media", "Media Filt", "Mixed Media Filter", "Sand Filter", "Rapid Sand Filter", "Slow Sand Filter"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Filter (Gravity Sand Beds, single media)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Filter, Rock", "Filter (Sand-Recirculating)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)", "Filter (Gravity Sand Beds, single media)"]
+      "cwns_processes": ["Filter (Gravity Sand Beds, single media)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Filter, Rock", "Filter (Sand-Recirculating)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)"]
     },
     "Biofiltration": {
       "Biologically Active Filtration": {
@@ -167,7 +198,7 @@
         "Rotating Biological Contactor": {
           "alt_names": ["Rotating Biological Contactor"],
           "alt_names_case_sensitive": ["RBC"],
-          "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors", "Package Plant, Rotating Biological Contractor (RBC)", "Rotating Biological Contractors"]
+          "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors"]
         },
         "Anaerobic Filter": {
           "alt_names": ["Anaerobic Filt"],
@@ -177,9 +208,10 @@
         "Membrane Aerated Biofilm Reactor": {
           "alt_names": ["Membrane Aerated Biofilm Reactor"],
           "alt_names_case_sensitive": ["MABR"],
-          "cwns_processes": []
+          "cwns_processes": [],
+          "inference_inherited": {"trigger_equipment": ["MABR"]}
         },
-        "Unspecified FFR":{
+        "Unspecified FFR": {
           "alt_names": ["Fixed Film Reactor"],
           "alt_names_case_sensitive": ["FFR"],
           "cwns_processes": ["Reactor (Fixed Film)"]
@@ -230,7 +262,7 @@
     "Unspecified Filtration": {
       "alt_names": ["Disc Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter"],
       "alt_names_case_sensitive": ["MF"],
-      "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure", "Filter"]
+      "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure"]
     }
   },
   "Nature Based Solutions": {
@@ -247,7 +279,7 @@
     "Unspecified Nature-Based Solution": {
       "alt_names": ["nature-based", "nature based", "green infrastructure"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Natural (Large Area)"]
+      "cwns_processes": ["Lagoon, Other"]
     }
   },
   "UV-AOP": {
@@ -328,9 +360,9 @@
       "cwns_processes": ["Biosolids Lime Stabilization", "Lime Treatment, Single Stage Primary", "Lime Treatment, Single Stage Tertiary", "Lime Treatment, Two Stage Primary", "Lime Treatment, Two Stage Tertiary"]
     },
     "Neutralization": {
-        "alt_names": ["Neutralization", "pH Adjustment"],
-        "alt_names_case_sensitive": [],
-        "cwns_processes": ["Neutralization"]
+      "alt_names": ["Neutralization", "pH Adjustment"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": ["Neutralization"]
     },
     "Unspecified Chemical Addition": {
       "alt_names": ["Chemical Addition", "Chemical Feed"],
@@ -360,7 +392,7 @@
       "Mechanical Dewatering": {
         "alt_names": ["Mechanical Dewatering", "Belt Press", "Belt Filter Press", "Rotary Drum", "Screw Press"],
         "alt_names_case_sensitive": ["RDF"],
-        "cwns_processes": ["Mechanical Dewatering", "Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Biosolids Mechanical Dewatering (Other)"]
+        "cwns_processes": ["Mechanical Dewatering", "Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Biosolids Mechanical Dewatering (Other)"]
       },
       "Centrifuge": {
         "alt_names": ["Centrifuge", "Centrifugal Dewatering"],
@@ -414,7 +446,7 @@
       "Unspecified Disposal": {
         "alt_names": ["Biosolids Disposal"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Biosolids Disposal (Other)", "Biosolids Vibration", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids Wet Air Oxidation", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility"]
+        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Biosolids Disposal (Other)", "Biosolids Wet Air Oxidation", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility"]
       }
     },
     "Incineration": {

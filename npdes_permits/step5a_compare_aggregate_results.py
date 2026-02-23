@@ -7,7 +7,7 @@ import urllib.parse
 
 from helpers.utils import *
 
-DATE_FOLDER = '2025-10-31'
+DATE_FOLDER = '2026-2-18'
 
 COLORS = {
     'cwns': '#FFD700',           # Gold for CWNS
@@ -50,19 +50,6 @@ def get_process_names_for_category(category_name, category_keywords):
         return [category_name]
     return [name for name, _, _ in extract_leaves(category_keywords)]
 
-
-def get_parent_child_mapping(processes_dict):
-    """Create mapping of parent processes to their child processes"""
-    mapping = {}
-    for parent_name, parent_details in processes_dict.items():
-        if isinstance(parent_details, dict) and 'alt_names' not in parent_details:
-            # This is a parent category
-            children = [child_name for child_name, child_details in parent_details.items()
-                       if isinstance(child_details, dict) and 'alt_names' in child_details]
-            if children:
-                mapping[parent_name] = children
-    return mapping
-
     
 def get_status_counts(process_name, unit_process_results):
     """Extract status breakdown for a process"""
@@ -88,18 +75,6 @@ def plot_npdes_status_bars(ax, pos, width, status_data, alpha=1.0):
                    edgecolor='black',
                    linewidth=0.5)
             bottom += status_data[status]
-
-
-def create_status_legend(include_cwns=True):
-    """Create legend with status and data source information"""
-    list = [
-        Patch(facecolor=COLORS['npdes'], label='NPDES (Present)'),
-        Patch(facecolor=COLORS['npdes'], hatch=HATCH_PATTERNS['future'], label='NPDES (Future)'),
-        Patch(facecolor=COLORS['npdes'], hatch=HATCH_PATTERNS['present_and_future'], label='NPDES (Present & Future)'),
-        ]
-    if include_cwns:
-        list.extend([Patch(facecolor=COLORS['cwns'], label='CWNS')])
-    return list
 
 
 def append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, parent_child_mapping, current_pos, process_names=None):
@@ -207,7 +182,14 @@ def create_status_plot(plot_data, unit_process_results, category_name,
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
 
     if include_legend:
-        ax.legend(handles=create_status_legend(), loc='upper right', fontsize=11)
+        list = [
+            Patch(facecolor=COLORS['npdes'], label='NPDES (Present)'),
+            Patch(facecolor=COLORS['npdes'], hatch=HATCH_PATTERNS['future'], label='NPDES (Future)'),
+            Patch(facecolor=COLORS['npdes'], hatch=HATCH_PATTERNS['present_and_future'], label='NPDES (Present & Future)'),
+            ]
+        if include_cwns:
+            list.extend([Patch(facecolor=COLORS['cwns'], label='CWNS')])
+        ax.legend(handles=list, loc='upper right', fontsize=11)
 
     plt.subplots_adjust(bottom=0.25)
     if save_path:
@@ -271,7 +253,14 @@ def process_category_data(category, unitprocess_keywords, unit_process_results, 
     """
     category_keywords = unitprocess_keywords[category]
     process_names = get_process_names_for_category(category, category_keywords)
-    parent_child_mapping = get_parent_child_mapping(category_keywords)
+    parent_child_mapping = {}
+    for parent_name, parent_details in category_keywords.items():
+        if isinstance(parent_details, dict) and 'alt_names' not in parent_details:
+            # This is a parent category
+            children = [child_name for child_name, child_details in parent_details.items()
+                       if isinstance(child_details, dict) and 'alt_names' in child_details]
+            if children:
+                parent_child_mapping[parent_name] = children
 
     # Create NPDES results DataFrame - count based on binary columns
     npdes_results_aggregated = {}
@@ -317,7 +306,6 @@ def process_category_data(category, unitprocess_keywords, unit_process_results, 
         matching_cwns_results_df[parent_name] = cwns_parent_count
     
     return npdes_results_df, matching_cwns_results_df, parent_child_mapping, process_names
-
 
 
 
@@ -508,27 +496,6 @@ COLORS_GT = {
     'cwns': '#FFD700',       # Gold for CWNS
 }
 
-# TODO: make consistent with our chosen process names
-SHEET_TO_CWNS_COL = {
-    'Screening': 'Screening/Microstrainer',
-    'Flow Equalization': 'Equalization',
-    'Primary Clarifier': 'Primary Clarification',
-    'Secondary Clarifier': 'Secondary Clarification',
-    'Pure Oxygen Activated Sludge': 'Pure Oxygen',
-    'Unspecified CAS': 'CAS',
-    'Biofilter Trickling Filter': 'Trickling Filter',
-    'Rotation Biological Contractor': 'Rotating Biological Contactor',
-    'Unspecified TF': 'Unspecified FFR',
-    'Biological N Removal': 'Unspecified BNR',
-    'Biological P Removal': 'Unspecified BNR',
-    'Tertiary Filtration': 'Secondary Filtration',
-    'Biologically Active Filter': 'Biologically Active Filtration',
-    'Sedimentation': 'Unspecified Clarification',
-    'Other Chemical Addition': 'Unspecified Chemical Addition',
-    'Land Treatment': 'Land Application',
-    'Lime Treatment': 'Lime Addition',
-}
-
 
 def load_google_sheet_csv(sheet_id, sheet_name):
     """Load a Google Sheet tab as a CSV DataFrame."""
@@ -593,7 +560,7 @@ def create_ground_truth_plot(process_counts, save_path, title='Ground Truth Comp
 
 
 # Load the two Google Sheet tabs
-pfd_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From Process Flow Diagrams / Websites')
+pfd_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - Ground Truth')
 npdes_text_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
 
 print(f"PFD sheet: {len(pfd_df)} facilities")
@@ -634,12 +601,11 @@ for col in all_sheet_process_cols:
     text_count = count_yes(text_common[col]) if col in text_common.columns else 0
 
     # Map sheet column to CWNS column name
-    cwns_col = SHEET_TO_CWNS_COL.get(col, col)
-    if cwns_col in cwns_common.columns:
-        cwns_count = int(build_cwns_presence_mask(cwns_common[cwns_col]).sum())
-    else:
-        cwns_count = 0
-
+    # cwns_col = SHEET_TO_CWNS_COL.get(col, col)
+    # if cwns_col in cwns_common.columns:
+    print(col)
+    print(cwns_common.keys())
+    cwns_count = int(build_cwns_presence_mask(cwns_common[col]).sum())
     process_counts.append({
         'process': col,
         'pfd': pfd_count,
@@ -696,9 +662,9 @@ for permit in sorted(common_permits):
     # Build CWNS set (map sheet column names to CWNS column names)
     cwns_set = set()
     for col in all_sheet_process_cols:
-        cwns_col = SHEET_TO_CWNS_COL.get(col, col)
-        if cwns_col in cwns_common.columns:
-            val = cwns_row.get(cwns_col, '')
+        # cwns_col = SHEET_TO_CWNS_COL.get(col, col)
+        if col in cwns_common.columns:
+            val = cwns_row.get(col, '')
             s = str(val).strip().lower()
             try:
                 if float(val) > 0:

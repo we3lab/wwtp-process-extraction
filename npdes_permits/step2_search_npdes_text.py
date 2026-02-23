@@ -5,7 +5,7 @@ import csv
 import json
 from helpers.utils import extract_leaves
 
-DATE_FOLDER = '2025-10-31'
+DATE_FOLDER = '2026-2-18'
 
 
 def normalize_text(text):
@@ -225,7 +225,7 @@ def main():
     # CSV names
     file = f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv'
     rfr_data = f'npdes_permits/output/{DATE_FOLDER}/site_data.csv'
-    
+    os.makedirs(os.path.dirname(file), exist_ok=True)
     csv_file = open(file, 'w', newline='')
     ps_file = open(rfr_data, 'r', newline='')
     upi = csv.writer(csv_file)
@@ -256,6 +256,7 @@ def main():
     # Create CSV headers - one column per process
     headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'PDF_File', 'Shared_PDF']
     leaves = extract_leaves(keywords)
+    all_keys = [name for name, _, _ in leaves]
 
     # Add one column for each treatment process
     headers.extend(name for name, _, _ in leaves)

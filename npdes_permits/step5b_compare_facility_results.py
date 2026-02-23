@@ -7,15 +7,15 @@ Uses unit_processes_by_facility.csv directly (filtered to CA, matched by permit 
 then compares the set of processes marked as present vs the unit processes file.
 
 Outputs:
- - output/2025-10-31/compare_cwns_unitprocesses_detailed.csv : per-match detailed rows
- - output/2025-10-31/compare_cwns_unitprocesses_summary.json : aggregated metrics
+ - output/2025-2-18/compare_cwns_unitprocesses_detailed.csv : per-match detailed rows
+ - output/2025-2-18/compare_cwns_unitprocesses_summary.json : aggregated metrics
 """
 import os, json
 import pandas as pd
 from collections import defaultdict
 
 BASE = os.path.dirname(__file__)
-OUTDIR = os.path.join(BASE, 'output', '2025-10-31')
+OUTDIR = os.path.join(BASE, 'output', '2025-2-18')
 UNIT_PATH = os.path.join(OUTDIR, 'unit_processes.csv')
 CWNS_PATH = os.path.join(BASE, 'output', 'unit_processes_by_facility.csv')
 SITE_DATA = os.path.join(OUTDIR, 'site_data.csv')

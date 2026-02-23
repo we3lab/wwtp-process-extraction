@@ -50,7 +50,7 @@ for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerati
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
 
-site_df = pd.read_csv('npdes_permits/output/2025-10-31/site_data.csv', dtype=str).fillna('')
+site_df = pd.read_csv('npdes_permits/output/2026-2-18/site_data.csv', dtype=str).fillna('')
 pdf_map = {row['PDF_File'].replace('.pdf', ''): {
     'PERMIT_NUMBER': row['NPDES_No'],
     'Agency': row['Agency'],

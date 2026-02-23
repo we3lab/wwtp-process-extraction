@@ -1,4 +1,10 @@
 {
+  "Comminution": {
+    "alt_names": ["grinding", "grinder"],
+    "alt_names_case_sensitive": [],
+    "cwns_processes": ["Comminution", "Grinder Pump- Low Pressure Sewer"],
+    "ontology_triggers": ["Process-Comminution"]
+  },
   "Clarification": {
     "Primary Clarification": {
       "alt_names": ["Primary Clarifier", "Primary Clarification", "Primary Settling", "Primary Sedimentation"],
@@ -67,21 +73,21 @@
       "alt_names": ["Pure Oxygen Activated Sludge", "Pure Oxygen AS", "POAS"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Activated Sludge, Pure Oxygen"],
-      "ontology_triggers": ["Process-PureOxygen"]
+      "ontology_triggers": ["Process-ActivatedSludge", "Substance-HighPurityOxygen"]
     },
     "Extended Aeration": {
       "alt_names": ["Extended Aeration", "Extended Aeration AS"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Activated Sludge, Extended Aeration"],
-      "ontology_triggers": ["Process-ExtendedAeration"]
+      "ontology_triggers": ["Process-ActivatedSludge", "Role-Extended"]
     },
     "Stepfeed": {
       "alt_names": ["Stepfeed", "Step Aeration", "Step Feed"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Activated Sludge, Step Aeration"],
-      "ontology_triggers": ["Process-StepfeedActivatedSludge"]
+      "ontology_triggers": ["Process-ActivatedSludge", "Role-StepFeed"]
     },
-    "Unspecified Activated Sludge": {
+    "Unspecified CAS": {
       "alt_names": ["Activated Sludge", "Conventional Activated Sludge"],
       "alt_names_case_sensitive": ["CAS"],
       "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Activated Sludge, With Biological Denitrification"],
@@ -99,31 +105,34 @@
       "alt_names": ["Facultative Lagoon", "Facultative Pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Facultative"],
-      "ontology_triggers": ["Equipment-FacultativeLagoon"]
+      "ontology_triggers": ["Equipment-Pond", "Role-Aerobic", "Role-Anaerobic"],
+      "priority": 1
     },
     "Aerated Lagoon": {
       "alt_names": ["Aerated Lagoon", "Aerated Pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Aerated"],
-      "ontology_triggers": ["Equipment-Lagoon", "Role-Aerobic"]
+      "ontology_triggers": ["Equipment-Pond", "Role-Aerobic"],
+      "priority": 2
     },
     "Anaerobic Lagoon": {
       "alt_names": ["Anaerobic Lagoon", "Anaerobic Pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Anaerobic"],
-      "ontology_triggers": ["Equipment-Lagoon", "Role-Anaerobic"]
+      "ontology_triggers": ["Equipment-Pond", "Role-Anaerobic"],
+      "priority": 2
     },
     "Polishing Lagoon": {
       "alt_names": ["Polishing Lagoon", "Polishing Pond", "Maturation Pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Polishing"],
-      "ontology_triggers": ["Equipment-Lagoon", "Role-Tertiary"]
+      "ontology_triggers": ["Equipment-Pond", "Role-Tertiary"]
     },
     "Unspecified Lagoon": {
       "alt_names": ["Lagoon", "Pond", "Other Lagoon"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)"],
-      "ontology_triggers": ["Equipment-Lagoon"],
+      "ontology_triggers": ["Equipment-Pond"],
       "priority": 1000
     }
   },
@@ -167,13 +176,13 @@
         "cwns_processes": [],
         "ontology_triggers": ["Process-UCT"]
       },
-      "FourStageBardenpho": {
+      "Four Stage Bardenpho": {
         "alt_names": ["4-Stage Bardenpho", "Four-Stage Bardenpho"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"],
         "ontology_triggers": ["Process-FourStageBardenpho"]
       },
-      "FiveStageBardenpho": {
+      "Five Stage Bardenpho": {
         "alt_names": ["Bardenpho"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"],
@@ -509,13 +518,13 @@
         "alt_names": ["Stabilization Pond"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Pond, Stabilization"],
-        "ontology_triggers": ["Equipment-Lagoon", "Process-Stabilization"]
+        "ontology_triggers": ["Equipment-Pond", "Process-Stabilization"]
       },
       "Biosolids Lagoon": {
         "alt_names": ["Biosolids Lagoon", "Sludge Lagoon"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Lagoon"],
-        "ontology_triggers": ["Equipment-Lagoon", "Role-Solids"]
+        "ontology_triggers": ["Equipment-Pond", "Role-Solids"]
       },
       "Biosolids Landfill": {
         "alt_names": ["Landfill", "Monofil", "Trenching"],

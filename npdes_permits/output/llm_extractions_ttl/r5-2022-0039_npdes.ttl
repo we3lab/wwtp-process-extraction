@@ -1,0 +1,135 @@
+@prefix ex: <http://example.org/facility/> .
+@prefix s223: <http://data.ashrae.org/standard223#> .
+@prefix watr: <urn:nawi-water-ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:obs_r5-2022-0039_npdes_0 a s223:ObservationEvent ;
+    watr:basedOnSentence "The screening consists of a Parkson HLS500 Hycor Helisieve automatic screen to remove inorganics larger than 1/4\"" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Pretreatment ;
+    watr:observesEquipment watr:Screen ;
+    watr:observesProcess watr:Process-Screening ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_1 a s223:ObservationEvent ;
+    watr:basedOnSentence "grit removal occurs in a manually scraped grit channel" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Pretreatment ;
+    watr:observesEquipment watr:GritChamber ;
+    watr:observesProcess watr:Process-Sedimentation ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_10 a s223:ObservationEvent ;
+    watr:basedOnSentence "Secondary waste activated sludge is stored in an aerated day tank (with emergency backup storage in the old anaerobic digester)" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Aerobic,
+        watr:Role-Storage ;
+    watr:observesEquipment watr:Tank ;
+    watr:observesProcess watr:Process-Aeration ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_11 a s223:ObservationEvent ;
+    watr:basedOnSentence "Secondary waste activated sludge is stored in an aerated day tank (with emergency backup storage in the old anaerobic digester)" ;
+    watr:hasConfidenceScore "9"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Storage ;
+    watr:observesEquipment watr:AnaerobicDigester ;
+    watr:observesProcess watr:Process-AnaerobicDigestion ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_12 a s223:ObservationEvent ;
+    watr:basedOnSentence "The waste activated sludge is stored in an aerated day tank, dewatered by a belt filter press, and hauled to Ostrom Road Landfill" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:observesEquipment watr:DewateringUnit ;
+    watr:observesProcess watr:Process-Dewatering,
+        watr:Process-Filtration ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_13 a s223:ObservationEvent ;
+    watr:basedOnSentence "The matter will be settled by completion of the project to install covers on the chlorine contact basins, filtration process flow modulation, and equalization basin repairs" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "planned" ;
+    watr:observesEquipment watr:ChlorinationBasin ;
+    watr:observesProcess watr:Process-Chlorination ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_2 a s223:ObservationEvent ;
+    watr:basedOnSentence "Magnesium hydroxide is added via a variable speed auger to maintain optimal pH in the nitrification/denitrification activated sludge process" ;
+    watr:hasConfidenceScore "9"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:observesProcess watr:Process-pHAdjustment ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_3 a s223:ObservationEvent ;
+    watr:basedOnSentence "Influent flow emergency storage or equalization is provided, as needed, in the original primary clarifier no longer needed with the new treatment process" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Equalization,
+        watr:Role-Storage ;
+    watr:observesEquipment watr:Basin ;
+    watr:observesProcess watr:Process-Equalization ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_4 a s223:ObservationEvent ;
+    watr:basedOnSentence "Advanced secondary treatment is provided by two parallel nitrification/denitrification activated sludge processes (two basins and two secondary clarifiers)" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Secondary ;
+    watr:observesEquipment watr:Basin ;
+    watr:observesProcess watr:Process-ActivatedSludge,
+        watr:Process-Denitrification,
+        watr:Process-Nitrification ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_5 a s223:ObservationEvent ;
+    watr:basedOnSentence "Advanced secondary treatment is provided by two parallel nitrification/denitrification activated sludge processes (two basins and two secondary clarifiers)" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Secondary ;
+    watr:observesEquipment watr:SedimentationTank ;
+    watr:observesProcess watr:Process-Sedimentation ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_6 a s223:ObservationEvent ;
+    watr:basedOnSentence "Tertiary filtration is provided by a disk filter and sand filter in series operation (filters may also be run in parallel operation during high flow events or either filter may be isolated for maintenance)" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Tertiary ;
+    watr:observesEquipment watr:Filter ;
+    watr:observesProcess watr:Process-Filtration ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_7 a s223:ObservationEvent ;
+    watr:basedOnSentence "wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination" ;
+    watr:hasConfidenceScore "8"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:observesProcess watr:Process-ChemicalAddition ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_8 a s223:ObservationEvent ;
+    watr:basedOnSentence "Effluent disinfection is achieved using chlorine" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Posttreatment ;
+    watr:observesEquipment watr:ChlorinationUnit ;
+    watr:observesProcess watr:Process-Chlorination,
+        watr:Process-Disinfection ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:obs_r5-2022-0039_npdes_9 a s223:ObservationEvent ;
+    watr:basedOnSentence "The final effluent is dechlorinated prior to discharge to Deer Creek" ;
+    watr:hasConfidenceScore "10"^^xsd:float ;
+    watr:hasImplementationStatus "present" ;
+    watr:hasRole watr:Role-Posttreatment ;
+    watr:observesProcess watr:Process-Dechlorination ;
+    watr:partOfExtraction ex:extraction_r5-2022-0039_npdes_20260204 .
+
+ex:extraction_r5-2022-0039_npdes_20260204 a watr:ProcessExtraction ;
+    watr:extractionMethod "anthropic-claude-3.5" ;
+    watr:extractionTimestamp "2026-02-04T16:43:47.773085"^^xsd:dateTime ;
+    watr:extractsFacility ex:facility_CA0079901 .
+

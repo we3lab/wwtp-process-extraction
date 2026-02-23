@@ -319,6 +319,7 @@ with open('data/unitprocess_keywords.json', 'r') as f:
 
 # Build reverse mapping: CWNS process name -> list of defined names
 leaves = extract_leaves(unitprocess_keywords)
+all_keys = [name for name, _, _ in leaves]
 cwns_to_taxonomy = {}
 for process_name, _, _ in leaves:
     details = find_process_details(process_name, unitprocess_keywords)
@@ -360,12 +361,12 @@ unit_processes_df = pd.pivot_table(
 unit_processes_df = unit_processes_df.reset_index()
 
 # Ensure all taxonomy columns exist (even if no facilities have that process)
-for proc in process_cols:
+for proc in all_keys:
     if proc not in unit_processes_df.columns:
         unit_processes_df[proc] = 0
 
 # Convert numeric presence to 'present'/'0' for consistency with NPDES output
-for proc in process_cols:
+for proc in all_keys:
     unit_processes_df[proc] = unit_processes_df[proc].apply(
         lambda v: 'present' if str(v).strip().lower() not in {'', '0', '0.0', 'nan'} else '0'
     )

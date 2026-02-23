@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import os
+import requests
 from pathlib import Path
 from collections import Counter
 from rdflib import Graph, Namespace, RDFS
@@ -45,13 +46,20 @@ for name, details, _ in leaves:
             multi_rules.append((name, rule))
 multi_rules.sort(key=lambda r: r[1]['priority'])
 
-# also save .ttl files to npdes_permits/data/ontology_cache folder
+# Download .ttl files, cache individually, then merge into ontology graph
 for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerationkinds.ttl", "substances.ttl"]:
     try:
-        ontology.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
-        ontology.serialize(f"npdes_permits/data/ontology_cache/{filename}", format="turtle")
+        single = Graph()
+        single.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
+        single.serialize(out_dir / filename, format="turtle")
+        ontology += single
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
+# also save "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/ontology_output.txt"
+
+response = requests.get(f"https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/ontology_output.txt")
+with open("npdes_permits/data/ontology_cache/ontology_output.txt", "w") as f:
+    f.write(response.text)
 
 site_df = pd.read_csv('npdes_permits/output/2025-10-31/site_data.csv', dtype=str).fillna('')
 pdf_map = {row['PDF_File'].replace('.pdf', ''): {

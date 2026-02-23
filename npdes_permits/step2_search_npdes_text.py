@@ -3,7 +3,7 @@ import re
 import os
 import csv
 import json
-from helpers.utils import get_all_keys
+from helpers.utils import extract_leaves
 
 DATE_FOLDER = '2025-10-31'
 
@@ -255,10 +255,10 @@ def main():
     
     # Create CSV headers - one column per process
     headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'PDF_File', 'Shared_PDF']
-    all_keys = get_all_keys(keywords)
-    
+    leaves = extract_leaves(keywords)
+
     # Add one column for each treatment process
-    headers.extend(all_keys)
+    headers.extend(name for name, _, _ in leaves)
     
     upi.writerow(headers)
     

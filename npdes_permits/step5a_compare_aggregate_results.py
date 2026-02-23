@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import pandas as pd
 import os
+import urllib.parse
 
 from helpers.utils import *
 
@@ -47,7 +48,7 @@ def get_process_names_for_category(category_name, category_keywords):
     """Return process names for a category, including leaf categories with alt_names."""
     if isinstance(category_keywords, dict) and 'alt_names' in category_keywords:
         return [category_name]
-    return get_all_keys(category_keywords)
+    return [name for name, _, _ in extract_leaves(category_keywords)]
 
 
 def get_parent_child_mapping(processes_dict):
@@ -495,3 +496,294 @@ print(f"Total process instances marked as 'present': {total_present}")
 print(f"Total process instances marked as 'future': {total_future}")
 print(f"Total process instances marked as 'present_and_future': {total_both}")
 print(f"Grand total: {total_present + total_future + total_both}")
+
+
+# GROUND TRUTH COMPARISON: PFD vs NPDES Text vs CWNS
+
+GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
+
+COLORS_GT = {
+    'pfd': '#2ca02c',        # Green for Process Flow Diagrams (ground truth)
+    'npdes_text': '#1482a5ff',  # Dark blue for NPDES Text (manual)
+    'cwns': '#FFD700',       # Gold for CWNS
+}
+
+# TODO: make consistent with our chosen process names
+SHEET_TO_CWNS_COL = {
+    'Screening': 'Screening/Microstrainer',
+    'Flow Equalization': 'Equalization',
+    'Primary Clarifier': 'Primary Clarification',
+    'Secondary Clarifier': 'Secondary Clarification',
+    'Pure Oxygen Activated Sludge': 'Pure Oxygen',
+    'Unspecified CAS': 'CAS',
+    'Biofilter Trickling Filter': 'Trickling Filter',
+    'Rotation Biological Contractor': 'Rotating Biological Contactor',
+    'Unspecified TF': 'Unspecified FFR',
+    'Biological N Removal': 'Unspecified BNR',
+    'Biological P Removal': 'Unspecified BNR',
+    'Tertiary Filtration': 'Secondary Filtration',
+    'Biologically Active Filter': 'Biologically Active Filtration',
+    'Sedimentation': 'Unspecified Clarification',
+    'Other Chemical Addition': 'Unspecified Chemical Addition',
+    'Land Treatment': 'Land Application',
+    'Lime Treatment': 'Lime Addition',
+}
+
+
+def load_google_sheet_csv(sheet_id, sheet_name):
+    """Load a Google Sheet tab as a CSV DataFrame."""
+    url = (f'https://docs.google.com/spreadsheets/d/{sheet_id}'
+           f'/gviz/tq?tqx=out:csv&sheet={urllib.parse.quote(sheet_name)}')
+    df = pd.read_csv(url, dtype=str)
+    # Drop unnamed trailing columns
+    df = df.loc[:, ~df.columns.str.startswith('Unnamed')]
+    df = df[df['NPDES_No'] != 'NPDES_No'].reset_index(drop=True)
+    return df
+
+
+def count_yes(series):
+    """Count YES/PLANNED values in a sheet column (case-insensitive)."""
+    s = series.fillna('').astype(str).str.strip().str.upper()
+    return (s.isin(['YES', 'PLANNED'])).sum()
+
+
+def create_ground_truth_plot(process_counts, save_path, title='Ground Truth Comparison',
+                             figsize=(20, 7), fontsize=12):
+    """
+    Create a grouped bar chart comparing PFD, NPDES Text, and CWNS counts.
+
+    process_counts: list of dicts with keys 'process', 'pfd', 'npdes_text', 'cwns'
+    """
+    df = pd.DataFrame(process_counts)
+    # Keep only processes where at least one source has a count > 0
+    df = df[(df['pfd'] > 0) | (df['npdes_text'] > 0) | (df['cwns'] > 0)]
+    if df.empty:
+        print("No populated processes to plot.")
+        return
+    # Sort by PFD count descending
+    df = df.sort_values('pfd', ascending=False).reset_index(drop=True)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    x = range(len(df))
+    width = 0.25
+
+    ax.bar([i - width for i in x], df['pfd'], width,
+           color=COLORS_GT['pfd'], edgecolor='black', linewidth=0.5,
+           label='Process Flow Diagrams (Ground Truth)')
+    ax.bar(list(x), df['npdes_text'], width,
+           color=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5,
+           label='NPDES Text (Manual)')
+    ax.bar([i + width for i in x], df['cwns'], width,
+           color=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5,
+           label='CWNS')
+
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(df['process'], rotation=45, ha='right', fontsize=fontsize)
+    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    ax.set_title(title, fontsize=18)
+    ax.set_ylabel('WWTP Count', fontsize=16)
+    ax.tick_params(axis='both', which='major', labelsize=fontsize)
+    ax.legend(loc='upper right', fontsize=11)
+
+    plt.subplots_adjust(bottom=0.30)
+    if save_path:
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        print(f"  Saved {os.path.basename(save_path)}")
+    plt.close(fig)
+
+
+# Load the two Google Sheet tabs
+pfd_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From Process Flow Diagrams / Websites')
+npdes_text_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
+
+print(f"PFD sheet: {len(pfd_df)} facilities")
+print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
+
+# Determine the process columns (everything after the first 4 metadata cols)
+meta_cols = ['Agency', 'Facility_Name', 'NPDES_No', 'PDF_File']
+pfd_process_cols = [c for c in pfd_df.columns if c not in meta_cols]
+npdes_text_process_cols = [c for c in npdes_text_df.columns if c not in meta_cols]
+
+# Use PFD process columns as the canonical list (union with NPDES text if needed)
+all_sheet_process_cols = list(dict.fromkeys(pfd_process_cols + npdes_text_process_cols))
+
+# Filter to only facilities present in all three datasets (PFD, NPDES text, and CWNS)
+pfd_permits = set(pfd_df['NPDES_No'].dropna().str.strip())
+text_permits = set(npdes_text_df['NPDES_No'].dropna().str.strip())
+cwns_permits_gt = set(ca_cwns_data['PERMIT_NUMBER'].dropna().str.strip())
+common_permits = pfd_permits & text_permits & cwns_permits_gt
+
+print(f"Facilities in all 3 sources: {len(common_permits)}")
+
+# Filter each source to common facilities
+pfd_common = pfd_df[pfd_df['NPDES_No'].str.strip().isin(common_permits)].copy()
+text_common = npdes_text_df[npdes_text_df['NPDES_No'].str.strip().isin(common_permits)].copy()
+cwns_common = ca_cwns_data[ca_cwns_data['PERMIT_NUMBER'].str.strip().isin(common_permits)].copy()
+
+# Deduplicate (some sheets may have duplicate NPDES_No rows)
+pfd_common = pfd_common.drop_duplicates(subset='NPDES_No', keep='first')
+text_common = text_common.drop_duplicates(subset='NPDES_No', keep='first')
+cwns_common = cwns_common.drop_duplicates(subset='PERMIT_NUMBER', keep='first')
+
+print(f"After dedup - PFD: {len(pfd_common)}, NPDES Text: {len(text_common)}, CWNS: {len(cwns_common)}")
+
+# Build counts for each process
+process_counts = []
+for col in all_sheet_process_cols:
+    pfd_count = count_yes(pfd_common[col]) if col in pfd_common.columns else 0
+    text_count = count_yes(text_common[col]) if col in text_common.columns else 0
+
+    # Map sheet column to CWNS column name
+    cwns_col = SHEET_TO_CWNS_COL.get(col, col)
+    if cwns_col in cwns_common.columns:
+        cwns_count = int(build_cwns_presence_mask(cwns_common[cwns_col]).sum())
+    else:
+        cwns_count = 0
+
+    process_counts.append({
+        'process': col,
+        'pfd': pfd_count,
+        'npdes_text': text_count,
+        'cwns': cwns_count,
+    })
+
+# Create the comparison bar chart
+create_ground_truth_plot(
+    process_counts,
+    save_path=f'{figures_dir}/ground_truth_pfd_vs_npdes_text_vs_cwns.png',
+    title='Ground Truth: PFD vs NPDES Text (Manual) vs CWNS',
+    figsize=(24, 8),
+    fontsize=10,
+)
+
+# Print summary table
+print(f"\n{'Process':<40} {'PFD':>5} {'NPDES':>5} {'CWNS':>5}")
+print("-" * 60)
+for row in sorted(process_counts, key=lambda r: r['pfd'], reverse=True):
+    if row['pfd'] > 0 or row['npdes_text'] > 0 or row['cwns'] > 0:
+        print(f"{row['process']:<40} {row['pfd']:>5} {row['npdes_text']:>5} {row['cwns']:>5}")
+
+
+# ==============================================================================
+# PER-FACILITY COMPARISON TABLE: NPDES Text & CWNS vs Ground Truth (PFD)
+# ==============================================================================
+print("\n" + "="*80)
+print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (PFD)")
+print("="*80)
+
+
+def is_yes(val):
+    """Check if a cell value means the process is present."""
+    return str(val).strip().upper() in ('YES', 'PLANNED')
+
+
+facility_rows = []
+for permit in sorted(common_permits):
+    pfd_row = pfd_common[pfd_common['NPDES_No'].str.strip() == permit].iloc[0]
+    text_row = text_common[text_common['NPDES_No'].str.strip() == permit].iloc[0]
+    cwns_row = cwns_common[cwns_common['PERMIT_NUMBER'].str.strip() == permit].iloc[0]
+
+    facility_name = pfd_row.get('Facility_Name', permit)
+
+    # Build ground-truth set from PFD
+    gt_set = {col for col in all_sheet_process_cols
+              if col in pfd_common.columns and is_yes(pfd_row.get(col, ''))}
+
+    # Build predicted set from NPDES text
+    npdes_set = {col for col in all_sheet_process_cols
+                 if col in text_common.columns and is_yes(text_row.get(col, ''))}
+
+    # Build CWNS set (map sheet column names to CWNS column names)
+    cwns_set = set()
+    for col in all_sheet_process_cols:
+        cwns_col = SHEET_TO_CWNS_COL.get(col, col)
+        if cwns_col in cwns_common.columns:
+            val = cwns_row.get(cwns_col, '')
+            s = str(val).strip().lower()
+            try:
+                if float(val) > 0:
+                    cwns_set.add(col)
+                    continue
+            except (ValueError, TypeError):
+                pass
+            if s in ('present', 'planned', 'present_and_future', 'present_and_planned') or s.startswith('present'):
+                cwns_set.add(col)
+
+    # Compute metrics vs ground truth
+    npdes_tp = len(gt_set & npdes_set)
+    npdes_fp = len(npdes_set - gt_set)
+    npdes_fn = len(gt_set - npdes_set)
+    npdes_precision = npdes_tp / (npdes_tp + npdes_fp) if (npdes_tp + npdes_fp) else 0
+    npdes_recall = npdes_tp / (npdes_tp + npdes_fn) if (npdes_tp + npdes_fn) else 0
+    npdes_f1 = (2 * npdes_precision * npdes_recall / (npdes_precision + npdes_recall)
+                if (npdes_precision + npdes_recall) else 0)
+
+    cwns_tp = len(gt_set & cwns_set)
+    cwns_fp = len(cwns_set - gt_set)
+    cwns_fn = len(gt_set - cwns_set)
+    cwns_precision = cwns_tp / (cwns_tp + cwns_fp) if (cwns_tp + cwns_fp) else 0
+    cwns_recall = cwns_tp / (cwns_tp + cwns_fn) if (cwns_tp + cwns_fn) else 0
+    cwns_f1 = (2 * cwns_precision * cwns_recall / (cwns_precision + cwns_recall)
+               if (cwns_precision + cwns_recall) else 0)
+
+    facility_rows.append({
+        'NPDES_No': permit,
+        'Facility_Name': facility_name,
+        'GT_Count': len(gt_set),
+        'NPDES_TP': npdes_tp, 'NPDES_FP': npdes_fp, 'NPDES_FN': npdes_fn,
+        'NPDES_Precision': npdes_precision, 'NPDES_Recall': npdes_recall, 'NPDES_F1': npdes_f1,
+        'NPDES_Missed': '|'.join(sorted(gt_set - npdes_set)),
+        'NPDES_Extra': '|'.join(sorted(npdes_set - gt_set)),
+        'CWNS_TP': cwns_tp, 'CWNS_FP': cwns_fp, 'CWNS_FN': cwns_fn,
+        'CWNS_Precision': cwns_precision, 'CWNS_Recall': cwns_recall, 'CWNS_F1': cwns_f1,
+        'CWNS_Missed': '|'.join(sorted(gt_set - cwns_set)),
+        'CWNS_Extra': '|'.join(sorted(cwns_set - gt_set)),
+    })
+
+gt_comparison_df = pd.DataFrame(facility_rows)
+gt_comparison_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv'
+gt_comparison_df.to_csv(gt_comparison_csv, index=False)
+print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
+
+# Print per-facility summary
+header = (f"{'Facility':<45} {'GT':>3}  "
+          f"{'TP':>3} {'FP':>3} {'FN':>3} {'Prec':>5} {'Rec':>5} {'F1':>5}  "
+          f"{'TP':>3} {'FP':>3} {'FN':>3} {'Prec':>5} {'Rec':>5} {'F1':>5}")
+print(f"\n{'':45}       {'--- NPDES Text ---':^35}  {'------ CWNS ------':^35}")
+print(header)
+print("-" * 130)
+for r in facility_rows:
+    print(f"{r['Facility_Name'][:45]:<45} {r['GT_Count']:>3}  "
+          f"{r['NPDES_TP']:>3} {r['NPDES_FP']:>3} {r['NPDES_FN']:>3} "
+          f"{r['NPDES_Precision']:>5.2f} {r['NPDES_Recall']:>5.2f} {r['NPDES_F1']:>5.2f}  "
+          f"{r['CWNS_TP']:>3} {r['CWNS_FP']:>3} {r['CWNS_FN']:>3} "
+          f"{r['CWNS_Precision']:>5.2f} {r['CWNS_Recall']:>5.2f} {r['CWNS_F1']:>5.2f}")
+
+# Aggregate metrics
+total_npdes_tp = sum(r['NPDES_TP'] for r in facility_rows)
+total_npdes_fp = sum(r['NPDES_FP'] for r in facility_rows)
+total_npdes_fn = sum(r['NPDES_FN'] for r in facility_rows)
+total_cwns_tp = sum(r['CWNS_TP'] for r in facility_rows)
+total_cwns_fp = sum(r['CWNS_FP'] for r in facility_rows)
+total_cwns_fn = sum(r['CWNS_FN'] for r in facility_rows)
+
+agg_npdes_prec = total_npdes_tp / (total_npdes_tp + total_npdes_fp) if (total_npdes_tp + total_npdes_fp) else 0
+agg_npdes_rec = total_npdes_tp / (total_npdes_tp + total_npdes_fn) if (total_npdes_tp + total_npdes_fn) else 0
+agg_npdes_f1 = 2 * agg_npdes_prec * agg_npdes_rec / (agg_npdes_prec + agg_npdes_rec) if (agg_npdes_prec + agg_npdes_rec) else 0
+
+agg_cwns_prec = total_cwns_tp / (total_cwns_tp + total_cwns_fp) if (total_cwns_tp + total_cwns_fp) else 0
+agg_cwns_rec = total_cwns_tp / (total_cwns_tp + total_cwns_fn) if (total_cwns_tp + total_cwns_fn) else 0
+agg_cwns_f1 = 2 * agg_cwns_prec * agg_cwns_rec / (agg_cwns_prec + agg_cwns_rec) if (agg_cwns_prec + agg_cwns_rec) else 0
+
+macro_npdes_f1 = sum(r['NPDES_F1'] for r in facility_rows) / len(facility_rows)
+macro_cwns_f1 = sum(r['CWNS_F1'] for r in facility_rows) / len(facility_rows)
+
+print("-" * 130)
+print(f"{'MICRO-AVERAGE':<45} {'':>3}  "
+      f"{total_npdes_tp:>3} {total_npdes_fp:>3} {total_npdes_fn:>3} "
+      f"{agg_npdes_prec:>5.2f} {agg_npdes_rec:>5.2f} {agg_npdes_f1:>5.2f}  "
+      f"{total_cwns_tp:>3} {total_cwns_fp:>3} {total_cwns_fn:>3} "
+      f"{agg_cwns_prec:>5.2f} {agg_cwns_rec:>5.2f} {agg_cwns_f1:>5.2f}")
+print(f"{'MACRO-AVERAGE F1':<45} {'':>3}  "
+      f"{'':>3} {'':>3} {'':>3} {'':>5} {'':>5} {macro_npdes_f1:>5.2f}  "
+      f"{'':>3} {'':>3} {'':>3} {'':>5} {'':>5} {macro_cwns_f1:>5.2f}")

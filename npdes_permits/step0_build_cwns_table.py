@@ -7,7 +7,7 @@ import pandas as pd
 import os
 # WE3Lab additions
 import json
-from helpers.utils import get_all_keys, find_process_details, get_cwns_unit_process_names
+from helpers.utils import extract_leaves, find_process_details, get_cwns_unit_process_names
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -318,9 +318,9 @@ with open('data/unitprocess_keywords.json', 'r') as f:
     unitprocess_keywords = json.load(f)
 
 # Build reverse mapping: CWNS process name -> list of defined names
-process_cols = get_all_keys(unitprocess_keywords)
+leaves = extract_leaves(unitprocess_keywords)
 cwns_to_taxonomy = {}
-for process_name in process_cols:
+for process_name, _, _ in leaves:
     details = find_process_details(process_name, unitprocess_keywords)
     if details:
         cwns_names = get_cwns_unit_process_names(process_name, details)

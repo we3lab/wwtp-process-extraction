@@ -1,7 +1,6 @@
 import pandas as pd
 import json
 import os
-import requests
 from pathlib import Path
 from collections import Counter
 from rdflib import Graph, Namespace, RDFS
@@ -16,8 +15,6 @@ GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/co
 
 input_dir = Path('npdes_permits/LLM_extraction/output/temporary_llm_ontology_results')
 output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
-out_dir = Path(__file__).resolve().parent / "data" / "ontology_cache"
-out_dir.mkdir(parents=True, exist_ok=True)
 
 with open('npdes_permits/data/unitprocess_keywords.json') as f:
     keywords = json.load(f)
@@ -46,20 +43,12 @@ for name, details, _ in leaves:
             multi_rules.append((name, rule))
 multi_rules.sort(key=lambda r: r[1]['priority'])
 
-# Download .ttl files, cache individually, then merge into ontology graph
+# Load ontology from GitHub
 for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerationkinds.ttl", "substances.ttl"]:
     try:
-        single = Graph()
-        single.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
-        single.serialize(out_dir / filename, format="turtle")
-        ontology += single
+        ontology.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
-# also save "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/ontology_output.txt"
-
-response = requests.get(f"https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/ontology_output.txt")
-with open("npdes_permits/data/ontology_cache/ontology_output.txt", "w") as f:
-    f.write(response.text)
 
 site_df = pd.read_csv('npdes_permits/output/2025-10-31/site_data.csv', dtype=str).fillna('')
 pdf_map = {row['PDF_File'].replace('.pdf', ''): {

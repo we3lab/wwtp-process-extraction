@@ -1,220 +1,287 @@
 {
+  "Comminution": {
+    "alt_names": ["grinding", "grinder"],
+    "alt_names_case_sensitive": [],
+    "cwns_processes": ["Comminution", "Grinder Pump- Low Pressure Sewer"],
+    "ontology_triggers": ["Process-Comminution"]
+  },
   "Clarification": {
     "Primary Clarification": {
       "alt_names": ["Primary Clarifier", "Primary Clarification", "Primary Settling", "Primary Sedimentation"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Sedimentation, Primary"]
+      "cwns_processes": ["Sedimentation, Primary"],
+      "ontology_triggers": [["Role-Primary", "Process-Sedimentation"],["Role-Primary", "Process-Coagulation"], ["Role-Secondary", "Process-Flocculation"]]
     },
     "Secondary Clarification": {
       "alt_names": ["Secondary Clarifier", "Secondary Clarification", "Secondary Settling", "Secondary Sedimentation"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Clarification, Secondary", "Clarification, Intermediate"]
+      "cwns_processes": ["Clarification, Secondary", "Clarification, Intermediate"],
+      "ontology_triggers": [["Role-Secondary", "Process-Sedimentation"],["Role-Secondary", "Process-Coagulation"], ["Role-Secondary", "Process-Flocculation"]]
     },
     "Chemical Precipitation": {
-      "alt_names": ["Chemical Precipitation"],
+      "alt_names": ["Precipitation"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Sedimentation, Chemical Precipitation"]
+      "cwns_processes": ["Sedimentation, Chemical Precipitation"],
+      "ontology_triggers": ["Process-ChemicalPrecipitation"]
     },
     "Unspecified Clarification": {
       "alt_names": ["Sedimentation", "Clarifier", "Clarification", "Settling Tank", "Settling Basin", "Settling"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Sedimentation", "Clarification, Other", "Clarification, Tube Settlers", "Settling Tank", "Imhoff Tank", "Sedimentation, Other"]
+      "cwns_processes": ["Sedimentation", "Clarification, Other", "Clarification, Tube Settlers", "Settling Tank", "Imhoff Tank", "Sedimentation, Other"],
+      "ontology_triggers": [["Process-Sedimentation"], ["Equipment-ImhoffTank"]],
+      "priority": 1000
     }
   },
   "Screening/Microstrainer": {
     "alt_names": ["Screening", "Bar Screen", "Fine Screen", "Mechanical Screen", "Fine Screening", "Microstrainer"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"]
+    "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
+    "ontology_triggers": ["Process-Screening"]
   },
   "Grit Removal": {
     "alt_names": ["Grit Removal", "Grit Chambers", "Grit Chamber"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Dewatering assc. w/Grit Removal", "Grit Removal", "Aerated Grit Chambers"]
+    "cwns_processes": ["Dewatering assc. w/Grit Removal", "Grit Removal", "Aerated Grit Chambers"],
+    "ontology_triggers": ["Equipment-GritChamber"]
   },
   "Equalization": {
     "alt_names": ["Flow Equalization", "Equalization", "equalize the flows"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Equalization, at POTW", "Equalization, Flow"]
+    "cwns_processes": ["Equalization, at POTW", "Equalization, Flow"],
+    "ontology_triggers": ["Role-Equalization"]
   },
   "Flotation": {
     "alt_names": ["Dissolved Air Flotation", "Flotation"],
     "alt_names_case_sensitive": ["DAF"],
-    "cwns_processes": ["Flotation", "Biosolids Thickening, Dissolved Air Flotation"]
+    "cwns_processes": ["Flotation", "Biosolids Thickening, Dissolved Air Flotation"],
+    "ontology_triggers": ["Process-Flotation"]
   },
-  "CAS": {
+  "Activated Sludge": {
     "SBR": {
       "alt_names": ["Sequencing Batch Reactor", "Sequential Batch Reactor"],
       "alt_names_case_sensitive": ["SBR"],
-      "cwns_processes": ["Reactor, Sequencing Batch (SBR)"]
+      "cwns_processes": ["Reactor, Sequencing Batch (SBR)"],
+      "ontology_triggers": ["Equipment-SequencingBatchReactor"]
     },
     "Oxidation Ditch": {
       "alt_names": ["Oxidation Ditch"],
       "alt_names_case_sensitive": ["OD"],
-      "cwns_processes": ["Reactor (Oxidation Ditch)"]
+      "cwns_processes": ["Reactor (Oxidation Ditch)"],
+      "ontology_triggers": ["Equipment-OxidationDitch"]
     },
     "Pure Oxygen": {
       "alt_names": ["Pure Oxygen Activated Sludge", "Pure Oxygen AS", "POAS"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Activated Sludge, Pure Oxygen"]
+      "cwns_processes": ["Activated Sludge, Pure Oxygen"],
+      "ontology_triggers": ["Process-ActivatedSludge", "Substance-HighPurityOxygen"]
     },
     "Extended Aeration": {
       "alt_names": ["Extended Aeration", "Extended Aeration AS"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Activated Sludge, Extended Aeration"]
+      "cwns_processes": ["Activated Sludge, Extended Aeration"],
+      "ontology_triggers": ["Process-ActivatedSludge", "Role-Extended"]
     },
     "Stepfeed": {
       "alt_names": ["Stepfeed", "Step Aeration", "Step Feed"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Activated Sludge, Step Aeration"]
+      "cwns_processes": ["Activated Sludge, Step Aeration"],
+      "ontology_triggers": ["Process-ActivatedSludge", "Role-StepFeed"]
     },
-    "ActivatedSludge": {
-      "alt_names": ["CAS", "Activated Sludge", "Conventional Activated Sludge"],
+    "Unspecified AS": {
+      "alt_names": ["Activated Sludge", "Conventional Activated Sludge"],
       "alt_names_case_sensitive": ["CAS"],
       "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Activated Sludge, With Biological Denitrification"],
-      "inference_mutually_exclusive": {
+      "ontology_triggers_multi": {
         "priority": 4,
-        "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+        "Equipment": ["AerationBasin", "Reactor", "Tank"],
         "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"max": 0}, "Aerobic": {"min": 1}}
       },
-      "inference_inherited": {"trigger_equipment": ["AerationBasin", "SequencingBatchReactor", "OxidationDitch"], "trigger_roles": ["Secondary"]}
+      "ontology_triggers": [["Process-ActivatedSludge"], ["Role-Secondary", "Equipment-AerationBasin"]],
+      "priority": 1000
     }
   },
   "Lagoon": {
     "Facultative Lagoon": {
       "alt_names": ["Facultative Lagoon", "Facultative Pond"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Facultative"]
+      "cwns_processes": ["Lagoon, Facultative"],
+      "ontology_triggers": ["Equipment-Pond", "Role-Aerobic", "Role-Anaerobic"],
+      "priority": 1
     },
     "Aerated Lagoon": {
       "alt_names": ["Aerated Lagoon", "Aerated Pond"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Aerated"]
+      "cwns_processes": ["Lagoon, Aerated"],
+      "ontology_triggers": ["Equipment-Pond", "Role-Aerobic"],
+      "priority": 2
     },
     "Anaerobic Lagoon": {
       "alt_names": ["Anaerobic Lagoon", "Anaerobic Pond"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Anaerobic"]
+      "cwns_processes": ["Lagoon, Anaerobic"],
+      "ontology_triggers": ["Equipment-Pond", "Role-Anaerobic"],
+      "priority": 2
     },
     "Polishing Lagoon": {
       "alt_names": ["Polishing Lagoon", "Polishing Pond", "Maturation Pond"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Polishing"]
+      "cwns_processes": ["Lagoon, Polishing"],
+      "ontology_triggers": ["Equipment-Pond", "Role-Tertiary"]
+    },
+    "Stabilization Pond": {
+      "alt_names": ["Stabilization Pond"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": ["Pond, Stabilization"],
+      "ontology_triggers": ["Equipment-Pond", "Process-Stabilization"]
     },
     "Unspecified Lagoon": {
       "alt_names": ["Lagoon", "Pond", "Other Lagoon"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)"]
+      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)"],
+      "ontology_triggers": ["Equipment-Pond"],
+      "priority": 1000
     }
   },
   "Nutrient Removal": {
     "Biological Nutrient Removal": {
       "AO": {
         "alt_names": ["Anoxic-Oxic", "A/O", "Anoxic Oxic", "Anoxic-Aerobic", "Anoxic Aerobic"],
-        "alt_names_case_sensitive": ["AO"],
+        "alt_names_case_sensitive": [],
         "cwns_processes": [],
-        "inference_mutually_exclusive": [
-          {"priority": 3, "equipment_types": ["AerationBasin", "Reactor", "Basin"], "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}},
-          {"priority": 6, "equipment_types": ["AerationBasin", "Reactor", "Basin"], "role_counts": {"Aerobic": {"min": 1}}}
-        ]
+        "ontology_triggers_multi": [
+          {"priority": 3, "Equipment": ["AerationBasin", "Reactor", "Tank"], "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}},
+          {"priority": 6, "Equipment": ["AerationBasin", "Reactor", "Tank"], "role_counts": {"Aerobic": {"min": 1}}}
+        ],
+        "ontology_triggers": ["Process-AO"],
+        "secondary_category": ["Activated Sludge"]
       },
       "A2O": {
         "alt_names": ["Anaerobic-Anoxic-Oxic", "A/A/O", "Anaerobic Anoxic Oxic"],
         "alt_names_case_sensitive": ["A2O"],
         "cwns_processes": ["Activated Sludge, Anaerobic/Anoxic/Oxic", "Activated Sludge, Anaerobic/Anoxic"],
-        "inference_mutually_exclusive": {
+        "ontology_triggers_multi": {
           "priority": 1,
-          "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+          "Equipment": ["AerationBasin", "Reactor", "Tank"],
           "role_counts": {"Anaerobic": {"min": 1}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
-        }
+        },
+        "ontology_triggers": ["Process-A2O"],
+        "secondary_category": ["Activated Sludge"]
       },
       "MLE": {
-        "alt_names": ["MLE", "Modified Ludzack-Ettinger", "Modified Ludzack Ettinger"],
+        "alt_names": ["Modified Ludzack"],
         "alt_names_case_sensitive": ["MLE"],
         "cwns_processes": [],
-        "inference_mutually_exclusive": {
+        "ontology_triggers_multi": {
           "priority": 2,
-          "equipment_types": ["AerationBasin", "Reactor", "Basin"],
+          "Equipment": ["AerationBasin", "Reactor", "Tank"],
           "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
-        }
+        },
+        "ontology_triggers": ["Process-MLE"],
+        "secondary_category": ["Activated Sludge"]
       },
       "UCT": {
         "alt_names": ["University of Cape Town"],
         "alt_names_case_sensitive": ["UCT"],
-        "cwns_processes": []
+        "cwns_processes": [],
+        "ontology_triggers": ["Process-UCT"],
+        "secondary_category": ["Activated Sludge"]
       },
-      "FourStageBardenpho": {
+      "Four Stage Bardenpho": {
         "alt_names": ["4-Stage Bardenpho", "Four-Stage Bardenpho"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"]
+        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"],
+        "ontology_triggers": ["Process-FourStageBardenpho"],
+        "secondary_category": ["Activated Sludge"]
       },
-      "FiveStageBardenpho": {
+      "Five Stage Bardenpho": {
         "alt_names": ["Bardenpho"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"]
+        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"],
+        "ontology_triggers": ["Process-FiveStageBardenpho"],
+        "secondary_category": ["Activated Sludge"]
       },
       "Unspecified BNR": {
         "alt_names": ["Nutrient Removal", "Biological Nutrient Removal"],
         "alt_names_case_sensitive": ["BNR"],
-        "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal", "Phosphorus Removal, Biological", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification"]
+        "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal", "Phosphorus Removal, Biological", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification"],
+        "ontology_triggers": [["Process-Nitrification"], ["Process-Denitrification"]],
+        "priority": 1000
       }
     },
     "Chemical Nutrient Removal": {
       "Chemical N Removal": {
         "alt_names": ["Chemical Nitrogen Removal", "Ammonia Stripping", "Breakpoint Chlorination"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Disinfection, Breakpoint Chlorination"]
+        "cwns_processes": ["Disinfection, Breakpoint Chlorination"],
+        "ontology_triggers": [["Role-NutrientRemoval", "Equipment-IonExchangeMembrane"], ["Role-NutrientRemoval", "Process-Stripping"]]
       },
       "Chemical P Removal": {
         "alt_names": ["Chemical Phosphorus Removal", "Phosphorus Precipitation", "P Precipitation"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Phosphorus Removal, Chemical"],
-        "inference_inherited": {"trigger_equipment": ["ChemicalFeedSystem"], "trigger_roles": ["Secondary", "PhosphorusRemoval"]}
+        "ontology_triggers": ["Role-PhosphorusRemoval", "Process-ChemicalPrecipitation"]
       }
+    },
+    "Unspecified Nutrient Removal": {
+      "alt_names": ["Nutrient Removal"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [],
+        "ontology_triggers": [["Role-NutrientRemoval"]],
+        "priority": 1000
     }
   },
   "Filtration": {
     "Secondary Filtration": {
       "alt_names": ["Secondary Filtration", "Secondary Filter", "Secondary Microstrainer"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Microstrainer, Secondary"]
+      "cwns_processes": ["Microstrainer, Secondary"],
+      "ontology_triggers": ["Role-Secondary", "Process-Filtration"]
     },
     "Media Filtration": {
       "alt_names": ["Media Filter", "Cloth Filter", "Cloth Media", "Media Filt", "Mixed Media Filter", "Sand Filter", "Rapid Sand Filter", "Slow Sand Filter"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Filter (Gravity Sand Beds, single media)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Filter, Rock", "Filter (Sand-Recirculating)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)"]
+      "cwns_processes": ["Filter (Gravity Sand Beds, single media)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Filter, Rock", "Filter (Sand-Recirculating)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)"],
+      "ontology_triggers": ["Process-MediaFiltration"]
     },
     "Biofiltration": {
       "Biologically Active Filtration": {
         "alt_names": ["Activated Bio-Filter"],
         "alt_names_case_sensitive": ["BAF"],
-        "cwns_processes": ["Filter (Activated Bio-)"]
+        "cwns_processes": ["Filter (Activated Bio-)"],
+        "ontology_triggers": ["Process-BiologicallyActiveFiltration"]
       },
       "Fixed Film": {
         "Trickling Filter": {
           "alt_names": ["Biofilter", "Trickling Filt"],
           "alt_names_case_sensitive": ["TF"],
-          "cwns_processes": ["Trickling Filter, Biofilter", "Trickling Filter, Other Media", "Trickling Filter, Redwood Slats", "Trickling Filter, Plastic Media", "Trickling Filter, Rock Media", "Filter, Mixed Media", "Filter, Rapid Sand", "Filter, Slow Sand"]
+          "cwns_processes": ["Trickling Filter, Biofilter", "Trickling Filter, Other Media", "Trickling Filter, Redwood Slats", "Trickling Filter, Plastic Media", "Trickling Filter, Rock Media", "Filter, Mixed Media", "Filter, Rapid Sand", "Filter, Slow Sand"],
+          "ontology_triggers": ["Process-TricklingFiltration"]
         },
         "Rotating Biological Contactor": {
           "alt_names": ["Rotating Biological Contactor"],
           "alt_names_case_sensitive": ["RBC"],
-          "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors"]
+          "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors"],
+          "ontology_triggers": ["Equipment-RotatingBiologicalContactor"]
         },
         "Anaerobic Filter": {
           "alt_names": ["Anaerobic Filt"],
           "alt_names_case_sensitive": [],
-          "cwns_processes": []
+          "cwns_processes": [],
+          "ontology_triggers": ["Process-Biofiltration", "Role-Anaerobic"]
         },
         "Membrane Aerated Biofilm Reactor": {
           "alt_names": ["Membrane Aerated Biofilm Reactor"],
           "alt_names_case_sensitive": ["MABR"],
           "cwns_processes": [],
-          "inference_inherited": {"trigger_equipment": ["MABR"]}
+          "ontology_triggers": ["Equipment-MembraneAeratedBiofilmReaactor"],
+          "secondary_category": ["Biological Nutrient Removal"]
         },
         "Unspecified FFR": {
           "alt_names": ["Fixed Film Reactor"],
           "alt_names_case_sensitive": ["FFR"],
-          "cwns_processes": ["Reactor (Fixed Film)"]
+          "cwns_processes": ["Reactor (Fixed Film)"],
+          "ontology_triggers": ["Process-Biofiltration"],
+          "priority": 1000
         }
       }
     },
@@ -222,152 +289,171 @@
       "Nanofiltration": {
         "alt_names": ["Nanofilter", "Nanofiltration"],
         "alt_names_case_sensitive": ["NF"],
-        "cwns_processes": []
+        "cwns_processes": [],
+        "ontology_triggers": ["Equipment-NanofiltrationUnit"]
       },
       "Electrodialysis Reversal": {
         "alt_names": ["Electrodialysis Reversal"],
         "alt_names_case_sensitive": ["EDR"],
-        "cwns_processes": []
+        "cwns_processes": [],
+        "ontology_triggers": ["Process-ElectrodialysisReversal"]
       },
       "Electrodialysis": {
         "alt_names": ["Electrodialysis"],
         "alt_names_case_sensitive": ["ED"],
-        "cwns_processes": ["Membrane Process (Electrodialysis)"]
+        "cwns_processes": ["Membrane Process (Electrodialysis)"],
+        "ontology_triggers": ["Process-Electrodialysis"]
       },
       "Reverse Osmosis": {
         "alt_names": ["Reverse Osmosis"],
         "alt_names_case_sensitive": ["RO"],
-        "cwns_processes": ["Membrane Process (Reverse Osmosis)"]
+        "cwns_processes": ["Membrane Process (Reverse Osmosis)"],
+        "ontology_triggers": ["Process-ReverseOsmosis"]
       },
       "Ultrafiltration": {
         "alt_names": ["Ultrafiltration"],
-        "alt_names_case_sensitive": ["UF"]
+        "alt_names_case_sensitive": ["UF"],
+        "ontology_triggers": ["Equipment-UltrafiltrationUnit"]
       },
       "Microfiltration": {
         "alt_names": ["Microfiltration", "Microfilter"],
         "alt_names_case_sensitive": ["MF"],
-        "cwns_processes": []
+        "cwns_processes": [],
+        "ontology_triggers": ["Equipment-MicrofiltrationUnit"]
       },
       "Membrane Bioreactor": {
         "alt_names": ["Membrane Bioreactor"],
         "alt_names_case_sensitive": ["MBR"],
-        "cwns_processes": ["Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)"]
+        "cwns_processes": ["Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)"],
+        "ontology_triggers": ["Process-MembraneBioreactor"]
       },
       "Unspecified Membrane Process": {
         "alt_names": ["Membrane Process", "Membrane Filter"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Membrane Process (Other)", "Membrane Process (Dialysis)"]
+        "cwns_processes": ["Membrane Process (Other)", "Membrane Process (Dialysis)"],
+        "ontology_triggers": ["Process-MembraneProcess"],
+        "priority": 1000
       }
     },
     "Unspecified Filtration": {
       "alt_names": ["Disc Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter"],
       "alt_names_case_sensitive": ["MF"],
-      "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure"]
+      "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure"],
+      "ontology_triggers": ["Process-Filtration"],
+      "priority": 1000
     }
   },
-  "Nature Based Solutions": {
-    "Constructed Wetland": {
-      "alt_names": ["Constructed Wetland", "Treatment Wetland", "Engineered Wetland"],
-      "alt_names_case_sensitive": [],
-      "cwns_processes": ["Wet Ponds", "Constructed Wetlands"]
-    },
-    "Surface Wetland": {
-      "alt_names": ["Surface Wetland", "Free Water Surface Wetland", "FWS Wetland"],
-      "alt_names_case_sensitive": ["FWS"],
-      "cwns_processes": ["Freesurface/Wetland (Marsh System)"]
-    },
-    "Unspecified Nature-Based Solution": {
-      "alt_names": ["nature-based", "nature based", "green infrastructure"],
-      "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Other"]
-    }
+  "Wetland": {
+    "alt_names": ["Constructed Wetland", "Treatment Wetland", "Engineered Wetland", "Surface Wetland", "Free Water Surface Wetland", "FWS Wetland", "nature-based", "nature based", "green infrastructure"],
+    "alt_names_case_sensitive": ["FWS"],
+    "cwns_processes": ["Wet Ponds", "Constructed Wetlands", "Freesurface/Wetland (Marsh System)"],
+    "ontology_triggers": ["Equipment-Wetland"]
   },
   "UV-AOP": {
     "alt_names": ["UV-AOP", "Ultraviolet Advanced Oxidation"],
-    "alt_names_case_sensitive": ["UV-AOP"]
+    "alt_names_case_sensitive": ["UV-AOP"],
+    "ontology_triggers": ["Process-AdvancedOxidation"]
   },
   "Coagulation": {
-    "alt_names": ["Coagulation"],
+    "alt_names": ["Coagulation", "Coagulant"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Chemical Addition (Alum), Primary", "Chemical Addition (Alum), Secondary", "Chemical Addition (Alum), Tertiary", "Chemical Addition (Ferric Chloride), Primary", "Chemical Addition (Ferric Chloride), Secondary", "Chemical Addition (Ferric Chloride), Tertiary"]
+    "cwns_processes": ["Chemical Addition (Alum), Primary", "Chemical Addition (Alum), Secondary", "Chemical Addition (Alum), Tertiary", "Chemical Addition (Ferric Chloride), Primary", "Chemical Addition (Ferric Chloride), Secondary", "Chemical Addition (Ferric Chloride), Tertiary"],
+    "ontology_triggers": ["Process-Coagulation"]
   },
   "Flocculation": {
-    "alt_names": ["Flocculation"],
+    "alt_names": ["Flocculation", "Flocculant"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Flocculation"]
+    "cwns_processes": ["Flocculation"],
+    "ontology_triggers": ["Process-Flocculation"]
   },
   "Ion Exchange": {
     "alt_names": ["Ion exchange", "exchange resin", " IX ", "(IX)"],
     "alt_names_case_sensitive": ["IX", "(IX)"],
-    "cwns_processes": ["Ion Exchange"]
+    "cwns_processes": ["Ion Exchange"],
+    "ontology_triggers": ["Process-IonExchange"]
   },
   "Activated Carbon": {
     "alt_names": ["Activated Carbon", "Granular Activated Carbon", "Powdered Activated Carbon"],
     "alt_names_case_sensitive": ["GAC"],
-    "cwns_processes": ["Activated Carbon, Granular", "Activated Carbon, Powdered"]
+    "cwns_processes": ["Activated Carbon, Granular", "Activated Carbon, Powdered"],
+    "ontology_triggers": ["Process-GranularActivatedCarbon"]
   },
   "Disinfection": {
     "Chlorination": {
       "alt_names": ["Chlorination", "Chlorine Disinfection", "Disinfection Chlorine", "Sodium Hypochlorite"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection, Chlorination", "Disinfection, Gaseous Chloride", "Disinfection, Liquid Chloride", "Disinfection, Breakpoint Chlorination", "Disinfection, Sodium Hypochlorite", "Disinfection Hypochlorite Bisulfite"]
+      "cwns_processes": ["Disinfection, Chlorination", "Disinfection, Gaseous Chloride", "Disinfection, Liquid Chloride", "Disinfection, Breakpoint Chlorination", "Disinfection, Sodium Hypochlorite", "Disinfection Hypochlorite Bisulfite"],
+      "ontology_triggers": ["Process-Chlorination"]
     },
     "Dechlorination": {
       "alt_names": ["Dechlorination", "Dechlorinated", "Bisulfite", "Bisulphite", "Sulphur Dioxide"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection Hypochlorite Bisulfite", "Dechlorination, Bisulphite", "Dechlorination, Sulphur Dioxide"]
+      "cwns_processes": ["Disinfection Hypochlorite Bisulfite", "Dechlorination, Bisulphite", "Dechlorination, Sulphur Dioxide"],
+      "ontology_triggers": ["Process-Dechlorination"]
     },
     "UV Disinfection": {
       "alt_names": ["UV Disinfection", "Ultraviolet Disinfection"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection, UV Radiation", "Disinfection, Ultraviolet"]
+      "cwns_processes": ["Disinfection, UV Radiation", "Disinfection, Ultraviolet"],
+      "ontology_triggers": ["Process-UVDisinfection"]
     },
     "Ozonation": {
       "alt_names": ["Ozone Disinfection", "Ozonation", "O3 Disinfection"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection, Ozonation"]
+      "cwns_processes": ["Disinfection, Ozonation"],
+      "ontology_triggers": ["Process-Ozonation"]
     },
     "Thermal Disinfection": {
       "alt_names": ["Thermal Disinfection", "Heat Disinfection", "Pasteurization"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": []
+      "cwns_processes": [],
+      "ontology_triggers": ["Process-ThermalDisinfection"]
     },
     "Unspecified Disinfection": {
       "alt_names": ["Disinfection"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection, Other Chemical", "Disinfection, Other"]
+      "cwns_processes": ["Disinfection, Other Chemical", "Disinfection, Other"],
+      "ontology_triggers": ["Process-Disinfection"],
+      "priority": 1000
     }
   },
   "Chemical Addition": {
     "Alum Addition": {
       "alt_names": ["Alum Addition", "Aluminum Sulfate", "Alum"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Chemical Addition (Alum), Primary", "Chemical Addition (Alum), Secondary", "Chemical Addition (Alum), Tertiary", "Biosolids Chemical Addition (Alum)"]
+      "cwns_processes": ["Chemical Addition (Alum), Primary", "Chemical Addition (Alum), Secondary", "Chemical Addition (Alum), Tertiary", "Biosolids Chemical Addition (Alum)"],
+      "ontology_triggers": ["Substance-Coagulant-Alum"]
     },
     "Ferric Chloride Addition": {
       "alt_names": ["Ferric Chloride Addition", "Ferric Chloride", "Iron Chloride", "Iron (III) Chloride"],
       "alt_names_case_sensitive": ["FeCl3"],
-      "cwns_processes": ["Chemical Addition (Ferric Chloride), Primary", "Chemical Addition (Ferric Chloride), Secondary", "Chemical Addition (Ferric Chloride), Tertiary", "Biosolids Chemical Addition (Ferric Chloride)"]
+      "cwns_processes": ["Chemical Addition (Ferric Chloride), Primary", "Chemical Addition (Ferric Chloride), Secondary", "Chemical Addition (Ferric Chloride), Tertiary", "Biosolids Chemical Addition (Ferric Chloride)"],
+      "ontology_triggers": ["Substance-Coagulant-FerricChloride"]
     },
     "Polymer Addition": {
       "alt_names": ["Polymer Addition", "Polymer", "Polyelectrolyte"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Biosolids Chemical Addition (Polymer)", "Chemical Addition (Polymer)"]
+      "cwns_processes": ["Biosolids Chemical Addition (Polymer)", "Chemical Addition (Polymer)"],
+      "ontology_triggers": ["Substance-Flocculant"]
     },
     "Lime Addition": {
       "alt_names": ["Lime Addition", "Lime Treatment", "Lime Stabilization", "Alkaline Stabilization"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Biosolids Lime Stabilization", "Lime Treatment, Single Stage Primary", "Lime Treatment, Single Stage Tertiary", "Lime Treatment, Two Stage Primary", "Lime Treatment, Two Stage Tertiary"]
+      "cwns_processes": ["Biosolids Lime Stabilization", "Lime Treatment, Single Stage Primary", "Lime Treatment, Single Stage Tertiary", "Lime Treatment, Two Stage Primary", "Lime Treatment, Two Stage Tertiary"],
+      "ontology_triggers": ["Substance-pHAdjuster-Lime"]
     },
     "Neutralization": {
       "alt_names": ["Neutralization", "pH Adjustment"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Neutralization"]
+      "cwns_processes": ["Neutralization"],
+      "ontology_triggers": ["Process-Neutralization"]
     },
     "Unspecified Chemical Addition": {
       "alt_names": ["Chemical Addition", "Chemical Feed"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Chemical Addition (Other)", "Chemical Addition (Other), Primary"]
+      "cwns_processes": ["Chemical Addition (Other)", "Chemical Addition (Other), Primary"],
+      "ontology_triggers": ["Process-ChemicalAddition"],
+      "priority": 1000
     }
   },
   "Solids Processing": {
@@ -375,112 +461,130 @@
       "Anaerobic Digestion": {
         "alt_names": ["Anaerobic Digester", "Anaerobic Digestion"],
         "alt_names_case_sensitive": ["AD"],
-        "cwns_processes": ["Biosolids Anaerobic Digestion, Mesophilic", "Biosolids Anaerobic Digestion, Thermophilic", "Biosolids Anaerobic Digestion, Other", "Imhoff Tank", "Biosolids Aerobic Digestion, Autothermal Thermophilic Oxygen"]
+        "cwns_processes": ["Biosolids Anaerobic Digestion, Mesophilic", "Biosolids Anaerobic Digestion, Thermophilic", "Biosolids Anaerobic Digestion, Other", "Imhoff Tank", "Biosolids Aerobic Digestion, Autothermal Thermophilic Oxygen"],
+        "ontology_triggers": [["Process-AnaerobicDigestion"], ["Equipment-ImhoffTank"]]
       },
       "Aerobic Digestion": {
         "alt_names": ["Aerobic Digester", "Aerobic Digestion"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Aerobic Digestion, Oxygen", "Biosolids Aerobic Digestion, Air", "Biosolids Aerobic Digestion, Autothermal Thermophilic", "Aerobic Unit"]
+        "cwns_processes": ["Biosolids Aerobic Digestion, Oxygen", "Biosolids Aerobic Digestion, Air", "Biosolids Aerobic Digestion, Autothermal Thermophilic", "Aerobic Unit"],
+        "ontology_triggers": ["Process-AerobicDigestion"]
       },
       "Unspecified Digestion": {
         "alt_names": ["Digestion", "Digester"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Digestion, Other"]
+        "cwns_processes": ["Biosolids Digestion, Other"],
+        "ontology_triggers": ["Process-Digestion"],
+        "priority": 1000
       }
     },
     "Dewatering": {
       "Mechanical Dewatering": {
         "alt_names": ["Mechanical Dewatering", "Belt Press", "Belt Filter Press", "Rotary Drum", "Screw Press"],
         "alt_names_case_sensitive": ["RDF"],
-        "cwns_processes": ["Mechanical Dewatering", "Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Biosolids Mechanical Dewatering (Other)"]
+        "cwns_processes": ["Mechanical Dewatering", "Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Biosolids Mechanical Dewatering (Other)"],
+        "ontology_triggers": ["Equipment-DewateringUnit"]
       },
       "Centrifuge": {
         "alt_names": ["Centrifuge", "Centrifugal Dewatering"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Mechanical Dewatering (Centrifuge)"]
+        "cwns_processes": ["Biosolids Mechanical Dewatering (Centrifuge)"],
+        "ontology_triggers": ["Process-Centrifugation"]
       },
       "Drying": {
         "alt_names": ["Drying", "Thermal Drying", "Sludge Drying", "Drying Bed"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Heat Drying", "Biosolids Air Drying, Sand Beds", "Biosolids Air Drying, Other Media", "Biosolids Air Drying"]
+        "cwns_processes": ["Biosolids Heat Drying", "Biosolids Air Drying, Sand Beds", "Biosolids Air Drying, Other Media", "Biosolids Air Drying"],
+        "ontology_triggers": ["Process-Evaporation"]
       },
       "Elutriation": {
         "alt_names": ["Biosolids Elutriation", "Elutriation"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Elutriation"]
+        "cwns_processes": ["Biosolids Elutriation"],
+        "ontology_triggers": ["Process-Elutriation"]
       },
       "Unspecified Dewatering": {
         "alt_names": ["Dewatering"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Other Dewatering", "Dewatering assc. w/Grit Removal"]
+        "cwns_processes": ["Biosolids Other Dewatering", "Dewatering assc. w/Grit Removal"],
+        "ontology_triggers": ["Process-Dewatering"],
+        "priority": 1000
       }
     },
     "Thickening": {
       "Thickening": {
         "alt_names": ["Thickening", "Dissolved Air Flotation Thickening", "Gravity Thickening", "DAF Thickening", "Gravity Belt Thickening"],
         "alt_names_case_sensitive": ["DAFT", "GBT"],
-        "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other"]
+        "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other"],
+        "ontology_triggers": ["Equipment-Thickener"]
       }
     },
     "Disposal": {
       "Land Application": {
         "alt_names": ["Land Application", "Land based", "Land-based", "Land Treatment"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Land Application (Spreading)", "Land Treatment", "Biosolids Composting, Other", "Biosolids Composting, In-Vessel", "Biosolids Composting, Window", "Land Application, Slow Rate, W/O Underdrain", "Land Application, Slow Rate, With Underdrain"]
-      },
-      "Stabilization Pond": {
-        "alt_names": ["Stabilization Pond"],
-        "alt_names_case_sensitive": [],
-        "cwns_processes": ["Pond, Stabilization"]
+        "cwns_processes": ["Biosolids Land Application (Spreading)", "Land Treatment", "Biosolids Composting, Other", "Biosolids Composting, In-Vessel", "Biosolids Composting, Window", "Land Application, Slow Rate, W/O Underdrain", "Land Application, Slow Rate, With Underdrain"],
+        "ontology_triggers": ["Process-LandApplication"]
       },
       "Biosolids Lagoon": {
         "alt_names": ["Biosolids Lagoon", "Sludge Lagoon"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Lagoon"]
+        "cwns_processes": ["Biosolids Lagoon"],
+        "ontology_triggers": [["Equipment-Pond", "Role-SolidsHandling"], ["Equipment-Pond", "Process-BiosolidsDisposal"]]
       },
       "Biosolids Landfill": {
         "alt_names": ["Landfill", "Monofil", "Trenching"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Landfill/Trenching", "Biosolids Disposal (Monofil)", "Biosolids Landfill, daily burial (MSW)", "Biosolids Landfill (Interim or Final Cover, MSW)"]
+        "cwns_processes": ["Biosolids Landfill/Trenching", "Biosolids Disposal (Monofil)", "Biosolids Landfill, daily burial (MSW)", "Biosolids Landfill (Interim or Final Cover, MSW)"],
+        "ontology_triggers": ["Process-Landfill"]
       },
       "Unspecified Disposal": {
         "alt_names": ["Biosolids Disposal"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Biosolids Disposal (Other)", "Biosolids Wet Air Oxidation", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility"]
+        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Biosolids Disposal (Other)", "Biosolids Wet Air Oxidation", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility"],
+        "ontology_triggers": [["Process-BiosolidsDisposal"], ["Role-SolidsHandling"]],
+        "priority": 1000
       }
     },
     "Incineration": {
       "MHI": {
         "alt_names": ["Multiple Hearth Incineration", "Multiple Hearth Incinerator"],
         "alt_names_case_sensitive": ["MHI"],
-        "cwns_processes": ["Biosolids Incineration, Multiple Hearth"]
+        "cwns_processes": ["Biosolids Incineration, Multiple Hearth"],
+        "ontology_triggers": ["Process-MultipleHearthIncineration"]
       },
       "FBI": {
         "alt_names": ["Fluidized Bed Incineration", "Fluidized Bed Incinerator"],
         "alt_names_case_sensitive": ["FBI"],
-        "cwns_processes": ["Biosolids Incineration, Fluidized Bed"]
+        "cwns_processes": ["Biosolids Incineration, Fluidized Bed"],
+        "ontology_triggers": ["Process-FluidizedBedIncineration"]
       },
       "Unspecified Incineration": {
         "alt_names": ["Incineration", "Incinerator"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Co-Incineration With Solid Waste", "Biosolids Incineration (Other)"]
+        "cwns_processes": ["Biosolids Co-Incineration With Solid Waste", "Biosolids Incineration (Other)"],
+        "ontology_triggers": ["Process-Incineration"],
+        "priority": 1000
       }
     },
     "Energy Recovery": {
       "Biogas Production": {
         "alt_names": ["Biogas Production", "Biogas", "Methane Production"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": []
+        "cwns_processes": ["Biosolids Anaerobic Digestion, Mesophilic", "Biosolids Anaerobic Digestion, Thermophilic", "Biosolids Anaerobic Digestion, Other", "Imhoff Tank", "Biosolids Aerobic Digestion, Autothermal Thermophilic Oxygen"],
+        "ontology_triggers": [["Process-AnaerobicDigestion"], ["Equipment-ImhoffTank"]]
       },
       "Cogeneration": {
         "alt_names": ["Cogeneration", "CHP", "Combined Heat and Power"],
         "alt_names_case_sensitive": ["CHP"],
-        "cwns_processes": []
+        "cwns_processes": [],
+        "ontology_triggers": ["Process-Cogeneration"]
       },
-      "Unspecified Energy Recovery": {
-        "alt_names": ["Energy Recovery", "Resource Recovery"],
+      "Heat Recovery": {
+        "alt_names": ["Heat Recovery", "Recover Heat", "Heat Exchanger"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Heat Recovery and Utilization"]
+        "cwns_processes": ["Biosolids Heat Recovery and Utilization"],
+        "ontology_triggers": [["Equipment-HeatExchanger", "Role-SolidsHandling"], ["Equipment-HeatExchanger", "Process-BiosolidsDisposal"]]
       }
     }
   }

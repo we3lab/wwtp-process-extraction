@@ -3,29 +3,14 @@ import json
 import os
 from pathlib import Path
 from collections import Counter
-from rdflib import Graph, Namespace
-from helpers.utils import get_all_keys
+from rdflib import Graph, Namespace, RDFS
+from helpers.utils import extract_leaves
 
 WATR = Namespace("urn:nawi-water-ontology#")
+ontology = Graph()
 
 # GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
-
-def normalize(name):
-    return name.lower().replace('-', '').replace(' ', '').replace('process', '').replace('role', '')
-
-
-def extract_process_rules(processes_dict):
-    """Return dict of leaf process name -> details (for inference_* etc.)."""
-    out = {}
-    for name, details in processes_dict.items():
-        if not isinstance(details, dict):
-            continue
-        if 'alt_names' in details:
-            out[name] = details
-        else:
-            out.update(extract_process_rules(details))
-    return out
 
 
 input_dir = Path('npdes_permits/LLM_extraction/output/temporary_llm_ontology_results')
@@ -33,34 +18,39 @@ output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
 
 with open('npdes_permits/data/unitprocess_keywords.json') as f:
     keywords = json.load(f)
-    
-columns = get_all_keys(keywords)
-leaf_details = extract_process_rules(keywords)
 
-inherited_rules = []
-me_rules = []
-for col, details in leaf_details.items():
-    inf = details.get('inference_inherited')
-    if inf:
-        inherited_rules.append((col, inf.get('trigger_equipment') or [], inf.get('trigger_roles') or []))
-    me = details.get('inference_mutually_exclusive')
+leaves = extract_leaves(keywords)
+columns = [name for name, _, _ in leaves]
+
+# ontology_triggers rules sorted by priority
+trigger_rules = []
+for name, details, group_id in leaves:
+    trigger = details.get('ontology_triggers')
+    if not trigger:
+        continue
+    # Normalize: single list → list-of-lists
+    clauses = [trigger] if isinstance(trigger[0], str) else trigger
+    priority = details.get('priority', 1)
+    trigger_rules.append((name, clauses, priority, group_id))
+trigger_rules.sort(key=lambda r: r[2])
+
+# ontology_triggers_multi rules: sorted by priority
+multi_rules = []
+for name, details, _ in leaves:
+    me = details.get('ontology_triggers_multi')
     if me:
         for rule in (me if isinstance(me, list) else [me]):
-            me_rules.append((
-                rule['priority'],
-                col,
-                rule.get('equipment_types') or [],
-                rule.get('role_counts') or {}
-            ))
-me_rules.sort(key=lambda x: x[0])
+            multi_rules.append((name, rule))
+multi_rules.sort(key=lambda r: r[1]['priority'])
 
-g = Graph()
-for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerationkinds.ttl"]:
-    g.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
-ontology = g
-print(ontology)
+# Load ontology from GitHub
+for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerationkinds.ttl", "substances.ttl"]:
+    try:
+        ontology.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
+    except Exception as e:
+        print(f"Could not download {filename} from GitHub")
 
-site_df = pd.read_csv('npdes_permits/output/2025-10-31/site_data.csv', dtype=str).fillna('')
+site_df = pd.read_csv('npdes_permits/output/2026-2-18/site_data.csv', dtype=str).fillna('')
 pdf_map = {row['PDF_File'].replace('.pdf', ''): {
     'PERMIT_NUMBER': row['NPDES_No'],
     'Agency': row['Agency'],
@@ -75,74 +65,69 @@ for filename in os.listdir(input_dir):
         json_data = json.load(f)
 
     result = {col: '' for col in columns}
-    col_lookup = {normalize(col): col for col in columns}
 
     items = [i for i in json_data if i['Implementation'] in ["present", "planned"]]
-    processes = set()
-    roles = set()
-    equipment = set()
-    for item in items:
-        for p in item['Process'] or []:
-            processes.add(p.replace('Process-', ''))
-        for r in item['Role'] or []:
-            roles.add(r.replace('Role-', ''))
-        if item.get('Equipment'):
-            equipment.add(item['Equipment'])
-
-    # Secondary-only: items that have Role-Secondary (for role_counts / equipment filter)
-    secondary_items = [i for i in items if any((r or '').replace('Role-', '') == 'Secondary' for r in (i['Role'] or []))]
+    ontology_components = {'Process': set(), 'Role': set(), 'Equipment': set(), 'Substance': set()}
     role_counts = Counter()
-    secondary_equipment = set()
-    for i in secondary_items:
-        for r in i['Role'] or []:
-            role_counts[r.replace('Role-', '')] += 1
-        if i.get('Equipment'):
-            secondary_equipment.add(i['Equipment'])
 
-    # For direct processes and ontology parents
-    for proc in processes:
-        if normalize(proc) in col_lookup:
-            result[col_lookup[normalize(proc)]] = 'present'
-        for row in ontology.query(
-            "SELECT DISTINCT ?parent WHERE { ?p rdfs:subClassOf+ ?parent }",
-            initBindings={"p": WATR[f"Process-{proc}"]}
-        ):
-            parent = str(row.parent).split("#")[-1].replace("Process-", "")
-            if normalize(parent) in col_lookup:
-                result[col_lookup[normalize(parent)]] = 'present'
+    for item in items:
+        for ontology_component in ontology_components.keys():
+            for value in item.get(ontology_component) or []:
+                clean = value.replace(f"{ontology_component}-", "")
+                ontology_components[ontology_component].add(clean)
+                if ontology_component == 'Role':
+                    role_counts[clean] += 1
 
-    # For inherited processes: trigger_roles (all required) and trigger_equipment (any)
-    for col, trigger_equipment, trigger_roles in inherited_rules:
+    # Expand each component set with ontology parent classes (via rdfs:subClassOf)
+    for component_type in ['Process', 'Equipment', 'Substance']:
+        uri_prefix = "Process-" if component_type == 'Process' else ""
+        expanded = set()
+        for name in ontology_components[component_type]:
+            for parent_uri in ontology.transitive_objects(WATR[f"{uri_prefix}{name}"], RDFS.subClassOf):
+                expanded.add(parent_uri.fragment.removeprefix(uri_prefix))
+        ontology_components[component_type] = expanded
+
+    # Mark columns for any directly matched or parent processes
+    for proc in ontology_components['Process']:
+        if proc in result:
+            result[proc] = 'present'
+
+    # ontology_triggers: list = AND, list-of-lists = OR across clauses
+    # within sibling group, higher-priority fires first; skip lower-priority siblings
+    def matches_item(item):
+        for comp_type in ontology_components:
+            prefix = f"{comp_type}-"
+            if item.startswith(prefix):
+                return item[len(prefix):] in ontology_components[comp_type]
+        return False
+
+    fired_groups = set()
+    for col, clauses, priority, group_id in trigger_rules:
         if col not in result:
             continue
-        if trigger_roles and not all(r in roles for r in trigger_roles):
+        if group_id and group_id in fired_groups:
             continue
-        if trigger_equipment and not any(eq in equipment for eq in trigger_equipment):
-            continue
-        result[col] = 'present'
+        if any(all(matches_item(item) for item in clause) for clause in clauses):
+            result[col] = 'present'
+            if group_id:
+                fired_groups.add(group_id)
 
-    # Mutually exclusive (role-count): first matching rule by priority; skip if any BNR already set by direct/ontology
-    me_cols = {col for _, col, _, _ in me_rules}
-    if not any(result.get(c) == 'present' for c in me_cols):
-        for priority, col, equipment_types, role_counts_spec in me_rules:
-            if equipment_types and not any(eq in secondary_equipment for eq in equipment_types):
+    # ontology_triggers_multi: first matching rule by priority; skip if any column already set
+    multi_cols = {name for name, _ in multi_rules}
+    if not any(result.get(c) == 'present' for c in multi_cols):
+        for col, rule in multi_rules:
+            if rule.get('Equipment') and not any(eq in ontology_components['Equipment'] for eq in rule['Equipment']):
                 continue
-            match = True
-            for role_name, bounds in role_counts_spec.items():
-                count = role_counts.get(role_name, 0)
-                # must have at least the minimum count of units with this role 
-                if 'min' in bounds and count < bounds['min']:
-                    match = False
-                    break
-                # must not exceed the max count of units with this role
-                if 'max' in bounds and count > bounds['max']:
-                    match = False
-                    break
-            if match:
-                result[col] = 'present'
-                break
+            if rule.get('Role') and not all(r in ontology_components['Role'] for r in rule['Role']):
+                continue
+            if not all(
+                role_counts.get(r, 0) >= b.get('min', 0) and role_counts.get(r, 0) <= b.get('max', float('inf'))
+                for r, b in rule.get('role_counts', {}).items()
+            ):
+                continue
+            result[col] = 'present'
+            break
 
-    # result = get_columns_from_json(json_data, ontology, columns, inherited_rules, me_rules)
     result.update(pdf_map.get(filename.replace('.json', ''), {}))
     results.append(result)
 

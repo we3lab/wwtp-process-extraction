@@ -1,16 +1,18 @@
 import pandas as pd
 import os
 
-def get_all_keys(processes_dict):
-    """Extract all leaf processes (those with alt_names) from the JSON structure"""
-    processes = []
-    for process_name, details in processes_dict.items():
-        if isinstance(details, dict):
-            if 'alt_names' in details and details['alt_names']:
-                processes.append(process_name)
-            else:  # Parent category, recursively get children
-                processes.extend(get_all_keys(details))
-    return processes
+
+def extract_leaves(processes_dict, group_id=None):
+    """Return list of (name, details_dict, group_id) for all leaf entries."""
+    leaves = []
+    for name, details in processes_dict.items():
+        if not isinstance(details, dict):
+            continue
+        if 'alt_names' in details:
+            leaves.append((name, details, group_id))
+        else:
+            leaves.extend(extract_leaves(details, group_id=name))
+    return leaves
 
 
 def get_cwns_unit_process_names(process_name, process_details):

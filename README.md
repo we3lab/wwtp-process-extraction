@@ -17,11 +17,14 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
     - [npdes_permits/step2_search_npdes_text.py](npdes_permits/search_npdes_text.py): scans PDFs against unitprocess_keywords and writes unit_processes.csv with present/future status
     
 3. Detect treatment processes in permits with LLM search
-    - [npdes_permits/LLM_extraction/batch_query.py](npdes_permits/LLM_extraction/batch_query.py): runs LLM pipeline for all PDFs and writes llm_results/
-    
-    Uses llm_rag_loader.py helper for loading PDFs, extracting sections, and indexing text in Chroma
+    - [npdes_permits/step3a_llm_ontology.py](npdes_permits/step3a_llm_ontology.py): run the LLM extraction using the ontology format
+        - use *--init_ontology* to reload the ontology and make it up-to-date as a .txt file under npdes_permits/data
+        - use *--model "model_name" --pdf "pdf_file_or_pdf_folder_path"* to run the LLM extraction using the specific model on the specific pdf(s) : the results are saved as json file under output/date/llm_search_ontology
+    - [npdes_permits/step3b_llm_list.py](npdes_permits/step3b_llm_list.py): run the LLM extraction using the unitprocess_list format
+        - use *--model "model_name" --pdf "pdf_file_or_pdf_folder_path"* to run the LLM extraction using the specific model on the specific pdf(s) : the results are saved as json file under output/date/llm_search_list
 
 4. Post-process LLM output back to CWNS format
+    - [npdes_permits/step4_postprocess_llm_output.py](npdes_permits/step4_postprocess_llm_output.py): post-process the outputs of the LLM using the ontology and writes llm_ontology_unit_processes_by_facility.csv with present/planned/past status.
 
 5. Compare NPDES text extraction vs CWNS survey data
     - [npdes_permits/step5a_compare_aggregate_results.py](npdes_permits/step5a_compare_aggregate_results.py): compares unit_processes.csv to unit_processes_by_facility.csv with bar chart comparisons
@@ -34,7 +37,8 @@ Executing from the repository root directory:
 python npdes_permits/step0_build_cwns_table.py
 python npdes_permits/step1_scrape_npdes.py
 python npdes_permits/step2_search_npdes_text.py
-python npdes_permits/LLM_extraction/batch_query.py
+python npdes_permits/step3a_llm_ontology.py --init_ontology
+python npdes_permits/step3a_llm_ontology.py --model gemini-2.0-flash-001 --pdf npdes_permits/output/2026-2-18/npdes
 python npdes_permits/step4_postprocess_llm_output.py
 python npdes_permits/step5a_compare_aggregate_results.py
 python npdes_permits/step5b_compare_facility_results.py

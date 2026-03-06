@@ -12,8 +12,9 @@ ontology = Graph()
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
 
-input_dir = Path('npdes_permits/output/2026-2-18/llm_search_ontology')
+input_dir = Path('npdes_permits/output/2026-2-18/llm_search')
 output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
+output_json_dir = Path('npdes_permits/output/2026-2-18/llm_search_with_triggers')
 
 with open('npdes_permits/data/unitprocess_keywords.json') as f:
     keywords = json.load(f)
@@ -94,6 +95,7 @@ pdf_map = {row['PDF_File'].replace('.pdf', ''): {
 } for _, row in site_df.iterrows()}
 
 results = []
+output_json_dir.mkdir(parents=True, exist_ok=True)
 
 
 def normalize_records(json_data):
@@ -126,20 +128,6 @@ def normalize_values(value):
             continue
         normalized.append(text)
     return normalized
-
-
-def normalize_implementation(value):
-    text = str(value or '').strip().lower()
-    if text in {'present', 'planned', 'past'}:
-        return text
-    return ''
-
-
-def merge_implementation(existing_value, new_value):
-    rank = {'': 0, 'past': 1, 'planned': 2, 'present': 3}
-    existing = normalize_implementation(existing_value)
-    new = normalize_implementation(new_value)
-    return new if rank.get(new, 0) > rank.get(existing, 0) else existing
 
 
 def normalize_component_name(component_type, name):
@@ -186,14 +174,22 @@ for filename in os.listdir(input_dir):
     with open(input_dir / filename) as f:
         json_data = json.load(f)
 
+    if isinstance(json_data, dict) and isinstance(json_data.get('items'), list):
+        output_json_data = {'items': [dict(item) if isinstance(item, dict) else item for item in json_data['items']]}
+    else:
+        output_json_data = {'items': []}
+
     result = {col: '' for col in columns}
 
     records = normalize_records(json_data)
-    items = records
 
     item_components = []
-    for item in items:
-        implementation = normalize_implementation(get_field(item, 'Implementation'))
+    for item_idx, item in enumerate(records):
+        if str(get_field(item, 'Implementation') or '').lower() not in ["present", "planned"]:
+            if item_idx < len(output_json_data['items']) and isinstance(output_json_data['items'][item_idx], dict):
+                output_json_data['items'][item_idx]['trigger_process'] = []
+            continue
+
         components = {'Process': set(), 'Role': set(), 'Equipment': set(), 'Substance': set()}
         item_role_counts = Counter()
         for comp_type in components:
@@ -214,7 +210,7 @@ for filename in os.listdir(input_dir):
                 )
             components[component_type] = expanded
 
-        item_components.append((components, item_role_counts, implementation))
+        item_components.append((item_idx, components, item_role_counts))
 
     # ontology_triggers: list = AND, list-of-lists = OR across clauses
     # within sibling group, higher-priority fires first; skip lower-priority siblings
@@ -235,7 +231,7 @@ for filename in os.listdir(input_dir):
         multi_rules_by_group.setdefault(group_id, []).append((col, rule))
 
     # Evaluate each item independently, then merge item-level positives into facility result.
-    for components, role_counts, implementation in item_components:
+    for item_idx, components, role_counts in item_components:
         item_result = {col: '' for col in columns}
 
         for proc in components['Process']:
@@ -360,9 +356,16 @@ for filename in os.listdir(input_dir):
                     )
                 item_result[chosen_col] = 'present'
 
+        item_triggers = sorted([col for col, value in item_result.items() if value == 'present'])
+        if item_idx < len(output_json_data['items']) and isinstance(output_json_data['items'][item_idx], dict):
+            output_json_data['items'][item_idx]['trigger_process'] = item_triggers
+
         for col, value in item_result.items():
             if value == 'present':
-                result[col] = merge_implementation(result.get(col, ''), implementation)
+                result[col] = 'present'
+
+    with open(output_json_dir / filename, 'w') as f:
+        json.dump(output_json_data, f, indent=2)
 
     result.update(pdf_map.get(filename.replace('.json', ''), {}))
     results.append(result)

@@ -604,7 +604,7 @@ for col in all_sheet_process_cols:
     # cwns_col = SHEET_TO_CWNS_COL.get(col, col)
     # if cwns_col in cwns_common.columns:
     print(col)
-    print(cwns_common.keys())
+    # print(cwns_common.keys())
     cwns_count = int(build_cwns_presence_mask(cwns_common[col]).sum())
     process_counts.append({
         'process': col,
@@ -629,6 +629,79 @@ for row in sorted(process_counts, key=lambda r: r['pfd'], reverse=True):
     if row['pfd'] > 0 or row['npdes_text'] > 0 or row['cwns'] > 0:
         print(f"{row['process']:<40} {row['pfd']:>5} {row['npdes_text']:>5} {row['cwns']:>5}")
 
+def is_yes(val):
+    """Check if a cell value means the process is present."""
+    return str(val).strip().upper() in ('YES', 'PLANNED')
+
+# ==============================================================================
+# SIMPLIFIED GROUND TRUTH COMPARISON: +/- % vs PFD grouped by JSON category
+# ==============================================================================
+
+# Build mapping from leaf process name -> top-level JSON category
+leaf_to_category = {}
+for cat_name, cat_value in unitprocess_keywords.items():
+    if isinstance(cat_value, dict) and 'alt_names' in cat_value:
+        # Leaf-level category (e.g. Comminution, Grit Removal)
+        leaf_to_category[cat_name] = cat_name
+    else:
+        for leaf_name, _, _ in extract_leaves(cat_value):
+            leaf_to_category[leaf_name] = cat_name
+
+# Aggregate facility-level counts per category using set unions to avoid double-counting
+from collections import defaultdict
+cat_pfd_facilities = defaultdict(set)
+cat_npdes_facilities = defaultdict(set)
+cat_cwns_facilities = defaultdict(set)
+
+for col in all_sheet_process_cols:
+    category = leaf_to_category.get(col, col)
+    # PFD
+    if col in pfd_common.columns:
+        for _, row in pfd_common.iterrows():
+            if is_yes(row.get(col, '')):
+                cat_pfd_facilities[category].add(row['NPDES_No'])
+    # NPDES text
+    if col in text_common.columns:
+        for _, row in text_common.iterrows():
+            if is_yes(row.get(col, '')):
+                cat_npdes_facilities[category].add(row['NPDES_No'])
+    # CWNS
+    if col in cwns_common.columns:
+        mask = build_cwns_presence_mask(cwns_common[col])
+        for permit in cwns_common.loc[mask, 'PERMIT_NUMBER']:
+            cat_cwns_facilities[category].add(permit)
+
+# Build summary rows
+all_cats = sorted(set(list(cat_pfd_facilities.keys()) + list(cat_npdes_facilities.keys()) + list(cat_cwns_facilities.keys())))
+gt_simple_rows = []
+for cat in all_cats:
+    pfd = len(cat_pfd_facilities[cat])
+    npdes = len(cat_npdes_facilities[cat])
+    cwns = len(cat_cwns_facilities[cat])
+    if pfd == 0 and npdes == 0 and cwns == 0:
+        continue
+    if pfd > 0:
+        npdes_str = f"{(npdes - pfd) / pfd * 100:+.0f}%"
+        cwns_str = f"{(cwns - pfd) / pfd * 100:+.0f}%"
+    else:
+        npdes_str = f"+{npdes}" if npdes > 0 else "0"
+        cwns_str = f"+{cwns}" if cwns > 0 else "0"
+    gt_simple_rows.append({
+        'Process_Category': cat,
+        'PFD_Ground_Truth': pfd,
+        'NPDES_Manual': npdes,
+        'NPDES_vs_GT': npdes_str,
+        'CWNS': cwns,
+        'CWNS_vs_GT': cwns_str,
+    })
+
+gt_simple_df = pd.DataFrame(gt_simple_rows)
+gt_simple_df = gt_simple_df.sort_values('PFD_Ground_Truth', ascending=False).reset_index(drop=True)
+gt_simple_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_summary.csv'
+gt_simple_df.to_csv(gt_simple_csv, index=False)
+print(f"\nSaved simplified ground truth comparison: {os.path.basename(gt_simple_csv)}")
+print(gt_simple_df.to_string(index=False))
+
 
 # ==============================================================================
 # PER-FACILITY COMPARISON TABLE: NPDES Text & CWNS vs Ground Truth (PFD)
@@ -636,11 +709,6 @@ for row in sorted(process_counts, key=lambda r: r['pfd'], reverse=True):
 print("\n" + "="*80)
 print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (PFD)")
 print("="*80)
-
-
-def is_yes(val):
-    """Check if a cell value means the process is present."""
-    return str(val).strip().upper() in ('YES', 'PLANNED')
 
 
 facility_rows = []

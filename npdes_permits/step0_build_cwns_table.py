@@ -136,23 +136,23 @@ wwtps.reset_index(inplace = True, drop = True)
 # wwtps['BIOGASELEC_WERF'] = wwtps['BIOGASELEC_WERF'].fillna(0)
 
 #read in data from the Department of Energy's Combined Heat and Power Installation database (https://doe.icfwebservices.com/chp) to identify wwtps that utilize biogas for electricity generation
-doe_biogas = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/doe_chpdb-WWTP.csv', dtype = {'CWNS_NUM' : str}, encoding = 'latin1')
+# doe_biogas = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/doe_chpdb-WWTP.csv', dtype = {'CWNS_NUM' : str}, encoding = 'latin1')
 
 #drop duplicate and nan values from biogas dataframe to avoid creating duplicates in wwtps dataframe post-merge
-doe_biogas.dropna(subset = 'CWNS_NUM', inplace = True)
+# doe_biogas.dropna(subset = 'CWNS_NUM', inplace = True)
 
 #add a leading zero to old CWNS ids with a length less than 11 to ensure proper merge
-doe_biogas['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in doe_biogas['CWNS_NUM']]
-doe_biogas.drop_duplicates(subset = 'CWNS_NUM', inplace = True)
+# doe_biogas['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in doe_biogas['CWNS_NUM']]
+# doe_biogas.drop_duplicates(subset = 'CWNS_NUM', inplace = True)
 
 #create a dataframe that just indicates whether biogas is used for electricity generation, according to DOE
-biogas_doe = doe_biogas[['CWNS_NUM','BIOGAS_DOE_2022']]
+# biogas_doe = doe_biogas[['CWNS_NUM','BIOGAS_DOE_2022']]
 
 #merge biogas info from DOE with faciltiies info from CWNS
-wwtps = pd.merge(left = wwtps, right = biogas_doe, how = 'left', on = 'CWNS_NUM')
+# wwtps = pd.merge(left = wwtps, right = biogas_doe, how = 'left', on = 'CWNS_NUM')
 
 #replace nan values with zeros
-wwtps['BIOGAS_DOE_2022'] = wwtps['BIOGAS_DOE_2022'].fillna(0)
+# wwtps['BIOGAS_DOE_2022'] = wwtps['BIOGAS_DOE_2022'].fillna(0)
 
 # #create column that indicate whether biogas was used for electricity generation based on the results of both DOE and WEF
 # wwtps['BIOGAS_EL_2022'] = 0

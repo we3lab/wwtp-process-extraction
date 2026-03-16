@@ -3,23 +3,13 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import pandas as pd
 import os
-import urllib.parse
+from collections import defaultdict
 
 from helpers.utils import *
+from helpers.plotting import COLORS, COLORS_GT, HATCH_PATTERNS
+from helpers.load_google_sheet import load_google_sheet_csv
 
 DATE_FOLDER = '2026-2-18'
-
-COLORS = {
-    'cwns': '#FFD700',           # Gold for CWNS
-    'npdes': '#1482a5ff',        # Dark blue for NPDES present
-}
-
-# Hatch patterns for status values
-HATCH_PATTERNS = {
-    'present': '',               # Solid fill
-    'future': '///',             # Diagonal lines
-    'present_and_future': 'xxx'  # Cross-hatch
-}
 
 
 def build_status_mask(df, process_name, unitprocess_keywords, status_filter):
@@ -197,47 +187,27 @@ def create_status_plot(plot_data, unit_process_results, category_name,
     plt.close(fig)
 
 
-def count_facilities_with_processes(processes, data_source, process_names=None, unitprocess_keywords=None, matching_cwns_data=None, status_filter=None):
-    """
-    Count facilities that have any of the given processes
-    
-    Args:
-        processes: List of process names to count
-        data_source: DataFrame with NPDES data (if applicable)
-        process_names: List of all process names (for CWNS mapping)
-        unitprocess_keywords: Keywords dictionary for mapping
-        matching_cwns_data: CWNS data DataFrame
-        status_filter: Filter for status column ('present', 'future', 'present_and_future', or None for binary)
-    """
-    facilities_with_processes = set()
-    
-    if data_source is not None:
-        # NPDES data - use new _status and _binary columns
-        for process in processes:
-            if status_filter:
-                mask = build_status_mask(data_source, process, unitprocess_keywords, status_filter)
-                if mask is not None:
-                    facilities = data_source[mask]['PERMIT_NUMBER'].tolist()
-                    facilities_with_processes.update(facilities)
-            else:
-                mask = build_binary_mask(data_source, process, unitprocess_keywords)
-                if mask is not None:
-                    facilities = data_source[mask]['PERMIT_NUMBER'].tolist()
-                    facilities_with_processes.update(facilities)
-    else:
-        # CWNS data
-        for process in processes:
-            if process_names and process in process_names:
-                process_details = find_process_details(process, unitprocess_keywords)
-                if process_details:
-                    cwns_names = get_cwns_unit_process_names(process, process_details)
-                    for cwns_name in cwns_names:
-                        if cwns_name in matching_cwns_data.columns:
-                            mask = build_cwns_presence_mask(matching_cwns_data[cwns_name])
-                            facilities_with_process = matching_cwns_data[mask]['PERMIT_NUMBER'].tolist()
-                            facilities_with_processes.update(facilities_with_process)
-    
-    return len(facilities_with_processes)
+def count_npdes_facilities(processes, df):
+    """Count unique NPDES facilities (by FACILITY_KEY) with any of the given processes."""
+    facilities = set()
+    for process in processes:
+        mask = build_binary_mask(df, process, None)
+        if mask is not None:
+            facilities.update(df.loc[mask, 'FACILITY_KEY'])
+    return len(facilities)
+
+
+def count_cwns_facilities(processes, df, unitprocess_keywords):
+    """Count unique CWNS facilities (by CWNS_ID) with any of the given processes."""
+    facilities = set()
+    for process in processes:
+        details = find_process_details(process, unitprocess_keywords)
+        if details:
+            for cwns_name in get_cwns_unit_process_names(process, details):
+                if cwns_name in df.columns:
+                    mask = build_cwns_presence_mask(df[cwns_name])
+                    facilities.update(df.loc[mask, 'CWNS_ID'])
+    return len(facilities)
 
 
 def process_category_data(category, unitprocess_keywords, unit_process_results, matching_cwns_data, status_filter='any'):
@@ -286,21 +256,8 @@ def process_category_data(category, unitprocess_keywords, unit_process_results, 
 
     # Count parent categories for both NPDES and CWNS data
     for parent_name, child_processes in parent_child_mapping.items():
-        # NPDES parent count using binary columns
-        npdes_parent_count = count_facilities_with_processes(
-            child_processes, 
-            unit_process_results,
-            status_filter=None  # Use binary for overall count
-        )
-        
-        # CWNS parent count
-        cwns_parent_count = count_facilities_with_processes(
-            child_processes, 
-            None, 
-            process_names, 
-            unitprocess_keywords, 
-            matching_cwns_data
-        )
+        npdes_parent_count = count_npdes_facilities(child_processes, unit_process_results)
+        cwns_parent_count = count_cwns_facilities(child_processes, matching_cwns_data, unitprocess_keywords)
         
         npdes_results_df[parent_name] = npdes_parent_count
         matching_cwns_results_df[parent_name] = cwns_parent_count
@@ -319,61 +276,58 @@ print(f"Categories: {categories_to_plot}")
 
 # Load NPDES results data from the specified date folder
 unit_process_results = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv')
+unit_process_results['FACILITY_KEY'] = (
+    unit_process_results['PERMIT_NUMBER'].fillna('') + '||' +
+    unit_process_results['FACILITY_NAME'].fillna('')
+)
 
 print(f"\n{'='*80}")
 print("DATA LOADING SUMMARY")
 print(f"{'='*80}")
-print(f"NPDES data: Loaded {len(unit_process_results)} facilities")
-print(f"Columns sample: {unit_process_results.columns[:10].tolist()}")
+print(f"NPDES data: Loaded {len(unit_process_results)} rows, "
+      f"{unit_process_results['FACILITY_KEY'].nunique()} unique facilities")
 
 # Get unique NPDES permit numbers
 npdes_permit_numbers = set(unit_process_results['PERMIT_NUMBER'].unique())
 print(f"Unique NPDES permit numbers: {len(npdes_permit_numbers)}")
 
-# Load and organize CWNS data
+# Load and consolidate CWNS data with facility names and clean NPDES permits
 cwns_data = pd.read_csv(f'npdes_permits/output/unit_processes_by_facility.csv')
-print(f"\nCWNS data: Total facilities: {len(cwns_data)}")
+print(f"\nCWNS data: Total rows: {len(cwns_data)}")
 
-# Filter for California only
-ca_cwns_data = cwns_data[cwns_data['STATE_CODE'] == 'CA'].copy()
-print(f"CWNS data: California facilities: {len(ca_cwns_data)}")
+ca_cwns_data = prepare_cwns_ca(
+    cwns_data,
+    'npdes_permits/data/cwns/2022/2022_FACILITIES.csv',
+    'npdes_permits/data/cwns/2022/FACILITY_PERMIT.csv',
+    'npdes_permits/data/cwns/cwns_facilities_match_manual.csv',
+)
+print(f"CWNS CA facilities (consolidated): {len(ca_cwns_data)}")
 
-# Get unique CWNS permit numbers (California only)
-cwns_permit_numbers = set(ca_cwns_data['PERMIT_NUMBER'].unique())
-print(f"Unique CWNS CA permit numbers: {len(cwns_permit_numbers)}")
+# Match CWNS to NPDES permits
+ca_cwns_data = match_cwns_to_npdes(ca_cwns_data, npdes_permit_numbers)
+matching_cwns_data = ca_cwns_data[ca_cwns_data['matched']].copy()
 
-# Find matching permit numbers
-matching_permit_numbers = npdes_permit_numbers.intersection(cwns_permit_numbers)
-print(f"\n{'='*80}")
-print("PERMIT NUMBER MATCHING")
-print(f"{'='*80}")
-print(f"Facilities in BOTH datasets: {len(matching_permit_numbers)}")
-print(f"Facilities ONLY in NPDES: {len(npdes_permit_numbers - cwns_permit_numbers)}")
-print(f"Facilities ONLY in CWNS: {len(cwns_permit_numbers - npdes_permit_numbers)}")
-
-# Filter both datasets to only matching facilities
+# Filter NPDES to only facilities with matching CWNS data
+matching_permit_numbers = set(matching_cwns_data['linking_permit'].dropna())
 unit_process_results_matched = unit_process_results[
     unit_process_results['PERMIT_NUMBER'].isin(matching_permit_numbers)
 ].copy()
-matching_cwns_data = ca_cwns_data[
-    ca_cwns_data['PERMIT_NUMBER'].isin(matching_permit_numbers)
-].copy()
 
-print(f"\nFiltered NPDES data: {len(unit_process_results_matched)} facilities")
-print(f"Filtered CWNS data: {len(matching_cwns_data)} facilities")
+print(f"\n{'='*80}")
+print("FACILITY MATCHING")
+print(f"{'='*80}")
+print(f"CWNS facilities matched: {len(matching_cwns_data)}")
+print(f"NPDES rows matched: {len(unit_process_results_matched)}")
+print(f"NPDES permits matched: {len(matching_permit_numbers)}")
+npdes_unmatched = npdes_permit_numbers - matching_permit_numbers
+print(f"NPDES permits unmatched: {len(npdes_unmatched)}")
+print(f"CWNS facilities unmatched: {len(ca_cwns_data) - len(matching_cwns_data)}")
 
-# Show some example matching permit numbers
-if matching_permit_numbers:
-    examples = list(matching_permit_numbers)[:5]
-    print(f"\nExample matching permit numbers: {examples}")
-
-# Show some examples of non-matching
-npdes_only = npdes_permit_numbers - cwns_permit_numbers
-cwns_only = cwns_permit_numbers - npdes_permit_numbers
-if npdes_only:
-    print(f"\nExample NPDES-only permits: {list(npdes_only)[:5]}")
-if cwns_only:
-    print(f"Example CWNS-only permits: {list(cwns_only)[:5]}")
+# Save unmatched CWNS facilities
+unmatched_cwns = ca_cwns_data[~ca_cwns_data['matched']]
+unmatched_cwns[['CWNS_ID', 'FACILITY_NAME', 'raw_permit_list', 'NPDES_PERMIT']].to_csv(
+    f'npdes_permits/output/{DATE_FOLDER}/unmatched_cwns_facilities.csv', index=False)
+print(f"\nSaved {len(unmatched_cwns)} unmatched CWNS facilities to unmatched_cwns_facilities.csv")
 
 print(f"{'='*80}\n")
 
@@ -455,11 +409,12 @@ print("\n Comprehensive plot saved as 'all_categories_comparison_with_status.png
 print("\n" + "="*80)
 print("FACILITY MATCHING REPORT")
 print("="*80)
-print(f"Total California CWNS facilities: {len(ca_cwns_data)}")
-print(f"Total NPDES facilities analyzed: {len(unit_process_results_matched)}")
-print(f"Facilities matched and compared: {len(matching_permit_numbers)}")
-print(f"Match rate: {len(matching_permit_numbers) / len(npdes_permit_numbers) * 100:.1f}% of NPDES facilities")
-print(f"Coverage: {len(matching_permit_numbers) / len(ca_cwns_data) * 100:.1f}% of CA CWNS facilities")
+print(f"Total California CWNS facilities (consolidated): {len(ca_cwns_data)}")
+print(f"Total NPDES rows analyzed: {len(unit_process_results_matched)}")
+print(f"CWNS facilities matched: {len(matching_cwns_data)}")
+print(f"NPDES permits matched: {len(matching_permit_numbers)}")
+print(f"Match rate: {len(matching_permit_numbers) / len(npdes_permit_numbers) * 100:.1f}% of NPDES permits")
+print(f"Coverage: {len(matching_cwns_data) / len(ca_cwns_data) * 100:.1f}% of CA CWNS facilities")
 
 # Create overall status summary
 print("\n" + "="*80)
@@ -490,23 +445,6 @@ print(f"Grand total: {total_present + total_future + total_both}")
 
 GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
 
-COLORS_GT = {
-    'pfd': '#2ca02c',        # Green for Process Flow Diagrams (ground truth)
-    'npdes_text': '#1482a5ff',  # Dark blue for NPDES Text (manual)
-    'cwns': '#FFD700',       # Gold for CWNS
-}
-
-
-def load_google_sheet_csv(sheet_id, sheet_name):
-    """Load a Google Sheet tab as a CSV DataFrame."""
-    url = (f'https://docs.google.com/spreadsheets/d/{sheet_id}'
-           f'/gviz/tq?tqx=out:csv&sheet={urllib.parse.quote(sheet_name)}')
-    df = pd.read_csv(url, dtype=str)
-    # Drop unnamed trailing columns
-    df = df.loc[:, ~df.columns.str.startswith('Unnamed')]
-    df = df[df['NPDES_No'] != 'NPDES_No'].reset_index(drop=True)
-    return df
-
 
 def count_yes(series):
     """Count YES/PLANNED values in a sheet column (case-insensitive)."""
@@ -514,13 +452,13 @@ def count_yes(series):
     return (s.isin(['YES', 'PLANNED'])).sum()
 
 
-def create_ground_truth_plot(process_counts, save_path, title='Ground Truth Comparison',
-                             figsize=(20, 7), fontsize=12):
+def create_ground_truth_plot(process_counts, save_path):
     """
     Create a grouped bar chart comparing PFD, NPDES Text, and CWNS counts.
 
     process_counts: list of dicts with keys 'process', 'pfd', 'npdes_text', 'cwns'
     """
+    fontsize = 12
     df = pd.DataFrame(process_counts)
     # Keep only processes where at least one source has a count > 0
     df = df[(df['pfd'] > 0) | (df['npdes_text'] > 0) | (df['cwns'] > 0)]
@@ -530,7 +468,7 @@ def create_ground_truth_plot(process_counts, save_path, title='Ground Truth Comp
     # Sort by PFD count descending
     df = df.sort_values('pfd', ascending=False).reset_index(drop=True)
 
-    fig, ax = plt.subplots(figsize=figsize)
+    fig, ax = plt.subplots(figsize=(20, 7))
     x = range(len(df))
     width = 0.25
 
@@ -547,7 +485,6 @@ def create_ground_truth_plot(process_counts, save_path, title='Ground Truth Comp
     ax.set_xticks(list(x))
     ax.set_xticklabels(df['process'], rotation=45, ha='right', fontsize=fontsize)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    ax.set_title(title, fontsize=18)
     ax.set_ylabel('WWTP Count', fontsize=16)
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
     ax.legend(loc='upper right', fontsize=11)
@@ -567,7 +504,7 @@ print(f"PFD sheet: {len(pfd_df)} facilities")
 print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
 
 # Determine the process columns (everything after the first 4 metadata cols)
-meta_cols = ['Agency', 'Facility_Name', 'NPDES_No', 'PDF_File']
+meta_cols = ['Agency', 'Facility_Name', 'NPDES_No', 'PDF_File', "Ground Truth Sources"]
 pfd_process_cols = [c for c in pfd_df.columns if c not in meta_cols]
 npdes_text_process_cols = [c for c in npdes_text_df.columns if c not in meta_cols]
 
@@ -577,7 +514,7 @@ all_sheet_process_cols = list(dict.fromkeys(pfd_process_cols + npdes_text_proces
 # Filter to only facilities present in all three datasets (PFD, NPDES text, and CWNS)
 pfd_permits = set(pfd_df['NPDES_No'].dropna().str.strip())
 text_permits = set(npdes_text_df['NPDES_No'].dropna().str.strip())
-cwns_permits_gt = set(ca_cwns_data['PERMIT_NUMBER'].dropna().str.strip())
+cwns_permits_gt = set(ca_cwns_data['linking_permit'].dropna().str.strip())
 common_permits = pfd_permits & text_permits & cwns_permits_gt
 
 print(f"Facilities in all 3 sources: {len(common_permits)}")
@@ -585,12 +522,12 @@ print(f"Facilities in all 3 sources: {len(common_permits)}")
 # Filter each source to common facilities
 pfd_common = pfd_df[pfd_df['NPDES_No'].str.strip().isin(common_permits)].copy()
 text_common = npdes_text_df[npdes_text_df['NPDES_No'].str.strip().isin(common_permits)].copy()
-cwns_common = ca_cwns_data[ca_cwns_data['PERMIT_NUMBER'].str.strip().isin(common_permits)].copy()
+cwns_common = ca_cwns_data[ca_cwns_data['linking_permit'].str.strip().isin(common_permits)].copy()
 
 # Deduplicate (some sheets may have duplicate NPDES_No rows)
 pfd_common = pfd_common.drop_duplicates(subset='NPDES_No', keep='first')
 text_common = text_common.drop_duplicates(subset='NPDES_No', keep='first')
-cwns_common = cwns_common.drop_duplicates(subset='PERMIT_NUMBER', keep='first')
+cwns_common = cwns_common.drop_duplicates(subset='CWNS_ID', keep='first')
 
 print(f"After dedup - PFD: {len(pfd_common)}, NPDES Text: {len(text_common)}, CWNS: {len(cwns_common)}")
 
@@ -617,25 +554,14 @@ for col in all_sheet_process_cols:
 create_ground_truth_plot(
     process_counts,
     save_path=f'{figures_dir}/ground_truth_pfd_vs_npdes_text_vs_cwns.png',
-    title='Ground Truth: PFD vs NPDES Text (Manual) vs CWNS',
-    figsize=(24, 8),
-    fontsize=10,
 )
 
-# Print summary table
-print(f"\n{'Process':<40} {'PFD':>5} {'NPDES':>5} {'CWNS':>5}")
-print("-" * 60)
-for row in sorted(process_counts, key=lambda r: r['pfd'], reverse=True):
-    if row['pfd'] > 0 or row['npdes_text'] > 0 or row['cwns'] > 0:
-        print(f"{row['process']:<40} {row['pfd']:>5} {row['npdes_text']:>5} {row['cwns']:>5}")
 
 def is_yes(val):
     """Check if a cell value means the process is present."""
     return str(val).strip().upper() in ('YES', 'PLANNED')
 
-# ==============================================================================
-# SIMPLIFIED GROUND TRUTH COMPARISON: +/- % vs PFD grouped by JSON category
-# ==============================================================================
+# GROUND TRUTH COMPARISON: +/- % vs PFD grouped by JSON category
 
 # Build mapping from leaf process name -> top-level JSON category
 leaf_to_category = {}
@@ -648,7 +574,6 @@ for cat_name, cat_value in unitprocess_keywords.items():
             leaf_to_category[leaf_name] = cat_name
 
 # Aggregate facility-level counts per category using set unions to avoid double-counting
-from collections import defaultdict
 cat_pfd_facilities = defaultdict(set)
 cat_npdes_facilities = defaultdict(set)
 cat_cwns_facilities = defaultdict(set)
@@ -668,8 +593,8 @@ for col in all_sheet_process_cols:
     # CWNS
     if col in cwns_common.columns:
         mask = build_cwns_presence_mask(cwns_common[col])
-        for permit in cwns_common.loc[mask, 'PERMIT_NUMBER']:
-            cat_cwns_facilities[category].add(permit)
+        for cwns_id in cwns_common.loc[mask, 'CWNS_ID']:
+            cat_cwns_facilities[category].add(cwns_id)
 
 # Build summary rows
 all_cats = sorted(set(list(cat_pfd_facilities.keys()) + list(cat_npdes_facilities.keys()) + list(cat_cwns_facilities.keys())))
@@ -703,19 +628,14 @@ print(f"\nSaved simplified ground truth comparison: {os.path.basename(gt_simple_
 print(gt_simple_df.to_string(index=False))
 
 
-# ==============================================================================
-# PER-FACILITY COMPARISON TABLE: NPDES Text & CWNS vs Ground Truth (PFD)
-# ==============================================================================
-print("\n" + "="*80)
+# Per-facility comparison table
 print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (PFD)")
-print("="*80)
-
 
 facility_rows = []
 for permit in sorted(common_permits):
     pfd_row = pfd_common[pfd_common['NPDES_No'].str.strip() == permit].iloc[0]
     text_row = text_common[text_common['NPDES_No'].str.strip() == permit].iloc[0]
-    cwns_row = cwns_common[cwns_common['PERMIT_NUMBER'].str.strip() == permit].iloc[0]
+    cwns_row = cwns_common[cwns_common['linking_permit'].str.strip() == permit].iloc[0]
 
     facility_name = pfd_row.get('Facility_Name', permit)
 
@@ -778,46 +698,3 @@ gt_comparison_df = pd.DataFrame(facility_rows)
 gt_comparison_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv'
 gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
-
-# Print per-facility summary
-header = (f"{'Facility':<45} {'GT':>3}  "
-          f"{'TP':>3} {'FP':>3} {'FN':>3} {'Prec':>5} {'Rec':>5} {'F1':>5}  "
-          f"{'TP':>3} {'FP':>3} {'FN':>3} {'Prec':>5} {'Rec':>5} {'F1':>5}")
-print(f"\n{'':45}       {'--- NPDES Text ---':^35}  {'------ CWNS ------':^35}")
-print(header)
-print("-" * 130)
-for r in facility_rows:
-    print(f"{r['Facility_Name'][:45]:<45} {r['GT_Count']:>3}  "
-          f"{r['NPDES_TP']:>3} {r['NPDES_FP']:>3} {r['NPDES_FN']:>3} "
-          f"{r['NPDES_Precision']:>5.2f} {r['NPDES_Recall']:>5.2f} {r['NPDES_F1']:>5.2f}  "
-          f"{r['CWNS_TP']:>3} {r['CWNS_FP']:>3} {r['CWNS_FN']:>3} "
-          f"{r['CWNS_Precision']:>5.2f} {r['CWNS_Recall']:>5.2f} {r['CWNS_F1']:>5.2f}")
-
-# Aggregate metrics
-total_npdes_tp = sum(r['NPDES_TP'] for r in facility_rows)
-total_npdes_fp = sum(r['NPDES_FP'] for r in facility_rows)
-total_npdes_fn = sum(r['NPDES_FN'] for r in facility_rows)
-total_cwns_tp = sum(r['CWNS_TP'] for r in facility_rows)
-total_cwns_fp = sum(r['CWNS_FP'] for r in facility_rows)
-total_cwns_fn = sum(r['CWNS_FN'] for r in facility_rows)
-
-agg_npdes_prec = total_npdes_tp / (total_npdes_tp + total_npdes_fp) if (total_npdes_tp + total_npdes_fp) else 0
-agg_npdes_rec = total_npdes_tp / (total_npdes_tp + total_npdes_fn) if (total_npdes_tp + total_npdes_fn) else 0
-agg_npdes_f1 = 2 * agg_npdes_prec * agg_npdes_rec / (agg_npdes_prec + agg_npdes_rec) if (agg_npdes_prec + agg_npdes_rec) else 0
-
-agg_cwns_prec = total_cwns_tp / (total_cwns_tp + total_cwns_fp) if (total_cwns_tp + total_cwns_fp) else 0
-agg_cwns_rec = total_cwns_tp / (total_cwns_tp + total_cwns_fn) if (total_cwns_tp + total_cwns_fn) else 0
-agg_cwns_f1 = 2 * agg_cwns_prec * agg_cwns_rec / (agg_cwns_prec + agg_cwns_rec) if (agg_cwns_prec + agg_cwns_rec) else 0
-
-macro_npdes_f1 = sum(r['NPDES_F1'] for r in facility_rows) / len(facility_rows)
-macro_cwns_f1 = sum(r['CWNS_F1'] for r in facility_rows) / len(facility_rows)
-
-print("-" * 130)
-print(f"{'MICRO-AVERAGE':<45} {'':>3}  "
-      f"{total_npdes_tp:>3} {total_npdes_fp:>3} {total_npdes_fn:>3} "
-      f"{agg_npdes_prec:>5.2f} {agg_npdes_rec:>5.2f} {agg_npdes_f1:>5.2f}  "
-      f"{total_cwns_tp:>3} {total_cwns_fp:>3} {total_cwns_fn:>3} "
-      f"{agg_cwns_prec:>5.2f} {agg_cwns_rec:>5.2f} {agg_cwns_f1:>5.2f}")
-print(f"{'MACRO-AVERAGE F1':<45} {'':>3}  "
-      f"{'':>3} {'':>3} {'':>3} {'':>5} {'':>5} {macro_npdes_f1:>5.2f}  "
-      f"{'':>3} {'':>3} {'':>3} {'':>5} {'':>5} {macro_cwns_f1:>5.2f}")

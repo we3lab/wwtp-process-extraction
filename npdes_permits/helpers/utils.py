@@ -28,20 +28,94 @@ def find_process_details(process_name, unitprocess_keywords):
     for category, cat_keywords in unitprocess_keywords.items():
         if not isinstance(cat_keywords, dict):
             continue
-        # Check top level
         if process_name in cat_keywords:
             return cat_keywords[process_name]
-        # Check in parent categories
         for parent_name, parent_details in cat_keywords.items():
             if isinstance(parent_details, dict) and process_name in parent_details:
                 return parent_details[process_name]
     return None
 
 
+def extract_cwns_processes(row, proc_cols):
+    """Extract set of processes marked as present in a CWNS row."""
+    return {p for p in proc_cols
+            if str(row.get(p, '')).strip().lower() not in {'', '0', '0.0', 'nan'}}
+
+
+def extract_npdes_processes(row, proc_cols):
+    """Extract set of processes marked as present in an NPDES row."""
+    return {p for p in proc_cols
+            if str(row.get(p, '')).strip().lower().startswith('present')}
+
+
 def get_werf_codes_for_cwns_process(cwns_process_name):
     """for future mapping back to El Abbadi codes. Not directly used in this codebase"""
-    # Load the mapping from CWNS data if available
     el_abbadi_dir = os.path.join(os.path.dirname(__file__), 'data', 'el_abbadi', 'input')
     werf_codes_df = pd.read_csv(os.path.join(el_abbadi_dir, 'UNIT_PROCESS_EI_CODES_WERF_modified.csv'))
     matching = werf_codes_df[werf_codes_df['FINAL_UNIT_PROCESS_NAME'] == cwns_process_name]
     return matching['WERF_CODE'].unique().tolist() if not matching.empty else []
+
+
+def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path):
+    """Consolidate CWNS CA process data with facility names and clean NPDES permits.
+
+    1. Filter to CA, consolidate by CWNS_ID (merge duplicate rows)
+    2. Add FACILITY_NAME from 2022_FACILITIES.csv
+    3. Add NPDES_PERMIT from FACILITY_PERMIT.csv (NPDES-sourced permits)
+    4. Override with manual CSV corrections where available
+    """
+    ca = cwns_proc_df[cwns_proc_df['STATE_CODE'] == 'CA'].copy()
+    meta_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE']
+    proc_cols = [c for c in ca.columns if c not in meta_cols]
+
+    # Consolidate by CWNS_ID
+    consolidated = ca.groupby('CWNS_ID').agg(
+        raw_permit_list=('PERMIT_NUMBER', lambda x: list(x.dropna().unique())),
+        **{col: (col, 'first') for col in proc_cols}
+    ).reset_index()
+    consolidated['CWNS_ID'] = consolidated['CWNS_ID'].astype(str)
+
+    # Add facility names
+    facilities = pd.read_csv(facilities_path, dtype=str)
+    consolidated = consolidated.merge(facilities[['CWNS_ID', 'FACILITY_NAME']], on='CWNS_ID', how='left')
+
+    # Add clean NPDES permits from FACILITY_PERMIT
+    permits = pd.read_csv(permit_path, dtype=str)
+    npdes_permits = (permits[permits['PERMIT_SOURCE'] == 'NPDES'][['CWNS_ID', 'PERMIT_NUMBER']]
+                     .drop_duplicates(subset='CWNS_ID', keep='first')
+                     .rename(columns={'PERMIT_NUMBER': 'NPDES_PERMIT'}))
+    consolidated = consolidated.merge(npdes_permits, on='CWNS_ID', how='left')
+
+    # Apply manual CSV corrections: override NPDES_PERMIT where manual has NPDES CA#
+    manual = pd.read_csv(manual_csv_path, dtype=str).fillna('')
+    manual_override = (manual[manual['NPDES # CA#'].str.strip() != '']
+                       .drop_duplicates(subset='FACILITY_NAME', keep='first')
+                       .set_index('FACILITY_NAME')['NPDES # CA#'].str.strip())
+    mask = consolidated['FACILITY_NAME'].isin(manual_override.index)
+    consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'FACILITY_NAME'].map(manual_override)
+
+    return consolidated
+
+
+def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set):
+    """Match consolidated CWNS facilities to NPDES permits.
+
+    Matches on NPDES_PERMIT first, then raw_permit_list as fallback.
+    Adds 'matched' and 'linking_permit' columns.
+    """
+    df = consolidated_cwns.copy()
+
+    # Primary: match on clean NPDES permit
+    df['linking_permit'] = df['NPDES_PERMIT'].where(
+        df['NPDES_PERMIT'].fillna('').str.strip().isin(npdes_permits_set)
+    )
+
+    # Fallback: check raw permits for unmatched rows
+    unmatched = df['linking_permit'].isna()
+    if unmatched.any():
+        df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'raw_permit_list'].apply(
+            lambda permits: next((p for p in permits if str(p).strip() in npdes_permits_set), None)
+        )
+
+    df['matched'] = df['linking_permit'].notna()
+    return df

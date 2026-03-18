@@ -1,0 +1,68 @@
+Permit text extract: "Preliminary Treatment. Preliminary treatment consists of influent screens followed by grit removal. An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control.
+    b. Primary Treatment. Following preliminary treatment, wastewater is pumped into rectangular primary clarifiers to remove floatable and settleable material.
+    c. Biological Treatment. All wastewater receives biological treatment. A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins. Each basin is divided into four sections referred to as "quads." The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic conditions. This configuration achieves effective filament control and allows for some denitrification. Following biological treatment, wastewater is pumped to secondary clarifiers."
+JSON output:
+{
+    "items": [
+        {
+            "Equipment": "Screen",
+            "Process": ["Screening"],
+            "Role": ["Pretreatment"],
+            "Substance": null,
+            "Implementation": "present",
+            "Location": "on-site",
+            "Score": 1,
+            "Sentence": "Preliminary treatment consists of influent screens followed by grit removal."
+        },
+        {
+            "Equipment": "GritChamber",
+            "Process": ["Sedimentation"],
+            "Role": ["Pretreatment"],
+            "Substance": null,
+            "Implementation": "present",
+            "Location": "on-site",
+            "Score": 1,
+            "Sentence": "Preliminary treatment consists of influent screens followed by grit removal."
+        },
+        {
+            "Equipment": null,
+            "Process": ["ChemicalProcess"],
+            "Role": ["Pretreatment"],
+            "Substance": ["OdorControlAgent"],
+            "Implementation": "present",
+            "Location": "on-site",
+            "Score": 0.9,
+            "Sentence": "An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control."
+        },
+        {
+            "Equipment": "SedimentationTank",
+            "Process": ["Sedimentation"],
+            "Role": ["Primary"],
+            "Substance": null,
+            "Implementation": "present",
+            "Location": "on-site",
+            "Score": 0.9,
+            "Sentence": "...wastewater is pumped into rectangular primary clarifiers to remove floatable and settleable material."
+        },
+        {
+            "Equipment": "AerationBasin",
+            "Process": ["BiologicalProcess", "Nitrification", "Denitrification"],
+            "Role": ["NutrientRemoval", "NitrogenRemoval", "Anoxic", "Aerobic"],
+            "Substance": null,
+            "Implementation": "present",
+            "Location": "on-site",
+            "Score": 0.9,
+            "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins. Each basin is divided into four sections referred to as "quads." The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic conditions. This configuration achieves effective filament control and allows for some denitrification"
+        },
+        {
+            "Equipment": "SedimentationTank",
+            "Process": ["Sedimentation"],
+            "Role": ["Secondary"],
+            "Substance": null,
+            "Implementation": "present",
+            "Location": "on-site",
+            "Score": 0.9,
+            "Sentence": "Following biological treatment, wastewater is pumped to secondary clarifiers."
+        }
+    ]
+}

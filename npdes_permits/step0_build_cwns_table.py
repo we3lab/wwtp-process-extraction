@@ -7,7 +7,7 @@ import pandas as pd
 import os
 # WE3Lab additions
 import json
-from helpers.utils import extract_leaves, find_process_details, get_cwns_unit_process_names
+from helpers.utils import extract_leaves, get_cwns_unit_process_names
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -321,55 +321,41 @@ with open('data/unitprocess_keywords.json', 'r') as f:
 leaves = extract_leaves(unitprocess_keywords)
 all_keys = [name for name, _, _ in leaves]
 cwns_to_taxonomy = {}
-for process_name, _, _ in leaves:
-    details = find_process_details(process_name, unitprocess_keywords)
-    if details:
-        cwns_names = get_cwns_unit_process_names(process_name, details)
-        for cwns_name in cwns_names:
-            key = cwns_name.lower().strip()
-            cwns_to_taxonomy.setdefault(key, []).append(process_name)
+for process_name, details, _ in leaves:
+    cwns_names = get_cwns_unit_process_names(process_name, details)
+    for cwns_name in cwns_names:
+        key = cwns_name.lower().strip()
+        cwns_to_taxonomy.setdefault(key, []).append(process_name)
 
-# Create DataFrame with CWNS_NUM and all unit processes
-# Filter to only present unit processes (PRES_IND = 1)
-present_ups = uplist_eicodes[uplist_eicodes['PRES_IND'] == 1].copy()
+# Include both present (PRES_IND=1) and planned (PROJ_IND=1) processes.
+# Keep only the most recent report year per facility+process to avoid mixing PRES/PROJ from different years.
+active_ups = uplist_eicodes[(uplist_eicodes['PRES_IND'] == 1) | (uplist_eicodes['PROJ_IND'] == 1)].copy()
+active_ups = active_ups.sort_values('REPORT_YEAR').drop_duplicates(
+    subset=['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME'], keep='last'
+)
 
-# Map CWNS process names to defined taxonomy
 def map_to_taxonomy(row):
     cwns_name = str(row.get('FINAL_UNIT_PROCESS_NAME', '')).lower().strip()
     return cwns_to_taxonomy.get(cwns_name, [])
 
-present_ups['_taxonomy_processes'] = present_ups.apply(map_to_taxonomy, axis=1)
+active_ups['_taxonomy_processes'] = active_ups.apply(map_to_taxonomy, axis=1)
 
-# Create pivot table with defined taxonomy names as columns and mapped processes as rows
+# Build taxonomy rows with status determined from the single most-recent row per facility+process
 taxonomy_rows = []
-for _, row in present_ups.iterrows():
-    cwns_num = row['CWNS_NUM']
+for _, row in active_ups.iterrows():
+    status = 'present' if row['PRES_IND'] == 1 else 'future'
     for proc in row['_taxonomy_processes']:
-        taxonomy_rows.append({'CWNS_NUM': cwns_num, 'PROCESS': proc, 'PRESENT': 1})
+        taxonomy_rows.append({'CWNS_NUM': row['CWNS_NUM'], 'PROCESS': proc, 'STATUS': status})
 
 taxonomy_df = pd.DataFrame(taxonomy_rows)
-unit_processes_df = pd.pivot_table(
-    taxonomy_df,
-    index='CWNS_NUM',
-    columns='PROCESS',
-    values='PRESENT',
-    aggfunc='sum',
-    fill_value=0
-).astype('Int64')
+unit_processes_df = taxonomy_df.drop_duplicates(subset=['CWNS_NUM', 'PROCESS']).pivot(
+    index='CWNS_NUM', columns='PROCESS', values='STATUS'
+).fillna('0').reset_index()
 
-# Reset index to make CWNS_NUM a column
-unit_processes_df = unit_processes_df.reset_index()
-
-# Ensure all taxonomy columns exist (even if no facilities have that process)
+# Ensure all taxonomy columns exist
 for proc in all_keys:
     if proc not in unit_processes_df.columns:
-        unit_processes_df[proc] = 0
-
-# Convert numeric presence to 'present'/'0' for consistency with NPDES output
-for proc in all_keys:
-    unit_processes_df[proc] = unit_processes_df[proc].apply(
-        lambda v: 'present' if str(v).strip().lower() not in {'', '0', '0.0', 'nan'} else '0'
-    )
+        unit_processes_df[proc] = '0'
 
 # Load facility permit data to get NPDES permit numbers and state codes
 facility_permit = pd.read_csv('data/cwns/2022/FACILITY_PERMIT.csv', dtype={'CWNS_ID': str, 'STATE_CODE': str})

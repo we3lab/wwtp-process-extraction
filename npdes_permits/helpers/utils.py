@@ -25,6 +25,8 @@ def get_cwns_unit_process_names(process_name, process_details):
 
 def find_process_details(process_name, unitprocess_keywords):
     """Find process details in keywords hierarchy, searching both top-level and nested"""
+    if process_name in unitprocess_keywords:
+        return unitprocess_keywords[process_name]
     for category, cat_keywords in unitprocess_keywords.items():
         if not isinstance(cat_keywords, dict):
             continue
@@ -56,13 +58,13 @@ def get_werf_codes_for_cwns_process(cwns_process_name):
     return matching['WERF_CODE'].unique().tolist() if not matching.empty else []
 
 
-def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path):
+def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path, facilities_2012_path=None):
     """Consolidate CWNS CA process data with facility names and clean NPDES permits.
 
     1. Filter to CA, consolidate by CWNS_ID (merge duplicate rows)
-    2. Add FACILITY_NAME from 2022_FACILITIES.csv
+    2. Add FACILITY_NAME from 2022_FACILITIES.csv; fall back to 2012 data if provided
     3. Add NPDES_PERMIT from FACILITY_PERMIT.csv (NPDES-sourced permits)
-    4. Override with manual CSV corrections where available
+    4. Override with manual CSV corrections (format: CWNS_ID,NPDES_PERMIT,FACILITY_NAME)
     """
     ca = cwns_proc_df[cwns_proc_df['STATE_CODE'] == 'CA'].copy()
     meta_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE']
@@ -75,9 +77,19 @@ def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path)
     ).reset_index()
     consolidated['CWNS_ID'] = consolidated['CWNS_ID'].astype(str)
 
-    # Add facility names
+    # Add facility names from 2022 CWNS data
     facilities = pd.read_csv(facilities_path, dtype=str)
     consolidated = consolidated.merge(facilities[['CWNS_ID', 'FACILITY_NAME']], on='CWNS_ID', how='left')
+
+    # Fill missing FACILITY_NAME from 2012 data (older facilities not in 2022 survey)
+    if facilities_2012_path:
+        fac12 = pd.read_csv(facilities_2012_path, dtype=str)
+        ca_fac12 = fac12[fac12['State'] == 'CA'][['Facility/Project Name', 'CWNS Number']].copy()
+        ca_fac12.columns = ['FACILITY_NAME_2012', 'CWNS_ID12']
+        ca_fac12['CWNS_ID12'] = ca_fac12['CWNS_ID12'].str.lstrip('0')
+        fac12_map = ca_fac12.drop_duplicates('CWNS_ID12').set_index('CWNS_ID12')['FACILITY_NAME_2012']
+        null_name = consolidated['FACILITY_NAME'].isna()
+        consolidated.loc[null_name, 'FACILITY_NAME'] = consolidated.loc[null_name, 'CWNS_ID'].map(fac12_map)
 
     # Add clean NPDES permits from FACILITY_PERMIT
     permits = pd.read_csv(permit_path, dtype=str)
@@ -86,13 +98,12 @@ def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path)
                      .rename(columns={'PERMIT_NUMBER': 'NPDES_PERMIT'}))
     consolidated = consolidated.merge(npdes_permits, on='CWNS_ID', how='left')
 
-    # Apply manual CSV corrections: override NPDES_PERMIT where manual has NPDES CA#
+    # Apply manual CSV overrides (CWNS_ID-keyed: CWNS_ID,NPDES_PERMIT,FACILITY_NAME)
     manual = pd.read_csv(manual_csv_path, dtype=str).fillna('')
-    manual_override = (manual[manual['NPDES # CA#'].str.strip() != '']
-                       .drop_duplicates(subset='FACILITY_NAME', keep='first')
-                       .set_index('FACILITY_NAME')['NPDES # CA#'].str.strip())
-    mask = consolidated['FACILITY_NAME'].isin(manual_override.index)
-    consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'FACILITY_NAME'].map(manual_override)
+    cwns_id_map = (manual[manual['NPDES_PERMIT'].str.strip() != '']
+                   .drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT'])
+    mask = consolidated['CWNS_ID'].isin(cwns_id_map.index)
+    consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'CWNS_ID'].map(cwns_id_map)
 
     return consolidated
 

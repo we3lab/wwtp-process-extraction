@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 import os
 
@@ -58,13 +59,14 @@ def get_werf_codes_for_cwns_process(cwns_process_name):
     return matching['WERF_CODE'].unique().tolist() if not matching.empty else []
 
 
-def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path, facilities_2012_path=None):
+def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path,
+                    facilities_2012_path=None, facility_name_matches_path=None):
     """Consolidate CWNS CA process data with facility names and clean NPDES permits.
 
-    1. Filter to CA, consolidate by CWNS_ID (merge duplicate rows)
-    2. Add FACILITY_NAME from 2022_FACILITIES.csv; fall back to 2012 data if provided
-    3. Add NPDES_PERMIT from FACILITY_PERMIT.csv (NPDES-sourced permits)
-    4. Override with manual CSV corrections (format: CWNS_ID,NPDES_PERMIT,FACILITY_NAME)
+    Matching tiers (applied in order, later tiers override earlier):
+    1. NPDES_PERMIT from FACILITY_PERMIT.csv (primary, from official CWNS data)
+    2. Manual overrides from cwns_permits_match_manual.csv (CWNS_ID-keyed)
+    3. Name-based matches from cwns_facility_name_match_manual.csv (only rows with VALIDATED=Y)
     """
     ca = cwns_proc_df[cwns_proc_df['STATE_CODE'] == 'CA'].copy()
     meta_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE']
@@ -86,7 +88,9 @@ def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path,
         fac12 = pd.read_csv(facilities_2012_path, dtype=str)
         ca_fac12 = fac12[fac12['State'] == 'CA'][['Facility/Project Name', 'CWNS Number']].copy()
         ca_fac12.columns = ['FACILITY_NAME_2012', 'CWNS_ID12']
-        ca_fac12['CWNS_ID12'] = ca_fac12['CWNS_ID12'].str.lstrip('0')
+        # Ensure 11-digit format (leading zero for single-digit state codes)
+        ca_fac12['CWNS_ID12'] = ca_fac12['CWNS_ID12'].apply(
+            lambda x: '0' + str(x) if len(str(x)) < 11 else str(x))
         fac12_map = ca_fac12.drop_duplicates('CWNS_ID12').set_index('CWNS_ID12')['FACILITY_NAME_2012']
         null_name = consolidated['FACILITY_NAME'].isna()
         consolidated.loc[null_name, 'FACILITY_NAME'] = consolidated.loc[null_name, 'CWNS_ID'].map(fac12_map)
@@ -105,28 +109,71 @@ def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path,
     mask = consolidated['CWNS_ID'].isin(cwns_id_map.index)
     consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'CWNS_ID'].map(cwns_id_map)
 
+    # Apply name-based matches
+    if facility_name_matches_path and os.path.exists(facility_name_matches_path):
+        facility_name_manual = pd.read_csv(facility_name_matches_path, dtype=str).fillna('')
+        if len(facility_name_manual) > 0:
+            facility_name_manual_map = facility_name_manual.drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT']
+            missing = consolidated['NPDES_PERMIT'].isna() | (consolidated['NPDES_PERMIT'].str.strip() == '')
+            fmask = consolidated['CWNS_ID'].isin(facility_name_manual_map.index) & missing
+            consolidated.loc[fmask, 'NPDES_PERMIT'] = consolidated.loc[fmask, 'CWNS_ID'].map(facility_name_manual_map)
+
     return consolidated
 
 
-def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set):
+_SUFFIX_RE = re.compile(
+    r'\b(WWTF|WWTP|WRP|WPCF|WWRF|WQCP|WPCP|WRF|WWRP|STP|SD|CSD|'
+    r'CITY\s+OF|TOWN\s+OF|COUNTY\s+OF|DISTRICT|SANITARY|SANITATION|'
+    r'WATER\s+RECLAMATION|WATER\s+POLLUTION\s+CONTROL|'
+    r'TREATMENT\s+PLANT|TREATMENT\s+FACILITY|RECLAMATION\s+FACILITY|'
+    r'RECLAMATION\s+PLANT)\b',
+    re.IGNORECASE,
+)
+
+
+def normalize_facility_name(name):
+    """Normalize a facility name: uppercase, strip type suffixes and punctuation."""
+    if not name or (isinstance(name, float) and name != name):  # NaN check
+        return ''
+    s = str(name).upper().strip()
+    s = _SUFFIX_RE.sub('', s)
+    s = re.sub(r'[^\w\s]', '', s)
+    return re.sub(r'\s+', ' ', s).strip()
+
+
+def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_permit=None):
     """Match consolidated CWNS facilities to NPDES permits.
 
-    Matches on NPDES_PERMIT first, then raw_permit_list as fallback.
+    Three tiers (first match wins):
+    1. NPDES_PERMIT column (from FACILITY_PERMIT.csv or manual CSV)
+    2. raw_permit_list scan (any CWNS permit in npdes_permits_set)
+    3. Exact normalized facility name match (if npdes_name_to_permit dict provided)
+
     Adds 'matched' and 'linking_permit' columns.
     """
     df = consolidated_cwns.copy()
 
-    # Primary: match on clean NPDES permit
+    # Tier 1: match on clean NPDES permit
     df['linking_permit'] = df['NPDES_PERMIT'].where(
         df['NPDES_PERMIT'].fillna('').str.strip().isin(npdes_permits_set)
     )
 
-    # Fallback: check raw permits for unmatched rows
+    # Tier 2: check raw permit list for unmatched rows
     unmatched = df['linking_permit'].isna()
     if unmatched.any():
         df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'raw_permit_list'].apply(
             lambda permits: next((p for p in permits if str(p).strip() in npdes_permits_set), None)
         )
+
+    # Tier 3: exact normalized facility name match
+    if npdes_name_to_permit:
+        unmatched = df['linking_permit'].isna()
+        if unmatched.any():
+            norm_map = {normalize_facility_name(k): v for k, v in npdes_name_to_permit.items()
+                        if normalize_facility_name(k)}
+            df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'FACILITY_NAME'].apply(
+                lambda n: norm_map.get(normalize_facility_name(n))
+            )
 
     df['matched'] = df['linking_permit'].notna()
     return df

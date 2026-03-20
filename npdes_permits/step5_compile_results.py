@@ -1,4 +1,5 @@
 import json
+import re
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import pandas as pd
@@ -51,14 +52,14 @@ def get_status_counts(process_name, unit_process_results):
     return status_data
 
 
-def plot_npdes_status_bars(ax, pos, width, status_data, alpha=1.0):
-    """Plot stacked NPDES bars with status-based hatching"""
+def plot_npdes_status_bars(ax, center, width, status_data, alpha=1.0, color_key='npdes'):
+    """Plot stacked NPDES bars with status-based hatching at the given center x position."""
     bottom = 0
     for status in ['present', 'future', 'present_and_future']:
         if status_data[status] > 0:
-            ax.bar(pos - width/2, status_data[status], width,
+            ax.bar(center, status_data[status], width,
                    bottom=bottom,
-                   color=COLORS['npdes'],
+                   color=COLORS[color_key],
                    hatch=HATCH_PATTERNS[status],
                    alpha=alpha,
                    edgecolor='black',
@@ -77,12 +78,12 @@ def get_cwns_status_counts(process_name, cwns_df):
     return status_data
 
 
-def plot_cwns_status_bars(ax, pos, width, status_data, alpha=1.0):
-    """Plot stacked CWNS bars with status-based hatching."""
+def plot_cwns_status_bars(ax, center, width, status_data, alpha=1.0):
+    """Plot stacked CWNS bars with status-based hatching at the given center x position."""
     bottom = 0
     for status in ['present', 'future', 'present_and_future']:
         if status_data[status] > 0:
-            ax.bar(pos + width/2, status_data[status], width,
+            ax.bar(center, status_data[status], width,
                    bottom=bottom,
                    color=COLORS['cwns'],
                    hatch=HATCH_PATTERNS[status],
@@ -146,23 +147,30 @@ def append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, pare
 
 
 def create_status_plot(plot_data, unit_process_results, category_name,
-                       matching_cwns_data=None,
-                       include_cwns=True, include_legend=True,
+                       matching_cwns_data=None, unit_full_data=None, keyword_data=None,
+                       match_only=True, include_cwns=True, include_legend=True,
                        title_suffix="", figsize=(12, 4), fontsize=14, save_path=None):
+    """
+    match_only=True  → LLM results matched to CWNS + CWNS bars (comparison plots)
+    match_only=False → LLM all CA + optional Keyword all CA side-by-side (breakdown plots)
+
+    keyword_data: optional second NPDES source (keyword-based); only used when match_only=False
+    """
     if not plot_data:
         print(f"No processes found for '{category_name}'")
         return
 
-    plot_df = pd.DataFrame(plot_data)
-    
-    # Add NPDES totals and sort descending
-    plot_df['npdes_total'] = plot_df['Process'].apply(
-        lambda p: sum(get_status_counts(p, unit_process_results).values())
-    )
+    # LLM source: matched data for comparison, full CA for breakdown
+    llm_data = unit_process_results if (match_only or unit_full_data is None) else unit_full_data
+    has_keyword = not match_only and keyword_data is not None
 
+    plot_df = pd.DataFrame(plot_data)
+    plot_df['npdes_total'] = plot_df['Process'].apply(
+        lambda p: sum(get_status_counts(p, llm_data).values())
+    )
     plot_df = plot_df[plot_df['npdes_total'] > 0]
     if include_cwns:
-        plot_df = plot_df[(plot_df['CWNS_Data'] > 0)]
+        plot_df = plot_df[plot_df['CWNS_Data'] > 0]
 
     if plot_df.empty:
         print(f"No non-zero data to plot for '{category_name}'")
@@ -170,44 +178,58 @@ def create_status_plot(plot_data, unit_process_results, category_name,
 
     plot_df = plot_df.sort_values('npdes_total', ascending=False).reset_index(drop=True)
     plot_df['Position'] = range(len(plot_df))
-    
-    fig, ax = plt.subplots(figsize=figsize)
-    width = 0.35 if include_cwns else 0.6
 
-    # Plot bars
+    fig, ax = plt.subplots(figsize=figsize)
+
+    # Bar layout: comparison = LLM + CWNS; breakdown = LLM [+ Keyword]
+    if include_cwns:
+        width, llm_offset, cwns_offset = 0.35, -0.175, 0.175
+    elif has_keyword:
+        width, llm_offset, kw_offset = 0.35, -0.175, 0.175
+    else:
+        width, llm_offset = 0.6, 0.0
+
     for idx, row in plot_df.iterrows():
-        status_data = get_status_counts(row['Process'], unit_process_results)
+        pos = row['Position']
         alpha = 0.5 if row['Category'] == 'Process' else 1.0
-        
-        plot_npdes_status_bars(ax, row['Position'], width, status_data, alpha)
+
+        llm_status = get_status_counts(row['Process'], llm_data)
+        plot_npdes_status_bars(ax, pos + llm_offset, width, llm_status, alpha, color_key='npdes_total')
+
+        if has_keyword:
+            kw_status = get_status_counts(row['Process'], keyword_data)
+            plot_npdes_status_bars(ax, pos + kw_offset, width, kw_status, alpha, color_key='npdes')
+
         if include_cwns:
             if matching_cwns_data is not None:
                 cwns_status = get_cwns_status_counts(row['Process'], matching_cwns_data)
-                plot_cwns_status_bars(ax, row['Position'], width, cwns_status, alpha)
+                plot_cwns_status_bars(ax, pos + cwns_offset, width, cwns_status, alpha)
             else:
-                ax.bar(row['Position'] + width/2, row['CWNS_Data'], width,
+                ax.bar(pos + cwns_offset, row['CWNS_Data'], width,
                        color=COLORS['cwns'], alpha=alpha, edgecolor='black', linewidth=0.5)
 
-    # Format axes
     ax.set_xticks(plot_df['Position'])
     ax.set_xticklabels(plot_df['Process'], rotation=45, ha='right', fontsize=fontsize)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
-    # Titles and labels
     if include_cwns:
-        plot_title = f'{category_name.replace("_", " ").title()} Treatment Process Comparison {title_suffix}'
-        ax.set_title(plot_title, fontsize=18)
-    
+        ax.set_title(f'{category_name.replace("_", " ").title()} Treatment Process Comparison {title_suffix}',
+                     fontsize=18)
+
     ax.set_ylabel('WWTP Count', fontsize=16)
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
 
     if include_legend:
+        llm_label = '  NPDES LLM (matched)' if match_only else '  NPDES LLM'
         legend_handles = [
             Patch(color='none', label='Data Source'),
-            Patch(facecolor=COLORS['npdes'], edgecolor='black', linewidth=0.5, label='  NPDES keyword search'),
+            Patch(facecolor=COLORS['npdes_total'], edgecolor='black', linewidth=0.5, label=llm_label),
         ]
+        if has_keyword:
+            legend_handles.append(Patch(facecolor=COLORS['npdes'], edgecolor='black', linewidth=0.5, label='  NPDES Keyword'))
         if include_cwns:
             legend_handles.append(Patch(facecolor=COLORS['cwns'], edgecolor='black', linewidth=0.5, label='  CWNS'))
+        n_sources = len(legend_handles)
         legend_handles += [
             Patch(color='none', label='Status'),
             Patch(facecolor='gray', edgecolor='black', linewidth=0.5, label='  Present'),
@@ -215,7 +237,7 @@ def create_status_plot(plot_data, unit_process_results, category_name,
             Patch(facecolor='gray', hatch=HATCH_PATTERNS['present_and_future'], edgecolor='black', linewidth=0.5, label='  Present & Future'),
         ]
         leg = ax.legend(handles=legend_handles, loc='upper right', fontsize=11)
-        header_indices = {0, 3 if include_cwns else 2}
+        header_indices = {0, n_sources}
         for i, (handle, text) in enumerate(zip(leg.legend_handles, leg.get_texts())):
             if i in header_indices:
                 handle.set_visible(False)
@@ -313,6 +335,17 @@ print(f"Categories: {categories_to_plot}")
 
 # Load NPDES results data from the specified date folder
 unit_process_results = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv')
+
+# Extracting CA permit numbers from PDF filename?
+nan_permit_mask = unit_process_results['PERMIT_NUMBER'].isna()
+if nan_permit_mask.any():
+    extracted = unit_process_results.loc[nan_permit_mask, 'PDF_File'].apply(
+        lambda f: m.group(0).upper() if (m := re.search(r'CA\d{7}', str(f), re.IGNORECASE)) else None
+    )
+    filled = extracted.notna().sum()
+    unit_process_results.loc[extracted.index, 'PERMIT_NUMBER'] = extracted
+    print(f"Resolved {filled} of {nan_permit_mask.sum()} NaN PERMIT_NUMBERs from PDF filenames")
+
 unit_process_results['FACILITY_KEY'] = (
     unit_process_results['PERMIT_NUMBER'].fillna('') + '||' +
     unit_process_results['FACILITY_NAME'].fillna('')
@@ -321,25 +354,43 @@ unit_process_results['FACILITY_KEY'] = (
 print(f"NPDES data: Loaded {len(unit_process_results)} rows, "
       f"{unit_process_results['FACILITY_KEY'].nunique()} unique facilities")
 
-# Get unique NPDES permit numbers
-npdes_permit_numbers = set(unit_process_results['PERMIT_NUMBER'].unique())
+# Get unique NPDES permit numbers (exclude NaN)
+npdes_permit_numbers = set(unit_process_results['PERMIT_NUMBER'].dropna().unique())
 print(f"Unique NPDES permit numbers: {len(npdes_permit_numbers)}")
 
 # Load and consolidate CWNS data with facility names and clean NPDES permits
-cwns_data = pd.read_csv(f'npdes_permits/output/unit_processes_by_facility.csv', low_memory=False)
+cwns_data = pd.read_csv(f'npdes_permits/output/unit_processes_by_facility.csv',
+                         low_memory=False, dtype={'CWNS_ID': str})
 print(f"\nCWNS data: Total rows: {len(cwns_data)}")
 
 ca_cwns_data = prepare_cwns_ca(
     cwns_data,
     'npdes_permits/data/cwns/2022/2022_FACILITIES.csv',
     'npdes_permits/data/cwns/2022/FACILITY_PERMIT.csv',
-    'npdes_permits/data/cwns/cwns_facilities_match_manual.csv',
+    'npdes_permits/data/cwns/cwns_permits_match_manual.csv',
     facilities_2012_path='npdes_permits/data/cwns/2012/Facility_Details.csv',
+    facility_name_matches_path='npdes_permits/data/cwns/cwns_facility_name_match_manual.csv',
 )
 print(f"CWNS CA facilities (consolidated): {len(ca_cwns_data)}")
 
+# Build name→permit lookup for exact normalized name matching (Tier 3)
+# Combine LLM results and keyword-based all_ca_npdes so both data sources inform CWNS matching
+all_ca_npdes = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/all_ca_npdes.csv', dtype=str)
+all_ca_npdes_names = (all_ca_npdes[all_ca_npdes['NPDES No.'].notna()]
+                      [['NPDES No.', 'Facility Name']]
+                      .rename(columns={'NPDES No.': 'PERMIT_NUMBER', 'Facility Name': 'FACILITY_NAME'}))
+llm_names = (unit_process_results[unit_process_results['PERMIT_NUMBER'].notna()]
+             [['PERMIT_NUMBER', 'FACILITY_NAME']])
+# LLM names take priority (keep='first') when permit numbers conflict
+combined_names = pd.concat([llm_names, all_ca_npdes_names]).drop_duplicates(
+    subset='PERMIT_NUMBER', keep='first')
+npdes_name_to_permit = (combined_names.drop_duplicates(subset='FACILITY_NAME', keep='first')
+                        .set_index('FACILITY_NAME')['PERMIT_NUMBER']
+                        .to_dict())
+
 # Match CWNS to NPDES permits
-ca_cwns_data = match_cwns_to_npdes(ca_cwns_data, npdes_permit_numbers)
+ca_cwns_data = match_cwns_to_npdes(ca_cwns_data, npdes_permit_numbers,
+                                    npdes_name_to_permit=npdes_name_to_permit)
 matching_cwns_data = ca_cwns_data[ca_cwns_data['matched']].copy()
 
 # Filter NPDES to only facilities with matching CWNS data
@@ -390,22 +441,26 @@ for category in categories_to_plot:
     current_pos = 0
     current_pos = append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, parent_child_mapping, current_pos, process_names)
 
-    # Create comparison plot with CWNS bars
+    # Comparison plot: matched NPDES (keyword) + CWNS
     create_status_plot(
         plot_data,
         unit_process_results,
         category,
         matching_cwns_data=matching_cwns_data,
+        match_only=True,
         include_cwns=True,
         save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{safe_category}_comparison_with_status.png'
     )
     print(f"  Saved {safe_category}_comparison_with_status.png")
-    
-    # Create NPDES-only status breakdown plot
+
+    # Status breakdown: all CA LLM + Keyword (when available)
     create_status_plot(
         plot_data,
         unit_process_results,
         category,
+        unit_full_data=unit_full,
+        keyword_data=None,  # TODO: pass keyword_results once available
+        match_only=False,
         include_cwns=False,
         save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{safe_category}_status_breakdown.png'
     )
@@ -427,6 +482,7 @@ create_status_plot(
     unit_process_results,
     'all_categories',
     matching_cwns_data=matching_cwns_data,
+    match_only=True,
     include_cwns=True,
     title_suffix=' - All Categories',
     figsize=(20, 6),
@@ -437,7 +493,7 @@ create_status_plot(
 
 # Create matching statistics report
 print(f"Total California CWNS facilities (consolidated): {len(ca_cwns_data)}")
-print(f"Total NPDES rows analyzed: {len(unit_process_results_matched)}")
+print(f"Total NPDES rows analyzed: {len(unit_process_results)}")
 print(f"CWNS facilities matched: {len(matching_cwns_data)}")
 print(f"NPDES permits matched: {len(matching_permit_numbers)}")
 print(f"Match rate: {len(matching_permit_numbers) / len(npdes_permit_numbers) * 100:.1f}% of NPDES permits")
@@ -470,50 +526,64 @@ print(f"Grand total: {total_present + total_future + total_both}")
 GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
 
 
+def is_yes(val):
+    """Check if a cell value means the process is present (YES or PLANNED)."""
+    return str(val).strip().upper() in ('YES', 'PLANNED')
+
+
 def count_yes(series):
     """Count YES/PLANNED values in a sheet column (case-insensitive)."""
-    s = series.fillna('').astype(str).str.strip().str.upper()
-    return (s.isin(['YES', 'PLANNED'])).sum()
+    return series.fillna('').apply(is_yes).sum()
 
 
 def create_ground_truth_plot(process_counts, save_path):
     """
-    Create a grouped bar chart comparing GroundTruth, NPDES Text, and CWNS counts.
+    Normalized bar chart: NPDES Text and CWNS shown as % difference from ground truth.
+    Zero line = ground truth baseline. Ground truth counts annotated below each bar group.
 
     process_counts: list of dicts with keys 'process', 'ground_truth', 'npdes_text', 'cwns'
     """
     fontsize = 12
     df = pd.DataFrame(process_counts)
-    # Keep only processes where at least one source has a count > 0
-    df = df[(df['ground_truth'] > 0) | (df['npdes_text'] > 0) | (df['cwns'] > 0)]
+    df = df[df['ground_truth'] > 0].copy()  # must have ground truth to normalize
     if df.empty:
         print("No populated processes to plot.")
         return
-    # Sort by GroundTruth count descending
     df = df.sort_values('ground_truth', ascending=False).reset_index(drop=True)
+
+    df['npdes_pct'] = (df['npdes_text'] - df['ground_truth']) / df['ground_truth'] * 100
+    df['cwns_pct'] = (df['cwns'] - df['ground_truth']) / df['ground_truth'] * 100
 
     fig, ax = plt.subplots(figsize=(20, 7))
     x = range(len(df))
-    width = 0.25
+    width = 0.35
 
-    ax.bar([i - width for i in x], df['ground_truth'], width,
-           color=COLORS_GT['ground_truth'], edgecolor='black', linewidth=0.5,
-           label='Process Flow Diagrams (Ground Truth)')
-    ax.bar(list(x), df['npdes_text'], width,
+    ax.bar([i - width / 2 for i in x], df['npdes_pct'], width,
            color=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5,
            label='NPDES Text (Manual)')
-    ax.bar([i + width for i in x], df['cwns'], width,
+    ax.bar([i + width / 2 for i in x], df['cwns_pct'], width,
            color=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5,
            label='CWNS')
 
+    ax.axhline(0, color='black', linewidth=1.2, zorder=3, label='Ground Truth (baseline)')
+
+    # Annotate ground truth count below each group
+    y_min = ax.get_ylim()[0]
+    for i, row in df.iterrows():
+        ax.annotate(f'n={int(row["ground_truth"])}',
+                    xy=(i, 0), xytext=(0, -18),
+                    textcoords='offset points',
+                    ha='center', fontsize=9, color='#555555')
+
     ax.set_xticks(list(x))
     ax.set_xticklabels(df['process'], rotation=45, ha='right', fontsize=fontsize)
-    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    ax.set_ylabel('WWTP Count', fontsize=16)
+    ax.set_ylabel('% Difference from Ground Truth', fontsize=16)
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{v:+.0f}%'))
     ax.legend(loc='upper right', fontsize=11)
+    ax.grid(axis='y', linestyle='--', alpha=0.4)
 
-    plt.subplots_adjust(bottom=0.30)
+    plt.subplots_adjust(bottom=0.35)
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         print(f"  Saved {os.path.basename(save_path)}")
@@ -575,10 +645,6 @@ create_ground_truth_plot(
     save_path=f'{figures_dir}/ground_truth_ground_truth_vs_npdes_text_vs_cwns.png',
 )
 
-
-def is_yes(val):
-    """Check if a cell value means the process is present."""
-    return str(val).strip().upper() in ('YES', 'PLANNED')
 
 # GROUND TRUTH COMPARISON: +/- % vs GroundTruth grouped by JSON category
 
@@ -718,7 +784,6 @@ gt_comparison_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison
 gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
 
-OUTDIR = os.path.join(os.path.dirname(__file__), 'output', DATE_FOLDER)
 unit = unit_full.fillna('').astype(str)
 cwns_matched = matching_cwns_data.copy()
 print(f'CWNS CA: {len(ca_cwns_data)}, matched: {len(cwns_matched)}')
@@ -759,7 +824,7 @@ for permit in all_permits:
     })
 
 out_df = pd.DataFrame(rows)
-out_csv = os.path.join(OUTDIR, 'compare_cwns_unitprocesses_detailed.csv')
+out_csv = f'npdes_permits/output/{DATE_FOLDER}/compare_cwns_unitprocesses_detailed.csv'
 out_df.to_csv(out_csv, index=False)
 
 both = out_df[(out_df['ground_truth_count'] > 0) & (out_df['predicted_count'] > 0)]
@@ -770,43 +835,10 @@ summary = {
     'total_missed_items': int(out_df['missed'].str.count(r'\|').sum() + (out_df['missed'] != '').sum()),
     'total_hallucinated_items': int(out_df['hallucinated'].str.count(r'\|').sum() + (out_df['hallucinated'] != '').sum()),
 }
-with open(os.path.join(OUTDIR, 'compare_cwns_unitprocesses_summary.json'), 'w') as f:
+with open(f'npdes_permits/output/{DATE_FOLDER}/compare_cwns_unitprocesses_summary.json', 'w') as f:
     json.dump(summary, f, indent=2)
 
-# Load the summary CSV
-summary_path = "npdes_permits/output/2026-2-18/ground_truth_summary.csv"
-df = pd.read_csv(summary_path)
-
-# Prepare data for plotting
-processes = df["Process_Category"]
-ground_truth = df["GroundTruth"]
-npdes = df["NPDES_Manual"]
-cwns = df["CWNS"]
-
-fig, ax = plt.subplots(figsize=(18, 7))
-x = range(len(processes))
-width = 0.25
-
-ax.bar([i - width for i in x], ground_truth, width,
-       color=COLORS_GT['ground_truth'], edgecolor='black', linewidth=0.5,
-       label='Process Flow Diagrams (Ground Truth)')
-ax.bar(list(x), npdes, width,
-       color=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5,
-       label='NPDES Text (Manual)')
-ax.bar([i + width for i in x], cwns, width,
-       color=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5,
-       label='CWNS')
-
-ax.set_xticks(list(x))
-ax.set_xticklabels(processes, rotation=45, ha='right', fontsize=12)
-ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
-ax.set_ylabel('WWTP Count', fontsize=16)
-ax.tick_params(axis='both', which='major', labelsize=12)
-ax.legend(loc='upper right', fontsize=11)
-
-plt.subplots_adjust(bottom=0.30)
-figures_dir = "npdes_permits/output/2026-2-18/figures"
-os.makedirs(figures_dir, exist_ok=True)
-plt.savefig(f"{figures_dir}/ground_truth_summary_barplot.png", dpi=300, bbox_inches='tight')
-plt.close(fig)
-print(f"Saved {figures_dir}/ground_truth_summary_barplot.png")
+create_ground_truth_plot(
+    process_counts,
+    save_path=f'{figures_dir}/ground_truth_summary_barplot.png',
+)

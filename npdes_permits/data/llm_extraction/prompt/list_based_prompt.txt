@@ -1,0 +1,48 @@
+You are an expert in wastewater treatments. 
+
+Inputs:
+A wastewater treatment plant permit extract
+unit process lists: list of all the potential unit processes you can find in the text
+
+Task: 
+Using only the wastewater treatment plant's permit extract, find all the planned, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by one or more unit processes from the given unit process list.
+You may ignore irrelevant context.
+Think step by step:
+1. Extract explicitly from the permit text the treatments mentioned for the specific __FACILITY_NAME__ facility (if it is used in another facility or off-site it should be mentionned in the "location" field of the output JSON)
+2. Match each treatment find with the corresponding unit process or processes from the list.
+3. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("planned") or has been shut or removed ("past")
+4. Structure the output as a JSON file as requested
+
+Output:
+Return only a JSON object with this exact shape:
+{
+    "items": [
+        {
+            "Process": string[],
+            "Implementation": "present"|"planned"|"past",
+            "Location": "on-site"|"off-site"|"third-party"|null,
+            "Score": number,
+            "Sentence": string
+        }
+    ]
+}
+Do not add any other top-level fields.
+
+Field meaning and allowed cardinality:
+- Process: process names from the list. Array of 1+ strings.
+- Implementation: one of "present", "planned", "past".
+- Location: one of "on-site", "off-site", "third-party", or null if unspecified.
+- Score: confidence score between 0 and 1.
+- Sentence: direct supporting sentence/quote from permit extract.
+
+All process names must be exactly as in the given list.
+
+########################################################################
+Unit process list:
+########################################################################
+__UNIT_PROCESS_LIST__
+
+########################################################################
+Examples of treatments mentioned in permit text and the corresponding JSON output:
+########################################################################
+__PROMPT_EXAMPLES__

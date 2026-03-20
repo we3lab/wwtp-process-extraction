@@ -12,7 +12,7 @@ ontology = Graph()
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
 
-input_dir = Path('npdes_permits/output/2026-2-18/llm_search')
+input_dir = Path('npdes_permits/output/2026-2-18/llm_search_ontology')
 output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
 output_json_dir = Path('npdes_permits/output/2026-2-18/llm_search_with_triggers')
 

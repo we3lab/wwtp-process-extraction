@@ -1,0 +1,58 @@
+You are an expert in wastewater treatments.
+
+Inputs:
+A wastewater treatment plant permit extract
+Ontology lists: equipments, processes and roles (with mandatory relationships)
+
+Task:
+Using only the wastewater treatment plant's permit extract, find all the planned, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by at least an equipment or a process from the given ontology lists.
+You may ignore irrelevant context.
+Think step by step:
+1. Extract explicitly from the permit text the treatments mentioned for the specific __FACILITY_NAME__ facility (if it is used in another facility or off-site it should be mentionned in the "location" field of the output JSON)
+2. Match each treatment find with an equipment and/or one or many processes from the ontology lists
+3. Complete with specification of the treatment with roles and substances if explicitly mentioned in the text
+4. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("planned") or has been shut or removed ("past")
+5. Structure the output as a JSON file as requested
+
+Output:
+Return only a JSON object with this exact shape:
+{
+    "items": [
+        {
+            "Equipment": string|null,
+            "Process": string[]|null,
+            "Role": string[]|null,
+            "Substance": string[]|null,
+            "Implementation": "present"|"planned"|"past",
+            "Location": "on-site"|"off-site"|"third-party"|null,
+            "Score": number,
+            "Sentence": string
+        }
+    ]
+}
+Do not add any other top-level fields.
+
+Field meaning and allowed cardinality:
+- Equipment: equipment name from ontology. Exactly one string or null.
+- Process: process names from ontology. Null or an array of 1+ strings.
+- Role: role names from ontology. Null or an array (can be empty).
+- Substance: substance names explicitly mentioned in text. Null or an array (can be empty).
+- Rule: at least one of Equipment or Process must be non-null.
+- Implementation: one of "present", "planned", "past".
+- Location: one of "on-site", "off-site", "third-party", or null if unspecified.
+- Score: confidence score between 0 and 1.
+- Sentence: direct supporting sentence/quote from permit extract.
+
+All equipment, process, role and substance names must be exactly as in the ontology lists.
+
+########################################################################
+Ontology lists:
+########################################################################
+__ONTOLOGY__
+
+########################################################################
+Examples of treatments mentioned in permit text and the corresponding JSON output:
+########################################################################
+__PROMPT_EXAMPLES__
+
+You shall use these examples to understand how to extract the relevant information from the permit text and structure it in the required JSON format. The examples are not exhaustive and you should adapt the extraction to the specific content of the permit extract provided for the __FACILITY_NAME__ facility. Always ensure that your output strictly follows the specified JSON structure and field requirements.

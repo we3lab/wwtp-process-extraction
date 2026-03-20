@@ -11,6 +11,8 @@ ontology = Graph()
 # GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
+# TODO: handle secondary category
+# Currently doesn't flag ontology "mistakes" e.g. identification of Sedimentation Basin without Process:Sedimentation
 
 input_dir = Path('npdes_permits/output/2026-2-18/llm_search_ontology')
 output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')

@@ -3,6 +3,12 @@ import pandas as pd
 import os
 
 
+def build_cwns_presence_mask(series):
+    """Return boolean mask for CWNS presence values (present, future, or present_and_future)."""
+    s = series.astype(str).str.lower()
+    return s.isin({'present', 'future', 'present_and_future'})
+
+
 def extract_leaves(processes_dict, group_id=None):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
@@ -156,3 +162,13 @@ def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_perm
 
     df['matched'] = df['linking_permit'].notna()
     return df
+
+
+def is_yes(val):
+    """Check if a cell value means the process is present (YES or PLANNED)."""
+    return str(val).strip().upper() in ('YES', 'PLANNED')
+
+
+def count_yes(series):
+    """Count YES/PLANNED values in a sheet column (case-insensitive)."""
+    return series.fillna('').apply(is_yes).sum()

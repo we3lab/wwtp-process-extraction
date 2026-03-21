@@ -375,5 +375,27 @@ unit_processes_df = unit_processes_df.merge(
 unit_processes_df = unit_processes_df.drop('CWNS_ID', axis=1)
 unit_processes_df = unit_processes_df.rename(columns={'CWNS_NUM': 'CWNS_ID'})
 
+# Add FACILITY_NAME from 2022 survey
+facilities_2022 = pd.read_csv('data/cwns/2022/FACILITIES.csv', dtype=str)
+facility_names = facilities_2022[['CWNS_ID', 'FACILITY_NAME']].drop_duplicates('CWNS_ID')
+unit_processes_df = unit_processes_df.merge(facility_names, on='CWNS_ID', how='left')
+
+# Fill missing FACILITY_NAME from 2012 data (older facilities not in 2022 survey)
+fac12 = pd.read_csv('data/cwns/2012/Facility_Details.csv', dtype=str)
+fac12['CWNS Number'] = fac12['CWNS Number'].apply(
+    lambda x: '0' + str(x) if len(str(x)) < 11 else str(x))
+fac12_map = (fac12.drop_duplicates('CWNS Number')
+             .set_index('CWNS Number')['Facility/Project Name'])
+null_name = unit_processes_df['FACILITY_NAME'].isna()
+unit_processes_df.loc[null_name, 'FACILITY_NAME'] = (
+    unit_processes_df.loc[null_name, 'CWNS_ID'].map(fac12_map))
+
+# Add NPDES_PERMIT (NPDES source only, one per facility)
+npdes_only = (facility_permit[facility_permit['PERMIT_SOURCE'] == 'NPDES']
+              [['CWNS_ID', 'PERMIT_NUMBER']]
+              .drop_duplicates(subset='CWNS_ID', keep='first')
+              .rename(columns={'PERMIT_NUMBER': 'NPDES_PERMIT'}))
+unit_processes_df = unit_processes_df.merge(npdes_only, on='CWNS_ID', how='left')
+
 # Save the DataFrame
 unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility.csv"), index=False)

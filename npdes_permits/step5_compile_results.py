@@ -365,11 +365,8 @@ print(f"\nCWNS data: Total rows: {len(cwns_data)}")
 
 ca_cwns_data = prepare_cwns_ca(
     cwns_data,
-    'npdes_permits/data/cwns/2022/2022_FACILITIES.csv',
-    'npdes_permits/data/cwns/2022/FACILITY_PERMIT.csv',
     'npdes_permits/data/cwns/cwns_permits_match_manual.csv',
-    facilities_2012_path='npdes_permits/data/cwns/2012/Facility_Details.csv',
-    facility_name_matches_path='npdes_permits/data/cwns/cwns_facility_name_match_manual.csv',
+    'npdes_permits/data/cwns/cwns_facility_name_match_manual.csv',
 )
 print(f"CWNS CA facilities (consolidated): {len(ca_cwns_data)}")
 
@@ -383,7 +380,7 @@ llm_names = (unit_process_results[unit_process_results['PERMIT_NUMBER'].notna()]
              [['PERMIT_NUMBER', 'FACILITY_NAME']])
 # LLM names take priority (keep='first') when permit numbers conflict
 combined_names = pd.concat([llm_names, all_ca_npdes_names]).drop_duplicates(
-    subset='PERMIT_NUMBER', keep='first')
+    subset=['PERMIT_NUMBER', 'FACILITY_NAME'], keep='first')
 npdes_name_to_permit = (combined_names.drop_duplicates(subset='FACILITY_NAME', keep='first')
                         .set_index('FACILITY_NAME')['PERMIT_NUMBER']
                         .to_dict())
@@ -536,52 +533,66 @@ def count_yes(series):
     return series.fillna('').apply(is_yes).sum()
 
 
-def create_ground_truth_plot(process_counts, save_path):
+def create_ground_truth_plot(gt_rows, n_facilities, save_path):
     """
-    Normalized bar chart: NPDES Text and CWNS shown as % difference from ground truth.
-    Zero line = ground truth baseline. Ground truth counts annotated below each bar group.
+    Stacked error magnitude chart: FN (solid, bottom) + FP (hatched x, top) per source.
+    Secondary y-axis shows % of total GT facilities (N=n_facilities).
 
-    process_counts: list of dicts with keys 'process', 'ground_truth', 'npdes_text', 'cwns'
+    gt_rows: list of dicts with keys 'Process_Category', 'GroundTruth',
+             'NPDES_FP', 'NPDES_FN', 'CWNS_FP', 'CWNS_FN'
+    n_facilities: total number of ground truth facilities (denominator for % axis)
     """
     fontsize = 12
-    df = pd.DataFrame(process_counts)
-    df = df[df['ground_truth'] > 0].copy()  # must have ground truth to normalize
+    df = pd.DataFrame(gt_rows)
+    df = df[df['GroundTruth'] > 0].copy()
     if df.empty:
         print("No populated processes to plot.")
         return
-    df = df.sort_values('ground_truth', ascending=False).reset_index(drop=True)
+    df = df.sort_values('GroundTruth', ascending=False).reset_index(drop=True)
 
-    df['npdes_pct'] = (df['npdes_text'] - df['ground_truth']) / df['ground_truth'] * 100
-    df['cwns_pct'] = (df['cwns'] - df['ground_truth']) / df['ground_truth'] * 100
-
-    fig, ax = plt.subplots(figsize=(20, 7))
+    fig, ax = plt.subplots(figsize=(12, 6))
     x = range(len(df))
-    width = 0.35
+    w = 0.35
 
-    ax.bar([i - width / 2 for i in x], df['npdes_pct'], width,
-           color=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5,
-           label='NPDES Text (Manual)')
-    ax.bar([i + width / 2 for i in x], df['cwns_pct'], width,
-           color=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5,
-           label='CWNS')
-
-    ax.axhline(0, color='black', linewidth=1.2, zorder=3, label='Ground Truth (baseline)')
-
-    # Annotate ground truth count below each group
-    y_min = ax.get_ylim()[0]
     for i, row in df.iterrows():
-        ax.annotate(f'n={int(row["ground_truth"])}',
-                    xy=(i, 0), xytext=(0, -18),
-                    textcoords='offset points',
-                    ha='center', fontsize=9, color='#555555')
+        ax.bar(i - w / 2, row['NPDES_FN'], w,
+               color=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5, hatch='--')
+        ax.bar(i - w / 2, row['NPDES_FP'], w, bottom=row['NPDES_FN'],
+               color=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5, hatch='++')
+        ax.bar(i + w / 2, row['CWNS_FN'], w,
+               color=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5, hatch='--')
+        ax.bar(i + w / 2, row['CWNS_FP'], w, bottom=row['CWNS_FN'],
+               color=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5, hatch='++')
 
     ax.set_xticks(list(x))
-    ax.set_xticklabels(df['process'], rotation=45, ha='right', fontsize=fontsize)
-    ax.set_ylabel('% Difference from Ground Truth', fontsize=16)
+    ax.set_xticklabels(df['Process_Category'], rotation=45, ha='right', fontsize=fontsize)
+    ax.set_ylabel('Facility Count (error magnitude)', fontsize=16)
+    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{v:+.0f}%'))
-    ax.legend(loc='upper right', fontsize=11)
     ax.grid(axis='y', linestyle='--', alpha=0.4)
+
+    # Secondary y-axis: % of total GT facilities
+    ax2 = ax.twinx()
+    lo, hi = ax.get_ylim()
+    ax2.set_ylim(lo / n_facilities * 100, hi / n_facilities * 100)
+    ax2.set_ylabel(f'Error % (N={n_facilities})', fontsize=16)
+    ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{v:.0f}%'))
+    ax2.tick_params(axis='y', labelsize=fontsize)
+
+    # Custom legend: colors (top) + hatch types (bottom), top-left
+    legend_handles = [
+        Patch(facecolor=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5,
+              label='NPDES Text'),
+        Patch(facecolor=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5,
+              label='CWNS'),
+        Patch(color='none', label=''),  # spacer
+        Patch(facecolor='white', edgecolor='black', linewidth=0.5, hatch='--',
+              label='False Negative (missed)'),
+        Patch(facecolor='white', edgecolor='black', linewidth=0.5, hatch='++',
+              label='False Positive (extra)'),
+    ]
+    ax.legend(handles=legend_handles, loc='upper left', fontsize=11,
+              handlelength=2, handleheight=1.2)
 
     plt.subplots_adjust(bottom=0.35)
     if save_path:
@@ -593,14 +604,20 @@ def create_ground_truth_plot(process_counts, save_path):
 # Load the two Google Sheet tabs
 ground_truth_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - Ground Truth')
 npdes_text_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
+bacwa_ground_truth_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - Ground Truth')
+bacwa_npdes_text_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - From NPDES Text')
 
 print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")
 print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
+print(f"BACWA Ground Truth sheet: {len(bacwa_ground_truth_df)} facilities")
+print(f"BACWA NPDES Text sheet: {len(bacwa_npdes_text_df)} facilities")
 
 # Determine the process columns (everything after the first 4 metadata cols)
 meta_cols = ['Agency', 'Facility_Name', 'NPDES_No', 'PDF_File', "Ground Truth Sources"]
 ground_truth_process_cols = [c for c in ground_truth_df.columns if c not in meta_cols]
 npdes_text_process_cols = [c for c in npdes_text_df.columns if c not in meta_cols]
+bacwa_ground_truth_process_cols = [c for c in bacwa_ground_truth_df.columns if c not in meta_cols]
+bacwa_npdes_text_process_cols = [c for c in bacwa_npdes_text_df.columns if c not in meta_cols]
 
 # Use GroundTruth process columns as the canonical list (union with NPDES text if needed)
 all_sheet_process_cols = list(dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols))
@@ -617,34 +634,6 @@ print(f"Facilities in all 3 sources: {len(common_permits)}")
 ground_truth_common = ground_truth_df[ground_truth_df['NPDES_No'].str.strip().isin(common_permits)].copy()
 text_common = npdes_text_df[npdes_text_df['NPDES_No'].str.strip().isin(common_permits)].copy()
 cwns_common = ca_cwns_data[ca_cwns_data['linking_permit'].str.strip().isin(common_permits)].copy()
-
-# Deduplicate (some sheets may have duplicate NPDES_No rows)
-ground_truth_common = ground_truth_common.drop_duplicates(subset='NPDES_No', keep='first')
-text_common = text_common.drop_duplicates(subset='NPDES_No', keep='first')
-cwns_common = cwns_common.drop_duplicates(subset='CWNS_ID', keep='first')
-
-print(f"After dedup - GroundTruth: {len(ground_truth_common)}, NPDES Text: {len(text_common)}, CWNS: {len(cwns_common)}")
-
-# Build counts for each process
-process_counts = []
-for col in all_sheet_process_cols:
-    ground_truth_count = count_yes(ground_truth_common[col]) if col in ground_truth_common.columns else 0
-    text_count = count_yes(text_common[col]) if col in text_common.columns else 0
-
-    cwns_count = int(build_cwns_presence_mask(cwns_common[col]).sum()) if col in cwns_common.columns else 0
-    process_counts.append({
-        'process': col,
-        'ground_truth': ground_truth_count,
-        'npdes_text': text_count,
-        'cwns': cwns_count,
-    })
-
-# Create the comparison bar chart
-create_ground_truth_plot(
-    process_counts,
-    save_path=f'{figures_dir}/ground_truth_ground_truth_vs_npdes_text_vs_cwns.png',
-)
-
 
 # GROUND TRUTH COMPARISON: +/- % vs GroundTruth grouped by JSON category
 
@@ -678,8 +667,8 @@ for col in all_sheet_process_cols:
     # CWNS
     if col in cwns_common.columns:
         mask = build_cwns_presence_mask(cwns_common[col])
-        for cwns_id in cwns_common.loc[mask, 'CWNS_ID']:
-            cat_cwns_facilities[category].add(cwns_id)
+        for permit in cwns_common.loc[mask, 'linking_permit']:
+            cat_cwns_facilities[category].add(permit)
 
 # Build summary rows
 all_cats = sorted(set(list(cat_ground_truth_facilities.keys()) + list(cat_npdes_facilities.keys()) + list(cat_cwns_facilities.keys())))
@@ -696,22 +685,32 @@ for cat in all_cats:
     else:
         npdes_str = f"+{npdes}" if npdes > 0 else "0"
         cwns_str = f"+{cwns}" if cwns > 0 else "0"
+    # FP/FN restricted to common_permits where all three sources have data
+    gt_p    = cat_ground_truth_facilities[cat] & common_permits
+    npdes_p = cat_npdes_facilities[cat]        & common_permits
+    cwns_p  = cat_cwns_facilities[cat]         & common_permits
     gt_simple_rows.append({
         'Process_Category': cat,
         'GroundTruth': ground_truth,
         'NPDES_Manual': npdes,
         'NPDES_vs_GT': npdes_str,
+        'NPDES_FP': len(npdes_p - gt_p),
+        'NPDES_FN': len(gt_p - npdes_p),
         'CWNS': cwns,
         'CWNS_vs_GT': cwns_str,
+        'CWNS_FP': len(cwns_p - gt_p),
+        'CWNS_FN': len(gt_p - cwns_p),
     })
 
 gt_simple_df = pd.DataFrame(gt_simple_rows)
 gt_simple_df = gt_simple_df.sort_values('GroundTruth', ascending=False).reset_index(drop=True)
-gt_simple_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_summary.csv'
-gt_simple_df.to_csv(gt_simple_csv, index=False)
-print(f"\nSaved simplified ground truth comparison: {os.path.basename(gt_simple_csv)}")
 print(gt_simple_df.to_string(index=False))
 
+create_ground_truth_plot(
+    gt_simple_rows,
+    n_facilities=len(common_permits),
+    save_path=f'{figures_dir}/ground_truth_ground_truth_vs_npdes_text_vs_cwns.png',
+)
 
 # Per-facility comparison table
 print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (GroundTruth)")
@@ -732,10 +731,9 @@ for permit in sorted(common_permits):
     npdes_set = {col for col in all_sheet_process_cols
                  if col in text_common.columns and is_yes(text_row.get(col, ''))}
 
-    # Build CWNS set (map sheet column names to CWNS column names)
+    # Build CWNS set (direct column match only)
     cwns_set = set()
     for col in all_sheet_process_cols:
-        # cwns_col = SHEET_TO_CWNS_COL.get(col, col)
         if col in cwns_common.columns:
             val = cwns_row.get(col, '')
             s = str(val).strip().lower()
@@ -783,62 +781,3 @@ gt_comparison_df = pd.DataFrame(facility_rows)
 gt_comparison_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv'
 gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
-
-unit = unit_full.fillna('').astype(str)
-cwns_matched = matching_cwns_data.copy()
-print(f'CWNS CA: {len(ca_cwns_data)}, matched: {len(cwns_matched)}')
-
-# Determine process columns
-meta_cwns = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME',
-             'NPDES_PERMIT', 'raw_permit_list', 'linking_permit', 'matched'}
-proc_cols_cwns = [c for c in cwns_matched.columns if c not in meta_cwns]
-meta_unit = {'AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'FACILITY_KEY',
-             'PDF_File', 'Shared_PDF'}
-proc_cols_unit = [c for c in unit.columns if c not in meta_unit]
-
-# Build dicts keyed by permit — avoids merge column suffix collisions
-cwns_by_permit = {row['linking_permit']: row for _, row in cwns_matched.iterrows()}
-unit_by_permit = {}
-for _, row in unit.iterrows():
-    unit_by_permit.setdefault(row['PERMIT_NUMBER'], row)
-
-all_permits = set(cwns_by_permit) | set(unit_by_permit)
-rows = []
-for permit in all_permits:
-    cwns_row = cwns_by_permit.get(permit)
-    npdes_row = unit_by_permit.get(permit)
-
-    gt_set   = extract_cwns_processes(cwns_row,  proc_cols_cwns)  if cwns_row  is not None else set()
-    pred_set = extract_npdes_processes(npdes_row, proc_cols_unit) if npdes_row is not None else set()
-    fac = (cwns_row if cwns_row is not None else npdes_row).get('FACILITY_NAME', '')
-
-    rows.append({
-        'CWNS_ID': cwns_row.get('CWNS_ID', '') if cwns_row is not None else '',
-        'PERMIT_NUMBER': permit,
-        'Facility_Name': fac,
-        'ground_truth_count': len(gt_set),
-        'predicted_count': len(pred_set),
-        'intersection_count': len(gt_set & pred_set),
-        'missed': '|'.join(sorted(gt_set - pred_set)),
-        'hallucinated': '|'.join(sorted(pred_set - gt_set)),
-    })
-
-out_df = pd.DataFrame(rows)
-out_csv = f'npdes_permits/output/{DATE_FOLDER}/compare_cwns_unitprocesses_detailed.csv'
-out_df.to_csv(out_csv, index=False)
-
-both = out_df[(out_df['ground_truth_count'] > 0) & (out_df['predicted_count'] > 0)]
-summary = {
-    'rows_total': len(out_df),
-    'rows_with_gt': int((out_df['ground_truth_count'] > 0).sum()),
-    'rows_with_pred_and_gt': len(both),
-    'total_missed_items': int(out_df['missed'].str.count(r'\|').sum() + (out_df['missed'] != '').sum()),
-    'total_hallucinated_items': int(out_df['hallucinated'].str.count(r'\|').sum() + (out_df['hallucinated'] != '').sum()),
-}
-with open(f'npdes_permits/output/{DATE_FOLDER}/compare_cwns_unitprocesses_summary.json', 'w') as f:
-    json.dump(summary, f, indent=2)
-
-create_ground_truth_plot(
-    process_counts,
-    save_path=f'{figures_dir}/ground_truth_summary_barplot.png',
-)

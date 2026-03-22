@@ -165,10 +165,10 @@ def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_perm
 
 
 def is_yes(val):
-    """Check if a cell value means the process is present (YES or PLANNED)."""
-    return str(val).strip().upper() in ('YES', 'PLANNED')
+    """Check if a cell value means the process is present (YES, PLANNED, or PRESENT)."""
+    return str(val).strip().upper() in ('YES', 'PLANNED', 'PRESENT')
 
 
 def count_yes(series):
-    """Count YES/PLANNED values in a sheet column (case-insensitive)."""
+    """Count YES/PLANNED/PRESENT values in a sheet column (case-insensitive)."""
     return series.fillna('').apply(is_yes).sum()

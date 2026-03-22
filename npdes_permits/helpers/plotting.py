@@ -85,13 +85,19 @@ def create_ground_truth_plot(gt_rows, n_facilities, save_path):
     ax2.tick_params(axis='y', labelsize=fontsize)
 
     legend_handles = [
-        Patch(facecolor=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5, label='NPDES Text'),
-        Patch(facecolor=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5, label='CWNS'),
-        Patch(color='none', label=''),
-        Patch(facecolor='white', edgecolor='black', linewidth=0.5, hatch='--', label='False Negative (missed)'),
-        Patch(facecolor='white', edgecolor='black', linewidth=0.5, hatch='++', label='False Positive (extra)'),
+        Patch(color='none', label='Data Source'),
+        Patch(facecolor=COLORS_GT['npdes_text'], edgecolor='black', linewidth=0.5, label='  NPDES Text'),
+        Patch(facecolor=COLORS_GT['cwns'], edgecolor='black', linewidth=0.5, label='  CWNS'),
+        Patch(color='none', label='Error Type'),
+        Patch(facecolor='white', edgecolor='black', linewidth=0.5, hatch='--', label='  False Negative (missed)'),
+        Patch(facecolor='white', edgecolor='black', linewidth=0.5, hatch='++', label='  False Positive (extra)'),
     ]
-    ax.legend(handles=legend_handles, loc='upper left', fontsize=11, handlelength=2, handleheight=1.2)
+    leg = ax.legend(handles=legend_handles, loc='upper left', bbox_to_anchor=(1.15, 1),
+                    borderaxespad=0, fontsize=11, handlelength=2, handleheight=1.2)
+    for i, (h, t) in enumerate(zip(leg.legend_handles, leg.get_texts())):
+        if i in {0, 3}:
+            h.set_visible(False)
+            t.set_fontweight('bold')
 
     plt.subplots_adjust(bottom=0.35)
     if save_path:

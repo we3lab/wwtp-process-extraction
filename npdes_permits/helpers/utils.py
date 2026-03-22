@@ -9,16 +9,18 @@ def build_cwns_presence_mask(series):
     return s.isin({'present', 'future', 'present_and_future'})
 
 
-def extract_leaves(processes_dict, group_id=None):
+def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
     for name, details in processes_dict.items():
         if not isinstance(details, dict):
             continue
+        if ignore_disposal and name == 'Disposal':
+            continue
         if 'alt_names' in details:
             leaves.append((name, details, group_id))
         else:
-            leaves.extend(extract_leaves(details, group_id=name))
+            leaves.extend(extract_leaves(details, group_id=name, ignore_disposal=ignore_disposal))
     return leaves
 
 

@@ -131,7 +131,10 @@ npdes_text_process_cols      = [c for c in npdes_text_df.columns      if c not i
 # bacwa_ground_truth_process_cols = [c for c in bacwa_ground_truth_df.columns if c not in meta_cols]
 # bacwa_npdes_text_process_cols   = [c for c in bacwa_npdes_text_df.columns   if c not in meta_cols]
 
-all_sheet_process_cols = list(dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols))
+disposal_leaves = {name for name, _, _ in extract_leaves(
+    unitprocess_keywords['Solids Processing']['Disposal'], ignore_disposal=False)}
+all_sheet_process_cols = [c for c in dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols)
+                          if c not in disposal_leaves]
 
 # TRAIN ground truth comparison
 

@@ -255,7 +255,7 @@ def main():
     
     # Create CSV headers - one column per process
     headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'PDF_File', 'Shared_PDF']
-    leaves = extract_leaves(keywords)
+    leaves = extract_leaves(keywords, ignore_disposal=False)
     all_keys = [name for name, _, _ in leaves]
 
     # Add one column for each treatment process

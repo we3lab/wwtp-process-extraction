@@ -10,7 +10,7 @@ from helpers.load_google_sheet import load_google_sheet_csv
 
 DATE_FOLDER = '2026-2-18'
 GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
-BACWA_PLOT_CATEGORIES = ['Activated Sludge', 'Lagoon', 'Nutrient Removal', 'Filtration']
+# BACWA_PLOT_CATEGORIES = ['Activated Sludge', 'Lagoon', 'Nutrient Removal', 'Filtration']
 
 
 def build_category_facility_sets(process_cols, gt_common, text_common, cwns_common,
@@ -116,23 +116,25 @@ for cat_name, cat_value in unitprocess_keywords.items():
 
 ground_truth_df     = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - Ground Truth')
 npdes_text_df       = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
-bacwa_ground_truth_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - Ground Truth')
-bacwa_npdes_text_df   = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - From NPDES Text')
+# bacwa_ground_truth_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - Ground Truth')
+# bacwa_npdes_text_df   = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - From NPDES Text')
 
 print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")
 print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
-print(f"BACWA Ground Truth sheet: {len(bacwa_ground_truth_df)} facilities")
-print(f"BACWA NPDES Text sheet: {len(bacwa_npdes_text_df)} facilities")
+# print(f"BACWA Ground Truth sheet: {len(bacwa_ground_truth_df)} facilities")
+# print(f"BACWA NPDES Text sheet: {len(bacwa_npdes_text_df)} facilities")
 
 meta_cols = ['Agency', 'Facility_Name', 'NPDES_No', 'PDF_File', "Ground Truth Sources"]
 
 ground_truth_process_cols    = [c for c in ground_truth_df.columns    if c not in meta_cols]
 npdes_text_process_cols      = [c for c in npdes_text_df.columns      if c not in meta_cols]
-bacwa_ground_truth_process_cols = [c for c in bacwa_ground_truth_df.columns if c not in meta_cols]
-bacwa_npdes_text_process_cols   = [c for c in bacwa_npdes_text_df.columns   if c not in meta_cols]
+# bacwa_ground_truth_process_cols = [c for c in bacwa_ground_truth_df.columns if c not in meta_cols]
+# bacwa_npdes_text_process_cols   = [c for c in bacwa_npdes_text_df.columns   if c not in meta_cols]
 
-all_sheet_process_cols = list(dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols))
-all_bacwa_process_cols = list(dict.fromkeys(bacwa_ground_truth_process_cols + bacwa_npdes_text_process_cols))
+disposal_leaves = {name for name, _, _ in extract_leaves(
+    unitprocess_keywords['Solids Processing']['Disposal'], ignore_disposal=False)}
+all_sheet_process_cols = [c for c in dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols)
+                          if c not in disposal_leaves]
 
 # TRAIN ground truth comparison
 
@@ -227,33 +229,39 @@ gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
 
 
-# BACWA ground truth comparison (4-category bar plot)
+# # BACWA ground truth comparison (4-category bar plot)
 
-bacwa_gt_permits   = set(bacwa_ground_truth_df['NPDES_No'].dropna().str.strip())
-bacwa_text_permits = set(bacwa_npdes_text_df['NPDES_No'].dropna().str.strip())
-bacwa_cwns_permits = set(ca_cwns_data['linking_permit'].dropna().str.strip())
-bacwa_common       = bacwa_gt_permits & bacwa_text_permits & bacwa_cwns_permits
-print(f"\nFacilities in all 3 sources (BACWA): {len(bacwa_common)}")
+# bacwa_gt_permits   = set(bacwa_ground_truth_df['NPDES_No'].dropna().str.strip())
+# bacwa_text_permits = set(bacwa_npdes_text_df['NPDES_No'].dropna().str.strip())
+# bacwa_cwns_permits = set(ca_cwns_data['linking_permit'].dropna().str.strip())
+# bacwa_common       = bacwa_gt_permits & bacwa_text_permits & bacwa_cwns_permits
+# print(f"\nFacilities in all 3 sources (BACWA): {len(bacwa_common)}")
 
-bacwa_gt_common   = bacwa_ground_truth_df[bacwa_ground_truth_df['NPDES_No'].str.strip().isin(bacwa_common)].copy()
-bacwa_text_common = bacwa_npdes_text_df[bacwa_npdes_text_df['NPDES_No'].str.strip().isin(bacwa_common)].copy()
-bacwa_cwns_common = ca_cwns_data[ca_cwns_data['linking_permit'].str.strip().isin(bacwa_common)].copy()
+# bacwa_gt_common   = bacwa_ground_truth_df[bacwa_ground_truth_df['NPDES_No'].str.strip().isin(bacwa_common)].copy()
+# bacwa_text_common = bacwa_npdes_text_df[bacwa_npdes_text_df['NPDES_No'].str.strip().isin(bacwa_common)].copy()
+# bacwa_cwns_common = ca_cwns_data[ca_cwns_data['linking_permit'].str.strip().isin(bacwa_common)].copy()
 
-bacwa_gt_fac, bacwa_npdes_fac, bacwa_cwns_fac = build_category_facility_sets(
-    all_bacwa_process_cols, bacwa_gt_common, bacwa_text_common, bacwa_cwns_common,
-    leaf_to_category,
-)
+# bacwa_gt_fac, bacwa_npdes_fac, bacwa_cwns_fac = build_category_facility_sets(
+#     all_sheet_process_cols, bacwa_gt_common, bacwa_text_common, bacwa_cwns_common,
+#     leaf_to_category,
+# )
 
-bacwa_gt_rows = build_gt_rows(bacwa_gt_fac, bacwa_npdes_fac, bacwa_cwns_fac, bacwa_common)
-bacwa_filtered_rows = [r for r in bacwa_gt_rows if r['Process_Category'] in BACWA_PLOT_CATEGORIES]
+# bacwa_gt_rows = build_gt_rows(bacwa_gt_fac, bacwa_npdes_fac, bacwa_cwns_fac, bacwa_common)
+# bacwa_filtered_rows = [r for r in bacwa_gt_rows if r['Process_Category'] in BACWA_PLOT_CATEGORIES]
 
-create_ground_truth_plot(
-    bacwa_filtered_rows,
-    n_facilities=len(bacwa_common),
-    save_path=f'{figures_dir}/bacwa_ground_truth_vs_npdes_text_vs_cwns.png',
-)
+# create_ground_truth_plot(
+#     bacwa_filtered_rows,
+#     n_facilities=len(bacwa_common),
+#     save_path=f'{figures_dir}/bacwa_ground_truth_vs_npdes_text_vs_cwns.png',
+# )
 
-# pring overall % error vs ground truth for both data sources (summary)
-cwns_overall_error = sum(r['CWNS_FP'] + r['CWNS_FN'] for r in gt_simple_rows) / sum(r['GroundTruth'] for r in gt_simple_rows)
-npdes_overall_error = sum(r['NPDES_FP'] + r['NPDES_FN'] for r in gt_simple_rows) / sum(r['GroundTruth'] for r in gt_simple_rows)
-print(f"\nOverall error vs Ground Truth: CWNS = {cwns_overall_error:.1%}, NPDES Text = {npdes_overall_error:.1%}")  
+# Overall error vs ground truth — only for categories where GT > 0
+# (Categories with GT=0 but CWNS>0 would inflate the ratio unboundedly)
+gt_rows_with_gt = [r for r in gt_simple_rows if r['GroundTruth'] > 0]
+if gt_rows_with_gt:
+    cwns_overall_error = sum(r['CWNS_FP'] + r['CWNS_FN'] for r in gt_rows_with_gt) / sum(r['GroundTruth'] for r in gt_rows_with_gt)
+    npdes_overall_error = sum(r['NPDES_FP'] + r['NPDES_FN'] for r in gt_rows_with_gt) / sum(r['GroundTruth'] for r in gt_rows_with_gt)
+    gt_zero_cwns_fp = sum(r['CWNS_FP'] for r in gt_simple_rows if r['GroundTruth'] == 0)
+    print(f"\nOverall error vs Ground Truth (categories with GT>0): CWNS = {cwns_overall_error:.1%}, NPDES Text = {npdes_overall_error:.1%}")
+    if gt_zero_cwns_fp:
+        print(f"  (CWNS also has {gt_zero_cwns_fp} FP detections in categories with no ground truth annotations)")  

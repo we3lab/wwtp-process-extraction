@@ -318,7 +318,7 @@ with open('data/unitprocess_keywords.json', 'r') as f:
     unitprocess_keywords = json.load(f)
 
 # Build reverse mapping: CWNS process name -> list of defined names
-leaves = extract_leaves(unitprocess_keywords)
+leaves = extract_leaves(unitprocess_keywords, ignore_disposal=False)
 all_keys = [name for name, _, _ in leaves]
 cwns_to_taxonomy = {}
 for process_name, details, _ in leaves:

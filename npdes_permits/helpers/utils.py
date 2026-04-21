@@ -9,16 +9,18 @@ def build_cwns_presence_mask(series):
     return s.isin({'present', 'future', 'present_and_future'})
 
 
-def extract_leaves(processes_dict, group_id=None):
+def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
     for name, details in processes_dict.items():
         if not isinstance(details, dict):
             continue
+        if ignore_disposal and name == 'Disposal':
+            continue
         if 'alt_names' in details:
             leaves.append((name, details, group_id))
         else:
-            leaves.extend(extract_leaves(details, group_id=name))
+            leaves.extend(extract_leaves(details, group_id=name, ignore_disposal=ignore_disposal))
     return leaves
 
 
@@ -165,10 +167,10 @@ def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_perm
 
 
 def is_yes(val):
-    """Check if a cell value means the process is present (YES or PLANNED)."""
-    return str(val).strip().upper() in ('YES', 'PLANNED')
+    """Check if a cell value means the process is present (YES, PLANNED, or PRESENT)."""
+    return str(val).strip().upper() in ('YES', 'PLANNED', 'PRESENT')
 
 
 def count_yes(series):
-    """Count YES/PLANNED values in a sheet column (case-insensitive)."""
+    """Count YES/PLANNED/PRESENT values in a sheet column (case-insensitive)."""
     return series.fillna('').apply(is_yes).sum()

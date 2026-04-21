@@ -7,8 +7,10 @@ import os
 
 from helpers.utils import *
 from helpers.plotting import COLORS, HATCH_PATTERNS, plot_status_bars
+from helpers.load_google_sheet import load_google_sheet_csv
 
 DATE_FOLDER = '2026-2-18'
+GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
 
 
 def build_status_mask(df, process_name, unitprocess_keywords, status_filter):
@@ -99,6 +101,82 @@ def append_plot_data(plot_data, npdes_results_df, matching_cwns_results_df, pare
     return current_pos
 
 
+def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df,
+                                 category_name, figsize=(12, 5), fontsize=14, save_path=None):
+    """Plot LLM and keyword deviations from manual readings (above y=0: extra; below: missed)."""
+    manual_permits = set(manual_df['NPDES_No'].dropna())
+    llm_common = manual_permits & set(llm_df['PERMIT_NUMBER'].dropna()) if llm_df is not None else set()
+    kw_common  = manual_permits & set(keyword_df['PERMIT_NUMBER'].dropna())
+
+    rows = []
+    for process in process_names:
+        if process not in manual_df.columns:
+            continue
+        manual_proc  = set(manual_df.loc[manual_df[process].apply(is_yes), 'NPDES_No'])
+        manual_count = len(manual_proc)
+
+        llm_fp = llm_fn = 0
+        if llm_df is not None:
+            sub  = llm_df[llm_df['PERMIT_NUMBER'].isin(llm_common)]
+            mask = build_binary_mask(sub, process, None)
+            llm_proc = set(sub.loc[mask, 'PERMIT_NUMBER']) if mask is not None else set()
+            m = manual_proc & llm_common
+            llm_fp, llm_fn = len(llm_proc - m), len(m - llm_proc)
+
+        kw_fp = kw_fn = 0
+        sub  = keyword_df[keyword_df['PERMIT_NUMBER'].isin(kw_common)]
+        mask = build_binary_mask(sub, process, None)
+        kw_proc = set(sub.loc[mask, 'PERMIT_NUMBER']) if mask is not None else set()
+        m = manual_proc & kw_common
+        kw_fp, kw_fn = len(kw_proc - m), len(m - kw_proc)
+
+        if not any([llm_fp, llm_fn, kw_fp, kw_fn, manual_count]):
+            continue
+        rows.append({'Process': process, 'Manual_Count': manual_count,
+                     'LLM_FP': llm_fp, 'LLM_FN': llm_fn, 'KW_FP': kw_fp, 'KW_FN': kw_fn})
+
+    if not rows:
+        print(f"No deviation data for '{category_name}'")
+        return
+
+    df = pd.DataFrame(rows).sort_values('Manual_Count', ascending=False).reset_index(drop=True)
+    fig, ax = plt.subplots(figsize=figsize)
+    w = 0.18
+
+    for idx, row in df.iterrows():
+        for x_off, fp, fn, color in [(-w, row['LLM_FP'], row['LLM_FN'], COLORS['npdes_total']),
+                                      (+w, row['KW_FP'],  row['KW_FN'],  COLORS['npdes'])]:
+            if fp: ax.bar(idx + x_off, fp,  w * 2, color=color, edgecolor='black', linewidth=0.5)
+            if fn: ax.bar(idx + x_off, -fn, w * 2, color=color, hatch='///', edgecolor='black', linewidth=0.5)
+
+    ax.axhline(0, color='black', linewidth=0.8)
+    ax.set_xticks(range(len(df)))
+    ax.set_xticklabels(df['Process'], rotation=45, ha='right', fontsize=fontsize)
+    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    ax.set_ylabel('WWTP Count vs Manual Reading', fontsize=16)
+    ax.set_title(f'{category_name.replace("_", " ").title()} – Method vs Manual Reading', fontsize=18)
+
+    legend_handles = [
+        Patch(color='none', label='Method'),
+        Patch(facecolor=COLORS['npdes_total'], edgecolor='black', linewidth=0.5, label='  NPDES LLM'),
+        Patch(facecolor=COLORS['npdes'],       edgecolor='black', linewidth=0.5, label='  NPDES Keyword'),
+        Patch(color='none', label='vs Manual Reading'),
+        Patch(facecolor='gray', edgecolor='black', linewidth=0.5, label='  Extra (above)'),
+        Patch(facecolor='gray', hatch='///', edgecolor='black', linewidth=0.5, label='  Missed (below)'),
+    ]
+    leg = ax.legend(handles=legend_handles, loc='upper left',
+                    bbox_to_anchor=(1.01, 1), borderaxespad=0, fontsize=11)
+    for i, (h, t) in enumerate(zip(leg.legend_handles, leg.get_texts())):
+        if i in {0, 3}:
+            h.set_visible(False)
+            t.set_fontweight('bold')
+
+    plt.subplots_adjust(bottom=0.25)
+    if save_path:
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+
+
 def create_status_plot(plot_data, unit_process_results, category_name,
                        matching_cwns_data=None, unit_full_data=None, keyword_data=None,
                        match_only=True, include_cwns=True, include_legend=True,
@@ -173,15 +251,15 @@ def create_status_plot(plot_data, unit_process_results, category_name,
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
 
     if include_legend:
-        llm_label = '  NPDES LLM (matched)' if match_only else '  NPDES LLM'
+        llm_label = 'NPDES LLM'
         legend_handles = [
             Patch(color='none', label='Data Source'),
             Patch(facecolor=COLORS['npdes_total'], edgecolor='black', linewidth=0.5, label=llm_label),
         ]
         if has_keyword:
-            legend_handles.append(Patch(facecolor=COLORS['npdes'], edgecolor='black', linewidth=0.5, label='  NPDES Keyword'))
+            legend_handles.append(Patch(facecolor=COLORS['npdes'], edgecolor='black', linewidth=0.5, label='NPDES Keyword'))
         if include_cwns:
-            legend_handles.append(Patch(facecolor=COLORS['cwns'], edgecolor='black', linewidth=0.5, label='  CWNS'))
+            legend_handles.append(Patch(facecolor=COLORS['cwns'], edgecolor='black', linewidth=0.5, label='CWNS'))
         n_sources = len(legend_handles)
         legend_handles += [
             Patch(color='none', label='Status'),
@@ -189,7 +267,8 @@ def create_status_plot(plot_data, unit_process_results, category_name,
             Patch(facecolor='gray', hatch=HATCH_PATTERNS['future'], edgecolor='black', linewidth=0.5, label='  Future (Planned)'),
             Patch(facecolor='gray', hatch=HATCH_PATTERNS['present_and_future'], edgecolor='black', linewidth=0.5, label='  Present & Future'),
         ]
-        leg = ax.legend(handles=legend_handles, loc='upper right', fontsize=11)
+        leg = ax.legend(handles=legend_handles, loc='upper left', bbox_to_anchor=(1.01, 1),
+                        borderaxespad=0, fontsize=11)
         header_indices = {0, n_sources}
         for i, (handle, text) in enumerate(zip(leg.legend_handles, leg.get_texts())):
             if i in header_indices:
@@ -369,9 +448,40 @@ unit_process_results = unit_process_results_matched
 llm_results_path = 'npdes_permits/output/llm_unit_processes_by_facility.csv'
 llm_results = pd.read_csv(llm_results_path) if os.path.exists(llm_results_path) else None
 if llm_results is not None:
+    # Normalize LLM status vocabulary to match keyword convention
+    # LLM uses 'planned'; keyword/CWNS pipeline uses 'future'
+    process_cols = [c for c in llm_results.columns if c not in ['PERMIT_NUMBER', 'Agency', 'Facility_Name']]
+    llm_results[process_cols] = llm_results[process_cols].replace('planned', 'future')
     print(f"LLM results: {len(llm_results)} facilities")
 else:
     print(f"LLM results not found at {llm_results_path}; breakdown plots will show keyword only")
+
+# Filter to facilities processed by BOTH methods for method comparison plots
+if llm_results is not None:
+    llm_permit_numbers = set(llm_results['PERMIT_NUMBER'].dropna())
+    kw_permit_numbers = set(unit_full['PERMIT_NUMBER'].dropna())
+    both_permit_numbers = llm_permit_numbers & kw_permit_numbers
+    llm_results_both = llm_results[llm_results['PERMIT_NUMBER'].isin(both_permit_numbers)].copy()
+    unit_full_both = unit_full[unit_full['PERMIT_NUMBER'].isin(both_permit_numbers)].copy()
+    print(f"Facilities processed by both LLM and keyword: {len(both_permit_numbers)} "
+          f"(LLM only: {len(llm_permit_numbers - kw_permit_numbers)}, "
+          f"keyword only: {len(kw_permit_numbers - llm_permit_numbers)})")
+else:
+    llm_results_both = None
+    unit_full_both = unit_full
+
+# Load manual readings (train + test) as the deviation baseline for method comparison plots
+train_manual = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
+test_manual  = pd.read_csv('npdes_permits/data/test_data.csv', dtype=str)
+manual_combined = (pd.concat([train_manual, test_manual])
+                   .drop_duplicates(subset='NPDES_No').reset_index(drop=True))
+manual_permits = set(manual_combined['NPDES_No'].dropna())
+llm_results_manual = (llm_results_both[llm_results_both['PERMIT_NUMBER'].isin(manual_permits)].copy()
+                      if llm_results_both is not None else None)
+unit_full_manual   = unit_full_both[unit_full_both['PERMIT_NUMBER'].isin(manual_permits)].copy()
+print(f"Manual baseline: {len(manual_combined)} facilities "
+      f"({len(manual_permits & set(unit_full_both['PERMIT_NUMBER']))} matched to keyword, "
+      f"{len(manual_permits & set(llm_results_both['PERMIT_NUMBER'])) if llm_results_both is not None else 0} matched to LLM)")
 
 figures_dir = f'npdes_permits/output/{DATE_FOLDER}/figures'
 if not os.path.exists(figures_dir):
@@ -411,15 +521,13 @@ for category in categories_to_plot:
     )
     print(f"  Saved {safe_category}_source_comparison.png")
 
-    # Status breakdown: all CA LLM vs keyword side-by-side
-    create_status_plot(
-        plot_data,
-        unit_process_results,
+    # Method vs manual reading: deviation bars above/below zero
+    create_method_deviation_plot(
+        process_names,
+        manual_combined,
+        llm_results_manual,
+        unit_full_manual,
         category,
-        unit_full_data=llm_results,
-        keyword_data=unit_full if llm_results is not None else None,
-        match_only=False,
-        include_cwns=False,
         save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{safe_category}_npdes_method_comparison.png'
     )
     print(f"  Saved {safe_category}_npdes_method_comparison.png")
@@ -443,7 +551,7 @@ create_status_plot(
     match_only=True,
     include_cwns=True,
     title_suffix=' - All Categories',
-    figsize=(20, 6),
+    figsize=(12, 4),
     fontsize=10,
     save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/all_categories_source_comparison.png'
 )

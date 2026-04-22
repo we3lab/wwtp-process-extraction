@@ -3,16 +3,24 @@ import pandas as pd
 import os
 
 
-def extract_leaves(processes_dict, group_id=None):
+def build_cwns_presence_mask(series):
+    """Return boolean mask for CWNS presence values (present, future, or present_and_future)."""
+    s = series.astype(str).str.lower()
+    return s.isin({'present', 'future', 'present_and_future'})
+
+
+def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
     for name, details in processes_dict.items():
         if not isinstance(details, dict):
             continue
+        if ignore_disposal and name == 'Disposal':
+            continue
         if 'alt_names' in details:
             leaves.append((name, details, group_id))
         else:
-            leaves.extend(extract_leaves(details, group_id=name))
+            leaves.extend(extract_leaves(details, group_id=name, ignore_disposal=ignore_disposal))
     return leaves
 
 
@@ -59,48 +67,28 @@ def get_werf_codes_for_cwns_process(cwns_process_name):
     return matching['WERF_CODE'].unique().tolist() if not matching.empty else []
 
 
-def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path,
-                    facilities_2012_path=None, facility_name_matches_path=None):
+def prepare_cwns_ca(cwns_proc_df, manual_csv_path, facility_name_matches_path):
     """Consolidate CWNS CA process data with facility names and clean NPDES permits.
 
+    Input df must include FACILITY_NAME and NPDES_PERMIT columns (provided by step0 output).
+
     Matching tiers (applied in order, later tiers override earlier):
-    1. NPDES_PERMIT from FACILITY_PERMIT.csv (primary, from official CWNS data)
+    1. NPDES_PERMIT from step0 output (FACILITY_PERMIT.csv, NPDES source only)
     2. Manual overrides from cwns_permits_match_manual.csv (CWNS_ID-keyed)
-    3. Name-based matches from cwns_facility_name_match_manual.csv (only rows with VALIDATED=Y)
+    3. Name-based matches from cwns_facility_name_match_manual.csv
     """
     ca = cwns_proc_df[cwns_proc_df['STATE_CODE'] == 'CA'].copy()
-    meta_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE']
-    proc_cols = [c for c in ca.columns if c not in meta_cols]
+    src_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT']
+    proc_cols = [c for c in ca.columns if c not in src_cols]
 
     # Consolidate by CWNS_ID
     consolidated = ca.groupby('CWNS_ID').agg(
         raw_permit_list=('PERMIT_NUMBER', lambda x: list(x.dropna().unique())),
+        FACILITY_NAME=('FACILITY_NAME', 'first'),
+        NPDES_PERMIT=('NPDES_PERMIT', 'first'),
         **{col: (col, 'first') for col in proc_cols}
     ).reset_index()
     consolidated['CWNS_ID'] = consolidated['CWNS_ID'].astype(str)
-
-    # Add facility names from 2022 CWNS data
-    facilities = pd.read_csv(facilities_path, dtype=str)
-    consolidated = consolidated.merge(facilities[['CWNS_ID', 'FACILITY_NAME']], on='CWNS_ID', how='left')
-
-    # Fill missing FACILITY_NAME from 2012 data (older facilities not in 2022 survey)
-    if facilities_2012_path:
-        fac12 = pd.read_csv(facilities_2012_path, dtype=str)
-        ca_fac12 = fac12[fac12['State'] == 'CA'][['Facility/Project Name', 'CWNS Number']].copy()
-        ca_fac12.columns = ['FACILITY_NAME_2012', 'CWNS_ID12']
-        # Ensure 11-digit format (leading zero for single-digit state codes)
-        ca_fac12['CWNS_ID12'] = ca_fac12['CWNS_ID12'].apply(
-            lambda x: '0' + str(x) if len(str(x)) < 11 else str(x))
-        fac12_map = ca_fac12.drop_duplicates('CWNS_ID12').set_index('CWNS_ID12')['FACILITY_NAME_2012']
-        null_name = consolidated['FACILITY_NAME'].isna()
-        consolidated.loc[null_name, 'FACILITY_NAME'] = consolidated.loc[null_name, 'CWNS_ID'].map(fac12_map)
-
-    # Add clean NPDES permits from FACILITY_PERMIT
-    permits = pd.read_csv(permit_path, dtype=str)
-    npdes_permits = (permits[permits['PERMIT_SOURCE'] == 'NPDES'][['CWNS_ID', 'PERMIT_NUMBER']]
-                     .drop_duplicates(subset='CWNS_ID', keep='first')
-                     .rename(columns={'PERMIT_NUMBER': 'NPDES_PERMIT'}))
-    consolidated = consolidated.merge(npdes_permits, on='CWNS_ID', how='left')
 
     # Apply manual CSV overrides (CWNS_ID-keyed: CWNS_ID,NPDES_PERMIT,FACILITY_NAME)
     manual = pd.read_csv(manual_csv_path, dtype=str).fillna('')
@@ -110,13 +98,12 @@ def prepare_cwns_ca(cwns_proc_df, facilities_path, permit_path, manual_csv_path,
     consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'CWNS_ID'].map(cwns_id_map)
 
     # Apply name-based matches
-    if facility_name_matches_path and os.path.exists(facility_name_matches_path):
-        facility_name_manual = pd.read_csv(facility_name_matches_path, dtype=str).fillna('')
-        if len(facility_name_manual) > 0:
-            facility_name_manual_map = facility_name_manual.drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT']
-            missing = consolidated['NPDES_PERMIT'].isna() | (consolidated['NPDES_PERMIT'].str.strip() == '')
-            fmask = consolidated['CWNS_ID'].isin(facility_name_manual_map.index) & missing
-            consolidated.loc[fmask, 'NPDES_PERMIT'] = consolidated.loc[fmask, 'CWNS_ID'].map(facility_name_manual_map)
+    facility_name_manual = pd.read_csv(facility_name_matches_path, dtype=str).fillna('')
+    if len(facility_name_manual) > 0:
+        facility_name_manual_map = facility_name_manual.drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT']
+        missing = consolidated['NPDES_PERMIT'].isna() | (consolidated['NPDES_PERMIT'].str.strip() == '')
+        fmask = consolidated['CWNS_ID'].isin(facility_name_manual_map.index) & missing
+        consolidated.loc[fmask, 'NPDES_PERMIT'] = consolidated.loc[fmask, 'CWNS_ID'].map(facility_name_manual_map)
 
     return consolidated
 
@@ -177,3 +164,13 @@ def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_perm
 
     df['matched'] = df['linking_permit'].notna()
     return df
+
+
+def is_yes(val):
+    """Check if a cell value means the process is present (YES, PLANNED, or PRESENT)."""
+    return str(val).strip().upper() in ('YES', 'PLANNED', 'PRESENT')
+
+
+def count_yes(series):
+    """Count YES/PLANNED/PRESENT values in a sheet column (case-insensitive)."""
+    return series.fillna('').apply(is_yes).sum()

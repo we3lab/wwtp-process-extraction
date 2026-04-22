@@ -39,16 +39,13 @@ def build_pdf_jobs(pdf_folder: str, facilities_information: str):
         )
 
     jobs = []
-    processed_facilities = set()
-    for _, row in facilities_df.iterrows():
+    for row_idx, row in facilities_df.iterrows():
         facility_name = str(row["Facility_Name"]).strip()
         pdf_file_value = str(row["PDF_File"]).strip()
 
         if not facility_name or facility_name.lower() == "nan":
             continue
         if not pdf_file_value or pdf_file_value.lower() == "nan":
-            continue
-        if facility_name in processed_facilities:
             continue
 
         pdf_path = Path(pdf_file_value)
@@ -64,8 +61,7 @@ def build_pdf_jobs(pdf_folder: str, facilities_information: str):
                 f"PDF not found for facility '{facility_name}': {pdf_path}"
             )
 
-        jobs.append((pdf_path, pdf_path.name, facility_name))
-        processed_facilities.add(facility_name)
+        jobs.append((row_idx, pdf_path, pdf_path.name, facility_name))
 
     return jobs
 

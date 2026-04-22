@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 import os
+import re
+import argparse
 from pathlib import Path
 from collections import Counter
 from rdflib import Graph, Namespace, RDFS
@@ -14,8 +16,36 @@ GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/co
 # TODO: handle secondary category
 # Currently doesn't flag ontology "mistakes" e.g. identification of Sedimentation Basin without Process:Sedimentation
 
-input_dir = Path('npdes_permits/output/2026-2-18/llm_search_ontology')
-output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
+DEFAULT_INPUT_DIR = 'npdes_permits/output/2026-2-18/llm_extraction'
+DEFAULT_OUTPUT_CSV = 'npdes_permits/output/llm_unit_processes_by_facility.csv'
+DEFAULT_SITE_DATA_CSV = 'npdes_permits/output/2026-2-18/site_data.csv'
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='Postprocess LLM extraction JSON files into facility-level process matrix.'
+    )
+    parser.add_argument(
+        '--input_dir',
+        default=DEFAULT_INPUT_DIR,
+        help=f'Folder containing LLM extraction JSON files (default: {DEFAULT_INPUT_DIR}).',
+    )
+    parser.add_argument(
+        '--site_data_csv',
+        default=DEFAULT_SITE_DATA_CSV,
+        help=f'Site data CSV path with PDF/facility mapping (default: {DEFAULT_SITE_DATA_CSV}).',
+    )
+    parser.add_argument(
+        '--output_csv',
+        default=DEFAULT_OUTPUT_CSV,
+        help=f'Output CSV path (default: {DEFAULT_OUTPUT_CSV}).',
+    )
+    return parser.parse_args()
+
+
+args = parse_args()
+input_dir = Path(args.input_dir)
+output_csv = Path(args.output_csv)
 
 with open('npdes_permits/data/unitprocess_keywords.json') as f:
     keywords = json.load(f)
@@ -88,12 +118,59 @@ for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerati
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
 
-site_df = pd.read_csv('npdes_permits/output/2026-2-18/site_data.csv', dtype=str).fillna('')
-pdf_map = {row['PDF_File'].replace('.pdf', ''): {
-    'PERMIT_NUMBER': row['NPDES_No'],
-    'Agency': row['Agency'],
-    'Facility_Name': row['Facility_Name']
-} for _, row in site_df.iterrows()}
+site_df = pd.read_csv(args.site_data_csv, dtype=str).fillna('')
+
+
+def slugify(text):
+    slug = re.sub(r'[^A-Za-z0-9]+', '_', str(text or '').strip())
+    slug = re.sub(r'_+', '_', slug).strip('_')
+    return slug or 'facility'
+
+
+def normalize_pdf_name(value):
+    text = str(value or '').strip()
+    if not text:
+        return ''
+    if text.lower().endswith('.pdf'):
+        return text
+    return f"{text}.pdf"
+
+
+def parse_extraction_filename(filename):
+    stem = Path(filename).stem
+    # Expected step3 pattern: <pdf_stem>__<row_index_1based_4digits>__<facility_slug>.json
+    match = re.match(r'^(?P<pdf_stem>.+)__(?P<row_idx>\d{4})__(?P<facility_slug>.+)$', stem)
+    if not match:
+        return {
+            'pdf_file': normalize_pdf_name(stem),
+            'row_idx_zero_based': None,
+            'facility_slug': '',
+        }
+    return {
+        'pdf_file': normalize_pdf_name(match.group('pdf_stem')),
+        'row_idx_zero_based': int(match.group('row_idx')) - 1,
+        'facility_slug': match.group('facility_slug'),
+    }
+
+
+def get_identity_from_row(row):
+    return {
+        'PERMIT_NUMBER': row.get('NPDES_No', '') or row.get('PERMIT_NUMBER', ''),
+        'Agency': row.get('Agency', ''),
+        'Facility_Name': row.get('Facility_Name', '') or row.get('facility_name', ''),
+    }
+
+
+site_records = site_df.to_dict(orient='records')
+site_by_pdf_and_facility = {}
+site_by_pdf = {}
+for rec in site_records:
+    pdf_name = normalize_pdf_name(rec.get('PDF_File', ''))
+    facility = str(rec.get('Facility_Name', '')).strip()
+    key = (pdf_name.lower(), facility.lower())
+    if pdf_name:
+        site_by_pdf_and_facility[key] = rec
+        site_by_pdf.setdefault(pdf_name.lower(), rec)
 
 results = []
 
@@ -130,15 +207,31 @@ def normalize_values(value):
     return normalized
 
 
-def normalize_implementation(value):
+def normalize_location(value):
     text = str(value or '').strip().lower()
-    if text in {'present', 'planned', 'past'}:
+    if text in {'on-site', 'off-site', 'third-party'}:
+        return text
+    return ''
+
+
+def normalize_implementation(value, location=None):
+    text = str(value or '').strip().lower()
+    if text == 'off-site':
+        return 'off-site'
+    if text == 'present':
+        location_text = normalize_location(location)
+        if location_text in {'off-site', 'third-party'}:
+            return 'off-site'
+        return 'present'
+    if text == 'third-party':
+        return 'off-site'
+    if text in {'planned', 'past'}:
         return text
     return ''
 
 
 def merge_implementation(existing_value, new_value):
-    rank = {'': 0, 'past': 1, 'planned': 2, 'present': 3}
+    rank = {'': 0, 'past': 1, 'planned': 2, 'present': 3, 'off-site': 4}
     existing = normalize_implementation(existing_value)
     new = normalize_implementation(new_value)
     return new if rank.get(new, 0) > rank.get(existing, 0) else existing
@@ -182,6 +275,39 @@ def ontology_labels(component_type, name, include_descendants=False):
     return labels
 
 
+def resolve_identity_for_extraction(filename):
+    # 1) Parse step3 extraction filename pattern for exact row matching.
+    parsed = parse_extraction_filename(filename)
+    row_idx = parsed.get('row_idx_zero_based')
+    if row_idx is not None and 0 <= row_idx < len(site_records):
+        rec = site_records[row_idx]
+        return get_identity_from_row(rec)
+
+    # 2) Fallback by parsed PDF + facility slug.
+    pdf_name = parsed.get('pdf_file', '')
+    facility_slug = parsed.get('facility_slug', '')
+    if pdf_name and facility_slug:
+        matching = [
+            rec for rec in site_records
+            if normalize_pdf_name(rec.get('PDF_File', '')).lower() == pdf_name.lower()
+            and slugify(rec.get('Facility_Name', '')) == facility_slug
+        ]
+        if matching:
+            return get_identity_from_row(matching[0])
+
+    # 3) Fallback by PDF stem only.
+    if pdf_name:
+        rec = site_by_pdf.get(pdf_name.lower())
+        if rec:
+            return get_identity_from_row(rec)
+
+    return {
+        'PERMIT_NUMBER': '',
+        'Agency': '',
+        'Facility_Name': '',
+    }
+
+
 for filename in os.listdir(input_dir):
     if not filename.endswith('.json'):
         continue
@@ -195,7 +321,7 @@ for filename in os.listdir(input_dir):
 
     item_components = []
     for item in items:
-        implementation = normalize_implementation(get_field(item, 'Implementation'))
+        implementation = normalize_implementation(get_field(item, 'Implementation'), get_field(item, 'Location'))
         components = {'Process': set(), 'Role': set(), 'Equipment': set(), 'Substance': set()}
         item_role_counts = Counter()
         for comp_type in components:
@@ -282,7 +408,14 @@ for filename in os.listdir(input_dir):
                 break
 
             if match_col:
-                for sibling_col in group_to_columns.get(group_id, []):
+                sibling_cols = group_to_columns.get(group_id, [])
+                existing_present = [c for c in sibling_cols if item_result.get(c) == 'present']
+                if existing_present:
+                    best_existing_priority = min(column_priority.get(c, 1) for c in existing_present)
+                    if best_existing_priority <= column_priority.get(match_col, 1) and match_col not in existing_present:
+                        continue
+
+                for sibling_col in sibling_cols:
                     if sibling_col in item_result:
                         item_result[sibling_col] = ''
                 item_result[match_col] = 'present'
@@ -366,7 +499,7 @@ for filename in os.listdir(input_dir):
             if value == 'present':
                 result[col] = merge_implementation(result.get(col, ''), implementation)
 
-    result.update(pdf_map.get(filename.replace('.json', ''), {}))
+    result.update(resolve_identity_for_extraction(filename))
     results.append(result)
 
 df = pd.DataFrame(results)

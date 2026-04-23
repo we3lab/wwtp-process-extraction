@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import shutil
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -59,7 +60,7 @@ def parse_args():
         default=DEFAULT_FACILITIES_INFO_PATH,
         help=(
             "Path to CSV with columns Facility_Name and PDF_File. "
-            f"If a facility appears multiple times, only the first PDF is used (default: {DEFAULT_FACILITIES_INFO_PATH})."
+            f"Each row is processed and saved separately, even when multiple facilities share the same PDF (default: {DEFAULT_FACILITIES_INFO_PATH})."
         ),
     )
     parser.add_argument(
@@ -134,6 +135,12 @@ def render_system_message(
     )
 
 
+def slugify(text):
+    slug = re.sub(r'[^A-Za-z0-9]+', '_', str(text or '').strip())
+    slug = re.sub(r'_+', '_', slug).strip('_')
+    return slug or 'facility'
+
+
 def resolve_method_paths(args):
     method_paths = get_method_paths(args.method)
 
@@ -185,6 +192,7 @@ if __name__ == "__main__":
 
     os.makedirs(output_dir, exist_ok=True)
     token_usage_rows = []
+    manifest_rows = []
     jobs = build_pdf_jobs(args.pdf_folder, args.facilities_information)
 
     if not jobs:
@@ -202,7 +210,9 @@ if __name__ == "__main__":
     system_prompt_template = prompt_path.read_text(encoding="utf-8")
     example_schema = None if args.skip_schema_validation else build_example_schema(args.method)
 
-    for pdf_path, pdf_file, facility_name in jobs:
+    facilities_source_df = pd.read_csv(args.facilities_information, dtype=str).fillna('')
+
+    for row_idx, pdf_path, pdf_file, facility_name in jobs:
         print("#" * 80)
         print(f"\nProcessing {pdf_file} for facility {facility_name}...")
         print("Extracting permit sections from PDF " f"{pdf_path}...")
@@ -247,15 +257,18 @@ if __name__ == "__main__":
                 system_message=system_msg,
                 user_message=user_msg,
                 temperature=0.0,
-                max_tokens=None if args.no_token_limit else 4000,
-                max_completion_tokens=None if args.no_token_limit else 8000,
+                max_tokens=None if args.no_token_limit else 10000,
+                max_completion_tokens=None if args.no_token_limit else 20000,
                 schema=example_schema,
             )
             parsed, completion_token, prompt_token, total_token, reasoning_tokens = result
             print("Parsed JSON result:")
             print(json.dumps(parsed, indent=2, ensure_ascii=False))
 
-            output_json_path = output_dir / f"{pdf_file.replace('.pdf', '')}.json"
+            facility_slug = slugify(facility_name)
+            pdf_stem = Path(pdf_file).stem
+            extraction_file_name = f"{pdf_stem}__{row_idx + 1:04d}__{facility_slug}.json"
+            output_json_path = output_dir / extraction_file_name
             with open(output_json_path, "w", encoding="utf-8") as output_file:
                 json.dump(parsed, output_file, ensure_ascii=False, indent=2)
 
@@ -269,12 +282,21 @@ if __name__ == "__main__":
                 {
                     "facility_name": facility_name,
                     "pdf_file": pdf_file,
+                    "extraction_file": extraction_file_name,
                     "completion_token": completion_token,
                     "prompt_toke": prompt_token,
                     "total_token": total_token,
                     "reasoning_token": reasoning_tokens,
                 }
             )
+
+            if 0 <= row_idx < len(facilities_source_df):
+                facility_row = facilities_source_df.iloc[row_idx].to_dict()
+            else:
+                facility_row = {}
+            facility_row["pdf_file"] = pdf_file
+            facility_row["extraction_file"] = extraction_file_name
+            manifest_rows.append(facility_row)
         except Exception as exc:
             print("Error:", exc)
 
@@ -292,3 +314,8 @@ if __name__ == "__main__":
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
     token_usage_df.to_csv(token_usage_csv_path, index=False)
     print(f"Saved token usage CSV: {token_usage_csv_path}")
+
+    manifest_df = pd.DataFrame(manifest_rows)
+    manifest_csv_path = output_dir / "facility_extraction_manifest.csv"
+    manifest_df.to_csv(manifest_csv_path, index=False)
+    print(f"Saved facility manifest CSV: {manifest_csv_path}")

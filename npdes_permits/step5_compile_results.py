@@ -528,6 +528,7 @@ for category in categories_to_plot:
         llm_results_manual,
         unit_full_manual,
         category,
+        keyword_data=None,  # TODO: pass keyword_results once available
         save_path=f'npdes_permits/output/{DATE_FOLDER}/figures/{safe_category}_npdes_method_comparison.png'
     )
     print(f"  Saved {safe_category}_npdes_method_comparison.png")

@@ -12,7 +12,7 @@ ontology = Graph()
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
 
-input_dir = Path('npdes_permits/output/2026-2-18/llm_search_ontology')
+input_dir = Path('npdes_permits/output/llm_output')
 output_csv = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
 output_json_dir = Path('npdes_permits/output/2026-2-18/llm_search_with_triggers')
 
@@ -276,7 +276,14 @@ for filename in os.listdir(input_dir):
                 break
 
             if match_col:
-                for sibling_col in group_to_columns.get(group_id, []):
+                sibling_cols = group_to_columns.get(group_id, [])
+                existing_present = [c for c in sibling_cols if item_result.get(c) == 'present']
+                if existing_present:
+                    best_existing_priority = min(column_priority.get(c, 1) for c in existing_present)
+                    if best_existing_priority <= column_priority.get(match_col, 1) and match_col not in existing_present:
+                        continue
+
+                for sibling_col in sibling_cols:
                     if sibling_col in item_result:
                         item_result[sibling_col] = ''
                 item_result[match_col] = 'present'

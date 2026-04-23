@@ -310,7 +310,7 @@ def main():
             is_present = present_results.get(key, 0) == 1
             is_future = future_results.get(key, 0) == 1
             
-            # Determine status: 0, "present", "future", or "present_and_future"
+            # Determine status: 0, "present", "present_and_future", or "future"
             if is_present and is_future:
                 status = "present_and_future"
             elif is_present:

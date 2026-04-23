@@ -185,7 +185,7 @@ for filename in os.listdir(input_dir):
 
     item_components = []
     for item_idx, item in enumerate(records):
-        if str(get_field(item, 'Implementation') or '').lower() not in ["present", "planned"]:
+        if str(get_field(item, 'Implementation') or '').lower() not in ["present", "future"]:
             if item_idx < len(output_json_data['items']) and isinstance(output_json_data['items'][item_idx], dict):
                 output_json_data['items'][item_idx]['trigger_process'] = []
             continue

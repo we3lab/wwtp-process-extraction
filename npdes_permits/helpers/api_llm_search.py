@@ -168,7 +168,7 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                             },
                             "Implementation": {
                                 "type": "string",
-                                "enum": ["present", "planned", "past"],
+                                "enum": ["present", "future", "past"],
                             },
                             "Location": {
                                 "type": ["string", "null"],
@@ -231,7 +231,7 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                         },
                         "Implementation": {
                             "type": "string",
-                            "enum": ["present", "planned", "past"],
+                            "enum": ["present", "future", "past"],
                         },
                         "Location": {
                             "type": ["string", "null"],

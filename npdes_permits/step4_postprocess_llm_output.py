@@ -209,29 +209,31 @@ def normalize_values(value):
 
 def normalize_location(value):
     text = str(value or '').strip().lower()
-    if text in {'on-site', 'off-site', 'third-party'}:
-        return text
+    if text in {'on-site', 'off-site', 'off_site', 'third-party'}:
+        return text.replace('-', '_')
     return ''
 
 
 def normalize_implementation(value, location=None):
     text = str(value or '').strip().lower()
-    if text == 'off-site':
-        return 'off-site'
+    if text in {'off-site', 'off_site'}:
+        return 'off_site'
     if text == 'present':
         location_text = normalize_location(location)
-        if location_text in {'off-site', 'third-party'}:
-            return 'off-site'
+        if location_text in {'off_site', 'third-party'}:
+            return 'off_site'
         return 'present'
     if text == 'third-party':
-        return 'off-site'
-    if text in {'planned', 'past'}:
-        return text
+        return 'off_site'
+    if text == 'planned':
+        return 'future'
+    if text == 'past':
+        return 'past'
     return ''
 
 
 def merge_implementation(existing_value, new_value):
-    rank = {'': 0, 'past': 1, 'planned': 2, 'present': 3, 'off-site': 4}
+    rank = {'': 0, 'past': 1, 'future': 2, 'present': 3, 'off_site': 4}
     existing = normalize_implementation(existing_value)
     new = normalize_implementation(new_value)
     return new if rank.get(new, 0) > rank.get(existing, 0) else existing

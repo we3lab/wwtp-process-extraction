@@ -190,7 +190,7 @@ for permit in sorted(common_permits):
                     continue
             except (ValueError, TypeError):
                 pass
-            if s in ('present', 'planned', 'present_and_future', 'present_and_planned') or s.startswith('present'):
+            if s in ('present', 'future', 'present_and_future', 'past', 'off_site') or s.startswith('present'):
                 cwns_set.add(col)
 
     npdes_tp = len(gt_set & npdes_set)

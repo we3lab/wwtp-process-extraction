@@ -4,9 +4,9 @@ import os
 
 
 def build_cwns_presence_mask(series):
-    """Return boolean mask for CWNS presence values (present, future, or present_and_future)."""
+    """Return boolean mask for CWNS presence values."""
     s = series.astype(str).str.lower()
-    return s.isin({'present', 'future', 'present_and_future'})
+    return s.isin({'present', 'present_and_future', 'future'})
 
 
 def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
@@ -22,6 +22,13 @@ def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
         else:
             leaves.extend(extract_leaves(details, group_id=name, ignore_disposal=ignore_disposal))
     return leaves
+
+
+def get_leaf_names(cat_name, cat_val):
+    """Return leaf process names for a category from the keywords hierarchy."""
+    if isinstance(cat_val, dict) and 'alt_names' in cat_val:
+        return [cat_name]
+    return [name for name, _, _ in extract_leaves(cat_val)]
 
 
 def get_cwns_unit_process_names(process_name, process_details):

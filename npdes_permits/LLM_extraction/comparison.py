@@ -1,9 +1,16 @@
 import os
+import sys
 import json
 import pandas as pd
 import re
 import statistics
 from rapidfuzz import fuzz, process
+
+_PKG_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if _PKG_ROOT not in sys.path:
+    sys.path.insert(0, _PKG_ROOT)
+
+from helpers.utils import parse_status, is_present
 
 # ============================================================
 # 1. Load reference JSON and build lookup tables
@@ -206,19 +213,19 @@ def compare_results(ground_truth_csv, predictions_df):
                 return row[key]
         return None
 
-    def is_yes(val):
-        if pd.isna(val):
-            return False
-        s = str(val).strip().lower()
-        return s in {"yes", "y", "1", "true"}  # treat common truthy markers as YES
+    def gt_cell_positive(val):
+        return is_present(val)
+
+    def pred_cell_positive(val):
+        return is_present(val)
 
     comparison = {}
     for _, row in merged.iterrows():
         name = row["Prediction_File"]
         # fetch ground-truth values preferring GT-suffixed columns
-        gt_set = {p for p in processes if is_yes(fetch_val(row, p, source="gt"))}
+        gt_set = {p for p in processes if gt_cell_positive(fetch_val(row, p, source="gt"))}
         # fetch prediction values preferring PRED-suffixed columns
-        pred_set = {p for p in processes if is_yes(fetch_val(row, p, source="pred"))}
+        pred_set = {p for p in processes if pred_cell_positive(fetch_val(row, p, source="pred"))}
         intersection = gt_set & pred_set
         match_score = round(len(intersection) / max(1, len(gt_set)), 3)
         comparison[name] = {

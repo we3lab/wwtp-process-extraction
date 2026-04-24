@@ -38,7 +38,7 @@ python npdes_permits/step0_build_cwns_table.py
 python npdes_permits/step1_scrape_npdes.py
 python npdes_permits/step2_search_npdes_text.py
 python npdes_permits/step3a_llm_ontology.py --init_ontology
-python npdes_permits/step3a_llm_ontology.py --model gemini-2.0-flash-001 --pdf_folder npdes_permits/output/2026-2-18/npdes --facilities_information npdes_permits/data/test_data.csv
+python npdes_permits/step3a_llm_ontology.py --model gemini-2.0-flash-001 --pdf_folder npdes_permits/output/2026-2-18/npdes --facilities_information npdes_permits/data/test_set_npdes_manual.csv
 python npdes_permits/step4_postprocess_llm_output.py
 python npdes_permits/step5a_compare_aggregate_results.py
 python npdes_permits/step5b_compare_facility_results.py

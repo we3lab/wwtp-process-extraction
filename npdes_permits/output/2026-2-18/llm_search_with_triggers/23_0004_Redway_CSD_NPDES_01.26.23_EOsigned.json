@@ -1,19 +1,34 @@
 {
   "items": [
     {
+      "Equipment": null,
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.8,
+      "Sentence": "Grit is periodically removed from the lift station wet well.",
+      "trigger_process": [
+        "Unspecified Clarification"
+      ]
+    },
+    {
       "Equipment": "OxidationDitch",
       "Process": [
+        "BiologicalProcess",
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
+      "Score": 0.9,
+      "Sentence": "The treatment system consists of a 300,000 -gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -29,8 +44,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
+      "Score": 0.9,
+      "Sentence": "The treatment system consists of a 300,000 -gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -38,19 +53,17 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
+        "Disinfection",
         "Chlorination"
       ],
-      "Role": [
-        "Posttreatment",
-        "Disinfection"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
+      "Score": 0.9,
+      "Sentence": "The treatment system consists of a 300,000 -gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -58,63 +71,17 @@
     {
       "Equipment": null,
       "Process": [
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
+      "Score": 0.8,
+      "Sentence": "The treatment system consists of a 300,000 -gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
       "trigger_process": [
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The Facility discharges treated wastewater to three percolation ponds at Discharge Point 002.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "The Dogwood lift station pumps raw wastewater into an 8-inch pressure main down Dogwood Lane, under the South Fork Eel River, and cross-country to the Facility...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Grit is periodically removed from the lift station wet well.",
-      "trigger_process": [
-        "Grit Removal"
       ]
     },
     {
@@ -125,12 +92,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
+      "Score": 0.9,
       "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds or an Aeromod Draimad bagger before being transported to an approved landfill for final disposal.",
       "trigger_process": [
         "Mechanical Dewatering"
@@ -139,15 +104,16 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "Landfill",
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
+      "Location": "on-site",
+      "Score": 0.7,
       "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds or an Aeromod Draimad bagger before being transported to an approved landfill for final disposal.",
       "trigger_process": [
         "Biosolids Landfill"
@@ -156,124 +122,18 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "LandApplication",
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "past",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids were previously disposed of though land application in a wooded area owned by the Permittee north of the Facility; this practice was discontinued in 2018.",
+      "Location": "on-site",
+      "Score": 0.7,
+      "Sentence": "Solids were previously disposed of though land application in a wooded area owned by the Permittee north of the Facility ; this practice was discontinued in 2018.",
       "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Improvements identified as part of this project include lift station SCADA improvements and pump upgrades...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Improvements identified as part of this project include ... aerator upgrades ...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Improvements identified as part of this project include ... clarifier rehabilitation ...",
-      "trigger_process": [
-        "Unspecified Clarification"
-      ]
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Improvements identified as part of this project include ... increased digestor volume ...",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Improvements identified as part of this project include ... a new chlorine contact basin and effluent pump station ...",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Improvements identified as part of this project include ... sludge drying cover ...",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.5,
-      "Sentence": "Improvements identified as part of this project include ... a new headworks process ...",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
     }
   ]
 }

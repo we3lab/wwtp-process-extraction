@@ -11,8 +11,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The screening consists of a Parkson HLS500 Hycor Helisieve automatic screen to remove inorganics larger than 1/4\".",
+      "Score": 1.0,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +28,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "grit removal occurs in a manually scraped grit channel.",
+      "Score": 1.0,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -37,32 +37,34 @@
     {
       "Equipment": null,
       "Process": [
+        "ChemicalAddition",
         "pHAdjustment"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "pHAdjuster"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.9,
-      "Sentence": "Magnesium hydroxide is added via a variable speed auger to maintain optimal pH in the nitrification/denitrification activated sludge process.",
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
       "trigger_process": [
-        "Unspecified Chemical Addition"
+        "Lime Addition"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "Tank",
       "Process": [
-        "Sedimentation"
+        "Equalization"
       ],
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.9,
-      "Sentence": "Influent flow emergency storage or equalization is provided, as needed, in the original primary clarifier no longer needed with the new treatment process.",
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
       "trigger_process": [
         "Equalization"
       ]
@@ -70,25 +72,144 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "Nitrification",
+        "Denitrification",
+        "ActivatedSludge",
+        "BiologicalProcess"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1.0,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
+      "trigger_process": [
+        "Unspecified BNR"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1.0,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.8,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1.0,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "The wastewater treatment system consists of screening, grit removal, magnesium hydroxide addition, influent flow equalization and emergency storage, nitrification/denitrification, activated sludge, tertiary filters, ammonium sulfate addition, chlorination, and dechlorination.",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1.0,
+      "Sentence": "The screening consists of a Parkson HLS500 Hycor Helisieve automatic screen to remove inorganics larger than 1/4\", grit removal occurs in a manually scraped grit channel.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1.0,
+      "Sentence": "The screening consists of a Parkson HLS500 Hycor Helisieve automatic screen to remove inorganics larger than 1/4\", grit removal occurs in a manually scraped grit channel.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
         "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Secondary",
-        "Aerobic",
-        "Anoxic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Advanced secondary treatment is provided by two parallel nitrification/denitrification activated sludge processes (two basins and two secondary clarifiers).",
       "trigger_process": [
-        "AO",
-        "Unspecified AS"
+        "Unspecified BNR"
       ]
     },
     {
@@ -102,7 +223,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Advanced secondary treatment is provided by two parallel nitrification/denitrification activated sludge processes (two basins and two secondary clarifiers).",
       "trigger_process": [
         "Secondary Clarification"
@@ -119,33 +240,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 1.0,
       "Sentence": "Tertiary filtration is provided by a disk filter and sand filter in series operation (filters may also be run in parallel operation during high flow events or either filter may be isolated for maintenance).",
       "trigger_process": [
         "Unspecified Filtration"
       ]
     },
     {
-      "Equipment": "RapidSandFilter",
-      "Process": [
-        "RapidSandFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Tertiary filtration is provided by a disk filter and sand filter in series operation (filters may also be run in parallel operation during high flow events or either filter may be isolated for maintenance).",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1.0,
+      "Sentence": "Effluent disinfection is achieved using chlorine.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination",
         "Disinfection"
       ],
       "Role": [
@@ -156,22 +278,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Effluent disinfection is achieved using chlorine.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "The final effluent is dechlorinated prior to discharge to Deer Creek.",
       "trigger_process": [
         "Dechlorination"
@@ -185,79 +292,13 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The waste activated sludge is stored in an aerated day tank, dewatered by a belt filter press, and hauled to Ostrom Road Landfill in Wheatland, CA.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The waste activated sludge is stored in an aerated day tank (with emergency backup storage in the old anaerobic digester) then dewatered in a filter press.",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "(with emergency backup storage in the old anaerobic digester)",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The waste activated sludge ... hauled to Ostrom Road Landfill in Wheatland, CA.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "Feed",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Filtrate from the sludge dewatering process is returned to the activated sludge process for treatment with the incoming waste stream.",
+      "Score": 1.0,
+      "Sentence": "Secondary waste activated sludge is stored in an aerated day tank (with emergency backup storage in the old anaerobic digester) then dewatered in a filter press.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]

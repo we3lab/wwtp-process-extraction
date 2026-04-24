@@ -6,12 +6,12 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -20,15 +20,16 @@
     {
       "Equipment": "GritChamber",
       "Process": [
+        "Aeration",
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Grit Removal"
@@ -45,8 +46,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... primary sedimentation by circular and rectangular clarifiers ...",
+      "Score": 1.0,
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,8 +55,9 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "BiologicalProcess",
+        "Biofiltration",
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -63,8 +65,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... biological treatment by trickling filters followed by activated sludge aeration basins ...",
+      "Score": 1.0,
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -72,6 +74,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "BiologicalProcess",
         "ActivatedSludge",
         "Aeration"
       ],
@@ -81,8 +84,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... biological treatment by trickling filters followed by activated sludge aeration basins ...",
+      "Score": 1.0,
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -98,8 +101,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... secondary clarification ...",
+      "Score": 1.0,
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -107,19 +110,19 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Chlorination"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... disinfection by chlorination, and dechlorination by sodium bisulfite.",
+      "Score": 1.0,
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -132,54 +135,20 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... disinfection by chlorination, and dechlorination by sodium bisulfite.",
-      "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger treats its biosolids by gravity thickening or co -settling, lime stabilization, and dewatering by belt -filter presses.",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Stabilization",
-        "SolidsHandling"
-      ],
       "Substance": [
-        "pHAdjuster-Lime"
+        "pHAdjuster-SulfuricAcid"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger treats its biosolids by gravity thickening or co -settling, lime stabilization, and dewatering by belt -filter presses.",
+      "Score": 1.0,
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "trigger_process": [
-        "Lime Addition"
+        "Dechlorination",
+        "Neutralization"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltThickener",
       "Process": [
         "Dewatering"
       ],
@@ -189,74 +158,47 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger treats its biosolids by gravity thickening or co -settling, lime stabilization, and dewatering by belt -filter presses.",
+      "Score": 1.0,
+      "Sentence": "The Discharger treats its b iosolids by gravity thickening or co -settling, lime stabilization, and dewatering by belt -filter presses.",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Thickening"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "ChemicalAddition",
+        "pHAdjustment",
+        "Neutralization"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The Discharger\u2019s stabilized, dewatered biosolids are hauled offsite for land application at the Discharger\u2019s Biosolids Utilization Project on Tubbs Island, Sonoma County.",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
+      "Substance": [
+        "pHAdjuster-Lime"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "third-party",
-      "Score": 1,
-      "Sentence": "Beginning in November 2019, the Discharger began sending a small portion of its biosolids to the Lystek Organic Material Recovery Center located at the Fairfield Suisun Sewer District wastewater treatment plant in Fairfield, California ... for incorporation into Lystek\u2019s biosolids -derived liquid fertilizer.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The improvements included a 3.0 million gallon (MG) underground storage tank to eliminate sanitary sewer overflows from the Sears Point Pump Station and an 8.6 MG storage basin adjacent to the treatment p lant to eliminate sanitary sewer overflows from the Ryder Street Pump Station. When possible, t he Discharger operate s the storage basin like an equalization basin to reduce discharges of blended effluent from the Facility;",
+      "Score": 0.9,
+      "Sentence": "The Discharger treats its b iosolids by gravity thickening or co -settling, lime stabilization, and dewatering by belt -filter presses.",
       "trigger_process": [
+        "Lime Addition"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": [
         "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
+      ],
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Planned Changes. The Dis charger plans a $1.02 million rehabilitation project for the Ryder Street Basin (8.6 MG storage basin) , with planning and design scheduled for 2023 and construction scheduled for 2024 -2025.",
+      "Score": 0.7,
+      "Sentence": "When possible, t he Discharger operate s the storage basin like an equalization basin to reduce discharges of blended effluent from the Facility; however, its primary purpose is to reduce and eliminate sanitary sewer overflows .",
       "trigger_process": [
         "Equalization"
       ]

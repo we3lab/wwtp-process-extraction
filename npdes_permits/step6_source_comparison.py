@@ -5,15 +5,17 @@ Grouped stacked bar-chart comparison of unit process detection across two data s
   - CWNS (California facilities from output/unit_processes_by_facility.csv)
   - LLM Search (output/<DATE>/llm_unit_processes_by_facility.csv)
 
-Each bar is stacked by status:
-  CWNS : present (solid) | present_and_future (xxx) | future (//)
-  LLM  : present (solid) | future (//)              | off_site (transparent)
-  'past' (LLM) : excluded from display.
+Each bar is stacked by status (process columns must already be normalized: stripped, uppercase).
+PRESENT_AND_FUTURE is counted as PRESENT only (not split into Future).
+
+Plot stacks (both sources): Present | Past | Future | Off-site
+  CWNS : PRESENT | PRESENT_AND_FUTURE | FUTURE | PAST | OFFSITE | 0
+  LLM  : PRESENT | PRESENT_AND_FUTURE | FUTURE | PAST | OFFSITE
 
 Produces:
-  1. One graph per major category (all leaf processes in that category)
-  2. One graph of all processes (all leaves from unitprocess_keywords.json)
-  3. One graph of major categories only (each top-level key, facility counted once)
+  1. One graph per treatment-stage group (combined leaves)
+  2. One graph of major categories (top-level JSON keys)
+  Y-axis: summed status counts over the leaves in each bar group.
 """
 
 import json
@@ -26,8 +28,8 @@ import matplotlib.patches as mpatches
 import matplotlib.ticker as mticker
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import extract_leaves, prepare_cwns_ca, match_cwns_to_npdes, get_leaf_names
-from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar, make_source_status_legend
+from helpers.utils import prepare_cwns_ca, match_cwns_to_npdes, get_leaf_names, PRESENT_STATUSES
+from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar
 
 DATE_FOLDER = '2026-2-18'
 OUTPUT_DIR  = f'npdes_permits/output/{DATE_FOLDER}/figures'
@@ -43,55 +45,8 @@ CATEGORY_BG_COLORS = [
     '#fff8ff', '#f8f8f0', '#f0f8f8',
 ]
 
-# ── Status visual encoding ────────────────────────────────────────────────────
-#  (status_key, hatch, alpha)  – stacked bottom-to-top
-CWNS_STACK = [
-    ('present',            HATCH_PATTERNS['present'],            1.00),
-    ('present_and_future', HATCH_PATTERNS['present_and_future'], 1.00),
-    ('future',             HATCH_PATTERNS['future'],             1.00),
-]
-LLM_STACK = [
-    ('present',  HATCH_PATTERNS['present'],  1.00),
-    ('future',   HATCH_PATTERNS['future'],   1.00),
-    ('off_site', '',                          0.30),  # transparent – off-site treatment
-]
-
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
-
-def _best_cwns_status(series):
-    """Aggregate multiple CWNS rows for one CWNS_ID: keep the highest-priority status."""
-    vals = set(series.astype(str).str.lower())
-    for s in ('present', 'present_and_future', 'future'):
-        if s in vals:
-            return s
-    return '0'
-
-
-def get_cwns_kw_counts(df, col):
-    """Per-process status counts for CWNS or keyword data."""
-    empty = {'present': 0, 'present_and_future': 0, 'future': 0}
-    if col not in df.columns:
-        return empty
-    s = df[col].astype(str).str.lower()
-    return {
-        'present':            int((s == 'present').sum()),
-        'present_and_future': int((s == 'present_and_future').sum()),
-        'future':             int((s == 'future').sum()),
-    }
-
-
-def get_llm_counts(df, col):
-    """Per-process status counts for LLM data."""
-    empty = {'present': 0, 'future': 0, 'off_site': 0}
-    if col not in df.columns:
-        return empty
-    s = df[col].astype(str).str.lower()
-    return {
-        'present':  int((s == 'present').sum()),
-        'future':   int((s == 'future').sum()),
-        'off_site': int((s == 'off_site').sum()),
-    }
 
 
 def _any_flag(df, cols, statuses):
@@ -99,31 +54,21 @@ def _any_flag(df, cols, statuses):
     mask = pd.Series(False, index=df.index)
     for col in cols:
         if col in df.columns:
-            mask |= df[col].astype(str).str.lower().isin(statuses)
+            mask |= df[col].isin(statuses)
     return mask
 
 
-def get_cwns_kw_category_counts(df, leaf_cols):
-    """Category-level status counts for CWNS/keyword. Each facility counted once at highest priority."""
-    has_present = _any_flag(df, leaf_cols, {'present'})
-    has_paf     = _any_flag(df, leaf_cols, {'present_and_future'})
-    has_future  = _any_flag(df, leaf_cols, {'future'})
+def get_facility_counts(df, leaf_cols):
+    """Unique-facility counts: each facility counted once at highest-priority status."""
+    has_present = _any_flag(df, leaf_cols, PRESENT_STATUSES)
+    has_past    = _any_flag(df, leaf_cols, {'PAST'})
+    has_future  = _any_flag(df, leaf_cols, {'FUTURE'})
+    has_offsite = _any_flag(df, leaf_cols, {'OFFSITE'})
     return {
-        'present':            int(has_present.sum()),
-        'present_and_future': int((has_paf & ~has_present).sum()),
-        'future':             int((has_future & ~has_present & ~has_paf).sum()),
-    }
-
-
-def get_llm_category_counts(df, leaf_cols):
-    """Category-level status counts for LLM. 'future' shown separately as dashed."""
-    has_present = _any_flag(df, leaf_cols, {'present'})
-    has_future  = _any_flag(df, leaf_cols, {'future'})
-    has_offsite = _any_flag(df, leaf_cols, {'off_site'})
-    return {
-        'present':  int(has_present.sum()),
-        'future':   int((has_future & ~has_present).sum()),
-        'off_site': int((has_offsite & ~has_present & ~has_future).sum()),
+        'PRESENT':  int(has_present.sum()),
+        'PAST':     int((has_past    & ~has_present).sum()),
+        'FUTURE':   int((has_future  & ~has_present).sum()),
+        'OFFSITE': int((has_offsite & ~has_present & ~has_future).sum()),
     }
 
 
@@ -165,24 +110,13 @@ def compact_positions_by_category(items, gap=0.25):
 
 
 def _first_non_empty(series):
-    for val in series.astype(str):
-        text = val.strip()
-        if text and text.lower() != 'nan':
-            return text
+    for val in series:
+        if pd.notna(val) and val != '':
+            return val
     return ''
 
 
-def _merge_llm_status(series):
-    vals = set(series.astype(str).str.strip().str.lower())
-    if 'present' in vals:
-        return 'present'
-    if 'future' in vals:
-        return 'future'
-    if 'off_site' in vals:
-        return 'off_site'
-    if 'past' in vals:
-        return 'past'
-    return ''
+_STATUS_PRIORITY = ['PRESENT', 'FUTURE', 'OFFSITE', 'PAST']
 
 
 def deduplicate_llm_facilities(llm_df):
@@ -205,7 +139,8 @@ def deduplicate_llm_facilities(llm_df):
         for col in meta_cols:
             out[col] = _first_non_empty(group[col])
         for col in proc_cols:
-            out[col] = _merge_llm_status(group[col])
+            vals = {v for v in group[col] if pd.notna(v) and v != ''}
+            out[col] = next((s for s in _STATUS_PRIORITY if s in vals), '')
         rows.append(out)
 
     ordered_cols = [c for c in ['PERMIT_NUMBER', 'Agency', 'Facility_Name'] if c in df.columns]
@@ -213,29 +148,33 @@ def deduplicate_llm_facilities(llm_df):
     return pd.DataFrame(rows).reindex(columns=ordered_cols)
 
 
-# ── Taxonomy helpers ──────────────────────────────────────────────────────────
-
-def get_all_leaves_ordered(keywords):
-    result = []
-    for cat_name, cat_val in keywords.items():
-        for leaf in get_leaf_names(cat_name, cat_val):
-            result.append((leaf, cat_name))
-    return result
-
-
 # ── Drawing ───────────────────────────────────────────────────────────────────
+
+def _plot_stack_spec():
+    """Bottom-to-top: Present, Past, Future, Off-site."""
+    off_h = HATCH_PATTERNS['OFFSITE']
+    return [
+        ('PRESENT',  HATCH_PATTERNS['PRESENT'],  1.00),
+        ('PAST',     HATCH_PATTERNS['PAST'],     1.00),
+        ('FUTURE',   HATCH_PATTERNS['FUTURE'],   1.00),
+        ('OFFSITE', off_h,                      0.85),
+    ]
+
 
 def draw_group(ax, x, bar_w, cwns_counts, llm_counts, alpha_scale=1.0):
     """Draw CWNS | LLM bars centred at position x."""
-    draw_stacked_bar(ax, x - bar_w / 2, bar_w, cwns_counts, COLORS['cwns'],        CWNS_STACK, alpha_scale)
-    draw_stacked_bar(ax, x + bar_w / 2, bar_w, llm_counts,  COLORS['npdes_total'], LLM_STACK,  alpha_scale)
+    spec = _plot_stack_spec()
+    draw_stacked_bar(ax, x - bar_w / 2, bar_w, cwns_counts, COLORS['cwns'], spec, alpha_scale)
+    draw_stacked_bar(ax, x + bar_w / 2, bar_w, llm_counts, COLORS['npdes_total'], spec, alpha_scale)
 
 
-def set_axes(ax, labels, positions, fontsize=9, rotation=45):
+def set_axes(ax, labels, positions, tick_fontsize=12, ylabel_fontsize=14, rotation=45,
+             ylabel='WWTP Count'):
     ax.set_xticks(positions)
-    ax.set_xticklabels(labels, rotation=rotation, ha='right', fontsize=fontsize)
+    ax.set_xticklabels(labels, rotation=rotation, ha='right', fontsize=tick_fontsize)
     ax.yaxis.set_major_locator(mticker.MaxNLocator(integer=True))
-    ax.set_ylabel('WWTP Count', fontsize=11)
+    ax.tick_params(axis='y', which='major', labelsize=tick_fontsize)
+    ax.set_ylabel(ylabel, fontsize=ylabel_fontsize)
 
 
 # ── Item-list builder for per-category plots ──────────────────────────────────
@@ -281,19 +220,31 @@ def build_plot_items(json_cats, keywords):
     return items, positions, labels
 
 
-def make_legend(ax, fontsize=10):
+def make_legend(ax, fontsize=12):
     """Build legend with data sources and status encoding."""
     source_handles = [
         mpatches.Patch(facecolor=COLORS['cwns'],        edgecolor='black', lw=0.5, label='CWNS'),
         mpatches.Patch(facecolor=COLORS['npdes_total'], edgecolor='black', lw=0.5, label='NPDES - LLM extraction'),
     ]
     status_handles = [
-        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['present'],            edgecolor='black', lw=0.5, label='Present'),
-        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['present_and_future'], edgecolor='black', lw=0.5, label='Present & Future'),
-        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['future'],             edgecolor='black', lw=0.5, label='Future'),
-        mpatches.Patch(facecolor='grey', hatch='',                                   edgecolor='black', lw=0.5, alpha=0.30, label='Off-site (LLM)'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['PRESENT'],  edgecolor='black', lw=0.5, label='Present'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['PAST'],     edgecolor='black', lw=0.5, label='Past'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['FUTURE'],   edgecolor='black', lw=0.5, label='Future'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['OFFSITE'], edgecolor='black', lw=0.5, alpha=0.85, label='Off-site'),
     ]
-    return make_source_status_legend(ax, source_handles, status_handles, fontsize=fontsize)
+    header_source = mpatches.Patch(color='none', label='Data Source')
+    header_status = mpatches.Patch(color='none', label='Status')
+    handles = [header_source] + list(source_handles) + [header_status] + list(status_handles)
+    header_indices = {0, 1 + len(source_handles)}
+    leg = ax.legend(handles=handles, loc='upper left', bbox_to_anchor=(1.01, 1.0),
+                    borderaxespad=0, fontsize=fontsize, framealpha=0.85)
+    for i, (h, t) in enumerate(zip(leg.legend_handles, leg.get_texts())):
+        if i in header_indices:
+            h.set_visible(False)
+            t.set_fontweight('bold')
+        if i == 0:
+            t.set_horizontalalignment('left')
+    return leg
 
 
 def sort_leaf_items_by_count(items, labels, cwns_counts_list, llm_counts_list):
@@ -330,10 +281,10 @@ llm_df = deduplicate_llm_facilities(llm_df)
 after_dedup = len(llm_df)
 print(f"  LLM rows deduplicated by facility/permit: {before_dedup} -> {after_dedup}")
 proc_cols_llm = [c for c in llm_df.columns if c not in {'PERMIT_NUMBER', 'Agency', 'Facility_Name'}]
-past_count   = sum((llm_df[c].astype(str).str.lower() == 'past').sum()   for c in proc_cols_llm)
-future_count = sum((llm_df[c].astype(str).str.lower() == 'future').sum() for c in proc_cols_llm)
-print(f"  LLM facilities: {len(llm_df)}  |  'past' (excluded): {past_count}"
-      f"  |  'future': {future_count}")
+past_count   = sum((llm_df[c] == 'PAST').sum() for c in proc_cols_llm)
+future_count = sum((llm_df[c] == 'FUTURE').sum() for c in proc_cols_llm)
+print(f"  LLM facilities: {len(llm_df)}  |  'PAST' (in plot stacks): {past_count}"
+      f"  |  'FUTURE': {future_count}")
 
 print("Loading and matching CWNS data (CA only) …")
 cwns_raw = pd.read_csv('npdes_permits/output/unit_processes_by_facility.csv',
@@ -347,14 +298,27 @@ ca_cwns = prepare_cwns_ca(
 )
 print(f"  CA CWNS facilities (consolidated): {len(ca_cwns)}")
 
-# Match CWNS facilities to NPDES permits (3-tier: official permit → raw list → name)
+# Match CWNS facilities to NPDES permits (4-tier: official permit → raw list → name → collision resolve)
 llm_permits = set(llm_df['PERMIT_NUMBER'].dropna().astype(str).unique())
 print(f"  LLM permits: {len(llm_permits)}")
 
-ca_cwns = match_cwns_to_npdes(ca_cwns, llm_permits)
+npdes_permit_to_name = (llm_df.dropna(subset=['PERMIT_NUMBER', 'Facility_Name'])
+                        .drop_duplicates(subset='PERMIT_NUMBER')
+                        .set_index('PERMIT_NUMBER')['Facility_Name'].to_dict())
+
+ca_cwns = match_cwns_to_npdes(ca_cwns, llm_permits, npdes_permit_to_name=npdes_permit_to_name)
 cwns_df = ca_cwns[ca_cwns['matched']].copy()
 matched_permits = set(cwns_df['linking_permit'].dropna().astype(str))
 print(f"  CWNS facilities matched: {len(cwns_df)} / {len(ca_cwns)}")
+
+# Save unmatched LLM permits (no CWNS counterpart) for manual review
+unmatched_npdes = sorted(llm_permits - matched_permits)
+if unmatched_npdes:
+    unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
+    (llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(unmatched_npdes)]
+     [['PERMIT_NUMBER', 'Facility_Name']].drop_duplicates()
+     .to_csv(unmatched_path, index=False))
+    print(f"  Unmatched NPDES (no CWNS): {len(unmatched_npdes)} → {os.path.basename(unmatched_path)}")
 
 # Filter LLM to only matched permit numbers
 llm_df = llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(matched_permits)].copy()
@@ -381,33 +345,8 @@ PLOT_GROUPS = {
     'Disinfection': ['Disinfection'],
     'Chemical Treatment': ['Coagulation', 'Flocculation', 'Chemical Addition'],
     'Advanced Treatment': ['Ion Exchange', 'Activated Carbon', 'UV-AOP', 'Wetland'],
-    'Solids Processing': ['Solids Processing'],
+    'Solids Processing': ['Anaerobic Digestion', 'Aerobic Digestion'],
 }
-
-
-def shade_cat_bands(ax, leaf_cats, ylim, fontsize=8):
-    """Shade alternating bands per source-category within a combined plot."""
-    unique = list(dict.fromkeys(leaf_cats))
-    palette = CATEGORY_BG_COLORS
-    bg = {c: palette[i % len(palette)] for i, c in enumerate(unique)}
-
-    prev, start = None, 0
-    blocks = []
-    for i, c in enumerate(leaf_cats):
-        if c != prev:
-            if prev is not None:
-                blocks.append((start, i - 1, prev))
-            start, prev = i, c
-    blocks.append((start, len(leaf_cats) - 1, prev))
-
-    for s, e, cat in blocks:
-        ax.axvspan(s - 0.5, e + 0.5, facecolor=bg[cat], alpha=0.30, zorder=0)
-        if e > s:          # only label multi-leaf bands
-            ax.text((s + e) / 2, ylim[1] * 0.97, cat,
-                    ha='center', va='top', fontsize=fontsize,
-                    color='#444444', style='italic')
-        if s > 0:
-            ax.axvline(s - 0.5, color='#999999', lw=0.7, linestyle='--', zorder=1)
 
 
 # ── 1. Per-treatment-stage plots ──────────────────────────────────────────────
@@ -424,13 +363,8 @@ for group_title, json_cats in PLOT_GROUPS.items():
     # Compute counts for each item
     cwns_counts_list, llm_counts_list = [], []
     for item in items:
-        if item['is_total']:
-            cwns_counts_list.append(get_cwns_kw_category_counts(cwns_df, item['cols']))
-            llm_counts_list.append( get_llm_category_counts(llm_df,      item['cols']))
-        else:
-            col = item['cols'][0]
-            cwns_counts_list.append(get_cwns_kw_counts(cwns_df, col))
-            llm_counts_list.append( get_llm_counts(llm_df,      col))
+        cwns_counts_list.append(get_facility_counts(cwns_df, item['cols']))
+        llm_counts_list.append(get_facility_counts(llm_df, item['cols']))
 
     items, positions, labels, cwns_counts_list, llm_counts_list = filter_zero_leaf_items(
         items, positions, labels, cwns_counts_list, llm_counts_list
@@ -453,7 +387,7 @@ for group_title, json_cats in PLOT_GROUPS.items():
         alpha = 1.0 if item['is_total'] else 0.60
         draw_group(ax, pos, bar_w, cwns_c, llm_c, alpha_scale=alpha)
 
-    set_axes(ax, labels, positions, fontsize=9)
+    set_axes(ax, labels, positions)
 
     # Shade category bands using item position info
     # Build band spans: [first_pos, last_pos] per cat
@@ -466,26 +400,18 @@ for group_title, json_cats in PLOT_GROUPS.items():
             cat_spans[cat][1] = pos
 
     ylim = ax.get_ylim()
-    unique_cats_in_plot = list(dict.fromkeys(item['cat'] for item in items))
-    cat_bg = {cat: CATEGORY_BG_COLORS[i % len(CATEGORY_BG_COLORS)]
-              for i, cat in enumerate(unique_cats_in_plot)}
     first = True
     for cat, (s, e) in cat_spans.items():
-        ax.axvspan(s - 0.5, e + 0.5, facecolor=cat_bg[cat], alpha=0.25, zorder=0)
         if not first:
             ax.axvline(s - 0.5, color='#999999', lw=0.8, linestyle='--', zorder=1)
         # Only label the band if there are multiple leaves (otherwise x-tick already shows it)
         leaves_in_cat = [it for it in items if it['cat'] == cat and not it['is_total']]
         if len(leaves_in_cat) > 1:
             ax.text((s + e) / 2, ylim[1] * 0.97, cat,
-                    ha='center', va='top', fontsize=8, color='#444444', style='italic')
+                    ha='center', va='top', fontsize=11, color='#444444', style='italic')
         first = False
     ax.set_ylim(ylim)
-
-    ax.set_title(
-        f'{group_title}  –  CWNS vs LLM',
-        fontsize=12)
-    make_legend(ax, fontsize=9)
+    make_legend(ax)
     plt.tight_layout()
 
     safe = group_title.replace('/', '_').replace(' ', '_')
@@ -495,70 +421,9 @@ for group_title, json_cats in PLOT_GROUPS.items():
     print(f"  Saved {os.path.basename(path)}")
 
 
-# ── 2. All-processes plot ─────────────────────────────────────────────────────
-
-print("\nGenerating all-processes plot …")
-all_leaves  = get_all_leaves_ordered(keywords)
-leaf_labels = [name for name, _ in all_leaves]
-leaf_cats   = [cat  for _, cat  in all_leaves]
-
-all_cwns = [get_cwns_kw_counts(cwns_df, p) for p in leaf_labels]
-all_llm  = [get_llm_counts(llm_df,       p) for p in leaf_labels]
-
-filtered = [
-    (label, cat, cwns_c, llm_c)
-    for label, cat, cwns_c, llm_c in zip(leaf_labels, leaf_cats, all_cwns, all_llm)
-    if total_count(cwns_c) >= MIN_COUNT or total_count(llm_c) >= MIN_COUNT
-]
-
-if not filtered:
-    print("  All Processes: all below threshold, skipping")
-else:
-    leaf_labels, leaf_cats, all_cwns, all_llm = map(list, zip(*filtered))
-    n = len(leaf_labels)
-
-    fig, ax = plt.subplots(figsize=(max(14, n * 0.38), 7))
-
-    for i, (cwns_c, llm_c) in enumerate(zip(all_cwns, all_llm)):
-        draw_group(ax, i, bar_w, cwns_c, llm_c)
-
-    set_axes(ax, leaf_labels, list(range(n)), fontsize=7, rotation=55)
-    ax.set_title(
-        f'All Processes  –  CWNS vs LLM',
-        fontsize=14)
-    make_legend(ax, fontsize=9)
-
-    # Shaded category bands
-    unique_cats = list(dict.fromkeys(leaf_cats))
-    cat_bg = {cat: CATEGORY_BG_COLORS[i % len(CATEGORY_BG_COLORS)]
-              for i, cat in enumerate(unique_cats)}
-
-    prev_cat, block_start = None, 0
-    blocks = []
-    for i, cat in enumerate(leaf_cats):
-        if cat != prev_cat:
-            if prev_cat is not None:
-                blocks.append((block_start, i - 1, prev_cat))
-            block_start, prev_cat = i, cat
-    blocks.append((block_start, n - 1, prev_cat))
-
-    ylim = ax.get_ylim()
-    for start, end, cat in blocks:
-        ax.axvspan(start - 0.5, end + 0.5, facecolor=cat_bg[cat], alpha=0.35, zorder=0)
-        ax.text((start + end) / 2, ylim[1] * 0.98, cat,
-                ha='center', va='top', fontsize=6.5, color='#333333', style='italic')
-        if start > 0:
-            ax.axvline(start - 0.5, color='#888888', linewidth=0.7, linestyle='--', zorder=1)
-    ax.set_ylim(ylim)
-
-    plt.tight_layout()
-    path = f'{OUTPUT_DIR}/all_processes_source_comparison.png'
-    plt.savefig(path, dpi=200, bbox_inches='tight')
-    plt.close(fig)
-    print(f"  Saved {os.path.basename(path)}")
-
-
-# ── 3. Major-categories plot ──────────────────────────────────────────────────
+# ── 2. Major-categories plot ─────────────────────────────────────────────────
+# One bar group per top-level JSON category. Stacks sum status counts over all
+# leaves in that category (same rule as combined treatment-stage bars).
 
 print("\nGenerating major-categories plot …")
 cat_labels = list(keywords.keys())
@@ -567,8 +432,8 @@ all_cwns = []
 all_llm  = []
 for cat_name, cat_val in keywords.items():
     leaves = get_leaf_names(cat_name, cat_val)
-    all_cwns.append(get_cwns_kw_category_counts(cwns_df, leaves))
-    all_llm.append( get_llm_category_counts(llm_df,      leaves))
+    all_cwns.append(get_facility_counts(cwns_df, leaves))
+    all_llm.append(get_facility_counts(llm_df, leaves))
 
 cat_filtered = [
     (lbl, cwns_c, llm_c)
@@ -578,20 +443,25 @@ cat_filtered = [
 if cat_filtered:
     cat_labels, all_cwns, all_llm = map(list, zip(*cat_filtered))
 
+# Sort by combined total descending
+order = sorted(range(len(cat_labels)),
+               key=lambda i: -(total_count(all_cwns[i]) + total_count(all_llm[i])))
+cat_labels = [cat_labels[i] for i in order]
+all_cwns   = [all_cwns[i]   for i in order]
+all_llm    = [all_llm[i]    for i in order]
+
 n = len(cat_labels)
-fig, ax = plt.subplots(figsize=(max(8, n * 0.55), 5))
+fig, ax = plt.subplots(figsize=(max(14, n * 0.55), 6))
 
 for i, (cwns_c, llm_c) in enumerate(zip(all_cwns, all_llm)):
     draw_group(ax, i, bar_w, cwns_c, llm_c)
 
-set_axes(ax, cat_labels, list(range(n)), fontsize=9)
-ax.set_title(
-    f'Major Categories  –  CWNS vs LLM',
-    fontsize=12)
-make_legend(ax, fontsize=9)
-plt.tight_layout()
+set_axes(ax, cat_labels, list(range(n)), rotation=45)
+make_legend(ax)
 
-path = f'{OUTPUT_DIR}/major_categories_source_comparison.png'
+final_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
+os.makedirs(final_dir, exist_ok=True)
+path = f'{final_dir}/figure_4_major_categories_source_comparison.png'
 plt.savefig(path, dpi=200, bbox_inches='tight')
 plt.close(fig)
 print(f"  Saved {os.path.basename(path)}")

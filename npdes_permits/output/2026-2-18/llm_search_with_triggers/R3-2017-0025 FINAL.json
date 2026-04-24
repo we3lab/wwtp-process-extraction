@@ -3,7 +3,7 @@
     {
       "Equipment": "Grinder",
       "Process": [
-        "Process-Comminution"
+        "Comminution"
       ],
       "Role": [
         "Pretreatment"
@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Raw wastewater enters the Facility by way of two grinder pumps.",
       "trigger_process": [
         "Comminution"
@@ -20,7 +20,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Process-Sedimentation"
+        "Sedimentation"
       ],
       "Role": [
         "Primary"
@@ -28,7 +28,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.99,
+      "Score": 0.9,
       "Sentence": "From the headworks, influent enters the primary clarifier in the center and is directed towards the bottoms of the tank by use of a stilling baffle.",
       "trigger_process": [
         "Primary Clarification"
@@ -37,8 +37,8 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "Process-TricklingFiltration",
-        "Process-Biofiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -47,7 +47,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.9,
-      "Sentence": "Effluent from primary clarifier is fed by gravity into a fixed film reactor sump, where it is then pumped over the fixed film reactor along with a percentage of recirculation water.",
+      "Sentence": "Effluent from prim ary clarifier is fed by gravity into a fixed film reactor sump, where it is then pumped over the fixed film reactor along with a percentage of recirculation water.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -55,7 +55,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Process-Sedimentation"
+        "Sedimentation"
       ],
       "Role": [
         "Secondary"
@@ -63,8 +63,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.99,
-      "Sentence": "Effluent from the fixed film reactor enters a sump that partially recirculates back to the fixed film reactor, while the remainder is pumped to two secondary sedimentation tanks.",
+      "Score": 0.9,
+      "Sentence": "Effluent from the fixed film reactor enters a sump that partially recirculates back to the f ixed film reactor, while the remainder is pumped to two secondary sedimentation tanks.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -72,9 +72,11 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Process-Chlorination"
+        "Disinfection",
+        "Chlorination"
       ],
       "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": [
@@ -82,7 +84,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 0.9,
       "Sentence": "Effluent from the secondary sedimentation tanks is disinfected with sodium hypochlorite and then dechlorinated with sodium bisulfite.",
       "trigger_process": [
         "Chlorination"
@@ -91,15 +93,17 @@
     {
       "Equipment": null,
       "Process": [
-        "Process-Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 0.9,
       "Sentence": "Effluent from the secondary sedimentation tanks is disinfected with sodium hypochlorite and then dechlorinated with sodium bisulfite.",
       "trigger_process": [
         "Dechlorination"
@@ -108,17 +112,19 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "Process-AnaerobicDigestion"
+        "Digestion",
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "Anaerobic",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Biosolids from the secondary sedimentation tanks are collected and pumped back to the primary clarifier and ultimately to the anaerobic digester.",
+      "Score": 0.9,
+      "Sentence": "Biosolids from the secondary sedim entation tank s are collected and pumped back to the primary clarifier and ultimately to the anaerobic digester.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -126,49 +132,17 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "ReverseOsmosis"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.98,
-      "Sentence": "Biosolids that are collected and pumped to the anaerobic digester are disposed of by pumping the solids directly from the bottom of the digester through a 3- inch cam fitting and trucking the material off-site for further processing.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Process-Mixing"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "An additional recirculation pump has been installed to re -circulate secondary effluent to the Fixed Film Reactor.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "TricklingFilter",
-      "Process": [
-        "Process-TricklingFiltration"
-      ],
-      "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "An additional 240 cubic feet of plastic media will be installed to provide more surface area [for fixed film growth] to improve treatment.",
-      "trigger_process": [
-        "Trickling Filter"
-      ]
+      "Score": 0.7,
+      "Sentence": "Such wastewaters include softener regenerant wastes and reverse osmosis brines.",
+      "trigger_process": []
     }
   ]
 }

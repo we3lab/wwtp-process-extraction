@@ -4,20 +4,16 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import pandas as pd
 import os
+import seaborn as sns
 
 from helpers.utils import *
-from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar, plot_status_bars, plot_stacked_counts
+from helpers.metrics import METRIC_SCORE_COLUMNS, compute_metrics
+from helpers.utils import parse_status, is_present, PRESENT_STATUSES
+from helpers.plotting import COLORS, HATCH_PATTERNS, plot_stacked_counts
 from helpers.utils import get_leaf_names
-from helpers.load_google_sheet import load_google_sheet_csv
 
 DATE_FOLDER = '2026-2-18'
 GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
-
-STATUS_STACK = [
-    ('present',            HATCH_PATTERNS['present'],            1.0),
-    ('present_and_future', HATCH_PATTERNS['present_and_future'], 1.0),
-    ('future',             HATCH_PATTERNS['future'],             1.0),
-]
 
 MANUAL_SOURCE_ORDER = ['Manual', 'LLM', 'Keyword']
 MANUAL_SOURCE_COLORS = {
@@ -25,33 +21,32 @@ MANUAL_SOURCE_COLORS = {
     'LLM':     COLORS['npdes_total'],
     'Keyword': COLORS['npdes'],
 }
-MANUAL_STATUS_ORDER = ['present', 'present_and_future', 'future', 'past', 'off_site']
+MANUAL_STATUS_ORDER = ['PRESENT', 'FUTURE', 'PAST', 'off_site']
+
+# Subset of METRIC_SCORE_COLUMNS for the facility violin (CSV / tables still use full set).
+VIOLIN_METRIC_COLUMNS = tuple(
+    c for c in METRIC_SCORE_COLUMNS if c not in {'Precision', 'Recall'}
+)
 
 
 def build_status_mask(df, process_name, unitprocess_keywords, status_filter):
-    if process_name in df.columns:
-        series = df[process_name].astype(str).str.lower()
-        if status_filter == 'any':
-            return series.isin(['present', 'present_and_future', 'future'])
-        return series == status_filter
-    return None
+    statuses = df[process_name].map(parse_status)
+    if status_filter == 'any':
+        return statuses.isin(PRESENT_STATUSES)
+    return statuses == str(status_filter).upper()
 
 
 def build_binary_mask(df, process_name, unitprocess_keywords):
-    if process_name in df.columns:
-        return build_status_mask(df, process_name, unitprocess_keywords, 'any')
-    return None
+    return build_status_mask(df, process_name, unitprocess_keywords, 'any')
 
 
 def get_status_counts(process_name, unit_process_results):
-    """Extract status breakdown for a process."""
-    status_data = {'present': 0, 'present_and_future': 0, 'future': 0}
-    if process_name in unit_process_results.columns:
-        s = unit_process_results[process_name].astype(str).str.lower()
-        status_data['present']            = int((s == 'present').sum())
-        status_data['present_and_future'] = int((s == 'present_and_future').sum())
-        status_data['future']             = int((s == 'future').sum())
-    return status_data
+    """Extract status breakdown for a process (PRESENT_AND_FUTURE folded into PRESENT)."""
+    s = unit_process_results[process_name].map(parse_status)
+    return {
+        'PRESENT': int(s.isin(PRESENT_STATUSES).sum()),
+        'FUTURE':  int((s == 'FUTURE').sum()),
+    }
 
 
 def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df,
@@ -63,23 +58,22 @@ def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df,
 
     rows = []
     for process in process_names:
-        if process not in manual_df.columns:
-            continue
-        manual_proc  = set(manual_df.loc[manual_df[process].apply(is_yes), 'NPDES_No'])
+        manual_proc = set(manual_df.loc[
+            manual_df[process].map(is_present), 'NPDES_No'])
         manual_count = len(manual_proc)
 
         llm_fp = llm_fn = 0
         if llm_df is not None:
             sub  = llm_df[llm_df['PERMIT_NUMBER'].isin(llm_common)]
             mask = build_binary_mask(sub, process, None)
-            llm_proc = set(sub.loc[mask, 'PERMIT_NUMBER']) if mask is not None else set()
+            llm_proc = set(sub.loc[mask, 'PERMIT_NUMBER'])
             m = manual_proc & llm_common
             llm_fp, llm_fn = len(llm_proc - m), len(m - llm_proc)
 
         kw_fp = kw_fn = 0
         sub  = keyword_df[keyword_df['PERMIT_NUMBER'].isin(kw_common)]
         mask = build_binary_mask(sub, process, None)
-        kw_proc = set(sub.loc[mask, 'PERMIT_NUMBER']) if mask is not None else set()
+        kw_proc = set(sub.loc[mask, 'PERMIT_NUMBER'])
         m = manual_proc & kw_common
         kw_fp, kw_fn = len(kw_proc - m), len(m - kw_proc)
 
@@ -133,52 +127,119 @@ def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df,
 def get_manual_status_counts(process_name, manual_df):
     """Status counts from manual readings for a single process."""
     counts = {s: 0 for s in MANUAL_STATUS_ORDER}
-    if process_name not in manual_df.columns:
-        return counts
     for val in manual_df[process_name]:
-        text = str(val).strip().upper()
-        if not text or text in ('NAN', 'NONE', '0'):
+        cat = parse_status(val)
+        if not cat:
             continue
-        if 'OFF' in text or text == 'THIRD-PARTY':
-            counts['off_site'] += 1
-        elif text.startswith('PAST'):
-            counts['past'] += 1
-        elif text == 'PRESENT_AND_FUTURE':
-            counts['present_and_future'] += 1
-        elif 'FUTURE' in text or text.startswith('PLANNED'):
-            counts['future'] += 1
-        elif text.startswith('PRESENT') or text in ('YES', 'Y'):
-            counts['present'] += 1
+        key = 'off_site' if cat == 'OFFSITE' else cat
+        if key in counts:
+            counts[key] += 1
     return counts
 
 
-def compute_method_metrics(process_names, manual_df, pred_df, pred_permit_col, source_name):
-    """Binary presence F1/precision/recall vs manual readings at facility level."""
-    if pred_df is None or pred_df.empty:
-        return pd.DataFrame()
-    common = set(manual_df['NPDES_No'].dropna()) & set(pred_df[pred_permit_col].dropna())
-    manual_sub = manual_df[manual_df['NPDES_No'].isin(common)]
-    pred_sub   = pred_df[pred_df[pred_permit_col].isin(common)]
-    rows = []
+def build_method_metric_inputs(process_names, manual_df, pred_df, pred_permit_col):
+    """Build key-aligned manual/pred dataframes for helpers.metrics.compute_metrics."""
+    common_keys = sorted(set(manual_df['NPDES_No'].dropna()) & set(pred_df[pred_permit_col].dropna()))
+
+    manual_sub = (manual_df[manual_df['NPDES_No'].isin(common_keys)]
+                  .drop_duplicates(subset='NPDES_No')
+                  .set_index('NPDES_No'))
+    pred_sub = (pred_df[pred_df[pred_permit_col].isin(common_keys)]
+                .drop_duplicates(subset=pred_permit_col)
+                .set_index(pred_permit_col))
+
+    manual_metric_df = pd.DataFrame({'key': common_keys})
+    pred_metric_df = pd.DataFrame({'key': common_keys})
+
     for process in process_names:
-        if process not in manual_sub.columns:
-            continue
-        manual_set = set(manual_sub.loc[manual_sub[process].apply(is_yes), 'NPDES_No'])
-        mask = build_binary_mask(pred_sub, process, None)
-        pred_set = set(pred_sub.loc[mask, pred_permit_col]) if mask is not None else set()
-        tp = len(manual_set & pred_set)
-        fp = len(pred_set - manual_set)
-        fn = len(manual_set - pred_set)
+        manual_metric_df[process] = manual_sub.reindex(common_keys)[process].map(parse_status).values
+        pred_metric_df[process] = pred_sub.reindex(common_keys)[process].map(parse_status).values
+
+    return manual_metric_df, pred_metric_df, common_keys
+
+
+def compute_facility_metric_rows(manual_metric_df, pred_metric_df, process_names, source_name):
+    """Compute per-facility metrics used for split violin density."""
+    manual_idx = manual_metric_df.set_index('key')
+    pred_idx = pred_metric_df.set_index('key')
+    rows = []
+    for key in manual_idx.index:
+        tp = fp = fn = tn = 0
+        state_correct = state_total = 0
+        for process in process_names:
+            manual_state = manual_idx.at[key, process]
+            pred_state = pred_idx.at[key, process]
+            manual_pos = is_present(manual_state)
+            pred_pos = is_present(pred_state)
+
+            tp += int(manual_pos and pred_pos)
+            fp += int((not manual_pos) and pred_pos)
+            fn += int(manual_pos and (not pred_pos))
+            tn += int((not manual_pos) and (not pred_pos))
+
+            if manual_pos:
+                state_total += 1
+                state_correct += int(manual_state == pred_state)
+
         precision = tp / (tp + fp) if (tp + fp) else float('nan')
         recall    = tp / (tp + fn) if (tp + fn) else float('nan')
         f1        = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float('nan')
-        rows.append({
-            'Source': source_name, 'Process': process,
-            'Support_Manual': len(manual_set), 'Support_Pred': tp + fp,
-            'TP': tp, 'FP': fp, 'FN': fn,
-            'Precision': precision, 'Recall': recall, 'F1': f1,
-        })
-    return pd.DataFrame(rows)
+        accuracy = (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float('nan')
+        missed_rate = fn / (tp + fn) if (tp + fn) else float('nan')
+        hallucinated_rate = fp / (tp + fp) if (tp + fp) else float('nan')
+        state_accuracy = state_correct / state_total if state_total else float('nan')
+        scores = {
+            'Precision': precision,
+            'Recall': recall,
+            'F1': f1,
+            'Accuracy': accuracy,
+            'Missed_Rate': missed_rate,
+            'Hallucinated_Rate': hallucinated_rate,
+            'State_Accuracy': state_accuracy,
+        }
+        row = {'Source': source_name, 'key': key}
+        for col in METRIC_SCORE_COLUMNS:
+            row[col] = scores[col]
+        rows.append(row)
+    return rows
+
+
+def create_split_violin_plot(facility_metrics_df, save_path):
+    score_cols = [c for c in VIOLIN_METRIC_COLUMNS if c in facility_metrics_df.columns]
+    plot_df = facility_metrics_df[facility_metrics_df['Source'].isin(['LLM', 'Keyword'])].melt(
+        id_vars=['Source', 'key'],
+        value_vars=score_cols,
+        var_name='Metric',
+        value_name='Value',
+    ).dropna(subset=['Value'])
+
+    out_dir = os.path.dirname(save_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(13, 6))
+    sns.violinplot(
+        data=plot_df,
+        x='Metric',
+        y='Value',
+        hue='Source',
+        order=score_cols,
+        hue_order=['LLM', 'Keyword'],
+        split=True,
+        palette={'LLM': COLORS['npdes_total'], 'Keyword': COLORS['npdes']},
+        inner=None,
+        cut=0,
+        ax=ax,
+    )
+    ax.set_ylim(0, 1)
+    ax.set_ylabel('Facility-level score', fontsize=12)
+    ax.set_title('Keyword vs LLM Facility-level Metric Distributions', fontsize=14)
+    ax.tick_params(axis='x', rotation=0)
+    ax.legend(title='Source', loc='upper right')
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved {os.path.basename(save_path)}")
 
 
 # Load all required data
@@ -227,8 +288,8 @@ else:
     unit_full_both   = unit_full
 
 # Load manual readings (train + test) as the deviation baseline
-train_manual = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
-test_manual  = pd.read_csv('npdes_permits/data/test_data.csv', dtype=str)
+train_manual = pd.read_csv('npdes_permits/data/train_set_npdes_manual.csv', dtype=str)
+test_manual  = pd.read_csv('npdes_permits/data/test_set_npdes_manual.csv', dtype=str)
 manual_combined = (pd.concat([train_manual, test_manual])
                    .drop_duplicates(subset='NPDES_No').reset_index(drop=True))
 manual_permits = set(manual_combined['NPDES_No'].dropna())
@@ -279,34 +340,55 @@ for category in categories_to_plot:
 # ── Method comparison metrics ─────────────────────────────────────────────────
 all_process_list = [p for cat in categories_to_plot
                     for p in get_leaf_names(cat, unitprocess_keywords[cat])]
-metrics_frames = [
-    compute_method_metrics(all_process_list, manual_combined,
-                           unit_full_both, 'PERMIT_NUMBER', 'Keyword'),
-]
+metrics_frames = []
+facility_metric_rows = []
+
+manual_metric_kw, pred_metric_kw, _ = build_method_metric_inputs(
+    all_process_list, manual_combined, unit_full_both, 'PERMIT_NUMBER'
+)
+kw_metrics = compute_metrics(manual_metric_kw, pred_metric_kw, all_process_list, 'Keyword')
+metrics_frames.append(kw_metrics.rename(columns={'Label': 'Process'}))
+facility_metric_rows.extend(
+    compute_facility_metric_rows(manual_metric_kw, pred_metric_kw, all_process_list, 'Keyword')
+)
+
 if llm_results_both is not None:
-    metrics_frames.append(
-        compute_method_metrics(all_process_list, manual_combined,
-                               llm_results_both, 'PERMIT_NUMBER', 'LLM')
+    manual_metric_llm, pred_metric_llm, _ = build_method_metric_inputs(
+        all_process_list, manual_combined, llm_results_both, 'PERMIT_NUMBER'
     )
-metrics_df = pd.concat([f for f in metrics_frames if not f.empty], ignore_index=True)
-if not metrics_df.empty:
-    metrics_path = f'npdes_permits/output/{DATE_FOLDER}/npdes_method_comparison_metrics.csv'
-    metrics_df.to_csv(metrics_path, index=False)
-    print(f"\nSaved npdes_method_comparison_metrics.csv")
-    summary = metrics_df.groupby('Source')[['Precision', 'Recall', 'F1']].mean()
-    print(summary.to_string(float_format=lambda x: f'{x:.3f}'))
+    llm_metrics = compute_metrics(manual_metric_llm, pred_metric_llm, all_process_list, 'LLM')
+    metrics_frames.append(llm_metrics.rename(columns={'Label': 'Process'}))
+    facility_metric_rows.extend(
+        compute_facility_metric_rows(manual_metric_llm, pred_metric_llm, all_process_list, 'LLM')
+    )
+
+metrics_df = pd.concat(metrics_frames, ignore_index=True)
+metrics_path = f'npdes_permits/output/{DATE_FOLDER}/npdes_method_comparison_metrics.csv'
+metrics_df.to_csv(metrics_path, index=False)
+print(f"\nSaved npdes_method_comparison_metrics.csv")
+summary = metrics_df.groupby('Source')[[
+    'Precision', 'Recall', 'F1', 'Accuracy', 'Missed_Rate', 'Hallucinated_Rate', 'State_Accuracy'
+]].mean()
+print(summary.to_string(float_format=lambda x: f'{x:.3f}'))
+
+facility_metrics_df = pd.DataFrame(facility_metric_rows)
+final_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
+os.makedirs(final_dir, exist_ok=True)
+create_split_violin_plot(
+    facility_metrics_df,
+    f'{final_dir}/figure_3_npdes_method_comparison_metrics_violin.png',
+)
 
 # Overall status summary
 total_present = total_present_and_future = total_future = 0
 for category in categories_to_plot:
     for process_name in get_leaf_names(category, unitprocess_keywords[category]):
-        if process_name in unit_full.columns:
-            s = unit_full[process_name]
-            total_present            += (s == 'present').sum()
-            total_present_and_future += (s == 'present_and_future').sum()
-            total_future             += (s == 'future').sum()
+        s = unit_full[process_name].astype(str).str.strip().str.upper()
+        total_present            += int((s == 'PRESENT').sum())
+        total_present_and_future += int((s == 'PRESENT_AND_FUTURE').sum())
+        total_future             += int((s == 'FUTURE').sum())
 
-print(f"Total process instances marked as 'present': {total_present}")
-print(f"Total process instances marked as 'present_and_future': {total_present_and_future}")
-print(f"Total process instances marked as 'future': {total_future}")
+print(f"Total process instances marked as 'PRESENT': {total_present}")
+print(f"Total process instances marked as 'PRESENT_AND_FUTURE': {total_present_and_future}")
+print(f"Total process instances marked as 'FUTURE': {total_future}")
 print(f"Grand total: {total_present + total_present_and_future + total_future}")

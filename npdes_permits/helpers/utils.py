@@ -2,11 +2,43 @@ import re
 import pandas as pd
 import os
 
+# Canonical status vocabulary: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, '' (absent)
+PRESENT_STATUSES = frozenset({'PRESENT', 'PRESENT_AND_FUTURE'})
+
+
+def parse_status(val) -> str:
+    """Normalize any status cell to a canonical token.
+
+    Handles manual sheet values (messy text), LLM output (clean tokens), and CWNS values.
+    Returns: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, or ''.
+    """
+    if val is None or (isinstance(val, float) and val != val):
+        return ''
+    s = str(val).strip()
+    if not s or s in ('0', '0.0'):
+        return ''
+    t = s.upper().replace('-', '_')
+    if t in ('NAN', 'NONE'):
+        return ''
+    if 'PRESENT' in t and 'FUTURE' in t:
+        return 'PRESENT_AND_FUTURE'
+    for keyword in ['PRESENT', 'FUTURE', 'PAST', 'OFFSITE']:
+        if keyword in t:
+            return keyword
+    return ''
+
+
+def is_present(val) -> bool:
+    """True if val indicates the process is currently installed (PRESENT or PRESENT_AND_FUTURE).
+
+    FUTURE is excluded — it means planned but not yet in service.
+    """
+    return parse_status(val) in PRESENT_STATUSES
+
 
 def build_cwns_presence_mask(series):
-    """Return boolean mask for CWNS presence values."""
-    s = series.astype(str).str.lower()
-    return s.isin({'present', 'present_and_future', 'future'})
+    """Return boolean mask for CWNS presence values (any detectable status, including FUTURE/PAST)."""
+    return series.map(parse_status).isin({'PRESENT', 'PRESENT_AND_FUTURE', 'FUTURE', 'PAST'})
 
 
 def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
@@ -63,7 +95,7 @@ def extract_cwns_processes(row, proc_cols):
 def extract_npdes_processes(row, proc_cols):
     """Extract set of processes marked as present in an NPDES row."""
     return {p for p in proc_cols
-            if str(row.get(p, '')).strip().lower().startswith('present')}
+            if str(row.get(p, '')).strip().lower().startswith('PRESENT')}
 
 
 def get_werf_codes_for_cwns_process(cwns_process_name):
@@ -135,13 +167,19 @@ def normalize_facility_name(name):
     return re.sub(r'\s+', ' ', s).strip()
 
 
-def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_permit=None):
+def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set,
+                         npdes_name_to_permit=None, npdes_permit_to_name=None):
     """Match consolidated CWNS facilities to NPDES permits.
 
-    Three tiers (first match wins):
+    Tiers applied in order (first match wins for unmatched rows):
     1. NPDES_PERMIT column (from FACILITY_PERMIT.csv or manual CSV)
     2. raw_permit_list scan (any CWNS permit in npdes_permits_set)
-    3. Exact normalized facility name match (if npdes_name_to_permit dict provided)
+    3. Exact normalized facility name match (if npdes_name_to_permit provided)
+    
+    4. Duplicate resolution
+        when >1 CWNS row links to the same permit, use
+       word-overlap on normalized facility names to keep the best match and
+       unlink the others (requires npdes_permit_to_name: permit → NPDES name).
 
     Adds 'matched' and 'linking_permit' columns.
     """
@@ -169,15 +207,33 @@ def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_perm
                 lambda n: norm_map.get(normalize_facility_name(n))
             )
 
+    # Tier 4: resolve permit collisions via facility-name word overlap
+    if npdes_permit_to_name:
+        linked = df[df['linking_permit'].notna()]
+        dup_permits = linked['linking_permit'].value_counts()
+        dup_permits = set(dup_permits[dup_permits > 1].index)
+        resolved = 0
+        for permit in dup_permits:
+            mask = df['linking_permit'] == permit
+            candidates = df[mask]
+            npdes_words = set(normalize_facility_name(
+                npdes_permit_to_name.get(permit, '')).split())
+            if not npdes_words:
+                continue
+            scores = candidates['FACILITY_NAME'].apply(
+                lambda n: len(set(normalize_facility_name(n).split()) & npdes_words)
+            )
+            best_score = scores.max()
+            if best_score == 0:
+                continue
+            best_idx = scores.idxmax()
+            losers = candidates.index[candidates.index != best_idx]
+            df.loc[losers, 'linking_permit'] = None
+            resolved += len(losers)
+        if resolved:
+            print(f"  Tier 4: unlinked {resolved} lower-scoring CWNS duplicates across "
+                  f"{len(dup_permits)} colliding permits")
+
     df['matched'] = df['linking_permit'].notna()
     return df
 
-
-def is_yes(val):
-    """Check if a cell value means the process is present (YES, PLANNED, or PRESENT)."""
-    return str(val).strip().upper() in ('YES', 'PLANNED', 'PRESENT')
-
-
-def count_yes(series):
-    """Count YES/PLANNED/PRESENT values in a sheet column (case-insensitive)."""
-    return series.fillna('').apply(is_yes).sum()

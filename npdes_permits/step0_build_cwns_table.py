@@ -199,10 +199,9 @@ upnames = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_NAMES.csv')
 up_old = pd.merge(left = up_old, right = upnames, how = 'left', left_on = 'UNIT_PROCESS', right_on = 'ORIGINAL_UP_NAME')
 up_old.drop(['ORIGINAL_UP_NAME'], inplace = True, axis = 1)
 
-#remove processes listed for abandoment in 2004, 2008, or 2012 and processes listed as both PRES_IND = N and PROJ_IND = N
-up_old = up_old.loc[up_old['CHANGE_TYPE'] != 'Abandonment']
-up_old = up_old.loc[~((up_old['PRES_IND'] == 'N') & (up_old['PRES_IND'] == 'N'))]
-up_old = up_old[['CWNS_NUM','REPORT_YEAR','PRES_IND','PROJ_IND','FINAL_UNIT_PROCESS_NAME']]
+#remove processes listed as both PRES_IND = N and PROJ_IND = N; keep abandonments (classified as PAST)
+up_old = up_old.loc[~((up_old['PRES_IND'] == 'N') & (up_old['PROJ_IND'] == 'N'))]
+up_old = up_old[['CWNS_NUM','REPORT_YEAR','PRES_IND','PROJ_IND','CHANGE_TYPE','FINAL_UNIT_PROCESS_NAME']]
 
 #change formatting of present and projected indices to binary
 up_old.loc[up_old['PRES_IND'] == 'Y', 'PRES_IND'] = 1
@@ -343,7 +342,16 @@ active_ups['_taxonomy_processes'] = active_ups.apply(map_to_taxonomy, axis=1)
 # Build taxonomy rows with status determined from the single most-recent row per facility+process
 taxonomy_rows = []
 for _, row in active_ups.iterrows():
-    status = 'present' if row['PRES_IND'] == 1 else 'future'
+    pres = row['PRES_IND'] == 1
+    proj = row['PROJ_IND'] == 1
+    if row.get('CHANGE_TYPE') == 'Abandonment':
+        status = 'PAST'
+    elif pres and proj:
+        status = 'PRESENT_AND_FUTURE'
+    elif pres:
+        status = 'PRESENT'
+    else:
+        status = 'FUTURE'
     for proc in row['_taxonomy_processes']:
         taxonomy_rows.append({'CWNS_NUM': row['CWNS_NUM'], 'PROCESS': proc, 'STATUS': status})
 

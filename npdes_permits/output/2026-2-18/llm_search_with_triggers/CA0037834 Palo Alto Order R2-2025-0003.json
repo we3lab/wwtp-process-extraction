@@ -6,7 +6,7 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Preliminary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -23,7 +23,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Preliminary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -46,10 +46,25 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
+      "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "Primary Clarification"
       ]
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "BiologicalProcess"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
+      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -62,27 +77,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
       "Score": 0.9,
       "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
-        "Secondary Filtration"
+        "Unspecified AS"
       ]
     },
     {
@@ -103,9 +101,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltration",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -116,16 +114,17 @@
       "Score": 1,
       "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": "DisinfectionUnit",
       "Process": [
+        "Disinfection",
         "UVDisinfection"
       ],
       "Role": [
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -134,23 +133,6 @@
       "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation, biological treatment (fixed film reactors and activated sludge basins ), secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity -thickened, and dewatered by belt presses.",
-      "trigger_process": [
-        "Thickening"
       ]
     },
     {
@@ -164,28 +146,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.9,
       "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity -thickened, and dewatered by belt presses.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "BeltThickener",
       "Process": [
-        "BiosolidsDisposal",
-        "LandApplication"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Dewatered sludge is shipped offsite for treatment to Class A pathogen reduction standards and subsequently land - applied.",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity -thickened, and dewatered by belt presses.",
       "trigger_process": [
-        "Land Application"
+        "Thickening"
       ]
     },
     {
@@ -197,98 +178,58 @@
         "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Approximately 695 acre -feet per year or 0.62 MGD of final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water.",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Disinfection"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Approximately 695 acre -feet per year or 0.62 MGD of final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": null,
-      "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger\u2019s planned Advanced Water Purification System would improve recycled water quality by adding additional membrane filtration and reverse osmosis for up to 1.125 MGD of the recycled water flow , with the potential to expand to up to 2.25 MGD.",
-      "trigger_process": [
-        "Microfiltration"
-      ]
+      "Score": 0.9,
+      "Sentence": "An Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis to reduce the level of total dissolved solids.",
+      "trigger_process": []
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger\u2019s planned Advanced Water Purification System would improve recycled water quality by adding additional membrane filtration and reverse osmosis for up to 1.125 MGD of the recycled water flow , with the potential to expand to up to 2.25 MGD.",
-      "trigger_process": [
-        "Reverse Osmosis"
-      ]
-    },
-    {
-      "Equipment": "MembraneAeratedBiofilmReaactor",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The project w ould remove the fixed film reactors from the treatment train and add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins to improve and intensify the treatment process.",
-      "trigger_process": [
-        "Membrane Aerated Biofilm Reactor"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Biofiltration"
-      ],
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "planned",
-      "Location": "off-site",
+      "Location": "on-site",
       "Score": 0.9,
-      "Sentence": "The horizontal levee would provide multiple benefits , such as sea level rise adaptation, habitat enhancement, and additional wastewater treatment with up to 0.1 MGD of plant effluent.",
-      "trigger_process": [
-        "Unspecified FFR",
-        "Wetland"
-      ]
+      "Sentence": "An Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis to reduce the level of total dissolved solids.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MembraneAeratedBiofilmReaactor",
+      "Process": [
+        "BiologicalProcess",
+        "Nitrification",
+        "Denitrification",
+        "Aeration"
+      ],
+      "Role": [
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "Upgrades to the biological treatment process to enhance total inorganic nitrogen removal. The project w ould remove the fixed film reactors from the treatment train and add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins to improve and intensify the treatment process.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Filtration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.7,
+      "Sentence": "The project w ould include install ing an underground pipeline to transport treated wastewater to the hor izontal levee for irrigation of the native plants.",
+      "trigger_process": []
     }
   ]
 }

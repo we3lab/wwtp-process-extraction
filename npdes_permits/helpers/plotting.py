@@ -12,11 +12,10 @@ COLORS = {
 
 # Hatch patterns for status values
 HATCH_PATTERNS = {
-    'present':            '',    # Solid fill
-    'present_and_future': 'xxx', # Cross-hatch
-    'future':             '///', # Diagonal lines
-    'past':               'xx',  # Double-cross
-    'off_site':           '..',  # Dots
+    'PRESENT':  '',    # Solid fill
+    'FUTURE':   '///', # Diagonal lines
+    'PAST':     'xx',  # Double-cross
+    'OFFSITE': '..',  # Dots
 }
 
 
@@ -38,11 +37,10 @@ def draw_stacked_bar(ax, xpos, width, counts, color, stack_order, alpha_scale=1.
 
 
 def plot_status_bars(ax, center, width, status_data, alpha=1.0, color_key='npdes'):
-    """Thin wrapper around draw_stacked_bar for the standard present/present_and_future/future stack."""
+    """Thin wrapper around draw_stacked_bar for the standard present/future stack."""
     stack_order = [
-        ('present',            HATCH_PATTERNS['present'],            1.0),
-        ('present_and_future', HATCH_PATTERNS['present_and_future'], 1.0),
-        ('future',             HATCH_PATTERNS['future'],             1.0),
+        ('PRESENT', HATCH_PATTERNS['PRESENT'], 1.0),
+        ('FUTURE',  HATCH_PATTERNS['FUTURE'],  1.0),
     ]
     draw_stacked_bar(ax, center, width, status_data, COLORS[color_key], stack_order, alpha_scale=alpha)
 
@@ -160,24 +158,6 @@ def plot_family_detail_counts(
     plt.close(fig)
 
 
-def make_source_status_legend(ax, source_handles, status_handles, fontsize=10, **legend_kwargs):
-    """Legend with bold 'Data Source' / 'Status' section headers."""
-    from matplotlib.patches import Patch
-    header_source = Patch(color='none', label='Data Source')
-    header_status = Patch(color='none', label='Status')
-    handles = [header_source] + list(source_handles) + [header_status] + list(status_handles)
-    header_indices = {0, 1 + len(source_handles)}
-    defaults = dict(loc='upper left', bbox_to_anchor=(1.01, 1.0),
-                    borderaxespad=0, fontsize=fontsize, framealpha=0.85)
-    defaults.update(legend_kwargs)
-    leg = ax.legend(handles=handles, **defaults)
-    for i, (h, t) in enumerate(zip(leg.legend_handles, leg.get_texts())):
-        if i in header_indices:
-            h.set_visible(False)
-            t.set_fontweight('bold')
-    return leg
-
-
 def create_ground_truth_plot(gt_rows, n_facilities, save_path):
     """
     Stacked error magnitude chart: FN (solid, bottom) + FP (hatched x, top) per source.
@@ -211,7 +191,7 @@ def create_ground_truth_plot(gt_rows, n_facilities, save_path):
 
     ax.set_xticks(list(x))
     ax.set_xticklabels(df['Process_Category'], rotation=45, ha='right', fontsize=fontsize)
-    ax.set_ylabel('Facility Count (error magnitude)', fontsize=16)
+    ax.set_ylabel('Facility Error Count', fontsize=16)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.tick_params(axis='both', which='major', labelsize=fontsize)
     ax.grid(axis='y', linestyle='--', alpha=0.4)
@@ -237,6 +217,8 @@ def create_ground_truth_plot(gt_rows, n_facilities, save_path):
         if i in {0, 3}:
             h.set_visible(False)
             t.set_fontweight('bold')
+        if i == 0:
+            t.set_horizontalalignment('left')
 
     plt.subplots_adjust(bottom=0.35)
     if save_path:

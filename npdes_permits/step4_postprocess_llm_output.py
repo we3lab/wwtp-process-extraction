@@ -2,6 +2,7 @@ import pandas as pd
 import json
 import os
 import re
+import sys
 import argparse
 from pathlib import Path
 from collections import Counter
@@ -19,6 +20,9 @@ GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/co
 DEFAULT_INPUT_DIR = 'npdes_permits/output/2026-2-18/llm_extraction'
 DEFAULT_OUTPUT_CSV = 'npdes_permits/output/llm_unit_processes_by_facility.csv'
 DEFAULT_SITE_DATA_CSV = 'npdes_permits/output/2026-2-18/site_data.csv'
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from helpers.utils import parse_status
 
 
 def parse_args():
@@ -208,32 +212,31 @@ def normalize_values(value):
 
 
 def normalize_location(value):
-    text = str(value or '').strip().lower()
-    if text in {'on-site', 'off-site', 'off_site', 'third-party'}:
-        return text.replace('-', '_')
+    t = str(value or '').strip().lower().replace('-', '_')
+    if t in {'on_site', 'off_site', 'third_party'}:
+        return t
     return ''
 
 
 def normalize_implementation(value, location=None):
-    text = str(value or '').strip().lower()
-    if text in {'off-site', 'off_site'}:
-        return 'off_site'
+    """Map JSON Implementation/Location to canonical uppercase status tokens."""
+    text = str(value or '').strip().lower().replace('-', '_')
+    if text in {'off_site', 'third_party'}:
+        return 'OFFSITE'
     if text == 'present':
         location_text = normalize_location(location)
-        if location_text in {'off_site', 'third-party'}:
-            return 'off_site'
-        return 'present'
-    if text == 'third-party':
-        return 'off_site'
+        if location_text in {'off_site', 'third_party'}:
+            return 'OFFSITE'
+        return 'PRESENT'
     if text == 'planned':
-        return 'future'
+        return 'FUTURE'
     if text == 'past':
-        return 'past'
+        return 'PAST'
     return ''
 
 
 def merge_implementation(existing_value, new_value):
-    rank = {'': 0, 'past': 1, 'future': 2, 'present': 3, 'off_site': 4}
+    rank = {'': 0, 'PAST': 1, 'FUTURE': 2, 'PRESENT': 3, 'OFFSITE': 4}
     existing = normalize_implementation(existing_value)
     new = normalize_implementation(new_value)
     return new if rank.get(new, 0) > rank.get(existing, 0) else existing
@@ -370,7 +373,7 @@ for filename in os.listdir(input_dir):
 
         for proc in components['Process']:
             if proc in item_result:
-                item_result[proc] = 'present'
+                item_result[proc] = 'PRESENT'
 
         fired_group_best_priority = {}
         for col, clauses, priority, group_id in trigger_rules:
@@ -379,7 +382,7 @@ for filename in os.listdir(input_dir):
             if group_id and priority > fired_group_best_priority.get(group_id, float('inf')):
                 continue
             if any(all(matches_item(token, components) for token in clause) for clause in clauses):
-                item_result[col] = 'present'
+                item_result[col] = 'PRESENT'
                 if group_id:
                     fired_group_best_priority[group_id] = min(
                         fired_group_best_priority.get(group_id, priority),
@@ -389,7 +392,7 @@ for filename in os.listdir(input_dir):
         # Optional keyword-level exclusion rules from unitprocess_keywords.json
         # Example: {"exclude_if_any": ["Equipment-GritChamber"]}
         for col, exclusion_tokens in column_exclude_if_any.items():
-            if item_result.get(col) != 'present':
+            if item_result.get(col) != 'PRESENT':
                 continue
             if any(matches_item(token, components) for token in exclusion_tokens):
                 item_result[col] = ''
@@ -411,7 +414,7 @@ for filename in os.listdir(input_dir):
 
             if match_col:
                 sibling_cols = group_to_columns.get(group_id, [])
-                existing_present = [c for c in sibling_cols if item_result.get(c) == 'present']
+                existing_present = [c for c in sibling_cols if item_result.get(c) == 'PRESENT']
                 if existing_present:
                     best_existing_priority = min(column_priority.get(c, 1) for c in existing_present)
                     if best_existing_priority <= column_priority.get(match_col, 1) and match_col not in existing_present:
@@ -420,11 +423,11 @@ for filename in os.listdir(input_dir):
                 for sibling_col in sibling_cols:
                     if sibling_col in item_result:
                         item_result[sibling_col] = ''
-                item_result[match_col] = 'present'
+                item_result[match_col] = 'PRESENT'
 
         # Keep highest-priority sibling within this item only.
         for group_id, sibling_cols in group_to_columns.items():
-            present_cols = [c for c in sibling_cols if item_result.get(c) == 'present']
+            present_cols = [c for c in sibling_cols if item_result.get(c) == 'PRESENT']
             if len(present_cols) <= 1:
                 continue
             best_priority = min(column_priority.get(c, 1) for c in present_cols)
@@ -434,7 +437,7 @@ for filename in os.listdir(input_dir):
 
         # Filtration resolution also applies within-item only.
         filtration_cols = top_category_to_columns.get('Filtration', [])
-        present_filtration = [c for c in filtration_cols if item_result.get(c) == 'present']
+        present_filtration = [c for c in filtration_cols if item_result.get(c) == 'PRESENT']
         if len(present_filtration) > 1:
             best_filtration_priority = min(column_priority.get(c, 1) for c in present_filtration)
             for col in present_filtration:
@@ -445,7 +448,7 @@ for filename in os.listdir(input_dir):
         # Lower value means higher priority. This is used to demote generic
         # processes (e.g., unspecified categories) when a more specific trigger
         # is also present in the same item.
-        present_cols = [c for c, value in item_result.items() if value == 'present']
+        present_cols = [c for c, value in item_result.items() if value == 'PRESENT']
         if len(present_cols) > 1:
             best_global_priority = min(column_global_priority.get(c, 1) for c in present_cols)
             for col in present_cols:
@@ -455,13 +458,13 @@ for filename in os.listdir(input_dir):
         # secondary_category backfill (best effort): if a triggered process requests
         # one or more secondary categories, try to mark at least one process from
         # each requested category using ontology trigger matching on the same item.
-        present_cols = [c for c, value in item_result.items() if value == 'present']
+        present_cols = [c for c, value in item_result.items() if value == 'PRESENT']
         for source_col in present_cols:
             for secondary_category in column_secondary_categories.get(source_col, []):
                 secondary_cols = top_category_to_columns.get(secondary_category, [])
                 if not secondary_cols:
                     continue
-                if any(item_result.get(c) == 'present' for c in secondary_cols):
+                if any(item_result.get(c) == 'PRESENT' for c in secondary_cols):
                     continue
 
                 matching_secondary_cols = []
@@ -495,10 +498,10 @@ for filename in os.listdir(input_dir):
                             c,
                         ),
                     )
-                item_result[chosen_col] = 'present'
+                item_result[chosen_col] = 'PRESENT'
 
         for col, value in item_result.items():
-            if value == 'present':
+            if value == 'PRESENT':
                 result[col] = merge_implementation(result.get(col, ''), implementation)
 
     result.update(resolve_identity_for_extraction(filename))
@@ -507,5 +510,8 @@ for filename in os.listdir(input_dir):
 df = pd.DataFrame(results)
 id_cols = ['PERMIT_NUMBER', 'Agency', 'Facility_Name']
 cols = id_cols + [c for c in columns if c in df.columns]
+for c in cols:
+    if c not in id_cols:
+        df[c] = df[c].map(parse_status)
 df[cols].to_csv(output_csv, index=False)
 print(f"Saved {len(results)} facilities")

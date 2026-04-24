@@ -4,9 +4,8 @@ import pandas as pd
 from collections import defaultdict
 
 from helpers.utils import (extract_leaves, prepare_cwns_ca, match_cwns_to_npdes,
-                           build_cwns_presence_mask, is_yes, count_yes)
+                           build_cwns_presence_mask, is_present, get_leaf_names)
 from helpers.plotting import create_ground_truth_plot
-from helpers.load_google_sheet import load_google_sheet_csv
 
 DATE_FOLDER = '2026-2-18'
 GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
@@ -27,11 +26,11 @@ def build_category_facility_sets(process_cols, gt_common, text_common, cwns_comm
         category = leaf_to_category.get(col, col)
         if col in gt_common.columns:
             for _, row in gt_common.iterrows():
-                if is_yes(row.get(col, '')):
+                if is_present(row.get(col, '')):
                     gt_fac[category].add(row['NPDES_No'])
         if col in text_common.columns:
             for _, row in text_common.iterrows():
-                if is_yes(row.get(col, '')):
+                if is_present(row.get(col, '')):
                     npdes_fac[category].add(row['NPDES_No'])
         if col in cwns_common.columns:
             mask = build_cwns_presence_mask(cwns_common[col])
@@ -88,48 +87,51 @@ ca_cwns_data = prepare_cwns_ca(
 )
 
 all_ca_npdes = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/all_ca_npdes.csv', dtype=str)
+_npdes_clean = all_ca_npdes[all_ca_npdes['NPDES No.'].notna()][['NPDES No.', 'Facility Name']]
 npdes_name_to_permit = (
-    all_ca_npdes[all_ca_npdes['NPDES No.'].notna()]
-    [['NPDES No.', 'Facility Name']]
-    .rename(columns={'NPDES No.': 'PERMIT_NUMBER', 'Facility Name': 'FACILITY_NAME'})
-    .drop_duplicates(subset='FACILITY_NAME', keep='first')
-    .set_index('FACILITY_NAME')['PERMIT_NUMBER']
-    .to_dict()
+    _npdes_clean.drop_duplicates(subset='Facility Name', keep='first')
+    .set_index('Facility Name')['NPDES No.'].to_dict()
+)
+npdes_permit_to_name = (
+    _npdes_clean.drop_duplicates(subset='NPDES No.', keep='first')
+    .set_index('NPDES No.')['Facility Name'].to_dict()
 )
 npdes_permit_numbers = set(all_ca_npdes['NPDES No.'].dropna().unique())
 ca_cwns_data = match_cwns_to_npdes(ca_cwns_data, npdes_permit_numbers,
-                                    npdes_name_to_permit=npdes_name_to_permit)
+                                    npdes_name_to_permit=npdes_name_to_permit,
+                                    npdes_permit_to_name=npdes_permit_to_name)
 
-figures_dir = f'npdes_permits/output/{DATE_FOLDER}/figures'
+unmatched_npdes = sorted(npdes_permit_numbers - set(ca_cwns_data['linking_permit'].dropna().str.strip()))
+if unmatched_npdes:
+    unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
+    pd.DataFrame({
+        'NPDES_No': unmatched_npdes,
+        'Facility_Name': [npdes_permit_to_name.get(p, '') for p in unmatched_npdes],
+    }).to_csv(unmatched_path, index=False)
+    print(f"Unmatched NPDES (no CWNS): {len(unmatched_npdes)} → {os.path.basename(unmatched_path)}")
+
+figures_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
 os.makedirs(figures_dir, exist_ok=True)
 
 # Build leaf → top-level category mapping
-leaf_to_category = {}
-for cat_name, cat_value in unitprocess_keywords.items():
-    if isinstance(cat_value, dict) and 'alt_names' in cat_value:
-        leaf_to_category[cat_name] = cat_name
-    else:
-        for leaf_name, _, _ in extract_leaves(cat_value):
-            leaf_to_category[leaf_name] = cat_name
+leaf_to_category = {
+    leaf: cat_name
+    for cat_name, cat_value in unitprocess_keywords.items()
+    for leaf in get_leaf_names(cat_name, cat_value)
+}
 
 # Load Google Sheets
 
-ground_truth_df     = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - Ground Truth')
-npdes_text_df       = load_google_sheet_csv(GOOGLE_SHEET_ID, 'Train - From NPDES Text')
-# bacwa_ground_truth_df = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - Ground Truth')
-# bacwa_npdes_text_df   = load_google_sheet_csv(GOOGLE_SHEET_ID, 'BACWA - From NPDES Text')
+ground_truth_df  = pd.read_csv('npdes_permits/data/train_set_ground_truth.csv', dtype=str)
+npdes_text_df       = pd.read_csv('npdes_permits/data/train_set_npdes_manual.csv', dtype=str)
 
 print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")
 print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
-# print(f"BACWA Ground Truth sheet: {len(bacwa_ground_truth_df)} facilities")
-# print(f"BACWA NPDES Text sheet: {len(bacwa_npdes_text_df)} facilities")
 
 meta_cols = ['Agency', 'Facility_Name', 'NPDES_No', 'PDF_File', "Ground Truth Sources"]
 
 ground_truth_process_cols    = [c for c in ground_truth_df.columns    if c not in meta_cols]
 npdes_text_process_cols      = [c for c in npdes_text_df.columns      if c not in meta_cols]
-# bacwa_ground_truth_process_cols = [c for c in bacwa_ground_truth_df.columns if c not in meta_cols]
-# bacwa_npdes_text_process_cols   = [c for c in bacwa_npdes_text_df.columns   if c not in meta_cols]
 
 disposal_leaves = {name for name, _, _ in extract_leaves(
     unitprocess_keywords['Solids Processing']['Disposal'], ignore_disposal=False)}
@@ -161,7 +163,7 @@ print(gt_simple_df.to_string(index=False))
 create_ground_truth_plot(
     gt_simple_rows,
     n_facilities=len(common_permits),
-    save_path=f'{figures_dir}/ground_truth_ground_truth_vs_npdes_text_vs_cwns.png',
+    save_path=f'{figures_dir}/figure_2_ground_truth_ground_truth_vs_npdes_text_vs_cwns.png',
 )
 
 print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (GroundTruth)")
@@ -175,22 +177,17 @@ for permit in sorted(common_permits):
     facility_name = ground_truth_row.get('Facility_Name', permit)
 
     gt_set = {col for col in all_sheet_process_cols
-              if col in ground_truth_common.columns and is_yes(ground_truth_row.get(col, ''))}
+              if col in ground_truth_common.columns
+              and is_present(ground_truth_row.get(col, ''))}
     npdes_set = {col for col in all_sheet_process_cols
-                 if col in text_common.columns and is_yes(text_row.get(col, ''))}
+                 if col in text_common.columns
+                 and is_present(text_row.get(col, ''))}
 
     cwns_set = set()
     for col in all_sheet_process_cols:
         if col in cwns_common.columns:
             val = cwns_row.get(col, '')
-            s = str(val).strip().lower()
-            try:
-                if float(val) > 0:
-                    cwns_set.add(col)
-                    continue
-            except (ValueError, TypeError):
-                pass
-            if s in ('present', 'future', 'present_and_future', 'past', 'off_site') or s.startswith('present'):
+            if build_cwns_presence_mask(pd.Series([val])).iloc[0]:
                 cwns_set.add(col)
 
     npdes_tp = len(gt_set & npdes_set)

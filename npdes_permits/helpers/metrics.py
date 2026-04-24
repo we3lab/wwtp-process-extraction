@@ -1,4 +1,16 @@
 import pandas as pd
+from helpers.utils import is_present
+
+# 0–1 scalar metrics (per label or per facility); violin / summaries use this order.
+METRIC_SCORE_COLUMNS = (
+    "Hallucinated_Rate",
+    "Missed_Rate",
+    "Accuracy",
+    "Precision",
+    "Recall",
+    "F1",
+    "State_Accuracy",
+)
 
 
 def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str) -> pd.DataFrame:
@@ -13,8 +25,8 @@ def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: 
         for key in keys:
             manual_states = manual_indexed.at[key, label]
             pred_states = pred_indexed.at[key, label]
-            manual_pos = bool(manual_states)
-            pred_pos = bool(pred_states)
+            manual_pos = is_present(manual_states)
+            pred_pos = is_present(pred_states)
 
             tp += int(manual_pos and pred_pos)
             fp += int((not manual_pos) and pred_pos)

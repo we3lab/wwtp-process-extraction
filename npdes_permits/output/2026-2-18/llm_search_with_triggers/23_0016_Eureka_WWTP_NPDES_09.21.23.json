@@ -6,12 +6,12 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Wastewater entering the facility undergoes primary treatment with mechanical bar screens, grit removal, and primary clarification.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -23,12 +23,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Wastewater entering the facility undergoes primary treatment with mechanical bar screens, grit removal, and primary clarification.",
       "trigger_process": [
         "Grit Removal"
@@ -45,7 +45,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Wastewater entering the facility undergoes primary treatment with mechanical bar screens, grit removal, and primary clarification.",
       "trigger_process": [
         "Primary Clarification"
@@ -54,8 +54,8 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "Biofiltration",
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -63,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Trickling Filter"
@@ -80,7 +80,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Secondary Clarification"
@@ -89,35 +89,17 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
+        "Disinfection",
         "Chlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged at Discharge Point 001 to Humboldt Bay in conjunction with ebb tide cycles.",
+      "Score": 1.0,
+      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection.",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Chlorination"
       ]
     },
     {
@@ -125,53 +107,36 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged at Discharge Point 001 to Humboldt Bay in conjunction with ebb tide cycles.",
+      "Score": 1.0,
+      "Sentence": "The chlorinated e ffluent is stored in a holding pond then dechlorinated and discharged at Discharge Point 001 to Humboldt Bay in conjunction with ebb tide cycles .",
       "trigger_process": [
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "During periods of high flows, excess treated wastewater from the effluent holding pond can be directed to the 13-acre freshwater holding marsh (Overflow Marsh) and pumped back to the effluent holding pond once flows subside.",
-      "trigger_process": [
-        "Wetland"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
+        "Digestion",
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "Centrifuge",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -182,26 +147,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 1.0,
       "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
       "trigger_process": [
-        "Centrifuge",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
-      "trigger_process": [
-        "Unspecified Lagoon"
+        "Centrifuge"
       ]
     }
   ]

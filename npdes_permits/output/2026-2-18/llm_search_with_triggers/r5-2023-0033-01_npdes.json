@@ -1,27 +1,18 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
+      "Score": 1.0,
+      "Sentence": "The F acility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -31,12 +22,14 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
+      "Score": 1.0,
+      "Sentence": "The F acility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -44,64 +37,53 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
+        "BiologicalProcess",
         "Biofiltration",
-        "MembraneProcess",
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility consists of the following unit operations: influent pumping, flow measurement, fine screening, grit removal, emergency storage, MBR s for biological treatment and filt ration, UV disinfection, effluent pumping, effluent disposal, and solids handling.",
+      "Score": 1.0,
+      "Sentence": "The F acility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
       "trigger_process": [
-        "Unspecified FFR",
-        "Unspecified Membrane Process"
+        "Membrane Bioreactor"
       ]
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
+        "Disinfection",
         "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility improvements included ... upgrading the UV disinfec tion system.",
+      "Score": 1.0,
+      "Sentence": "The F acility improvements included installation of five new influent pumps, new ultra -fine screening and grit removal headworks, replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ), and upgrading the UV disinfec tion system.",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "Reservoir",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "The Facility also includes two lined, aerated storage reservoirs for use during emergency situations and during plant maintenance.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "AerobicDigester",
       "Process": [
+        "Digestion",
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Aerobic"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 1.0,
       "Sentence": "Sludge handling at the Facility includes two stage aerobic digesters, a drum thickener, and a centrifuge.",
       "trigger_process": [
         "Aerobic Digestion"
@@ -110,6 +92,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
+        "Dewatering",
         "Filtration"
       ],
       "Role": [
@@ -118,16 +101,17 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
+      "Score": 1.0,
       "Sentence": "Sludge handling at the Facility includes two stage aerobic digesters, a drum thickener, and a centrifuge.",
       "trigger_process": [
         "Thickening"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "CentrifugalThickener",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -135,96 +119,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 1.0,
       "Sentence": "Sludge handling at the Facility includes two stage aerobic digesters, a drum thickener, and a centrifuge.",
       "trigger_process": [
-        "Centrifuge"
+        "Centrifuge",
+        "Thickening"
       ]
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": null,
-      "Role": [
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.97,
-      "Sentence": "Sludge supernatant is returned to the anoxic reactor headworks prior to proceeding to the fine screens.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration",
-        "MembraneProcess"
-      ],
-      "Role": [
-        "Permeate"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.96,
-      "Sentence": "Once another expansion is needed, the remaining two filter bays will b e equipped with new filters and permeate pumps, along with some minor adjustments made to the control strategy in the operating system.",
-      "trigger_process": [
-        "Unspecified Membrane Process"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Permeate"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.96,
-      "Sentence": "Once another expansion is needed, the remaining two filter bays will b e equipped with new filters and permeate pumps, along with some minor adjustments made to the control strategy in the operating system.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "SequencingBatchReactor",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "The Facility improvements included ... replacing the sequencing batch reactors ( SBRs ) and disk filters with membrane bioreactors ( MBRs ).",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "third-party",
-      "Score": 1,
-      "Sentence": "Solids are collected in a truck and removed by a hauler (currently Synagro) for disposal at a licensed biosolids facility.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.99,
-      "Sentence": "The Facility consists of the following unit operations: influent pumping, flow measurement, fine screening, grit removal, emergency storage, MBR s for biological treatment and filt ration, UV disinfection, effluent pumping, effluent disposal, and solids handling.",
-      "trigger_process": []
     }
   ]
 }

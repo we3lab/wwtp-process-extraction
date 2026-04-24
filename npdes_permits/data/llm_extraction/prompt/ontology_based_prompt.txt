@@ -24,7 +24,7 @@ Return only a JSON object with this exact shape:
             "Role": string[]|null,
             "Substance": string[]|null,
             "Implementation": "present"|"planned"|"past",
-            "Location": "on-site"|"off-site"|"third-party"|null,
+            "Location": "on-site"|"off-site"|"off-site"|null,
             "Score": number,
             "Sentence": string
         }
@@ -39,7 +39,7 @@ Field meaning and allowed cardinality:
 - Substance: substance names explicitly mentioned in text. Null or an array (can be empty).
 - Rule: at least one of Equipment or Process must be non-null.
 - Implementation: one of "present", "planned", "past".
-- Location: one of "on-site", "off-site", "third-party", or null if unspecified.
+- Location: one of "on-site", "off-site", "off-site", or null if unspecified.
 - Score: confidence score between 0 and 1.
 - Sentence: direct supporting sentence/quote from permit extract.
 

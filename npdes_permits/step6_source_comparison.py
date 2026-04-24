@@ -8,7 +8,7 @@ Grouped stacked bar-chart comparison of unit process detection across two data s
 Each bar is stacked by status (process columns must already be normalized: stripped, uppercase).
 PRESENT_AND_FUTURE is counted as PRESENT only (not split into Future).
 
-Plot stacks (both sources): Present | Past | Future | Off-site
+Plot stacks (both sources): Present | Past | Future | Offsite
   CWNS : PRESENT | PRESENT_AND_FUTURE | FUTURE | PAST | OFFSITE | 0
   LLM  : PRESENT | PRESENT_AND_FUTURE | FUTURE | PAST | OFFSITE
 
@@ -151,7 +151,7 @@ def deduplicate_llm_facilities(llm_df):
 # ── Drawing ───────────────────────────────────────────────────────────────────
 
 def _plot_stack_spec():
-    """Bottom-to-top: Present, Past, Future, Off-site."""
+    """Bottom-to-top: Present, Past, Future, Offsite."""
     off_h = HATCH_PATTERNS['OFFSITE']
     return [
         ('PRESENT',  HATCH_PATTERNS['PRESENT'],  1.00),
@@ -230,7 +230,7 @@ def make_legend(ax, fontsize=12):
         mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['PRESENT'],  edgecolor='black', lw=0.5, label='Present'),
         mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['PAST'],     edgecolor='black', lw=0.5, label='Past'),
         mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['FUTURE'],   edgecolor='black', lw=0.5, label='Future'),
-        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['OFFSITE'], edgecolor='black', lw=0.5, alpha=0.85, label='Off-site'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['OFFSITE'], edgecolor='black', lw=0.5, alpha=0.85, label='Offsite'),
     ]
     header_source = mpatches.Patch(color='none', label='Data Source')
     header_status = mpatches.Patch(color='none', label='Status')

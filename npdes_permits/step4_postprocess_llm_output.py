@@ -3,7 +3,6 @@ import json
 import os
 import re
 import sys
-import argparse
 from pathlib import Path
 from collections import Counter
 from rdflib import Graph, Namespace, RDFS
@@ -11,64 +10,24 @@ from rdflib import Graph, Namespace, RDFS
 WATR = Namespace("urn:nawi-water-ontology#")
 ontology = Graph()
 
-# GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
-# TODO: handle secondary category
-# Currently doesn't flag ontology "mistakes" e.g. identification of Sedimentation Basin without Process:Sedimentation
-
-DEFAULT_INPUT_DIR = 'npdes_permits/output/2026-2-18/llm_extraction'
-DEFAULT_OUTPUT_CSV = 'npdes_permits/output/llm_unit_processes_by_facility.csv'
-DEFAULT_SITE_DATA_CSV = 'npdes_permits/output/2026-2-18/site_data.csv'
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status
+from helpers.utils import parse_status, extract_leaves
 
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description='Postprocess LLM extraction JSON files into facility-level process matrix.'
-    )
-    parser.add_argument(
-        '--input_dir',
-        default=DEFAULT_INPUT_DIR,
-        help=f'Folder containing LLM extraction JSON files (default: {DEFAULT_INPUT_DIR}).',
-    )
-    parser.add_argument(
-        '--site_data_csv',
-        default=DEFAULT_SITE_DATA_CSV,
-        help=f'Site data CSV path with PDF/facility mapping (default: {DEFAULT_SITE_DATA_CSV}).',
-    )
-    parser.add_argument(
-        '--output_csv',
-        default=DEFAULT_OUTPUT_CSV,
-        help=f'Output CSV path (default: {DEFAULT_OUTPUT_CSV}).',
-    )
-    return parser.parse_args()
-
-
-args = parse_args()
-input_dir = Path(args.input_dir)
-output_csv = Path(args.output_csv)
+input_dir       = Path('npdes_permits/output/2026-2-18/llm_search_ontology')
+output_csv      = Path('npdes_permits/output/llm_unit_processes_by_facility.csv')
+site_data_csv   = Path('npdes_permits/output/2026-2-18/site_data.csv')
+output_json_dir = Path('npdes_permits/output/2026-2-18/llm_postprocess_ontology')
+output_json_dir.mkdir(parents=True, exist_ok=True)
 
 with open('npdes_permits/data/unitprocess_keywords.json') as f:
     keywords = json.load(f)
 
-
-def extract_leaves_with_context(processes_dict, top_category=None, group_id=None):
-    leaves = []
-    for name, details in processes_dict.items():
-        if not isinstance(details, dict):
-            continue
-        current_top = name if top_category is None else top_category
-        if 'alt_names' in details:
-            leaves.append((name, details, group_id, current_top))
-        else:
-            leaves.extend(extract_leaves_with_context(details, current_top, name))
-    return leaves
-
-
-leaves = extract_leaves_with_context(keywords)
+leaves = []
+for top_cat, cat_val in keywords.items():
+    for name, details, group_id in extract_leaves({top_cat: cat_val}, ignore_disposal=False):
+        leaves.append((name, details, group_id, top_cat))
 columns = [name for name, _, _, _ in leaves]
 group_to_columns = {}
 top_category_to_columns = {}
@@ -122,59 +81,21 @@ for filename in ["ontology.ttl", "equipment.ttl", "processtypes.ttl", "enumerati
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
 
-site_df = pd.read_csv(args.site_data_csv, dtype=str).fillna('')
+site_df = pd.read_csv(site_data_csv, dtype=str).fillna('')
+pdf_map = {row['PDF_File'].replace('.pdf', '').lower(): {
+    'PERMIT_NUMBER': row['NPDES_No'],
+    'Agency': row['Agency'],
+    'Facility_Name': row['Facility_Name'],
+} for _, row in site_df.iterrows()}
 
 
-def slugify(text):
-    slug = re.sub(r'[^A-Za-z0-9]+', '_', str(text or '').strip())
-    slug = re.sub(r'_+', '_', slug).strip('_')
-    return slug or 'facility'
+def resolve_identity(filename):
+    m = re.match(r'^(.+)__\d{4}__.+$', Path(filename).stem)
+    pdf_stem = m.group(1) if m else Path(filename).stem
+    if pdf_stem.lower().endswith('.pdf'):  # strip spurious .pdf embedded in stem
+        pdf_stem = pdf_stem[:-4]
+    return pdf_map.get(pdf_stem.lower(), {})
 
-
-def normalize_pdf_name(value):
-    text = str(value or '').strip()
-    if not text:
-        return ''
-    if text.lower().endswith('.pdf'):
-        return text
-    return f"{text}.pdf"
-
-
-def parse_extraction_filename(filename):
-    stem = Path(filename).stem
-    # Expected step3 pattern: <pdf_stem>__<row_index_1based_4digits>__<facility_slug>.json
-    match = re.match(r'^(?P<pdf_stem>.+)__(?P<row_idx>\d{4})__(?P<facility_slug>.+)$', stem)
-    if not match:
-        return {
-            'pdf_file': normalize_pdf_name(stem),
-            'row_idx_zero_based': None,
-            'facility_slug': '',
-        }
-    return {
-        'pdf_file': normalize_pdf_name(match.group('pdf_stem')),
-        'row_idx_zero_based': int(match.group('row_idx')) - 1,
-        'facility_slug': match.group('facility_slug'),
-    }
-
-
-def get_identity_from_row(row):
-    return {
-        'PERMIT_NUMBER': row.get('NPDES_No', '') or row.get('PERMIT_NUMBER', ''),
-        'Agency': row.get('Agency', ''),
-        'Facility_Name': row.get('Facility_Name', '') or row.get('facility_name', ''),
-    }
-
-
-site_records = site_df.to_dict(orient='records')
-site_by_pdf_and_facility = {}
-site_by_pdf = {}
-for rec in site_records:
-    pdf_name = normalize_pdf_name(rec.get('PDF_File', ''))
-    facility = str(rec.get('Facility_Name', '')).strip()
-    key = (pdf_name.lower(), facility.lower())
-    if pdf_name:
-        site_by_pdf_and_facility[key] = rec
-        site_by_pdf.setdefault(pdf_name.lower(), rec)
 
 results = []
 
@@ -213,32 +134,31 @@ def normalize_values(value):
 
 def normalize_location(value):
     t = str(value or '').strip().lower().replace('-', '_')
-    if t in {'on_site', 'off_site', 'third_party'}:
-        return t
+    if t in {'off_site', 'third_party'}:  # third_party in legacy JSON → off_site
+        return 'off_site'
+    if t == 'on_site':
+        return 'on_site'
     return ''
 
 
-def normalize_implementation(value, location=None):
-    """Map JSON Implementation/Location to canonical uppercase status tokens."""
-    text = str(value or '').strip().lower().replace('-', '_')
+def apply_implementation(existing, impl_value, location=None):
+    """Normalize impl+location to canonical status and merge with existing facility-level status."""
+    text = str(impl_value or '').strip().lower().replace('-', '_')
+    location_text = normalize_location(location)
+    is_offsite = location_text == 'off_site'
+
     if text in {'off_site', 'third_party'}:
-        return 'OFFSITE'
-    if text == 'present':
-        location_text = normalize_location(location)
-        if location_text in {'off_site', 'third_party'}:
-            return 'OFFSITE'
-        return 'PRESENT'
-    if text == 'planned':
-        return 'FUTURE'
-    if text == 'past':
-        return 'PAST'
-    return ''
+        new = 'OFFSITE'
+    elif text == 'present':
+        new = 'OFFSITE' if is_offsite else 'PRESENT'
+    elif text == 'planned':
+        new = '' if is_offsite else 'FUTURE'
+    elif text == 'past':
+        new = '' if is_offsite else 'PAST'
+    else:
+        new = ''
 
-
-def merge_implementation(existing_value, new_value):
-    rank = {'': 0, 'PAST': 1, 'FUTURE': 2, 'PRESENT': 3, 'OFFSITE': 4}
-    existing = normalize_implementation(existing_value)
-    new = normalize_implementation(new_value)
+    rank = {'': 0, 'PAST': 1, 'OFFSITE': 2, 'FUTURE': 3, 'PRESENT': 4}
     return new if rank.get(new, 0) > rank.get(existing, 0) else existing
 
 
@@ -280,39 +200,6 @@ def ontology_labels(component_type, name, include_descendants=False):
     return labels
 
 
-def resolve_identity_for_extraction(filename):
-    # 1) Parse step3 extraction filename pattern for exact row matching.
-    parsed = parse_extraction_filename(filename)
-    row_idx = parsed.get('row_idx_zero_based')
-    if row_idx is not None and 0 <= row_idx < len(site_records):
-        rec = site_records[row_idx]
-        return get_identity_from_row(rec)
-
-    # 2) Fallback by parsed PDF + facility slug.
-    pdf_name = parsed.get('pdf_file', '')
-    facility_slug = parsed.get('facility_slug', '')
-    if pdf_name and facility_slug:
-        matching = [
-            rec for rec in site_records
-            if normalize_pdf_name(rec.get('PDF_File', '')).lower() == pdf_name.lower()
-            and slugify(rec.get('Facility_Name', '')) == facility_slug
-        ]
-        if matching:
-            return get_identity_from_row(matching[0])
-
-    # 3) Fallback by PDF stem only.
-    if pdf_name:
-        rec = site_by_pdf.get(pdf_name.lower())
-        if rec:
-            return get_identity_from_row(rec)
-
-    return {
-        'PERMIT_NUMBER': '',
-        'Agency': '',
-        'Facility_Name': '',
-    }
-
-
 for filename in os.listdir(input_dir):
     if not filename.endswith('.json'):
         continue
@@ -322,11 +209,12 @@ for filename in os.listdir(input_dir):
     result = {col: '' for col in columns}
 
     records = normalize_records(json_data)
-    items = records
+    output_json_data = {'items': [dict(item) if isinstance(item, dict) else item for item in records]}
 
     item_components = []
-    for item in items:
-        implementation = normalize_implementation(get_field(item, 'Implementation'), get_field(item, 'Location'))
+    for item_idx, item in enumerate(records):
+        impl_value = get_field(item, 'Implementation')
+        impl_location = get_field(item, 'Location')
         components = {'Process': set(), 'Role': set(), 'Equipment': set(), 'Substance': set()}
         item_role_counts = Counter()
         for comp_type in components:
@@ -347,7 +235,7 @@ for filename in os.listdir(input_dir):
                 )
             components[component_type] = expanded
 
-        item_components.append((components, item_role_counts, implementation))
+        item_components.append((item_idx, components, item_role_counts, impl_value, impl_location))
 
     # ontology_triggers: list = AND, list-of-lists = OR across clauses
     # within sibling group, higher-priority fires first; skip lower-priority siblings
@@ -368,7 +256,7 @@ for filename in os.listdir(input_dir):
         multi_rules_by_group.setdefault(group_id, []).append((col, rule))
 
     # Evaluate each item independently, then merge item-level positives into facility result.
-    for components, role_counts, implementation in item_components:
+    for item_idx, components, role_counts, impl_value, impl_location in item_components:
         item_result = {col: '' for col in columns}
 
         for proc in components['Process']:
@@ -500,11 +388,18 @@ for filename in os.listdir(input_dir):
                     )
                 item_result[chosen_col] = 'PRESENT'
 
+        triggered = sorted(col for col, v in item_result.items() if v == 'PRESENT')
+        if item_idx < len(output_json_data['items']) and isinstance(output_json_data['items'][item_idx], dict):
+            output_json_data['items'][item_idx]['trigger_process'] = triggered
+
         for col, value in item_result.items():
             if value == 'PRESENT':
-                result[col] = merge_implementation(result.get(col, ''), implementation)
+                result[col] = apply_implementation(result.get(col, ''), impl_value, impl_location)
 
-    result.update(resolve_identity_for_extraction(filename))
+    with open(output_json_dir / filename, 'w') as f:
+        json.dump(output_json_data, f, indent=2)
+
+    result.update(resolve_identity(filename))
     results.append(result)
 
 df = pd.DataFrame(results)

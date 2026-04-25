@@ -53,28 +53,14 @@ def _select_value(soup, name, visible_text, *, required_label=None):
     return visible_text
 
 
-def _retry_get(session, url, max_attempts=4, timeout=120):
+def _retry_request(session, method, url, *, data=None, max_attempts=4, timeout=120):
     for attempt in range(1, max_attempts + 1):
         try:
-            r = session.get(url, timeout=timeout)
+            r = session.request(method, url, data=data, timeout=timeout)
             r.raise_for_status()
             return r
         except requests.exceptions.Timeout:
-            print(f"[requests] GET timed out ({attempt}/{max_attempts}): {url}")
-            if attempt == max_attempts:
-                raise
-        except requests.exceptions.RequestException:
-            raise
-
-
-def _retry_post(session, url, data, max_attempts=4, timeout=120):
-    for attempt in range(1, max_attempts + 1):
-        try:
-            r = session.post(url, data=data, timeout=timeout)
-            r.raise_for_status()
-            return r
-        except requests.exceptions.Timeout:
-            print(f"[requests] POST timed out ({attempt}/{max_attempts}): {url}")
+            print(f"[requests] {method.upper()} timed out ({attempt}/{max_attempts}): {url}")
             if attempt == max_attempts:
                 raise
         except requests.exceptions.RequestException:
@@ -136,10 +122,8 @@ now = datetime.now()
 pdf_folder = f'{now.year}-{now.month}-{now.day}'
 full_path = os.path.join(path, pdf_folder)
 pdfs_path = os.path.join(full_path, 'pdfs')
-if not os.path.exists(full_path):
-    os.mkdir(full_path)
-if not os.path.exists(pdfs_path):
-    os.mkdir(pdfs_path)
+os.makedirs(full_path, exist_ok=True)
+os.makedirs(pdfs_path, exist_ok=True)
 
 ciwqs = requests.Session()
 ciwqs.headers["User-Agent"] = (
@@ -147,7 +131,7 @@ ciwqs.headers["User-Agent"] = (
     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 print("[requests] CIWQS reset form…")
-r = _retry_get(ciwqs, rfr_url)
+r = _retry_request(ciwqs, 'GET', rfr_url)
 soup0 = BeautifulSoup(r.text, "html.parser")
 hidden0 = _hidden_fields(soup0)
 csrf = hidden0.get("OWASP_CSRFTOKEN", "")
@@ -163,7 +147,7 @@ post_data = {
     "enpRepButton": "",
 }
 print("[requests] Submitting filters…")
-resp = _retry_post(ciwqs, f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}", data=post_data)
+resp = _retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}", data=post_data)
 soup1 = BeautifulSoup(resp.text, "html.parser")
 full_results_url = None
 drilldown_candidates = []
@@ -199,11 +183,10 @@ wait = WebDriverWait(driver, 120)
 main_window = driver.current_window_handle
 
 driver.set_page_load_timeout(120)
-detail_wait = WebDriverWait(driver, 120)
 for attempt in range(1, 4):
     try:
         driver.get(full_results_url)
-        detail_wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ciwqsReportDataTable")))
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ciwqsReportDataTable")))
         print("[selenium] Facility table ready")
         break
     except TimeoutException:
@@ -238,7 +221,6 @@ def _set_page_size_all_and_wait():
     return _wait_for_results_table(timeout=90)
 
 
-table_body = None
 for attempt in range(1, 3):
     try:
         table_body = _set_page_size_all_and_wait()
@@ -311,12 +293,7 @@ if "Place/Project Type" in df.columns:
     ]
 print(f"After explicit form-aligned filtering: {len(df)} rows")
 
-def parse_date(date_str):
-    if pd.isna(date_str) or str(date_str).lower() == 'null':
-        return pd.NaT
-    return pd.to_datetime(date_str, errors='coerce')
-
-df['Expiration/Review Date'] = df['Expiration/Review Date'].apply(parse_date)
+df['Expiration/Review Date'] = pd.to_datetime(df['Expiration/Review Date'], errors='coerce')
 df_sorted = df.sort_values(['WDID', 'Facility Name', 'Expiration/Review Date'], ascending=[True, True, False])
 # Deduplicate by BOTH WDID and Facility Name to preserve different facilities with same WDID
 df_deduplicated = df_sorted.drop_duplicates(subset=['WDID', 'Facility Name'], keep='first')
@@ -327,17 +304,11 @@ if len(duplicates_removed) > 0:
     print("Duplicates removed (Facility Name, WDID, NPDES No.):")
     print(duplicates_removed[cols].to_string(index=False))
 
-order_to_data = {}
-for _, row in df_deduplicated.iterrows():
-    order_no = str(row['Order No.']).strip()
-    if order_no and order_no != 'nan':
-        order_to_data[order_no] = {}
-        # Store all required keys to prevent KeyError later
-        for key in ['Agency', 'Facility Name', 'NPDES No.', 'Program', 'Region', 'Major/Minor']:
-            order_to_data[order_no][key] = str(row[key]).strip()
-
 # PDF keywords to skip downloading
-base_keywords = ["noa", "noi", "rpts", "rowd"]
+# base_keywords get separator-bounded patterns (_kw_, kw_ at start) to avoid false positives.
+# "per" (Performance Evaluation Reports) needs this treatment — bare "per" matches "permit".
+# "ci" (Compliance Inspection) is removed entirely — it's a valid permit identifier (e.g. CI 0066).
+base_keywords = ["noa", "noi", "rpts", "rowd", "per"]
 separators = [" ", ".", "-", "_"]
 patterns = set()
 
@@ -352,9 +323,8 @@ for keyword in base_keywords:
     for sep in separators:
         beginning_patterns.append(f"{keyword}{sep}")
 skip_keywords.extend([
-    "report", "reports", "financial", "notice of", "response to",
-    "rate study", "ratestudy", "study", "studies", "letter",
-    "PER", "NOA", "NOI", "CI"
+    "report", "financial", "notice of", "response to",
+    "rate study", "ratestudy", "study", "letter",
 ])
 
 def find_col_index_by_header(header_text: str):
@@ -489,9 +459,8 @@ def extract_reg_measure_id(href: str):
     try:
         parsed = urlparse(href)
         query = parse_qs(parsed.query)
-        for key in ['regMeasID']:
-            if key in query and query[key]:
-                return str(query[key][0])
+        if 'regMeasID' in query and query['regMeasID']:
+            return str(query['regMeasID'][0])
     except Exception:
         pass
     match = re.search(r"regMeasID=(\d+)", href, re.IGNORECASE)
@@ -500,6 +469,7 @@ def extract_reg_measure_id(href: str):
     return None
 
 reg_measure_id_to_url = {}
+failed_facilities = []
 
 # ============================================================================
 # STEP 2: VISIT FACILITY PAGES, PICK BEST ORDER NO., DOWNLOAD PDFs
@@ -508,7 +478,7 @@ print("\n" + "="*80)
 print("STEP 2: Visiting facility pages and downloading PDFs")
 print("="*80)
 
-TYPE_RANK = {"NPDES PERMIT": 0, "CO-PERMITTEE": 1}
+TYPE_RANK = {"NPDES PERMIT": 0, "CO-PERMITTEE": 1, "ENROLLEE - NPDES": 2}
 url_to_facilities = {}
 
 # Track which PDFs belong to which facilities
@@ -542,8 +512,11 @@ def wait_for_new_pdf_file(directory, before_set, timeout=60):
 downloaded_count = 0
 skipped_count = 0
 
-def download_pdfs_for_url(url, facilities):
+def download_pdfs_for_url(url, facilities, allow_noa=False):
     global downloaded_count, skipped_count
+    noa_set = {'noa', 'noi'} if allow_noa else set()
+    local_skip = [k for k in skip_keywords if not any(n in k.lower() for n in noa_set)]
+    local_begin = [p for p in beginning_patterns if not any(p.lower().startswith(n) for n in noa_set)]
     print(f"\nProcessing URL")
     print(f"  Facilities: {', '.join([f['facility_name'] for f in facilities])}")
     print(f"  URL: {url}")
@@ -587,13 +560,13 @@ def download_pdfs_for_url(url, facilities):
             try:
                 pdf_name = pdf_doc.text
 
-                should_skip = any(keyword.lower() in pdf_name.lower() for keyword in skip_keywords)
+                should_skip = any(keyword.lower() in pdf_name.lower() for keyword in local_skip)
                 if should_skip:
                     print(f"        Skipping: {pdf_name} (matched skip keyword)")
                     skipped_count += 1
                     continue
 
-                should_skip = any(pdf_name.lower().startswith(pattern.lower()) for pattern in beginning_patterns)
+                should_skip = any(pdf_name.lower().startswith(pattern.lower()) for pattern in local_begin)
                 if should_skip:
                     print(f"        Skipping: {pdf_name} (begins with skip pattern)")
                     skipped_count += 1
@@ -643,7 +616,7 @@ def parse_date_safe(date_str):
 def find_best_order_href(html):
     """Parse facility page HTML with BeautifulSoup and return the best active NPDES order.
 
-    Returns (order_href, type_rank, effective_dt) or (None, None, pd.NaT).
+    Returns (order_href, type_rank, effective_dt, rm_type) or (None, None, pd.NaT, None).
     Uses cell-length filtering (< 80 chars) to skip outer layout tables whose cells
     contain the entire page text rather than individual column header strings.
     """
@@ -664,6 +637,7 @@ def find_best_order_href(html):
             best_href = None
             best_type_rank = 99
             best_effective = pd.NaT
+            best_rm_type = None
             for data_row in all_rows[hdr_idx + 1:]:
                 dcells = data_row.find_all('td')
                 if not dcells:
@@ -694,9 +668,10 @@ def find_best_order_href(html):
                     best_href = href
                     best_type_rank = type_rank
                     best_effective = effective_dt
+                    best_rm_type = rm_type
             if best_href:
-                return best_href, best_type_rank, best_effective
-    return None, None, pd.NaT
+                return best_href, best_type_rank, best_effective, best_rm_type
+    return None, None, pd.NaT, None
 
 
 for idx, (facility_url, facilities) in enumerate(facility_url_to_facilities.items(), 1):
@@ -713,13 +688,13 @@ for idx, (facility_url, facilities) in enumerate(facility_url_to_facilities.item
         driver.close()
         driver.switch_to.window(main_window)
 
-        order_href, best_type_rank, best_effective = find_best_order_href(page_html)
+        order_href, best_type_rank, best_effective, best_rm_type = find_best_order_href(page_html)
         if not order_href:
             print("  X No suitable active NPDES order found")
             continue
 
         eff_str = best_effective.date() if not pd.isna(best_effective) else 'N/A'
-        print(f"  Best order: rank={best_type_rank}, effective={eff_str}")
+        print(f"  Best order: {best_rm_type}, rank={best_type_rank}, effective={eff_str}")
 
         reg_id = extract_reg_measure_id(order_href)
         if reg_id and reg_id in reg_measure_id_to_url:
@@ -733,10 +708,16 @@ for idx, (facility_url, facilities) in enumerate(facility_url_to_facilities.item
         url_to_facilities[order_href] = facilities
         if reg_id:
             reg_measure_id_to_url[reg_id] = order_href
-        download_pdfs_for_url(order_href, facilities)
+        download_pdfs_for_url(order_href, facilities, allow_noa=(best_rm_type == "ENROLLEE - NPDES"))
 
     except Exception as e:
         print(f"  X {e}")
+        for f in facilities:
+            failed_facilities.append({
+                'facility_name': f['facility_name'],
+                'facility_url': facility_url,
+                'error': str(e)[:200],
+            })
         try:
             if driver.current_window_handle != main_window:
                 driver.close()
@@ -744,59 +725,34 @@ for idx, (facility_url, facilities) in enumerate(facility_url_to_facilities.item
         except Exception:
             pass
 
+if failed_facilities:
+    pd.DataFrame(failed_facilities).to_csv(os.path.join(full_path, 'failed_facilities.csv'), index=False)
+    print(f"Wrote {len(failed_facilities)} failed facilities to failed_facilities.csv")
+
 print(f"\nDownloaded {downloaded_count} PDFs")
 print(f"Skipped {skipped_count} PDFs (keyword filters)")
 
 # ============================================================================
-# STEP 3: CREATE CSV WITH SHARED_PDF COLUMN
+# STEP 3: PDF SUMMARY
 # ============================================================================
 print("\n" + "="*80)
-print("STEP 3: Creating site_data.csv with facility-PDF mapping")
+print("STEP 3: PDF summary")
 print("="*80)
-
-csv_rows = []
-for pdf_name, facilities in pdf_to_facilities.items():
-    # Deduplicate facilities by (agency, facility_name, npdes_no) to avoid duplicate rows
-    seen = set()
-    is_shared = "Yes" if len(facilities) > 1 else "No"
-    for facility in facilities:
-        key = (facility['agency'], facility['facility_name'], facility['npdes_no'])
-        if key in seen:
-            continue
-        seen.add(key)
-        csv_rows.append([
-            facility['agency'],
-            facility['facility_name'],
-            facility['npdes_no'],
-            facility['region'],
-            facility['major_minor'],
-            pdf_name,
-            is_shared
-        ])
-
-# Sort by PDF name to group shared PDFs together
-csv_rows.sort(key=lambda x: (x[2], x[0]))
-
-print(f"Created {len(csv_rows)} CSV rows")
 print(f"Unique PDFs: {len(pdf_to_facilities)}")
-print(f"Shared PDFs: {sum(1 for pdf, fac in pdf_to_facilities.items() if len(fac) > 1)}")
+print(f"Shared PDFs: {sum(1 for f in pdf_to_facilities.values() if len(f) > 1)}")
 
 # ============================================================================
 # STEP 4: DETECT AND MOVE NPDES PDFs TO SEPARATE FOLDER
 # ============================================================================
 print("\n" + "="*80)
-print("STEP 3: Detecting and moving NPDES PDFs")
+print("STEP 4: Detecting and moving NPDES PDFs")
 print("="*80)
 
 npdes_path = os.path.join(full_path, 'npdes')
-if not os.path.exists(npdes_path):
-    os.mkdir(npdes_path)
+os.makedirs(npdes_path, exist_ok=True)
 
 npdes_pdfs = set()
 non_npdes_pdfs = set()
-
-npdes_count = 0
-non_npdes_count = 0
 
 for filename in os.listdir(pdfs_path):
     if not filename.endswith('.pdf'):
@@ -806,28 +762,24 @@ for filename in os.listdir(pdfs_path):
 
     try:
         if detect_npdes(file_path):
-            new_path = os.path.join(npdes_path, filename)
-            os.rename(file_path, new_path)
+            os.rename(file_path, os.path.join(npdes_path, filename))
             print(f"NPDES detected: {filename}")
             npdes_pdfs.add(filename)
-            npdes_count += 1
         else:
             print(f"Non-NPDES content: {filename}")
             non_npdes_pdfs.add(filename)
-            non_npdes_count += 1
     except Exception as e:
         print(f"Error processing {filename}: {e}")
         non_npdes_pdfs.add(filename)
-        non_npdes_count += 1
 
-print(f"\nNPDES PDFs moved: {npdes_count}")
-print(f"Non-NPDES PDFs kept in pdfs folder: {non_npdes_count}")
+print(f"\nNPDES PDFs moved: {len(npdes_pdfs)}")
+print(f"Non-NPDES PDFs kept in pdfs folder: {len(non_npdes_pdfs)}")
 
 # ============================================================================
 # STEP 5: CREATE CSV WITH ONLY NPDES PDFs
 # ============================================================================
 print("\n" + "="*80)
-print("STEP 4: Creating site_data.csv with NPDES permits only")
+print("STEP 5: Creating site_data.csv with NPDES permits only")
 print("="*80)
 
 pdfs_csv = open(os.path.join(full_path, 'site_data.csv'), 'w', newline='')
@@ -870,12 +822,10 @@ print(f"Skipped {skipped_non_npdes_count} facility entries (non-NPDES PDFs)")
 # SAVE TABLE DATA TO CSV (using Excel export)
 # ============================================================================
 print("\n" + "="*80)
-print("STEP 5: Saving table data to CSV from Excel export")
+print("STEP 6: Saving table data to CSV from Excel export")
 print("="*80)
 
-file = open(os.path.join(full_path, 'all_ca_npdes.csv'), 'w', newline='')
-df_deduplicated.to_csv(file, index=False)
-file.close()
+df_deduplicated.to_csv(os.path.join(full_path, 'all_ca_npdes.csv'), index=False)
 
 print(f"Saved {len(df_deduplicated)} rows to all_ca_npdes.csv")
 
@@ -890,8 +840,8 @@ print(f"Unique Order No. URLs visited: {len(url_to_facilities)}")
 print(f"Shared Order No. URLs (multiple facilities): {sum(1 for facs in url_to_facilities.values() if len(facs) > 1)}")
 print(f"PDFs downloaded: {downloaded_count}")
 print(f"PDFs skipped (keywords): {skipped_count}")
-print(f"NPDES PDFs detected: {npdes_count}")
-print(f"Non-NPDES PDFs: {non_npdes_count}")
+print(f"NPDES PDFs detected: {len(npdes_pdfs)}")
+print(f"Non-NPDES PDFs: {len(non_npdes_pdfs)}")
 print(f"CSV rows written (NPDES only): {csv_row_count}")
 print(f"Facility entries skipped (non-NPDES): {skipped_non_npdes_count}")
 print(f"{'='*80}")

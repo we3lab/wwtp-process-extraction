@@ -107,7 +107,17 @@ def extract_permit_sections(pdf_path):
         attachment_page, _ = find_attachment_f(pdf_path, start_page=10)
 
         if attachment_page is None:
-            return None
+            # NOA fallback: "Facility Information" → "Receiving Water" section boundaries
+            full_text = normalize_text(
+                ' '.join(reader.pages[i].extract_text() or '' for i in range(len(reader.pages)))
+            )
+            start = find_nth_occurrence(full_text, "facility information", n=1)
+            if start == -1:
+                return None
+            end = find_nth_occurrence(full_text, "receiving water", n=1, start_pos=start + 100)
+            end = end if end != -1 else start + 10000
+            return {'txt_section': full_text[start:end].strip(), 'txt_changes': '',
+                    'full_text': full_text, 'metadata': {'attachment_f_page': None}}
 
         # Step 2: Extract text from Attachment F onwards
         full_text = ''

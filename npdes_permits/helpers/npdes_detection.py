@@ -122,7 +122,8 @@ def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> bool:
     # 2. flexible NPDES-like sentence pattern ("the following <...> subject to <...> set forth in this <...> order")
     has_pattern = detect_text_from_pdf(pdf_file, "Table 1. Discharger Information", max_pages)
     has_pattern2 = detect_npdes_pattern(pdf_file, max_pages)
-    return has_pattern or has_pattern2
+    has_noa = detect_text_from_pdf(pdf_file, "notice of applicability", max_pages)
+    return has_pattern or has_pattern2 or has_noa
 
 
 

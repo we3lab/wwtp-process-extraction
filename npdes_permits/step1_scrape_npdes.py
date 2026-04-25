@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -13,17 +14,121 @@ import csv
 import glob
 from urllib.parse import urlparse, parse_qs
 import re
+import requests
+from bs4 import BeautifulSoup
 import pandas as pd
 from helpers.npdes_detection import detect_npdes
 
+CIWQS_ROOT = "https://ciwqs.waterboards.ca.gov"
+CIWQS_SERVLET = f"{CIWQS_ROOT}/ciwqs/readOnly/CiwqsReportServlet"
+
+
+def _abs_url(href):
+    if not href or href.startswith("http"):
+        return href
+    if href.startswith("/"):
+        return CIWQS_ROOT + href
+    return f"{CIWQS_ROOT}/ciwqs/readOnly/{href}"
+
+
+def _hidden_fields(soup):
+    return {i["name"]: i.get("value", "")
+            for i in soup.find_all("input", type="hidden") if i.get("name")}
+
+
+def _select_value(soup, name, visible_text, *, required_label=None):
+    sel = soup.find("select", {"name": name})
+    if not sel:
+        if required_label:
+            raise RuntimeError(f"CIWQS form missing <select name={name!r}> ({required_label}).")
+        return visible_text
+    for opt in sel.find_all("option"):
+        if opt.get_text(strip=True) == visible_text:
+            return opt.get("value", visible_text)
+    if required_label:
+        choices = [opt.get_text(strip=True) for opt in sel.find_all("option")]
+        raise RuntimeError(
+            f"CIWQS {required_label}: no {visible_text!r} in <select name={name!r}>; choices={choices!r}"
+        )
+    return visible_text
+
+
+def _retry_get(session, url, max_attempts=4, timeout=120):
+    for attempt in range(1, max_attempts + 1):
+        try:
+            r = session.get(url, timeout=timeout)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.Timeout:
+            print(f"[requests] GET timed out ({attempt}/{max_attempts}): {url}")
+            if attempt == max_attempts:
+                raise
+        except requests.exceptions.RequestException:
+            raise
+
+
+def _retry_post(session, url, data, max_attempts=4, timeout=120):
+    for attempt in range(1, max_attempts + 1):
+        try:
+            r = session.post(url, data=data, timeout=timeout)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.Timeout:
+            print(f"[requests] POST timed out ({attempt}/{max_attempts}): {url}")
+            if attempt == max_attempts:
+                raise
+        except requests.exceptions.RequestException:
+            raise
+
+
+def _new_chrome_driver():
+    """Chrome for facility report (after requests submits the CIWQS search)."""
+    options = webdriver.ChromeOptions()
+    prefs = {
+        "download.default_directory": os.path.abspath(pdfs_path),
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True,
+        "profile.default_content_settings.popups": 0,
+        "profile.default_content_setting_values.automatic_downloads": 1,
+    }
+    options.add_experimental_option("prefs", prefs)
+    # "normal" waits for load event; CIWQS often omits programDrop until then (eager returns too early).
+    options.page_load_strategy = "normal"
+    options.add_argument("--blink-settings=imagesEnabled=false")
+    user_data_dir = os.path.join(tempfile.gettempdir(), f"chrome_user_data_{uuid.uuid4().hex}")
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--headless")  # for server/SSH
+    options.binary_location = "/home/daly/bin/chrome/chrome-linux64/chrome"
+    service = Service("/home/daly/bin/chrome/chromedriver-linux64/chromedriver")
+    return webdriver.Chrome(service=service, options=options)
+
+
 # Function that selects options from filters
 def selection(name, text):
-    select_element = driver.find_element(By.NAME, name)
-    select = Select(select_element)
+    select_elements = driver.find_elements(By.NAME, name)
+    if not select_elements:
+        return False
+    select = Select(select_elements[0])
     select.select_by_visible_text(text)
+    return True
 
 # Link to Interactive Regulated Facilities Report
 rfr_url = 'https://ciwqs.waterboards.ca.gov/ciwqs/readOnly/CiwqsReportServlet?inCommand=reset&reportName=RegulatedFacility'
+
+# Visible labels for CIWQS form (must stay aligned with post_data and STEP 1 row checks).
+CIWQS_PROGRAM = "NPDES"
+CIWQS_FACILITY_TYPE = "Wastewater Treatment Facility"
+CIWQS_WASTE_TYPE = "Domestic wastewater"
+CIWQS_RELATED_PERMIT_STATUS = "Active"
+# Optional test scope: set CIWQS_TEST_REGION=1 (or 2..9) to use region-scoped drilldown URL.
+# Leave unset for normal full-statewide run.
+CIWQS_TEST_REGION = os.getenv("CIWQS_TEST_REGION", "").strip()
+# Optional: extra per-page debug logging (very noisy during downloads).
+CIWQS_VERBOSE = os.getenv("CIWQS_VERBOSE", "").strip().lower() in ("1", "true", "yes")
 
 # Creates folder to store downloaded PDFs
 path = 'npdes_permits/output'
@@ -36,96 +141,127 @@ if not os.path.exists(full_path):
 if not os.path.exists(pdfs_path):
     os.mkdir(pdfs_path)
 
-# Sets up Chrome and folder for downloads
-options = webdriver.ChromeOptions()
-prefs = {
-    'download.default_directory': os.path.abspath(pdfs_path),
-    'download.prompt_for_download': False,
-    'download.directory_upgrade': True,
-    'safebrowsing.enabled': True,
-    'profile.default_content_settings.popups': 0,
-    'profile.default_content_setting_values.automatic_downloads': 1
+ciwqs = requests.Session()
+ciwqs.headers["User-Agent"] = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
+print("[requests] CIWQS reset form…")
+r = _retry_get(ciwqs, rfr_url)
+soup0 = BeautifulSoup(r.text, "html.parser")
+hidden0 = _hidden_fields(soup0)
+csrf = hidden0.get("OWASP_CSRFTOKEN", "")
+in_status = _select_value(
+    soup0, "inStatus", CIWQS_RELATED_PERMIT_STATUS, required_label="Related Permit Status"
+)
+post_data = {
+    **hidden0,
+    "programDrop": _select_value(soup0, "programDrop", CIWQS_PROGRAM),
+    "typeDrop": _select_value(soup0, "typeDrop", CIWQS_FACILITY_TYPE),
+    "wasteTypeDrop": _select_value(soup0, "wasteTypeDrop", CIWQS_WASTE_TYPE),
+    "inStatus": in_status,
+    "enpRepButton": "",
 }
-options.add_experimental_option('prefs', prefs)
-options.page_load_strategy = "eager"
-options.add_argument('--blink-settings=imagesEnabled=false')
-user_data_dir = os.path.join(tempfile.gettempdir(), f"chrome_user_data_{uuid.uuid4().hex}")
-options.add_argument(f"--user-data-dir={user_data_dir}")
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-options.add_argument('--disable-gpu')
-options.add_argument('--headless')  # for server/SSH
+print("[requests] Submitting filters…")
+resp = _retry_post(ciwqs, f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}", data=post_data)
+soup1 = BeautifulSoup(resp.text, "html.parser")
+full_results_url = None
+drilldown_candidates = []
+for a in soup1.find_all("a", href=True):
+    h = a["href"]
+    if "RegulatedFacilityDetail" in h and "drilldown" in h:
+        drilldown_candidates.append(_abs_url(h))
 
-# Set Chrome binary and ChromeDriver paths
-options.binary_location = '/home/constance/chrome/chrome-linux64/chrome'
-service = Service('/home/constance/chrome/chromedriver-linux64/chromedriver')
-driver = webdriver.Chrome(service=service, options=options)
+# Prefer the unscoped facility-results link (all regions/majors),
+# not a summary-row link that includes place=... or majorminor=....
+if CIWQS_TEST_REGION:
+    for candidate in drilldown_candidates:
+        if f"place={CIWQS_TEST_REGION}" in candidate.lower():
+            full_results_url = candidate
+            break
+for candidate in drilldown_candidates:
+    lower = candidate.lower()
+    if full_results_url:
+        break
+    if "place=" not in lower and "majorminor=" not in lower:
+        full_results_url = candidate
+        break
+if not full_results_url and drilldown_candidates:
+    full_results_url = drilldown_candidates[0]
+if not full_results_url:
+    raise RuntimeError("CIWQS: no RegulatedFacilityDetail drilldown link in search response")
+if CIWQS_TEST_REGION:
+    print(f"[requests] Test mode region filter: place={CIWQS_TEST_REGION}")
+print(f"[requests] Facility-results URL: {full_results_url}")
 
-# Software gets url
-driver.get(rfr_url)
-
-# Wait for the page to load and form elements to be available
-wait = WebDriverWait(driver, 60)
-wait.until(EC.presence_of_element_located((By.NAME, 'programDrop')))
-
-# Keep a stable handle to the main table page (window #1)
+driver = _new_chrome_driver()
+wait = WebDriverWait(driver, 120)
 main_window = driver.current_window_handle
 
-# Selection clicks desired filters
-selection('programDrop', 'NPDES')
-selection('typeDrop', 'Wastewater Treatment Facility')
-selection('wasteTypeDrop', 'Domestic wastewater')
-selection('inStatus', 'Active')
-time.sleep(5)
-driver.find_element(By.NAME, 'enpRepButton').click()
-time.sleep(5)
-
-table_body = driver.find_element(By.CLASS_NAME, 'ciwqsReportDataTable')
-rows = table_body.find_elements(By.TAG_NAME, 'tr')
-last_row = rows[-1] if rows else None
-cells = last_row.find_elements(By.TAG_NAME, 'td')
-
-total_cell = driver.find_element(By.XPATH, "//table//tr[last()]/td[6]")
-initial_url = driver.current_url
-print(f"Clicking cell w/ text '{total_cell.text}'")
-total_cell.find_element(By.TAG_NAME, "a").click()
-
-# Wait for the new page to load (but DON'T quit and restart the driver!)
-# This preserves the session and filter state
-print("Waiting for detail page to load...")
-wait.until(EC.url_changes(initial_url))
-current_url = driver.current_url
-print(f"Navigated to: {current_url}")
-
-# Wait for the table to appear on the new page
-wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'ciwqsReportDataTable')))
+driver.set_page_load_timeout(120)
+detail_wait = WebDriverWait(driver, 120)
+for attempt in range(1, 4):
+    try:
+        driver.get(full_results_url)
+        detail_wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ciwqsReportDataTable")))
+        print("[selenium] Facility table ready")
+        break
+    except TimeoutException:
+        print(f"[selenium] Facility page slow ({attempt}/3), same URL…")
+        if attempt == 3:
+            raise
+        try:
+            driver.execute_script("window.stop();")
+        except Exception:
+            pass
 driver.save_screenshot('npdes_permits/output/web_page.png')
 print("Detail page loaded, filters should be preserved")
 time.sleep(5)
 
-time.sleep(5)
-selection('pagesizeselect', 'ALL')
+def _wait_for_results_table(timeout=90):
+    return WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//table[contains(@class,'ciwqsReportDataTable')]"))
+    )
 
-# Wait for the table to fully load after changing page size
-print("Waiting for table to load with ALL rows...")
-time.sleep(10)  # Initial wait for page size change to take effect
 
-# Wait until the loading indicator disappears (if present)
-try:
-    wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'loading')))
-    print("Loading indicator disappeared")
-except:
-    pass  # No loading indicator found, continue
+def _set_page_size_all_and_wait():
+    page_size_set = selection('pagesizeselect', 'ALL')
+    if page_size_set:
+        print("Waiting for table to load with ALL rows...")
+    else:
+        print("pagesizeselect not present; continuing with current rows")
+    try:
+        wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'loading')))
+        print("Loading indicator disappeared")
+    except Exception:
+        pass
+    return _wait_for_results_table(timeout=90)
 
-table_body = driver.find_element(By.CLASS_NAME, 'ciwqsReportDataTable')
+
+table_body = None
+for attempt in range(1, 3):
+    try:
+        table_body = _set_page_size_all_and_wait()
+        break
+    except Exception as e:
+        print(f"[selenium] pagesizeselect ALL did not stabilize ({attempt}/2): {e}")
+        if attempt == 2:
+            raise
+        time.sleep(2)
+
 table_rows = table_body.find_elements(By.TAG_NAME, 'tr')
 print(f"Final table has {len(table_rows)} rows before export")
 
 # Export Excel file and create mapping from it
-export_link = wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
-export_link.click()
-export_link = wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
-export_link.click()
+export_link = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
+driver.execute_script("arguments[0].scrollIntoView(true);", export_link)
+driver.execute_script("arguments[0].click();", export_link)
+time.sleep(3)
+try:
+    export_link = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
+    driver.execute_script("arguments[0].click();", export_link)
+except Exception:
+    print("Second export click not needed or timed out; continuing")
 
 def wait_for_downloads(directory, timeout=60):
     """Wait for an .xls/.xlsx file to appear and finish downloading."""
@@ -164,6 +300,17 @@ df = pd.read_csv(excel_file, sep='\t', encoding='latin-1')
 
 print(f"Excel file has {len(df)} rows (table had {len(table_rows)} rows)")
 
+# Enforce the same intent as the CIWQS form so downstream CSV/STEP 2 stay in sync.
+if "Program" in df.columns:
+    df = df[df["Program"].fillna("").str.upper().str.contains("NPD", na=False)]
+if "Regulatory Measure Status" in df.columns:
+    df = df[df["Regulatory Measure Status"].fillna("").str.upper() == CIWQS_RELATED_PERMIT_STATUS.upper()]
+if "Place/Project Type" in df.columns:
+    df = df[
+        df["Place/Project Type"].fillna("").str.upper().str.contains(CIWQS_FACILITY_TYPE.upper(), na=False)
+    ]
+print(f"After explicit form-aligned filtering: {len(df)} rows")
+
 def parse_date(date_str):
     if pd.isna(date_str) or str(date_str).lower() == 'null':
         return pd.NaT
@@ -173,7 +320,12 @@ df['Expiration/Review Date'] = df['Expiration/Review Date'].apply(parse_date)
 df_sorted = df.sort_values(['WDID', 'Facility Name', 'Expiration/Review Date'], ascending=[True, True, False])
 # Deduplicate by BOTH WDID and Facility Name to preserve different facilities with same WDID
 df_deduplicated = df_sorted.drop_duplicates(subset=['WDID', 'Facility Name'], keep='first')
+duplicates_removed = df_sorted[df_sorted.duplicated(subset=['WDID', 'Facility Name'], keep='first')]
 print(f"After deduplication and filtering: {len(df_deduplicated)} rows (removed {len(df) - len(df_deduplicated)} duplicates)")
+if len(duplicates_removed) > 0:
+    cols = [c for c in ['Facility Name', 'WDID', 'NPDES No.'] if c in duplicates_removed.columns]
+    print("Duplicates removed (Facility Name, WDID, NPDES No.):")
+    print(duplicates_removed[cols].to_string(index=False))
 
 order_to_data = {}
 for _, row in df_deduplicated.iterrows():
@@ -209,6 +361,15 @@ def find_col_index_by_header(header_text: str):
     """Find the 1-based column index of a header by its visible text.
     Tries both <a> in header cell and plain text headers.
     """
+    # CIWQS often uses td.ciwqsReportColumnName for header rows
+    elems = driver.find_elements(
+        By.XPATH,
+        f"//table[contains(@class,'ciwqsReportDataTable')]//td[contains(@class,'ciwqsReportColumnName')][normalize-space(.)='{header_text}']",
+    )
+    for parent in elems:
+        if parent.tag_name in ('td', 'th'):
+            return driver.execute_script("return arguments[0].cellIndex + 1;", parent)
+
     # try link text header cell
     elems = driver.find_elements(By.XPATH, f"//table//*[self::th or self::td][.//a[normalize-space(text())='{header_text}']]//a[normalize-space(text())='{header_text}']")
     for el in elems:
@@ -229,84 +390,98 @@ facility_col_index = find_col_index_by_header('Facility Name')
 npdes_col_index = find_col_index_by_header('NPDES No.')
 region_col_index = find_col_index_by_header('Region')
 major_minor_col_index = find_col_index_by_header('Major/Minor')
+program_col_index = find_col_index_by_header('Program')
+reg_measure_status_col_index = find_col_index_by_header('Regulatory Measure Status')
+place_type_col_index = find_col_index_by_header('Place/Project Type')
+
+if not order_no_col_index:
+    # Print visible headers to help debug CIWQS table variants.
+    header_cells = driver.find_elements(
+        By.XPATH,
+        "//table[contains(@class,'ciwqsReportDataTable')]//td[contains(@class,'ciwqsReportColumnName')]",
+    )
+    headers = []
+    for cell in header_cells:
+        try:
+            links = cell.find_elements(By.TAG_NAME, "a")
+            headers.append((links[0].text.strip() if links else cell.text.strip()) or "<blank>")
+        except Exception:
+            headers.append("<unreadable>")
+    print("[debug] Could not locate 'Order No.' column.")
+    print(f"[debug] Detected header cells ({len(headers)}): {headers}")
+    raise RuntimeError("Could not locate 'Order No.' column in ciwqsReportDataTable")
 
 # ============================================================================
-# STEP 1: EXTRACT URLs FROM ALL TABLE ROWS (NO FILTERING)
+# STEP 1: COLLECT FACILITY PAGE URLs — rows must match search filters
 # ============================================================================
 print("\n" + "="*80)
-print("STEP 1: Extracting URLs from ALL table rows by reading href attributes in Order No. column (no filtering)")
+print("STEP 1: Collecting facility page URLs for Active NPDES/WWTF rows")
 print("="*80)
 
-# Dictionary structure:
-# Key: URL (from href attribute)
-# Value: list of facility dicts with {agency, facility_name, npdes_no, region, major_minor, order_no, row_index}
-url_to_facilities = {}
-non_clickable_row_indices = []
+NPDES_PROGRAMS = {"NPDESWW", "NPDMUNIOTH", "NPDMUNILRG"}
+facility_url_to_facilities = {}
 
-wait = WebDriverWait(driver, 5)
+# Parse the page source once with BeautifulSoup — far faster than per-row Selenium calls.
+page_soup = BeautifulSoup(driver.page_source, "html.parser")
+data_table = page_soup.find("table", class_=lambda c: c and "ciwqsReportDataTable" in c)
+bs_rows = data_table.find_all("tr") if data_table else []
+print(f"Total table rows: {len(bs_rows)}")
 
+# Column indices are 1-based from find_col_index_by_header; convert to 0-based for BS4 indexing.
+def _col(one_based_idx):
+    return (one_based_idx - 1) if one_based_idx else None
 
-# Iterate all data rows in the table (skip header if present)
-# Using XPath to avoid stale references and ensure 1-based indices.
-total_rows = len(driver.find_elements(By.XPATH, "//table[contains(@class,'ciwqsReportDataTable')]//tr"))
-print(f"Total <tr> elements found: {total_rows}")
+def _cell(cells, one_based_idx):
+    i = _col(one_based_idx)
+    if i is None or i >= len(cells):
+        return ""
+    return cells[i].get_text(strip=True)
 
+def _cell_href(cells, one_based_idx):
+    i = _col(one_based_idx)
+    if i is None or i >= len(cells):
+        return ""
+    a = cells[i].find("a", href=True)
+    return _abs_url(a["href"]) if a else ""
 
-for row_index in range(2, total_rows + 1):  # skip row 1 (header)
+for tr in bs_rows:
     try:
-        # Order No. link element from this row
-        order_no_link_elements = driver.find_elements(
-            By.XPATH,
-            f"//table[contains(@class,'ciwqsReportDataTable')]//tr[{row_index}]/td[{order_no_col_index}]/a"
-        )
-        if not order_no_link_elements:
-            non_clickable_row_indices.append(row_index)
-            print(f"Row {row_index}: Order No. not clickable")
+        if tr.find("td", class_="ciwqsReportColumnName"):
+            continue
+        cells = tr.find_all("td")
+        if not cells:
             continue
 
-        # Extract the URL from href attribute WITHOUT clicking
-        url = order_no_link_elements[0].get_attribute('href')
-        order_no = order_no_link_elements[0].text.strip()
+        status   = _cell(cells, reg_measure_status_col_index).upper()
+        program  = _cell(cells, program_col_index).upper()
+        plc_type = _cell(cells, place_type_col_index).upper()
 
-        # Read facility info for this row
-        def cell_text(col_idx):
-            try:
-                return driver.find_element(
-                    By.XPATH,
-                    f"//table[contains(@class,'ciwqsReportDataTable')]//tr[{row_index}]/td[{col_idx}]"
-                ).text.strip()
-            except Exception:
-                return ""
+        if status and status != CIWQS_RELATED_PERMIT_STATUS.upper():
+            continue
+        if plc_type and CIWQS_FACILITY_TYPE.upper() not in plc_type:
+            continue
+        if program and not any(p in program for p in NPDES_PROGRAMS):
+            continue
 
-        agency_name = cell_text(agency_col_index) if agency_col_index else ""
-        facility_name = cell_text(facility_col_index) if facility_col_index else ""
-        npdes_no = cell_text(npdes_col_index) if npdes_col_index else ""
-        region = cell_text(region_col_index) if region_col_index else ""
-        major_minor = cell_text(major_minor_col_index) if major_minor_col_index else ""
+        facility_url = _cell_href(cells, facility_col_index)
+        if not facility_url:
+            continue
 
-        # Add to dictionary grouped by URL
-        if url not in url_to_facilities:
-            url_to_facilities[url] = []
-
-        url_to_facilities[url].append({
-            'row_index': row_index,
-            'agency': agency_name,
-            'facility_name': facility_name,
-            'npdes_no': npdes_no,
-            'region': region,
-            'major_minor': major_minor,
-            'order_no': order_no
-        })
-
-        print(f'Row {row_index}: {order_no} - {agency_name} - {facility_name}')
-        print(f'  URL: {url}')
+        facility = {
+            'agency':        _cell(cells, agency_col_index),
+            'facility_name': _cell(cells, facility_col_index),
+            'npdes_no':      _cell(cells, npdes_col_index),
+            'region':        _cell(cells, region_col_index),
+            'major_minor':   _cell(cells, major_minor_col_index),
+            'order_no':      _cell(cells, order_no_col_index),
+            'facility_url':  facility_url,
+        }
+        facility_url_to_facilities.setdefault(facility_url, []).append(facility)
     except Exception as e:
-        print(f"Row {row_index}: Could not read data: {e}")
+        print(f"Row parse error: {e}")
         continue
 
-print(f"\n✓ Scanned all rows")
-print(f"✓ Found {len(url_to_facilities)} unique URLs")
-print(f"✓ Non-clickable Order No. rows: {len(non_clickable_row_indices)}")
+print(f"✓ Found {len(facility_url_to_facilities)} unique facility URLs")
 
 def extract_reg_measure_id(href: str):
     if not href:
@@ -325,17 +500,16 @@ def extract_reg_measure_id(href: str):
     return None
 
 reg_measure_id_to_url = {}
-for url in list(url_to_facilities.keys()):
-    reg_id = extract_reg_measure_id(url)
-    if reg_id:
-        reg_measure_id_to_url[reg_id] = url
 
 # ============================================================================
-# STEP 2: DOWNLOAD PDFs BY VISITING EACH UNIQUE URL
+# STEP 2: VISIT FACILITY PAGES, PICK BEST ORDER NO., DOWNLOAD PDFs
 # ============================================================================
 print("\n" + "="*80)
-print("STEP 2: Visiting each unique URL and downloading PDFs")
+print("STEP 2: Visiting facility pages and downloading PDFs")
 print("="*80)
+
+TYPE_RANK = {"NPDES PERMIT": 0, "CO-PERMITTEE": 1}
+url_to_facilities = {}
 
 # Track which PDFs belong to which facilities
 pdf_to_facilities = {}  # Key: downloaded PDF filename, Value: list of facilities
@@ -384,15 +558,16 @@ def download_pdfs_for_url(url, facilities):
         print(f"  Switched to new window")
 
         time.sleep(3)
-        current_url = driver.current_url
-        print(f"  Current URL: {current_url}")
+        if CIWQS_VERBOSE:
+            current_url = driver.current_url
+            print(f"  Current URL: {current_url}")
 
-        page_source_length = len(driver.page_source)
-        print(f"  Page source length: {page_source_length} characters")
+            page_source_length = len(driver.page_source)
+            print(f"  Page source length: {page_source_length} characters")
 
-        if page_source_length < 500:
-            print(f"  X Page appears to be blank/empty!")
-            print(f"  Page content preview: {driver.page_source[:500]}")
+            if page_source_length < 500:
+                print(f"  X Page appears to be blank/empty!")
+                print(f"  Page content preview: {driver.page_source[:500]}")
 
         pdf_documents = driver.find_elements(By.XPATH, "//a[contains(text(), '.pdf') or contains(text(), '.PDF')]")
         print(f"  Found {len(pdf_documents)} PDFs on page")
@@ -402,7 +577,7 @@ def download_pdfs_for_url(url, facilities):
             pdf_documents = driver.find_elements(By.XPATH, "//a[contains(translate(@href, 'PDF', 'pdf'), '.pdf')]")
             print(f"  Href method found {len(pdf_documents)} PDFs")
 
-            if len(pdf_documents) == 0:
+            if len(pdf_documents) == 0 and CIWQS_VERBOSE:
                 all_links = driver.find_elements(By.TAG_NAME, 'a')
                 print(f"  Debug: Found {len(all_links)} total links on page")
                 for link in all_links[:10]:
@@ -458,186 +633,110 @@ def download_pdfs_for_url(url, facilities):
         except:
             pass
 
-# Process each unique URL (only once per URL!)
-for url_index, (url, facilities) in enumerate(url_to_facilities.items(), 1):
-    print(f"\n[{url_index}/{len(url_to_facilities)}] Processing URL")
-    download_pdfs_for_url(url, facilities)
-
-print(f"\nDownloaded {downloaded_count} PDFs")
-print(f"Skipped {skipped_count} PDFs (keyword filters)")
-
-# ==========================================================================
-# STEP 2B: PROCESS NON-CLICKABLE ORDER NO. ROWS VIA FACILITY PAGE
-# ==========================================================================
-print("\n" + "="*80)
-print("STEP 2B: Processing non-clickable Order No. rows")
-print("="*80)
-
-def get_table_headers(table):
-    header_cells = table.find_elements(By.CSS_SELECTOR, 'td.ciwqsReportColumnName')
-    if not header_cells:
-        return []
-    headers = []
-    for cell in header_cells:
-        links = cell.find_elements(By.TAG_NAME, 'a')
-        headers.append(links[0].text.strip() if links else cell.text.strip())
-    return headers
-
-def find_regulatory_measures_table():
-    tables = driver.find_elements(By.TAG_NAME, 'table')
-    required_cols = {
-        'Reg Measure ID', 'Reg Measure Type', 'Region', 'Program', 'Order No.',
-        'WDID', 'Effective Date', 'Expiration Date', 'Status'
-    }
-    for table in tables:
-        headers = get_table_headers(table)
-        if headers and required_cols.issubset(set(headers)):
-            return table, headers
-    return None, []
-
-def parse_date_safe(text):
-    try:
-        return pd.to_datetime(text, errors='coerce')
-    except Exception:
+def parse_date_safe(date_str):
+    s = str(date_str).strip()
+    if not s or s.lower() in ('null', 'none', 'nan', ''):
         return pd.NaT
+    return pd.to_datetime(s, errors='coerce')
 
-new_urls_added = 0
 
-for idx, row_index in enumerate(non_clickable_row_indices, 1):
+def find_best_order_href(html):
+    """Parse facility page HTML with BeautifulSoup and return the best active NPDES order.
+
+    Returns (order_href, type_rank, effective_dt) or (None, None, pd.NaT).
+    Uses cell-length filtering (< 80 chars) to skip outer layout tables whose cells
+    contain the entire page text rather than individual column header strings.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    for table in soup.find_all('table'):
+        all_rows = table.find_all('tr')
+        for hdr_idx, row in enumerate(all_rows[:4]):
+            cells = row.find_all(['td', 'th'])
+            texts = [c.get_text(strip=True) for c in cells]
+            if len(texts) < 5:
+                continue
+            if any(len(t) > 80 for t in texts):
+                continue
+            if not (any('Reg Measure Type' in t for t in texts)
+                    and any('Order No' in t for t in texts)):
+                continue
+            col_index = {t: i for i, t in enumerate(texts)}
+            best_href = None
+            best_type_rank = 99
+            best_effective = pd.NaT
+            for data_row in all_rows[hdr_idx + 1:]:
+                dcells = data_row.find_all('td')
+                if not dcells:
+                    continue
+                def gc(col_name, _dc=dcells, _ci=col_index):
+                    i = _ci.get(col_name, -1)
+                    return _dc[i].get_text(strip=True) if 0 <= i < len(_dc) else ""
+                if gc('Status').lower() != 'active':
+                    continue
+                rm_type = gc('Reg Measure Type').upper()
+                if rm_type not in TYPE_RANK:
+                    continue
+                order_idx = col_index.get('Order No.', -1)
+                if order_idx < 0 or order_idx >= len(dcells):
+                    continue
+                a_tag = dcells[order_idx].find('a', href=True)
+                if not a_tag:
+                    continue
+                href = _abs_url(a_tag['href'])
+                if not href:
+                    continue
+                type_rank = TYPE_RANK[rm_type]
+                effective_dt = parse_date_safe(gc('Effective Date'))
+                if pd.isna(effective_dt):
+                    continue
+                if (type_rank < best_type_rank or
+                        (type_rank == best_type_rank and effective_dt > best_effective)):
+                    best_href = href
+                    best_type_rank = type_rank
+                    best_effective = effective_dt
+            if best_href:
+                return best_href, best_type_rank, best_effective
+    return None, None, pd.NaT
+
+
+for idx, (facility_url, facilities) in enumerate(facility_url_to_facilities.items(), 1):
+    print(f"\n[{idx}/{len(facility_url_to_facilities)}] {facilities[0]['facility_name']}")
     try:
-        def cell_text(col_idx):
-            try:
-                return driver.find_element(
-                    By.XPATH,
-                    f"//table[contains(@class,'ciwqsReportDataTable')]//tr[{row_index}]/td[{col_idx}]"
-                ).text.strip()
-            except Exception:
-                return ""
-
-        base_facility = {
-            'row_index': row_index,
-            'agency': cell_text(agency_col_index) if agency_col_index else "",
-            'facility_name': cell_text(facility_col_index) if facility_col_index else "",
-            'npdes_no': cell_text(npdes_col_index) if npdes_col_index else "",
-            'region': cell_text(region_col_index) if region_col_index else "",
-            'major_minor': cell_text(major_minor_col_index) if major_minor_col_index else "",
-            'order_no': ''
-        }
-
-        facility_link = None
-        try:
-            facility_link = driver.find_element(
-                By.XPATH,
-                f"//table[contains(@class,'ciwqsReportDataTable')]//tr[{row_index}]/td[{facility_col_index}]/a"
-            )
-        except Exception:
-            facility_link = driver.find_element(
-                By.XPATH,
-                f"//table[contains(@class,'ciwqsReportDataTable')]//tr[{row_index}]/td[{facility_col_index}]//span/a"
-            )
-
-        if not facility_link:
-            print(f"Row {row_index}: No facility link found")
-            continue
-
-        facility_url = facility_link.get_attribute('href')
-        print(f"\n[{idx}/{len(non_clickable_row_indices)}] Row {row_index}: opening facility page")
-        handles_before = set(driver.window_handles)
         driver.execute_script(f"window.open('{facility_url}', '_blank');")
         time.sleep(1)
-
-        handles_after = set(driver.window_handles)
-        new_handles = list(handles_after - handles_before)
-        if new_handles:
-            driver.switch_to.window(new_handles[0])
-        else:
-            driver.switch_to.window(main_window)
+        new_win = [h for h in driver.window_handles if h != main_window][0]
+        driver.switch_to.window(new_win)
         wait.until(EC.presence_of_element_located((By.TAG_NAME, 'table')))
         time.sleep(1)
 
-        reg_table, headers = find_regulatory_measures_table()
-        if not reg_table:
-            print(f"  X Regulatory Measures table not found")
-            driver.close()
-            driver.switch_to.window(main_window)
-            time.sleep(1)
-            continue
-
-        col_index = {name: headers.index(name) for name in headers}
-        max_required_idx = max(col_index.values()) if col_index else -1
-        data_rows = reg_table.find_elements(By.TAG_NAME, 'tr')
-
-        best_row = None
-        best_effective = pd.NaT
-        for data_row in data_rows:
-            cells = data_row.find_elements(By.TAG_NAME, 'td')
-            if not cells or data_row.find_elements(By.CSS_SELECTOR, 'td.ciwqsReportColumnName'):
-                continue
-            if len(cells) <= max_required_idx:
-                continue
-
-            status_text = cells[col_index['Status']].text.strip()
-            if status_text.lower() != 'active':
-                continue
-
-            order_cell = cells[col_index['Order No.']]
-            order_links = order_cell.find_elements(By.TAG_NAME, 'a')
-            if not order_links:
-                continue
-
-            effective_text = cells[col_index['Effective Date']].text.strip()
-            effective_dt = parse_date_safe(effective_text)
-            if pd.isna(effective_dt):
-                continue
-
-            if best_row is None or effective_dt > best_effective:
-                best_row = cells
-                best_effective = effective_dt
-
-        if not best_row:
-            print(f"  X No active clickable Order No. found")
-            driver.close()
-            driver.switch_to.window(main_window)
-            time.sleep(1)
-            continue
-
-        order_cell = best_row[col_index['Order No.']]
-        order_link = order_cell.find_element(By.TAG_NAME, 'a')
-        order_href = order_link.get_attribute('href')
-        order_no_text = order_link.text.strip()
-        reg_region = best_row[col_index['Region']].text.strip()
-
-        base_facility['region'] = reg_region or base_facility['region']
-        base_facility['order_no'] = order_no_text
-
-        reg_id = extract_reg_measure_id(order_href)
-        existing_url = reg_measure_id_to_url.get(reg_id)
-        if existing_url:
-            url_to_facilities.setdefault(existing_url, []).append(base_facility)
-            for pdf_name in url_to_pdfs.get(existing_url, []):
-                if pdf_name not in pdf_to_facilities:
-                    pdf_to_facilities[pdf_name] = []
-                pdf_to_facilities[pdf_name].append(base_facility)
-            print(f"  ✓ Found existing regMeasID {reg_id}; added facility to existing URL")
-            driver.close()
-            driver.switch_to.window(main_window)
-            time.sleep(1)
-            continue
-
-        url_to_facilities.setdefault(order_href, []).append(base_facility)
-        if reg_id:
-            reg_measure_id_to_url[reg_id] = order_href
-        new_urls_added += 1
-        print(f"  ✓ New regMeasID {reg_id}; downloading PDFs")
-
+        page_html = driver.page_source
         driver.close()
         driver.switch_to.window(main_window)
-        time.sleep(1)
 
-        download_pdfs_for_url(order_href, url_to_facilities[order_href])
+        order_href, best_type_rank, best_effective = find_best_order_href(page_html)
+        if not order_href:
+            print("  X No suitable active NPDES order found")
+            continue
+
+        eff_str = best_effective.date() if not pd.isna(best_effective) else 'N/A'
+        print(f"  Best order: rank={best_type_rank}, effective={eff_str}")
+
+        reg_id = extract_reg_measure_id(order_href)
+        if reg_id and reg_id in reg_measure_id_to_url:
+            existing_url = reg_measure_id_to_url[reg_id]
+            url_to_facilities.setdefault(existing_url, []).extend(facilities)
+            for pdf_name in url_to_pdfs.get(existing_url, []):
+                pdf_to_facilities.setdefault(pdf_name, []).extend(facilities)
+            print(f"  Dedup: already processed reg measure {reg_id}")
+            continue
+
+        url_to_facilities[order_href] = facilities
+        if reg_id:
+            reg_measure_id_to_url[reg_id] = order_href
+        download_pdfs_for_url(order_href, facilities)
 
     except Exception as e:
-        print(f"Row {row_index}: Failed to process non-clickable row: {e}")
+        print(f"  X {e}")
         try:
             if driver.current_window_handle != main_window:
                 driver.close()
@@ -645,7 +744,8 @@ for idx, row_index in enumerate(non_clickable_row_indices, 1):
         except Exception:
             pass
 
-print(f"\nNew URLs added from non-clickable rows: {new_urls_added}")
+print(f"\nDownloaded {downloaded_count} PDFs")
+print(f"Skipped {skipped_count} PDFs (keyword filters)")
 
 # ============================================================================
 # STEP 3: CREATE CSV WITH SHARED_PDF COLUMN
@@ -785,9 +885,9 @@ driver.quit()
 print(f"\n{'='*80}")
 print("SUMMARY")
 print(f"{'='*80}")
-print(f"Total rows scanned: {total_rows}")
-print(f"Unique URLs found: {len(url_to_facilities)}")
-print(f"Shared URLs (multiple facilities): {sum(1 for facs in url_to_facilities.values() if len(facs) > 1)}")
+print(f"Unique facility page URLs collected: {len(facility_url_to_facilities)}")
+print(f"Unique Order No. URLs visited: {len(url_to_facilities)}")
+print(f"Shared Order No. URLs (multiple facilities): {sum(1 for facs in url_to_facilities.values() if len(facs) > 1)}")
 print(f"PDFs downloaded: {downloaded_count}")
 print(f"PDFs skipped (keywords): {skipped_count}")
 print(f"NPDES PDFs detected: {npdes_count}")

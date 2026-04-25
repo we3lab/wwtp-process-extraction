@@ -1,9 +1,13 @@
 """
-step6_source_comparison_comparison.py
-
 Grouped stacked bar-chart comparison of unit process detection across two data sources:
-  - CWNS (California facilities from output/unit_processes_by_facility.csv)
-  - LLM Search (output/<DATE>/llm_unit_processes_by_facility.csv)
+  - CWNS (California facilities from output/cwns_processes_by_facility.csv)
+  - LLM Search (output/llm_unit_processes_by_facility.csv)
+
+CWNS rows join ``ciwqs_to_cwns.csv`` to the CA step0 export (exact ``CWNS_ID``).
+The export includes placeholder rows for CA ``CWNS_ID`` values missing from CWNS
+inventory aggregation (blank ``0`` processes). LLM rows are kept when
+``PERMIT_NUMBER`` matches mapping ``NPDES_No`` on a row that declares a
+``CWNS_ID``. No fuzzy matching.
 
 Each bar is stacked by status (process columns must already be normalized: stripped, uppercase).
 PRESENT_AND_FUTURE is counted as PRESENT only (not split into Future).
@@ -28,23 +32,22 @@ import matplotlib.patches as mpatches
 import matplotlib.ticker as mticker
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import prepare_cwns_ca, match_cwns_to_npdes, get_leaf_names, PRESENT_STATUSES
+from helpers.utils import get_leaf_names, PRESENT_STATUSES
+from helpers.utils import (
+    load_ciwqs_to_cwns_table,
+    mapping_npdes_confirmed_no_cwns,
+    mapping_npdes_with_declared_cw,
+    merge_mapping_with_cwns_processes,
+    rows_mapping_declares_cwns,
+    rows_with_cwns_survey_attach,
+    union_cwns_processes_by_npdes_no,
+    cwns_process_column_names,
+)
 from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar
 
 DATE_FOLDER = '2026-2-18'
 OUTPUT_DIR  = f'npdes_permits/output/{DATE_FOLDER}/figures'
 MIN_COUNT   = 15  # drop bar groups where both sources are below this threshold
-
-
-# ── Category background palette (all-processes overview) ──────────────────────
-CATEGORY_BG_COLORS = [
-    '#f0f4ff', '#fff8f0', '#f0fff4', '#fff0f8',
-    '#f8f0ff', '#fffff0', '#f0ffff', '#fff4f0',
-    '#f4fff0', '#f0f8ff', '#fff0f0', '#f0fff8',
-    '#fff0ff', '#fffff8', '#f8fff0', '#f0f0ff',
-    '#fff8ff', '#f8f8f0', '#f0f8f8',
-]
-
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
 
@@ -286,33 +289,37 @@ future_count = sum((llm_df[c] == 'FUTURE').sum() for c in proc_cols_llm)
 print(f"  LLM facilities: {len(llm_df)}  |  'PAST' (in plot stacks): {past_count}"
       f"  |  'FUTURE': {future_count}")
 
-print("Loading and matching CWNS data (CA only) …")
-cwns_raw = pd.read_csv('npdes_permits/output/unit_processes_by_facility.csv',
-                        low_memory=False, dtype={'CWNS_ID': str})
-
-# Build CWNS CA dataset with properly resolved NPDES permit numbers
-ca_cwns = prepare_cwns_ca(
-    cwns_raw,
-    'npdes_permits/data/cwns/cwns_permits_match_manual.csv',
-    'npdes_permits/data/cwns/cwns_facility_name_match_manual.csv',
+print("Loading and matching CWNS data (ciwqs_to_cwns.csv + exact CWNS_ID join)")
+mapping_tbl = load_ciwqs_to_cwns_table('npdes_permits/data/ciwqs_to_cwns.csv')
+confirmed_no_cwns = mapping_npdes_confirmed_no_cwns('npdes_permits/data/ciwqs_to_cwns.csv')
+ca_cwns = pd.read_csv(
+    'npdes_permits/output/cwns_processes_by_facility.csv',
+    low_memory=False,
+    dtype={'CWNS_ID': str},
 )
-print(f"  CA CWNS facilities (consolidated): {len(ca_cwns)}")
+ca_cwns['CWNS_ID'] = ca_cwns['CWNS_ID'].astype(str).str.strip()
+print(f"  CA CWNS facilities (step0 export): {len(ca_cwns)}")
 
-# Match CWNS facilities to NPDES permits (4-tier: official permit → raw list → name → collision resolve)
-llm_permits = set(llm_df['PERMIT_NUMBER'].dropna().astype(str).unique())
+llm_permits = {str(x).strip() for x in llm_df['PERMIT_NUMBER'].dropna().unique()}
 print(f"  LLM permits: {len(llm_permits)}")
 
-npdes_permit_to_name = (llm_df.dropna(subset=['PERMIT_NUMBER', 'Facility_Name'])
-                        .drop_duplicates(subset='PERMIT_NUMBER')
-                        .set_index('PERMIT_NUMBER')['Facility_Name'].to_dict())
+merged_map = merge_mapping_with_cwns_processes(mapping_tbl, ca_cwns)
+attached = rows_with_cwns_survey_attach(merged_map)
+n_attach = int(attached.sum())
+print(f"  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
 
-ca_cwns = match_cwns_to_npdes(ca_cwns, llm_permits, npdes_permit_to_name=npdes_permit_to_name)
-cwns_df = ca_cwns[ca_cwns['matched']].copy()
-matched_permits = set(cwns_df['linking_permit'].dropna().astype(str))
-print(f"  CWNS facilities matched: {len(cwns_df)} / {len(ca_cwns)}")
+declared_cw = rows_mapping_declares_cwns(merged_map)
+matched_permits = mapping_npdes_with_declared_cw(mapping_tbl)
+slice_llm = merged_map.loc[
+    declared_cw & merged_map['NPDES_No'].astype(str).str.strip().isin(llm_permits)
+]
+_proc_cols = [c for c in cwns_process_column_names(ca_cwns) if c in slice_llm.columns]
+cwns_df = union_cwns_processes_by_npdes_no(slice_llm, _proc_cols)
+cwns_df['PERMIT_NUMBER'] = cwns_df['NPDES_No'].astype(str).str.strip()
+print(f"  CWNS rows for plot (union per NPDES in LLM ∩ mapping): {len(cwns_df)}")
 
 # Save unmatched LLM permits (no CWNS counterpart) for manual review
-unmatched_npdes = sorted(llm_permits - matched_permits)
+unmatched_npdes = sorted((llm_permits - matched_permits) - confirmed_no_cwns)
 if unmatched_npdes:
     unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
     (llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(unmatched_npdes)]

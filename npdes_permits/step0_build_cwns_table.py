@@ -406,4 +406,92 @@ npdes_only = (facility_permit[facility_permit['PERMIT_SOURCE'] == 'NPDES']
 unit_processes_df = unit_processes_df.merge(npdes_only, on='CWNS_ID', how='left')
 
 # Save the DataFrame
-unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility.csv"), index=False)
+unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_processes_by_facility.csv"), index=False)
+
+# Save CA-consolidated subset for use in figure_2 and figure_4
+ca_only = unit_processes_df[unit_processes_df['STATE_CODE'] == 'CA'].copy()
+src_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT'}
+proc_cols = [c for c in ca_only.columns if c not in src_cols]
+agg_spec = {col: (col, 'first') for col in proc_cols}
+for meta_col in ('FACILITY_NAME', 'PERMIT_NUMBER', 'STATE_CODE', 'NPDES_PERMIT'):
+    if meta_col in ca_only.columns:
+        agg_spec[meta_col] = (meta_col, 'first')
+ca_consolidated = ca_only.groupby('CWNS_ID', dropna=False, sort=False).agg(**agg_spec).reset_index()
+
+# Every CA CWNS_ID that appears on an NPDES permit (EPA) or in ciwqs_to_cwns.csv
+# must have a row in the CA export; if it was missing from the survey aggregation,
+# add a row with process columns set to '0'.
+def pad_cwns_id(raw):
+    s = str(raw).strip()
+    return '0' + s if len(s) < 11 else s
+
+
+meta_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT'}
+process_columns = [c for c in ca_consolidated.columns if c not in meta_cols]
+ids_in_export = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
+
+ca_npdes_permits = facility_permit[
+    (facility_permit['STATE_CODE'].astype(str).str.strip() == 'CA')
+    & (facility_permit['PERMIT_SOURCE'] == 'NPDES')
+]
+required_ids = set(ca_npdes_permits['CWNS_ID'].astype(str).str.strip())
+
+ciwqs_path = os.path.join('data', 'ciwqs_to_cwns.csv')
+ciwqs_mapping = (
+    pd.read_csv(ciwqs_path, dtype=str).fillna('')
+    if os.path.isfile(ciwqs_path)
+    else pd.DataFrame()
+)
+for cid in ciwqs_mapping.get('CWNS_ID', pd.Series(dtype=str)).astype(str).str.strip():
+    if cid and cid.upper() != 'NA':
+        required_ids.add(pad_cwns_id(cid))
+
+missing_ids = sorted(required_ids - ids_in_export)
+if missing_ids:
+    permits_by_cwns = (
+        ca_npdes_permits.drop_duplicates('CWNS_ID', keep='first')
+        .assign(cwns_key=lambda d: d['CWNS_ID'].astype(str).str.strip())
+        .set_index('cwns_key')
+    )
+
+    ciwqs_by_cwns = pd.DataFrame()
+    stripped_cwns = ciwqs_mapping['CWNS_ID'].astype(str).str.strip()
+    ciwqs_rows = ciwqs_mapping.loc[stripped_cwns.ne('') & stripped_cwns.str.upper().ne('NA')].copy()
+    ciwqs_rows['padded_cwns_id'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
+    ciwqs_by_cwns = ciwqs_rows.drop_duplicates('padded_cwns_id', keep='first').set_index('padded_cwns_id')
+
+    placeholder_rows = []
+    for cwns_id in missing_ids:
+        row = {col: '0' for col in process_columns}
+        row['CWNS_ID'] = cwns_id
+        row['STATE_CODE'] = 'CA'
+        row['FACILITY_NAME'] = ''
+        row['NPDES_PERMIT'] = ''
+        row['PERMIT_NUMBER'] = ''
+
+        if cwns_id in permits_by_cwns.index:
+            permit = str(permits_by_cwns.loc[cwns_id, 'PERMIT_NUMBER']).strip()
+            row['PERMIT_NUMBER'] = permit
+            row['NPDES_PERMIT'] = permit
+
+        if len(ciwqs_by_cwns) and cwns_id in ciwqs_by_cwns.index:
+            mapping_row = ciwqs_by_cwns.loc[cwns_id]
+            if not row['NPDES_PERMIT']:
+                row['NPDES_PERMIT'] = str(mapping_row.get('NPDES_No', '')).strip()
+            cw_name = str(mapping_row.get('CWNS_Facility_Name', '')).strip()
+            fq_name = str(mapping_row.get('Facility_Name', '')).strip()
+            row['FACILITY_NAME'] = cw_name or fq_name
+
+        if not row['PERMIT_NUMBER']:
+            row['PERMIT_NUMBER'] = row['NPDES_PERMIT']
+
+        placeholder_rows.append(row)
+
+    ca_consolidated = pd.concat(
+        [ca_consolidated, pd.DataFrame(placeholder_rows).reindex(columns=ca_consolidated.columns)],
+        ignore_index=True,
+    )
+    print(f"Added {len(placeholder_rows)} CA CWNS placeholder rows")
+
+ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_processes_by_facility.csv"), index=False)
+print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")

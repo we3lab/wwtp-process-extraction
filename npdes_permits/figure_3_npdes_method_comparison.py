@@ -7,7 +7,7 @@ import os
 import seaborn as sns
 
 from helpers.utils import *
-from helpers.metrics import METRIC_SCORE_COLUMNS, compute_metrics
+from helpers.metrics import METRIC_SCORE_COLUMNS, compute_metrics, compute_facility_metric_rows
 from helpers.utils import parse_status, is_present, PRESENT_STATUSES
 from helpers.plotting import COLORS, HATCH_PATTERNS, plot_stacked_counts
 from helpers.utils import get_leaf_names
@@ -156,52 +156,6 @@ def build_method_metric_inputs(process_names, manual_df, pred_df, pred_permit_co
         pred_metric_df[process] = pred_sub.reindex(common_keys)[process].map(parse_status).values
 
     return manual_metric_df, pred_metric_df, common_keys
-
-
-def compute_facility_metric_rows(manual_metric_df, pred_metric_df, process_names, source_name):
-    """Compute per-facility metrics used for split violin density."""
-    manual_idx = manual_metric_df.set_index('key')
-    pred_idx = pred_metric_df.set_index('key')
-    rows = []
-    for key in manual_idx.index:
-        tp = fp = fn = tn = 0
-        state_correct = state_total = 0
-        for process in process_names:
-            manual_state = manual_idx.at[key, process]
-            pred_state = pred_idx.at[key, process]
-            manual_pos = is_present(manual_state)
-            pred_pos = is_present(pred_state)
-
-            tp += int(manual_pos and pred_pos)
-            fp += int((not manual_pos) and pred_pos)
-            fn += int(manual_pos and (not pred_pos))
-            tn += int((not manual_pos) and (not pred_pos))
-
-            if manual_pos:
-                state_total += 1
-                state_correct += int(manual_state == pred_state)
-
-        precision = tp / (tp + fp) if (tp + fp) else float('nan')
-        recall    = tp / (tp + fn) if (tp + fn) else float('nan')
-        f1        = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float('nan')
-        accuracy = (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float('nan')
-        missed_rate = fn / (tp + fn) if (tp + fn) else float('nan')
-        hallucinated_rate = fp / (tp + fp) if (tp + fp) else float('nan')
-        state_accuracy = state_correct / state_total if state_total else float('nan')
-        scores = {
-            'Precision': precision,
-            'Recall': recall,
-            'F1': f1,
-            'Accuracy': accuracy,
-            'Missed_Rate': missed_rate,
-            'Hallucinated_Rate': hallucinated_rate,
-            'State_Accuracy': state_accuracy,
-        }
-        row = {'Source': source_name, 'key': key}
-        for col in METRIC_SCORE_COLUMNS:
-            row[col] = scores[col]
-        rows.append(row)
-    return rows
 
 
 def create_split_violin_plot(facility_metrics_df, save_path):

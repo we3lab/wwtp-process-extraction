@@ -157,83 +157,124 @@ _SUFFIX_RE = re.compile(
 )
 
 
-def normalize_facility_name(name):
-    """Normalize a facility name: uppercase, strip type suffixes and punctuation."""
-    if not name or (isinstance(name, float) and name != name):  # NaN check
-        return ''
-    s = str(name).upper().strip()
-    s = _SUFFIX_RE.sub('', s)
-    s = re.sub(r'[^\w\s]', '', s)
-    return re.sub(r'\s+', ' ', s).strip()
 
 
-def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set,
-                         npdes_name_to_permit=None, npdes_permit_to_name=None):
-    """Match consolidated CWNS facilities to NPDES permits.
-
-    Tiers applied in order (first match wins for unmatched rows):
-    1. NPDES_PERMIT column (from FACILITY_PERMIT.csv or manual CSV)
-    2. raw_permit_list scan (any CWNS permit in npdes_permits_set)
-    3. Exact normalized facility name match (if npdes_name_to_permit provided)
-    
-    4. Duplicate resolution
-        when >1 CWNS row links to the same permit, use
-       word-overlap on normalized facility names to keep the best match and
-       unlink the others (requires npdes_permit_to_name: permit → NPDES name).
-
-    Adds 'matched' and 'linking_permit' columns.
-    """
-    df = consolidated_cwns.copy()
-
-    # Tier 1: match on clean NPDES permit
-    df['linking_permit'] = df['NPDES_PERMIT'].where(
-        df['NPDES_PERMIT'].fillna('').str.strip().isin(npdes_permits_set)
-    )
-
-    # Tier 2: check raw permit list for unmatched rows
-    unmatched = df['linking_permit'].isna()
-    if unmatched.any():
-        df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'raw_permit_list'].apply(
-            lambda permits: next((p for p in permits if str(p).strip() in npdes_permits_set), None)
-        )
-
-    # Tier 3: exact normalized facility name match
-    if npdes_name_to_permit:
-        unmatched = df['linking_permit'].isna()
-        if unmatched.any():
-            norm_map = {normalize_facility_name(k): v for k, v in npdes_name_to_permit.items()
-                        if normalize_facility_name(k)}
-            df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'FACILITY_NAME'].apply(
-                lambda n: norm_map.get(normalize_facility_name(n))
-            )
-
-    # Tier 4: resolve permit collisions via facility-name word overlap
-    if npdes_permit_to_name:
-        linked = df[df['linking_permit'].notna()]
-        dup_permits = linked['linking_permit'].value_counts()
-        dup_permits = set(dup_permits[dup_permits > 1].index)
-        resolved = 0
-        for permit in dup_permits:
-            mask = df['linking_permit'] == permit
-            candidates = df[mask]
-            npdes_words = set(normalize_facility_name(
-                npdes_permit_to_name.get(permit, '')).split())
-            if not npdes_words:
-                continue
-            scores = candidates['FACILITY_NAME'].apply(
-                lambda n: len(set(normalize_facility_name(n).split()) & npdes_words)
-            )
-            best_score = scores.max()
-            if best_score == 0:
-                continue
-            best_idx = scores.idxmax()
-            losers = candidates.index[candidates.index != best_idx]
-            df.loc[losers, 'linking_permit'] = None
-            resolved += len(losers)
-        if resolved:
-            print(f"  Tier 4: unlinked {resolved} lower-scoring CWNS duplicates across "
-                  f"{len(dup_permits)} colliding permits")
-
-    df['matched'] = df['linking_permit'].notna()
+def load_ciwqs_to_cwns_table(mapping_csv_path: str) -> pd.DataFrame:
+    """Load ``ciwqs_to_cwns.csv`` with string cells stripped of surrounding whitespace."""
+    df = pd.read_csv(mapping_csv_path, dtype=str, keep_default_na=False).fillna('')
+    for c in df.columns:
+        df[c] = df[c].astype(str).str.strip()
     return df
 
+
+def mapping_npdes_confirmed_no_cwns(mapping_csv_path: str) -> set[str]:
+    """NPDES numbers explicitly marked as having no CWNS row (``CWNS_ID`` == NA)."""
+    df = load_ciwqs_to_cwns_table(mapping_csv_path)
+    permit_col = 'NPDES_No' if 'NPDES_No' in df.columns else 'NPDES_PERMIT'
+    return {
+        row[permit_col]
+        for _, row in df.iterrows()
+        if row.get('CWNS_ID', '').upper() == 'NA' and row.get(permit_col, '')
+    }
+
+
+def _mapping_cw_join_key(cw_cell: str) -> str | None:
+    s = str(cw_cell).strip()
+    if not s or s.upper() == 'NA':
+        return None
+    return s
+
+
+def cwns_process_column_names(cwns_df: pd.DataFrame) -> list[str]:
+    """Unit-process columns on the CWNS CA export (everything except facility meta)."""
+    meta = {'CWNS_ID', 'FACILITY_NAME', 'PERMIT_NUMBER', 'STATE_CODE', 'NPDES_PERMIT'}
+    return [c for c in cwns_df.columns if c not in meta]
+
+
+def merge_mapping_with_cwns_processes(
+    mapping_df: pd.DataFrame,
+    cwns_ca_df: pd.DataFrame,
+) -> pd.DataFrame:
+    """Left-join each mapping row to CA CWNS process data on ``CWNS_ID`` (exact).
+
+    Preserves mapping ``CWNS_ID`` (CIWQS-side id from the file). Survey
+    ``FACILITY_NAME`` and process columns come from the CWNS export when the join
+    hits. ``CWNS_Facility_Name`` on the mapping is not used as a key.
+    """
+    m = mapping_df.copy()
+    c = cwns_ca_df.copy()
+    c['CWNS_ID'] = c['CWNS_ID'].astype(str).str.strip()
+    m['__cwjoin'] = m['CWNS_ID'].apply(lambda x: _mapping_cw_join_key(str(x)))
+
+    proc_cols = cwns_process_column_names(c)
+    right_cols = ['CWNS_ID'] + proc_cols
+    if 'FACILITY_NAME' in c.columns:
+        right_cols.append('FACILITY_NAME')
+    right = c[right_cols].rename(columns={'CWNS_ID': '__JOIN_CWNS_ID'}).drop_duplicates(
+        subset=['__JOIN_CWNS_ID'], keep='first'
+    )
+
+    out = m.merge(
+        right,
+        left_on='__cwjoin',
+        right_on='__JOIN_CWNS_ID',
+        how='left',
+        indicator='_cwns_merge',
+    )
+    out = out.drop(columns=['__cwjoin', '__JOIN_CWNS_ID'])
+    return out
+
+
+def rows_with_cwns_survey_attach(merged: pd.DataFrame) -> pd.Series:
+    """True where ``merge_mapping_with_cwns_processes`` matched the CWNS export."""
+    return merged['_cwns_merge'] == 'both'
+
+
+def rows_mapping_declares_cwns(merged: pd.DataFrame) -> pd.Series:
+    """True where the mapping row lists a ``CWNS_ID`` other than empty or NA."""
+    return merged['CWNS_ID'].apply(lambda x: _mapping_cw_join_key(str(x)) is not None)
+
+
+def mapping_npdes_with_declared_cw(mapping_df: pd.DataFrame) -> set[str]:
+    """``NPDES_No`` on mapping rows that declare a ``CWNS_ID`` (not empty / NA)."""
+    permit_col = 'NPDES_No' if 'NPDES_No' in mapping_df.columns else 'NPDES_PERMIT'
+    out: set[str] = set()
+    for _, row in mapping_df.iterrows():
+        if _mapping_cw_join_key(str(row.get('CWNS_ID', ''))) is None:
+            continue
+        p = str(row.get(permit_col, '')).strip()
+        if p:
+            out.add(p)
+    return out
+
+
+def union_cwns_processes_by_npdes_no(merged: pd.DataFrame, proc_cols: list[str]) -> pd.DataFrame:
+    """One row per ``NPDES_No``, unioning process statuses across mapping edges."""
+
+    def merge_column_statuses(column: pd.Series) -> str:
+        tokens = {parse_status(v) for v in column}
+        if 'PRESENT_AND_FUTURE' in tokens or ('PRESENT' in tokens and 'FUTURE' in tokens):
+            return 'PRESENT_AND_FUTURE'
+        for token in ('PRESENT', 'FUTURE', 'PAST', 'OFFSITE'):
+            if token in tokens:
+                return token
+        return ''
+
+    permit_col = 'NPDES_No' if 'NPDES_No' in merged.columns else 'NPDES_PERMIT'
+    present_proc = [c for c in proc_cols if c in merged.columns]
+    if not present_proc:
+        return pd.DataFrame(columns=[permit_col])
+
+    def row_dict(npdes: str, grp: pd.DataFrame) -> dict:
+        d = {permit_col: npdes}
+        for pc in present_proc:
+            d[pc] = merge_column_statuses(grp[pc])
+        return d
+
+    chunks = []
+    for npdes, grp in merged.groupby(permit_col, dropna=False, sort=False):
+        n = str(npdes).strip()
+        if not n:
+            continue
+        chunks.append(row_dict(n, grp))
+    return pd.DataFrame(chunks) if chunks else pd.DataFrame(columns=[permit_col] + present_proc)

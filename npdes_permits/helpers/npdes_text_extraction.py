@@ -54,7 +54,7 @@ def normalize_text(text):
 
 def find_attachment_f(pdf_path, start_page=10):
     """
-    Find the page containing 'ATTACHMENT <A.Z> - FACT SHEET' after start_page.
+    Find the page containing 'ATTACHMENT F - FACT SHEET' after start_page.
     Handles different hyphen types (-, –, —, ‐).
 
     Returns: (page_number, position_in_full_text) or (None, None)
@@ -62,7 +62,7 @@ def find_attachment_f(pdf_path, start_page=10):
     reader = PdfReader(pdf_path)
 
     # Pattern that matches various hyphen types
-    pattern = r"ATTACHMENT\s+[A-Z]\s*[-–—‐]\s*FACT\s+SHEET"
+    pattern = r"ATTACHMENT\s+F\s*[-–—‐]\s*FACT\s+SHEET"
 
     for pg in range(start_page, len(reader.pages)):
         try:

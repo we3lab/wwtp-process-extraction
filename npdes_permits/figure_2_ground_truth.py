@@ -3,13 +3,24 @@ import os
 import pandas as pd
 from collections import defaultdict
 
-from helpers.utils import (extract_leaves, prepare_cwns_ca, match_cwns_to_npdes,
-                           build_cwns_presence_mask, is_present, get_leaf_names)
+from helpers.utils import (
+    extract_leaves,
+    build_cwns_presence_mask,
+    is_present,
+    get_leaf_names,
+    load_ciwqs_to_cwns_table,
+    mapping_npdes_confirmed_no_cwns,
+    mapping_npdes_with_declared_cw,
+    merge_mapping_with_cwns_processes,
+    rows_mapping_declares_cwns,
+    rows_with_cwns_survey_attach,
+    union_cwns_processes_by_npdes_no,
+    cwns_process_column_names,
+)
 from helpers.plotting import create_ground_truth_plot
 
 DATE_FOLDER = '2026-2-18'
 GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
-# BACWA_PLOT_CATEGORIES = ['Activated Sludge', 'Lagoon', 'Nutrient Removal', 'Filtration']
 
 
 def build_category_facility_sets(process_cols, gt_common, text_common, cwns_common,
@@ -34,7 +45,7 @@ def build_category_facility_sets(process_cols, gt_common, text_common, cwns_comm
                     npdes_fac[category].add(row['NPDES_No'])
         if col in cwns_common.columns:
             mask = build_cwns_presence_mask(cwns_common[col])
-            for permit in cwns_common.loc[mask, 'linking_permit']:
+            for permit in cwns_common.loc[mask, 'NPDES_No']:
                 cwns_fac[category].add(permit)
 
     return gt_fac, npdes_fac, cwns_fac
@@ -77,31 +88,26 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_permits):
 with open('npdes_permits/data/unitprocess_keywords.json', 'r') as f:
     unitprocess_keywords = json.load(f)
 
-# Re-load and match CWNS data (mirrors step5 prep)
-cwns_data = pd.read_csv('npdes_permits/output/unit_processes_by_facility.csv',
-                         low_memory=False, dtype={'CWNS_ID': str})
-ca_cwns_data = prepare_cwns_ca(
-    cwns_data,
-    'npdes_permits/data/cwns/cwns_permits_match_manual.csv',
-    'npdes_permits/data/cwns/cwns_facility_name_match_manual.csv',
-)
+MAPPING_CSV = 'npdes_permits/data/ciwqs_to_cwns.csv'
+CWNS_CA_CSV = 'npdes_permits/output/cwns_processes_by_facility.csv'
+
+mapping_tbl = load_ciwqs_to_cwns_table(MAPPING_CSV)
+confirmed_no_cwns = mapping_npdes_confirmed_no_cwns(MAPPING_CSV)
+ca_cwns_data = pd.read_csv(CWNS_CA_CSV, dtype=str, low_memory=False)
+ca_cwns_data['CWNS_ID'] = ca_cwns_data['CWNS_ID'].astype(str).str.strip()
+merged_mapping_cwns = merge_mapping_with_cwns_processes(mapping_tbl, ca_cwns_data)
+n_with_cwns = int(rows_with_cwns_survey_attach(merged_mapping_cwns).sum())
+print(f"CIWQS mapping rows with CA CWNS survey attach: {n_with_cwns} / {len(merged_mapping_cwns)}")
 
 all_ca_npdes = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/all_ca_npdes.csv', dtype=str)
 _npdes_clean = all_ca_npdes[all_ca_npdes['NPDES No.'].notna()][['NPDES No.', 'Facility Name']]
-npdes_name_to_permit = (
-    _npdes_clean.drop_duplicates(subset='Facility Name', keep='first')
-    .set_index('Facility Name')['NPDES No.'].to_dict()
-)
 npdes_permit_to_name = (
     _npdes_clean.drop_duplicates(subset='NPDES No.', keep='first')
     .set_index('NPDES No.')['Facility Name'].to_dict()
 )
-npdes_permit_numbers = set(all_ca_npdes['NPDES No.'].dropna().unique())
-ca_cwns_data = match_cwns_to_npdes(ca_cwns_data, npdes_permit_numbers,
-                                    npdes_name_to_permit=npdes_name_to_permit,
-                                    npdes_permit_to_name=npdes_permit_to_name)
-
-unmatched_npdes = sorted(npdes_permit_numbers - set(ca_cwns_data['linking_permit'].dropna().str.strip()))
+npdes_permit_numbers = {str(x).strip() for x in all_ca_npdes['NPDES No.'].dropna().unique()}
+npdes_with_mapping_cw = mapping_npdes_with_declared_cw(mapping_tbl)
+unmatched_npdes = sorted((npdes_permit_numbers - npdes_with_mapping_cw) - confirmed_no_cwns)
 if unmatched_npdes:
     unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
     pd.DataFrame({
@@ -140,15 +146,19 @@ all_sheet_process_cols = [c for c in dict.fromkeys(ground_truth_process_cols + n
 
 # TRAIN ground truth comparison
 
-cwns_permits_gt = set(ca_cwns_data['linking_permit'].dropna().str.strip())
-ground_truth_permits = set(ground_truth_df['NPDES_No'].dropna().str.strip())
-text_permits         = set(npdes_text_df['NPDES_No'].dropna().str.strip())
-common_permits       = ground_truth_permits & text_permits & cwns_permits_gt
+ground_truth_permits = {str(x).strip() for x in ground_truth_df['NPDES_No'].dropna().unique()}
+text_permits = {str(x).strip() for x in npdes_text_df['NPDES_No'].dropna().unique()}
+common_permits = ground_truth_permits & text_permits & npdes_with_mapping_cw
 print(f"Facilities in all 3 sources (Train): {len(common_permits)}")
 
 ground_truth_common = ground_truth_df[ground_truth_df['NPDES_No'].str.strip().isin(common_permits)].copy()
-text_common         = npdes_text_df[npdes_text_df['NPDES_No'].str.strip().isin(common_permits)].copy()
-cwns_common         = ca_cwns_data[ca_cwns_data['linking_permit'].str.strip().isin(common_permits)].copy()
+text_common = npdes_text_df[npdes_text_df['NPDES_No'].str.strip().isin(common_permits)].copy()
+slice_attached = merged_mapping_cwns.loc[
+    rows_mapping_declares_cwns(merged_mapping_cwns)
+    & merged_mapping_cwns['NPDES_No'].astype(str).str.strip().isin(common_permits)
+]
+_proc_cols = [c for c in cwns_process_column_names(ca_cwns_data) if c in slice_attached.columns]
+cwns_common = union_cwns_processes_by_npdes_no(slice_attached, _proc_cols)
 
 gt_fac, npdes_fac, cwns_fac = build_category_facility_sets(
     all_sheet_process_cols, ground_truth_common, text_common, cwns_common,
@@ -172,7 +182,7 @@ facility_rows = []
 for permit in sorted(common_permits):
     ground_truth_row = ground_truth_common[ground_truth_common['NPDES_No'].str.strip() == permit].iloc[0]
     text_row         = text_common[text_common['NPDES_No'].str.strip() == permit].iloc[0]
-    cwns_row         = cwns_common[cwns_common['linking_permit'].str.strip() == permit].iloc[0]
+    cwns_row = cwns_common[cwns_common['NPDES_No'].astype(str).str.strip() == permit].iloc[0]
 
     facility_name = ground_truth_row.get('Facility_Name', permit)
 
@@ -225,32 +235,6 @@ gt_comparison_csv = f'npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison
 gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
 
-
-# # BACWA ground truth comparison (4-category bar plot)
-
-# bacwa_gt_permits   = set(bacwa_ground_truth_df['NPDES_No'].dropna().str.strip())
-# bacwa_text_permits = set(bacwa_npdes_text_df['NPDES_No'].dropna().str.strip())
-# bacwa_cwns_permits = set(ca_cwns_data['linking_permit'].dropna().str.strip())
-# bacwa_common       = bacwa_gt_permits & bacwa_text_permits & bacwa_cwns_permits
-# print(f"\nFacilities in all 3 sources (BACWA): {len(bacwa_common)}")
-
-# bacwa_gt_common   = bacwa_ground_truth_df[bacwa_ground_truth_df['NPDES_No'].str.strip().isin(bacwa_common)].copy()
-# bacwa_text_common = bacwa_npdes_text_df[bacwa_npdes_text_df['NPDES_No'].str.strip().isin(bacwa_common)].copy()
-# bacwa_cwns_common = ca_cwns_data[ca_cwns_data['linking_permit'].str.strip().isin(bacwa_common)].copy()
-
-# bacwa_gt_fac, bacwa_npdes_fac, bacwa_cwns_fac = build_category_facility_sets(
-#     all_sheet_process_cols, bacwa_gt_common, bacwa_text_common, bacwa_cwns_common,
-#     leaf_to_category,
-# )
-
-# bacwa_gt_rows = build_gt_rows(bacwa_gt_fac, bacwa_npdes_fac, bacwa_cwns_fac, bacwa_common)
-# bacwa_filtered_rows = [r for r in bacwa_gt_rows if r['Process_Category'] in BACWA_PLOT_CATEGORIES]
-
-# create_ground_truth_plot(
-#     bacwa_filtered_rows,
-#     n_facilities=len(bacwa_common),
-#     save_path=f'{figures_dir}/bacwa_ground_truth_vs_npdes_text_vs_cwns.png',
-# )
 
 # Overall error vs ground truth — only for categories where GT > 0
 # (Categories with GT=0 but CWNS>0 would inflate the ratio unboundedly)

@@ -13,6 +13,47 @@ METRIC_SCORE_COLUMNS = (
 )
 
 
+def _score_from_counts(tp: int, fp: int, fn: int, tn: int, state_correct: int, state_total: int) -> dict:
+    """Compute scalar metrics from confusion counts and state-match counts."""
+    precision = tp / (tp + fp) if (tp + fp) else float("nan")
+    recall = tp / (tp + fn) if (tp + fn) else float("nan")
+    f1 = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float("nan")
+    accuracy = (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float("nan")
+    missed_rate = fn / (tp + fn) if (tp + fn) else float("nan")
+    hallucinated_rate = fp / (tp + fp) if (tp + fp) else float("nan")
+    state_accuracy = state_correct / state_total if state_total else float("nan")
+    return {
+        "Precision": precision,
+        "Recall": recall,
+        "F1": f1,
+        "Accuracy": accuracy,
+        "Missed_Rate": missed_rate,
+        "Hallucinated_Rate": hallucinated_rate,
+        "State_Accuracy": state_accuracy,
+    }
+
+
+def _confusion_and_state_counts(manual_states, pred_states) -> tuple:
+    """Return (tp, fp, fn, tn, state_correct, state_total) over paired statuses."""
+    tp = fp = fn = tn = 0
+    state_correct = state_total = 0
+
+    for manual_state, pred_state in zip(manual_states, pred_states):
+        manual_pos = is_present(manual_state)
+        pred_pos = is_present(pred_state)
+
+        tp += int(manual_pos and pred_pos)
+        fp += int((not manual_pos) and pred_pos)
+        fn += int(manual_pos and (not pred_pos))
+        tn += int((not manual_pos) and (not pred_pos))
+
+        if manual_pos:
+            state_total += 1
+            state_correct += int(manual_state == pred_state)
+
+    return tp, fp, fn, tn, state_correct, state_total
+
+
 def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str) -> pd.DataFrame:
     rows = []
     manual_indexed = manual_df.set_index("key")
@@ -20,30 +61,10 @@ def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: 
     keys = list(manual_indexed.index)
 
     for label in label_cols:
-        tp = fp = fn = tn = 0
-        state_correct = state_total = 0
-        for key in keys:
-            manual_states = manual_indexed.at[key, label]
-            pred_states = pred_indexed.at[key, label]
-            manual_pos = is_present(manual_states)
-            pred_pos = is_present(pred_states)
-
-            tp += int(manual_pos and pred_pos)
-            fp += int((not manual_pos) and pred_pos)
-            fn += int(manual_pos and (not pred_pos))
-            tn += int((not manual_pos) and (not pred_pos))
-
-            if manual_pos:
-                state_total += 1
-                state_correct += int(manual_states == pred_states)
-
-        precision = tp / (tp + fp) if (tp + fp) else float("nan")
-        recall = tp / (tp + fn) if (tp + fn) else float("nan")
-        f1 = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float("nan")
-        accuracy = (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float("nan")
-        missed_rate = fn / (tp + fn) if (tp + fn) else float("nan")
-        hallucinated_rate = fp / (tp + fp) if (tp + fp) else float("nan")
-        state_accuracy = state_correct / state_total if state_total else float("nan")
+        manual_states = manual_indexed.loc[keys, label]
+        pred_states = pred_indexed.loc[keys, label]
+        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(manual_states, pred_states)
+        scores = _score_from_counts(tp, fp, fn, tn, state_correct, state_total)
 
         rows.append({
             "Source": source_name,
@@ -51,16 +72,30 @@ def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: 
             "Support_Manual": int(tp + fn),
             "Support_Pred": int(tp + fp),
             "TP": tp, "FP": fp, "FN": fn, "TN": tn,
-            "Precision": precision,
-            "Recall": recall,
-            "F1": f1,
-            "Accuracy": accuracy,
-            "Missed_Rate": missed_rate,
-            "Hallucinated_Rate": hallucinated_rate,
-            "State_Accuracy": state_accuracy,
+            **scores,
         })
 
     return pd.DataFrame(rows)
+
+
+def compute_facility_metric_rows(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str) -> list:
+    """Compute per-facility metrics for violin/distribution plots."""
+    manual_indexed = manual_df.set_index("key")
+    pred_indexed = pred_df.set_index("key")
+    rows = []
+
+    for key in manual_indexed.index:
+        manual_states = manual_indexed.loc[key, label_cols]
+        pred_states = pred_indexed.loc[key, label_cols]
+        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(manual_states, pred_states)
+        scores = _score_from_counts(tp, fp, fn, tn, state_correct, state_total)
+
+        row = {"Source": source_name, "key": key}
+        for col in METRIC_SCORE_COLUMNS:
+            row[col] = scores[col]
+        rows.append(row)
+
+    return rows
 
 
 def summarize_metrics(metric_df: pd.DataFrame, level_name: str) -> pd.DataFrame:

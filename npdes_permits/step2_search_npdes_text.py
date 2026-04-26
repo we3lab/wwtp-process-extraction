@@ -1,14 +1,10 @@
-from PyPDF2 import PdfReader
-import re
 import os
 import csv
 import json
 from helpers.utils import extract_leaves
-from helpers.npdes_text_extraction import (
-    normalize_text, find_attachment_f, find_nth_occurrence, extract_permit_sections
-)
+from helpers.npdes_text_extraction import extract_permit_sections
 
-DATE_FOLDER = '2026-2-18'
+DATE_FOLDER = '2026-4-25'
 
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
@@ -105,12 +101,10 @@ def main():
     for i in range(len(pdfs)):
         path = os.path.join(directory, pdfs[i])
         
-        print(f"\n{'='*80}")
         print(f"Processing {pdfs[i]} ({i+1}/{len(pdfs)})")
-        print(f"{'='*80}")
         
-        # Extract sections from PDF
-        extraction_result = extract_permit_sections(path)
+        # Extract sections from PDF and cache to text/
+        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=True)
         
         if extraction_result is None:
             print(f"Skipping {pdfs[i]} - extraction failed")
@@ -150,18 +144,17 @@ def main():
             
             # Determine status: 0, "present", "present_and_future", or "future"
             if is_present and is_future:
-                status = "present_and_future"
+                status = "PRESENT_AND_FUTURE"
             elif is_present:
-                status = "present"
+                status = "PRESENT"
             elif is_future:
-                status = "future"
+                status = "FUTURE"
             else:
                 status = "0"
             
             data_row.append(status)
         
         upi.writerow(data_row)
-        print(f"✓ Processed {pdfs[i]}")
     
     csv_file.close()
     ps_file.close()

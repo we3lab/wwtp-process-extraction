@@ -45,7 +45,7 @@ from helpers.utils import (
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar
 
-DATE_FOLDER = '2026-2-18'
+DATE_FOLDER = '2026-4-25'
 OUTPUT_DIR  = f'npdes_permits/output/{DATE_FOLDER}/figures'
 MIN_COUNT   = 15  # drop bar groups where both sources are below this threshold
 

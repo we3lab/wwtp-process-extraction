@@ -42,14 +42,14 @@
     }
   },
   "Screening/Microstrainer": {
-    "alt_names": ["Screening", "Bar Screen", "Fine Screen", "Mechanical Screen", "Fine Screening", "Microstrainer"],
+    "alt_names": ["Screening", "Bar Screen", "Fine Screen", "Mechanical Screen", "Microstrainer", "headworks"],
     "alt_names_case_sensitive": [],
     "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
     "ontology_triggers": ["Process-Screening"],
     "priority": 1
   },
   "Grit Removal": {
-    "alt_names": ["Grit Removal", "Grit Chambers", "Grit Chamber"],
+    "alt_names": ["Grit Remov", "Grit Chamber"],
     "alt_names_case_sensitive": [],
     "cwns_processes": ["Dewatering assc. w/Grit Removal", "Grit Removal", "Aerated Grit Chambers"],
     "ontology_triggers": ["Equipment-GritChamber"],
@@ -71,14 +71,14 @@
   },
   "Activated Sludge": {
     "SBR": {
-      "alt_names": ["Sequencing Batch Reactor", "Sequential Batch Reactor"],
+      "alt_names": ["Sequencing Batch React", "Sequential Batch React"],
       "alt_names_case_sensitive": ["SBR"],
       "cwns_processes": ["Reactor, Sequencing Batch (SBR)"],
       "ontology_triggers": ["Equipment-SequencingBatchReactor"]
     },
     "Oxidation Ditch": {
       "alt_names": ["Oxidation Ditch"],
-      "alt_names_case_sensitive": ["OD"],
+      "alt_names_case_sensitive": [],
       "cwns_processes": ["Reactor (Oxidation Ditch)"],
       "ontology_triggers": ["Equipment-OxidationDitch"]
     },
@@ -101,9 +101,9 @@
       "ontology_triggers": ["Process-ActivatedSludge", "Role-StepFeed"]
     },
     "Unspecified AS": {
-      "alt_names": ["Activated Sludge", "Conventional Activated Sludge"],
+      "alt_names": ["Activated Sludge", "Conventional Activated Sludge", "waste activated sludge"],
       "alt_names_case_sensitive": ["CAS"],
-      "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Activated Sludge, With Biological Denitrification"],
+      "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Activated Sludge, With Biological Denitrification", "Nitrification, Biological (Combined and BOD Reduction)"],
       "ontology_triggers_multi": {
         "priority": 4,
         "Equipment": ["AerationBasin", "Reactor", "Tank"],
@@ -198,20 +198,20 @@
       "Four Stage Bardenpho": {
         "alt_names": ["4-Stage Bardenpho", "Four-Stage Bardenpho"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"],
+        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)"],
         "ontology_triggers": ["Process-FourStageBardenpho"],
         "secondary_category": ["Activated Sludge"]
       },
       "Five Stage Bardenpho": {
         "alt_names": ["Bardenpho"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Phosphorus Removal, Biological (Modified Bardenpho)", "Nitrification, Biological (Combined and BOD Reduction)"],
+        "cwns_processes": [],
         "ontology_triggers": ["Process-FiveStageBardenpho"],
         "secondary_category": ["Activated Sludge"]
       },
       "Unspecified BNR": {
-        "alt_names": ["Nutrient Removal", "Biological Nutrient Removal"],
-        "alt_names_case_sensitive": ["BNR"],
+        "alt_names": ["Nutrient Removal", "Biological Nutrient Removal", "nitrif", "denitrif"],
+        "alt_names_case_sensitive": [" BNR "],
         "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal", "Phosphorus Removal, Biological", "Duckweed (Lemna)", "Nitrification, Biological (Other)", "Biological Denitrification", "Phosphorus Removal, Biological (Phostrip)", "Nitrification, Biological (Separate Stage)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification"],
         "ontology_triggers": [["Process-Nitrification"], ["Process-Denitrification"]],
         "priority": 1000
@@ -282,7 +282,7 @@
         },
         "Membrane Aerated Biofilm Reactor": {
           "alt_names": ["Membrane Aerated Biofilm Reactor"],
-          "alt_names_case_sensitive": ["MABR"],
+          "alt_names_case_sensitive": [" MABR "],
           "cwns_processes": [],
           "ontology_triggers": ["Equipment-MembraneAeratedBiofilmReaactor"],
           "secondary_category": ["Biological Nutrient Removal"]
@@ -298,15 +298,15 @@
     },
     "Membrane Process": {
       "Nanofiltration": {
-        "alt_names": ["Nanofilter", "Nanofiltration"],
-        "alt_names_case_sensitive": ["NF"],
+        "alt_names": ["Nanofilter", "Nanofiltration", "NF membrane"],
+        "alt_names_case_sensitive": [],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-NanofiltrationUnit"],
         "priority":2
       },
       "Electrodialysis Reversal": {
         "alt_names": ["Electrodialysis Reversal"],
-        "alt_names_case_sensitive": ["EDR"],
+        "alt_names_case_sensitive": [" EDR "],
         "cwns_processes": [],
         "ontology_triggers": ["Process-ElectrodialysisReversal"],
         "priority":1
@@ -320,7 +320,7 @@
       },
       "Reverse Osmosis": {
         "alt_names": ["Reverse Osmosis"],
-        "alt_names_case_sensitive": ["RO"],
+        "alt_names_case_sensitive": [" RO "],
         "cwns_processes": ["Membrane Process (Reverse Osmosis)"],
         "ontology_triggers": ["Process-ReverseOsmosis"],
         "priority":1
@@ -339,14 +339,14 @@
         "priority":2
       },
       "Membrane Bioreactor": {
-        "alt_names": ["Membrane Bioreactor"],
-        "alt_names_case_sensitive": ["MBR"],
+        "alt_names": ["Membrane Bioreactor", "Zeeweed"],
+        "alt_names_case_sensitive": [" MBR "],
         "cwns_processes": ["Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)"],
         "ontology_triggers": [["Equipment-MembraneBioreactor"], ["Process-MembraneBioreactor"]],
         "priority": 1
       },
       "Unspecified Membrane Process": {
-        "alt_names": ["Membrane Process", "Membrane Filter"],
+        "alt_names": ["Membrane"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Membrane Process (Other)", "Membrane Process (Dialysis)"],
         "ontology_triggers": ["Process-MembraneProcess"],
@@ -354,7 +354,7 @@
       }
     },
     "Unspecified Filtration": {
-      "alt_names": ["Disc Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter"],
+      "alt_names": ["Disc Filter", "Disk Filter", "Denitrification Filter", "Moving Bed Filter", "Pressure Filter"],
       "alt_names_case_sensitive": ["MF"],
       "cwns_processes": ["Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Filter, Moving Bed", "Filter, Other", "Filter, Pressure"],
       "ontology_triggers": ["Process-Filtration"],
@@ -386,20 +386,20 @@
     "ontology_triggers": ["Process-Flocculation"]
   },
   "Ion Exchange": {
-    "alt_names": ["Ion exchange", "exchange resin", " IX ", "(IX)"],
-    "alt_names_case_sensitive": ["IX", "(IX)"],
+    "alt_names": ["Ion exchange", "exchange resin"],
+    "alt_names_case_sensitive": [" IX ", "(IX)"],
     "cwns_processes": ["Ion Exchange"],
     "ontology_triggers": ["Process-IonExchange"]
   },
   "Activated Carbon": {
     "alt_names": ["Activated Carbon", "Granular Activated Carbon", "Powdered Activated Carbon"],
-    "alt_names_case_sensitive": ["GAC"],
+    "alt_names_case_sensitive": [" GAC "],
     "cwns_processes": ["Activated Carbon, Granular", "Activated Carbon, Powdered"],
     "ontology_triggers": ["Process-GranularActivatedCarbon"]
   },
   "Disinfection": {
     "Chlorination": {
-      "alt_names": ["Chlorination", "Chlorine Disinfection", "Disinfection Chlorine", "Sodium Hypochlorite"],
+      "alt_names": ["Chlorination", "Chlorine Disinfection", "Disinfection Chlorine", "Sodium Hypochlorite", "chloramine"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Disinfection, Chlorination", "Disinfection, Gaseous Chloride", "Disinfection, Liquid Chloride", "Disinfection, Breakpoint Chlorination", "Disinfection, Sodium Hypochlorite", "Disinfection Hypochlorite Bisulfite"],
       "ontology_triggers": ["Process-Chlorination"]
@@ -544,7 +544,7 @@
     },
     "Disposal": {
       "Land Application": {
-        "alt_names": ["Land Application", "Land based", "Land-based", "Land Treatment"],
+        "alt_names": ["Land Application", "Land based", "Land-based", "Land Treatment", "compost"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Land Application (Spreading)", "Land Treatment", "Biosolids Composting, Other", "Biosolids Composting, In-Vessel", "Biosolids Composting, Window", "Land Application, Slow Rate, W/O Underdrain", "Land Application, Slow Rate, With Underdrain"],
         "ontology_triggers": ["Process-LandApplication"]

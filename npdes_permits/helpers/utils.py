@@ -1,12 +1,48 @@
-import re
 import pandas as pd
-import os
+
+# Canonical status vocabulary: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, '' (absent)
+PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
+
+mapping_df = pd.read_csv(
+    "npdes_permits/data/ciwqs_to_cwns.csv", dtype=str, keep_default_na=False
+).fillna("")
+for c in mapping_df.columns:
+    mapping_df[c] = mapping_df[c].astype(str).str.strip()
+
+
+def parse_status(val) -> str:
+    """Normalize any status cell to a canonical token.
+
+    Handles manual sheet values (messy text), LLM output (clean tokens), and CWNS values.
+    Returns: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, or ''.
+    """
+    if val is None or (isinstance(val, float) and val != val):
+        return ""
+    s = str(val).strip()
+    if not s or s in ("0", "0.0"):
+        return ""
+    t = s.upper().replace("-", "_")
+    if t in ("NAN", "NONE"):
+        return ""
+    if "PRESENT" in t and "FUTURE" in t:
+        return "PRESENT_AND_FUTURE"
+    for keyword in ["PRESENT", "FUTURE", "PAST", "OFFSITE"]:
+        if keyword in t:
+            return keyword
+    return ""
+
+
+def is_present(val) -> bool:
+    """True if val indicates the process is currently installed (PRESENT or PRESENT_AND_FUTURE).
+
+    FUTURE is excluded — it means planned but not yet in service.
+    """
+    return parse_status(val) in PRESENT_STATUSES
 
 
 def build_cwns_presence_mask(series):
-    """Return boolean mask for CWNS presence values (present, future, or present_and_future)."""
-    s = series.astype(str).str.lower()
-    return s.isin({'present', 'future', 'present_and_future'})
+    """Return boolean mask for CWNS presence values (any detectable status, including FUTURE/PAST)."""
+    return series.map(parse_status).isin({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
 
 
 def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
@@ -15,162 +51,210 @@ def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
     for name, details in processes_dict.items():
         if not isinstance(details, dict):
             continue
-        if ignore_disposal and name == 'Disposal':
+        if ignore_disposal and name == "Disposal":
             continue
-        if 'alt_names' in details:
+        if "alt_names" in details:
             leaves.append((name, details, group_id))
         else:
             leaves.extend(extract_leaves(details, group_id=name, ignore_disposal=ignore_disposal))
     return leaves
 
 
+def get_leaf_names(cat_name, cat_val):
+    """Return leaf process names for a category from the keywords hierarchy."""
+    if isinstance(cat_val, dict) and "alt_names" in cat_val:
+        return [cat_name]
+    return [name for name, _, _ in extract_leaves(cat_val)]
+
+
 def get_cwns_unit_process_names(process_name, process_details):
     """Get CWNS unit process names for a given process from keywords"""
-    if isinstance(process_details, dict) and 'cwns_processes' in process_details:
-        names = process_details['cwns_processes']
+    if isinstance(process_details, dict) and "cwns_processes" in process_details:
+        names = process_details["cwns_processes"]
         return names if isinstance(names, list) else [names]
     return []
 
 
-def find_process_details(process_name, unitprocess_keywords):
-    """Find process details in keywords hierarchy, searching both top-level and nested"""
-    if process_name in unitprocess_keywords:
-        return unitprocess_keywords[process_name]
-    for category, cat_keywords in unitprocess_keywords.items():
-        if not isinstance(cat_keywords, dict):
-            continue
-        if process_name in cat_keywords:
-            return cat_keywords[process_name]
-        for parent_name, parent_details in cat_keywords.items():
-            if isinstance(parent_details, dict) and process_name in parent_details:
-                return parent_details[process_name]
-    return None
-
-
-def extract_cwns_processes(row, proc_cols):
-    """Extract set of processes marked as present in a CWNS row."""
-    return {p for p in proc_cols
-            if str(row.get(p, '')).strip().lower() not in {'', '0', '0.0', 'nan'}}
-
-
-def extract_npdes_processes(row, proc_cols):
-    """Extract set of processes marked as present in an NPDES row."""
-    return {p for p in proc_cols
-            if str(row.get(p, '')).strip().lower().startswith('present')}
-
-
 def get_werf_codes_for_cwns_process(cwns_process_name):
     """for future mapping back to El Abbadi codes. Not directly used in this codebase"""
-    el_abbadi_dir = os.path.join(os.path.dirname(__file__), 'data', 'el_abbadi', 'input')
-    werf_codes_df = pd.read_csv(os.path.join(el_abbadi_dir, 'UNIT_PROCESS_EI_CODES_WERF_modified.csv'))
-    matching = werf_codes_df[werf_codes_df['FINAL_UNIT_PROCESS_NAME'] == cwns_process_name]
-    return matching['WERF_CODE'].unique().tolist() if not matching.empty else []
+    el_abbadi_dir = os.path.join(os.path.dirname(__file__), "data", "el_abbadi", "input")
+    werf_codes_df = pd.read_csv(
+        os.path.join(el_abbadi_dir, "UNIT_PROCESS_EI_CODES_WERF_modified.csv")
+    )
+    matching = werf_codes_df[werf_codes_df["FINAL_UNIT_PROCESS_NAME"] == cwns_process_name]
+    return matching["WERF_CODE"].unique().tolist() if not matching.empty else []
 
 
-def prepare_cwns_ca(cwns_proc_df, manual_csv_path, facility_name_matches_path):
-    """Consolidate CWNS CA process data with facility names and clean NPDES permits.
-
-    Input df must include FACILITY_NAME and NPDES_PERMIT columns (provided by step0 output).
-
-    Matching tiers (applied in order, later tiers override earlier):
-    1. NPDES_PERMIT from step0 output (FACILITY_PERMIT.csv, NPDES source only)
-    2. Manual overrides from cwns_permits_match_manual.csv (CWNS_ID-keyed)
-    3. Name-based matches from cwns_facility_name_match_manual.csv
-    """
-    ca = cwns_proc_df[cwns_proc_df['STATE_CODE'] == 'CA'].copy()
-    src_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT']
-    proc_cols = [c for c in ca.columns if c not in src_cols]
-
-    # Consolidate by CWNS_ID
-    consolidated = ca.groupby('CWNS_ID').agg(
-        raw_permit_list=('PERMIT_NUMBER', lambda x: list(x.dropna().unique())),
-        FACILITY_NAME=('FACILITY_NAME', 'first'),
-        NPDES_PERMIT=('NPDES_PERMIT', 'first'),
-        **{col: (col, 'first') for col in proc_cols}
-    ).reset_index()
-    consolidated['CWNS_ID'] = consolidated['CWNS_ID'].astype(str)
-
-    # Apply manual CSV overrides (CWNS_ID-keyed: CWNS_ID,NPDES_PERMIT,FACILITY_NAME)
-    manual = pd.read_csv(manual_csv_path, dtype=str).fillna('')
-    cwns_id_map = (manual[manual['NPDES_PERMIT'].str.strip() != '']
-                   .drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT'])
-    mask = consolidated['CWNS_ID'].isin(cwns_id_map.index)
-    consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'CWNS_ID'].map(cwns_id_map)
-
-    # Apply name-based matches
-    facility_name_manual = pd.read_csv(facility_name_matches_path, dtype=str).fillna('')
-    if len(facility_name_manual) > 0:
-        facility_name_manual_map = facility_name_manual.drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT']
-        missing = consolidated['NPDES_PERMIT'].isna() | (consolidated['NPDES_PERMIT'].str.strip() == '')
-        fmask = consolidated['CWNS_ID'].isin(facility_name_manual_map.index) & missing
-        consolidated.loc[fmask, 'NPDES_PERMIT'] = consolidated.loc[fmask, 'CWNS_ID'].map(facility_name_manual_map)
-
-    return consolidated
+def _mapping_cw_join_key(cw_cell: str) -> str | None:
+    s = str(cw_cell).strip()
+    if not s or s.upper() == "NA":
+        return None
+    return s
 
 
-_SUFFIX_RE = re.compile(
-    r'\b(WWTF|WWTP|WRP|WPCF|WWRF|WQCP|WPCP|WRF|WWRP|STP|SD|CSD|'
-    r'CITY\s+OF|TOWN\s+OF|COUNTY\s+OF|DISTRICT|SANITARY|SANITATION|'
-    r'WATER\s+RECLAMATION|WATER\s+POLLUTION\s+CONTROL|'
-    r'TREATMENT\s+PLANT|TREATMENT\s+FACILITY|RECLAMATION\s+FACILITY|'
-    r'RECLAMATION\s+PLANT)\b',
-    re.IGNORECASE,
-)
+def cwns_process_column_names(cwns_df: pd.DataFrame) -> list[str]:
+    """Unit-process columns on the CWNS CA export (everything except facility meta)."""
+    meta = {"CWNS_ID", "FACILITY_NAME", "PERMIT_NUMBER", "STATE_CODE", "NPDES_PERMIT"}
+    return [c for c in cwns_df.columns if c not in meta]
 
 
-def normalize_facility_name(name):
-    """Normalize a facility name: uppercase, strip type suffixes and punctuation."""
-    if not name or (isinstance(name, float) and name != name):  # NaN check
-        return ''
-    s = str(name).upper().strip()
-    s = _SUFFIX_RE.sub('', s)
-    s = re.sub(r'[^\w\s]', '', s)
-    return re.sub(r'\s+', ' ', s).strip()
+def merge_mapping_with_cwns_processes(cwns_ca_df):
+    """Left-join each mapping row to CA CWNS process data on (CWNS_ID, CWNS_Facility_Name)."""
+    m = mapping_df.copy()
+    c = cwns_ca_df.copy()
 
+    proc_cols = cwns_process_column_names(c)  # compute before adding temp columns
 
-def match_cwns_to_npdes(consolidated_cwns, npdes_permits_set, npdes_name_to_permit=None):
-    """Match consolidated CWNS facilities to NPDES permits.
-
-    Three tiers (first match wins):
-    1. NPDES_PERMIT column (from FACILITY_PERMIT.csv or manual CSV)
-    2. raw_permit_list scan (any CWNS permit in npdes_permits_set)
-    3. Exact normalized facility name match (if npdes_name_to_permit dict provided)
-
-    Adds 'matched' and 'linking_permit' columns.
-    """
-    df = consolidated_cwns.copy()
-
-    # Tier 1: match on clean NPDES permit
-    df['linking_permit'] = df['NPDES_PERMIT'].where(
-        df['NPDES_PERMIT'].fillna('').str.strip().isin(npdes_permits_set)
+    m["_cw_id"] = m["CWNS_ID"].apply(lambda x: _mapping_cw_join_key(str(x)))
+    m["_cw_name"] = m["CWNS_Facility_Name"].astype(str).str.strip().str.upper()
+    c["_cw_id"] = c["CWNS_ID"].astype(str).str.strip()
+    c["_cw_name"] = c["FACILITY_NAME"].astype(str).str.strip().str.upper()
+    right_cols = (
+        ["_cw_id", "_cw_name"]
+        + proc_cols
+        + (["FACILITY_NAME"] if "FACILITY_NAME" in c.columns else [])
+    )
+    right = (
+        c[right_cols]
+        .drop_duplicates(subset=["_cw_id", "_cw_name"], keep="first")
+        .rename(columns={"_cw_id": "_r_id", "_cw_name": "_r_name"})
     )
 
-    # Tier 2: check raw permit list for unmatched rows
-    unmatched = df['linking_permit'].isna()
-    if unmatched.any():
-        df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'raw_permit_list'].apply(
-            lambda permits: next((p for p in permits if str(p).strip() in npdes_permits_set), None)
+    out = m.merge(
+        right,
+        left_on=["_cw_id", "_cw_name"],
+        right_on=["_r_id", "_r_name"],
+        how="left",
+        indicator="_cwns_merge",
+    )
+    return out.drop(columns=["_cw_id", "_cw_name", "_r_id", "_r_name"])
+
+
+def mapping_facility_cwns_sets() -> tuple[set, set]:
+    """Returns (with_cwns, no_cwns) — sets of (WDID, Facility_Name) tuples.
+
+    with_cwns: rows declaring a non-empty, non-NA CWNS_ID.
+    no_cwns:   rows explicitly marked CWNS_ID == 'NA'.
+    """
+    with_cwns, no_cwns = set(), set()
+    for _, row in mapping_df.iterrows():
+        fac = (
+            str(row.get("WDID", "")).strip(),
+            str(row.get("Facility_Name", "")).strip(),
         )
-
-    # Tier 3: exact normalized facility name match
-    if npdes_name_to_permit:
-        unmatched = df['linking_permit'].isna()
-        if unmatched.any():
-            norm_map = {normalize_facility_name(k): v for k, v in npdes_name_to_permit.items()
-                        if normalize_facility_name(k)}
-            df.loc[unmatched, 'linking_permit'] = df.loc[unmatched, 'FACILITY_NAME'].apply(
-                lambda n: norm_map.get(normalize_facility_name(n))
-            )
-
-    df['matched'] = df['linking_permit'].notna()
-    return df
+        cid = str(row.get("CWNS_ID", "")).strip().upper()
+        if _mapping_cw_join_key(cid) is not None:
+            with_cwns.add(fac)
+        elif cid == "NA":
+            no_cwns.add(fac)
+    return with_cwns, no_cwns
 
 
-def is_yes(val):
-    """Check if a cell value means the process is present (YES, PLANNED, or PRESENT)."""
-    return str(val).strip().upper() in ('YES', 'PLANNED', 'PRESENT')
+name_to_fac: dict[str, tuple[str, str]] = {
+    name: (wdid, name)
+    for _, r in mapping_df.iterrows()
+    for name in [str(r.get("Facility_Name", "")).strip()]
+    for wdid in [str(r.get("WDID", "")).strip()]
+    if name and wdid
+}
+facilities_with_cwns, facilities_without_cwns = mapping_facility_cwns_sets()
 
 
-def count_yes(series):
-    """Count YES/PLANNED/PRESENT values in a sheet column (case-insensitive)."""
-    return series.fillna('').apply(is_yes).sum()
+def merge_column_statuses(column) -> str:
+    """Highest-priority status across all values in column."""
+    tokens = {parse_status(v) for v in column}
+    if "PRESENT_AND_FUTURE" in tokens or ("PRESENT" in tokens and "FUTURE" in tokens):
+        return "PRESENT_AND_FUTURE"
+    for token in ("PRESENT", "FUTURE", "PAST", "OFFSITE"):
+        if token in tokens:
+            return token
+    return ""
+
+
+def collapse_facility_processes(
+    df: pd.DataFrame, key_cols: list[str], meta_cols: list[str]
+) -> pd.DataFrame:
+    """One row per unique key_cols group; highest-priority status per process column.
+
+    Process columns (everything not in key_cols or meta_cols) are merged via
+    merge_column_statuses. Meta columns take the first non-empty value. Column order preserved.
+    """
+    all_fixed = set(key_cols) | set(meta_cols)
+    proc_cols = [c for c in df.columns if c not in all_fixed]
+    rows = []
+    for _, grp in df.groupby(key_cols, dropna=False, sort=False):
+        out = {
+            col: next((v for v in grp[col] if pd.notna(v) and str(v).strip()), "")
+            for col in (key_cols + meta_cols)
+            if col in df.columns
+        }
+        for col in proc_cols:
+            out[col] = merge_column_statuses(grp[col])
+        rows.append(out)
+    return pd.DataFrame(rows).reindex(columns=list(df.columns))
+
+
+def union_cwns_processes(merged: pd.DataFrame, proc_cols: list[str]) -> pd.DataFrame:
+    """One row per (WDID, Facility_Name), unioning process statuses across mapping edges.
+
+    Carries the first non-blank NPDES_No per group for downstream permit-based bridges.
+    """
+    present_proc = [c for c in proc_cols if c in merged.columns]
+    if not present_proc:
+        return pd.DataFrame(columns=["WDID", "Facility_Name", "NPDES_No"])
+
+    chunks = []
+    for (wdid, fname), grp in merged.groupby(["WDID", "Facility_Name"], dropna=False, sort=False):
+        if not str(wdid).strip() and not str(fname).strip():
+            continue
+        npdes_vals = [v for v in grp.get("NPDES_No", []) if str(v).strip()]
+        d = {
+            "WDID": wdid,
+            "Facility_Name": fname,
+            "NPDES_No": npdes_vals[0] if npdes_vals else "",
+        }
+        for pc in present_proc:
+            d[pc] = merge_column_statuses(grp[pc])
+        chunks.append(d)
+    return (
+        pd.DataFrame(chunks)
+        if chunks
+        else pd.DataFrame(columns=["WDID", "Facility_Name", "NPDES_No"] + present_proc)
+    )
+
+
+def map_facility_names_to_tuples(
+    df: pd.DataFrame,
+    name_col: str,
+    name_to_fac: dict[str, tuple[str, str]],
+) -> set[tuple[str, str]]:
+    """Map a dataframe's facility-name column to canonical (WDID, Facility_Name) tuples."""
+    out = set()
+    if name_col not in df.columns:
+        return out
+    for name in df[name_col].astype(str).str.strip():
+        if name in name_to_fac:
+            out.add(name_to_fac[name])
+    return out
+
+
+def build_cwns_facility_processes(
+    ca_cwns_df: pd.DataFrame,
+    target_facilities: set[tuple[str, str]] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Build one CWNS process row per mapped facility, optionally filtered to target facilities.
+
+    Returns `(cwns_by_facility, merged_mapping)` where `merged_mapping` includes merge indicators.
+    """
+    merged_mapping = merge_mapping_with_cwns_processes(ca_cwns_df)
+    declared_cw = merged_mapping["CWNS_ID"].apply(
+        lambda x: bool(str(x).strip() and str(x).strip().upper() != "NA")
+    )
+    fac_col = merged_mapping.apply(lambda r: (r["WDID"], r["Facility_Name"]), axis=1)
+    if target_facilities is not None:
+        slice_map = merged_mapping.loc[declared_cw & fac_col.isin(target_facilities)]
+    else:
+        slice_map = merged_mapping.loc[declared_cw]
+    proc_cols = [c for c in cwns_process_column_names(ca_cwns_df) if c in slice_map.columns]
+    cwns_by_facility = union_cwns_processes(slice_map, proc_cols)
+    return cwns_by_facility, merged_mapping

@@ -21,7 +21,7 @@ from helpers.api_llm_search import (
 PDF_DIR = "npdes_permits/output/2026-2-18/npdes"
 MODEL = "gemini-2.0-flash-001"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
 DEFAULT_ONTOLOGY_PATH = "npdes_permits/data/llm_extraction/input/ontology.txt"
-DEFAULT_FACILITIES_INFO_PATH = "npdes_permits/data/test_data.csv"
+DEFAULT_FACILITIES_INFO_PATH = "npdes_permits/data/test_set_npdes_manual.csv"
 DEFAULT_UNITPROCESS_KEYWORDS_JSON = "npdes_permits/data/unitprocess_keywords.json"
 
 

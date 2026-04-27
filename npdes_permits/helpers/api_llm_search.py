@@ -168,11 +168,11 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                             },
                             "Implementation": {
                                 "type": "string",
-                                "enum": ["present", "planned", "past"],
+                                "enum": ["present", "future", "past"],
                             },
                             "Location": {
                                 "type": ["string", "null"],
-                                "enum": ["on-site", "off-site", "third-party", None],
+                                "enum": ["on-site", "off-site", None],
                             },
                             "Score": {"type": "number", "minimum": 0, "maximum": 1},
                             "Sentence": {"type": "string"},
@@ -231,11 +231,11 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                         },
                         "Implementation": {
                             "type": "string",
-                            "enum": ["present", "planned", "past"],
+                            "enum": ["present", "future", "past"],
                         },
                         "Location": {
                             "type": ["string", "null"],
-                            "enum": ["on-site", "off-site", "third-party", None],
+                            "enum": ["on-site", "off-site", None],
                         },
                         "Score": {"type": "number", "minimum": 0, "maximum": 1},
                         "Sentence": {"type": "string"},

@@ -199,10 +199,9 @@ upnames = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_NAMES.csv')
 up_old = pd.merge(left = up_old, right = upnames, how = 'left', left_on = 'UNIT_PROCESS', right_on = 'ORIGINAL_UP_NAME')
 up_old.drop(['ORIGINAL_UP_NAME'], inplace = True, axis = 1)
 
-#remove processes listed for abandoment in 2004, 2008, or 2012 and processes listed as both PRES_IND = N and PROJ_IND = N
-up_old = up_old.loc[up_old['CHANGE_TYPE'] != 'Abandonment']
-up_old = up_old.loc[~((up_old['PRES_IND'] == 'N') & (up_old['PRES_IND'] == 'N'))]
-up_old = up_old[['CWNS_NUM','REPORT_YEAR','PRES_IND','PROJ_IND','FINAL_UNIT_PROCESS_NAME']]
+#remove processes listed as both PRES_IND = N and PROJ_IND = N; keep abandonments (classified as PAST)
+up_old = up_old.loc[~((up_old['PRES_IND'] == 'N') & (up_old['PROJ_IND'] == 'N'))]
+up_old = up_old[['CWNS_NUM','REPORT_YEAR','PRES_IND','PROJ_IND','CHANGE_TYPE','FINAL_UNIT_PROCESS_NAME']]
 
 #change formatting of present and projected indices to binary
 up_old.loc[up_old['PRES_IND'] == 'Y', 'PRES_IND'] = 1
@@ -333,6 +332,8 @@ active_ups = uplist_eicodes[(uplist_eicodes['PRES_IND'] == 1) | (uplist_eicodes[
 active_ups = active_ups.sort_values('REPORT_YEAR').drop_duplicates(
     subset=['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME'], keep='last'
 )
+# Restrict to treatment plants only (wwtps was already inner-joined on FACILITY_TYPE)
+active_ups = active_ups[active_ups['CWNS_NUM'].isin(set(wwtps['CWNS_NUM']))]
 
 def map_to_taxonomy(row):
     cwns_name = str(row.get('FINAL_UNIT_PROCESS_NAME', '')).lower().strip()
@@ -343,7 +344,16 @@ active_ups['_taxonomy_processes'] = active_ups.apply(map_to_taxonomy, axis=1)
 # Build taxonomy rows with status determined from the single most-recent row per facility+process
 taxonomy_rows = []
 for _, row in active_ups.iterrows():
-    status = 'present' if row['PRES_IND'] == 1 else 'future'
+    pres = row['PRES_IND'] == 1
+    proj = row['PROJ_IND'] == 1
+    if row.get('CHANGE_TYPE') == 'Abandonment':
+        status = 'PAST'
+    elif pres and proj:
+        status = 'PRESENT_AND_FUTURE'
+    elif pres:
+        status = 'PRESENT'
+    else:
+        status = 'FUTURE'
     for proc in row['_taxonomy_processes']:
         taxonomy_rows.append({'CWNS_NUM': row['CWNS_NUM'], 'PROCESS': proc, 'STATUS': status})
 
@@ -398,4 +408,100 @@ npdes_only = (facility_permit[facility_permit['PERMIT_SOURCE'] == 'NPDES']
 unit_processes_df = unit_processes_df.merge(npdes_only, on='CWNS_ID', how='left')
 
 # Save the DataFrame
-unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility.csv"), index=False)
+unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_processes_by_facility.csv"), index=False)
+
+# Save CA-consolidated subset for use in figure_2 and figure_4
+ca_only = unit_processes_df[unit_processes_df['STATE_CODE'] == 'CA'].copy()
+src_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT'}
+proc_cols = [c for c in ca_only.columns if c not in src_cols]
+agg_spec = {col: (col, 'first') for col in proc_cols}
+for meta_col in ('FACILITY_NAME', 'PERMIT_NUMBER', 'STATE_CODE', 'NPDES_PERMIT'):
+    if meta_col in ca_only.columns:
+        agg_spec[meta_col] = (meta_col, 'first')
+ca_consolidated = ca_only.groupby('CWNS_ID', dropna=False, sort=False).agg(**agg_spec).reset_index()
+
+# Every CA CWNS_ID that appears on an NPDES permit (EPA) or in ciwqs_to_cwns.csv
+# must have a row in the CA export; if it was missing from the survey aggregation,
+# add a row with process columns set to '0'.
+def pad_cwns_id(raw):
+    s = str(raw).strip()
+    return '0' + s if len(s) < 11 else s
+
+
+meta_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT'}
+process_columns = [c for c in ca_consolidated.columns if c not in meta_cols]
+ids_in_export = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
+
+ca_npdes_permits = facility_permit[
+    (facility_permit['STATE_CODE'].astype(str).str.strip() == 'CA')
+    & (facility_permit['PERMIT_SOURCE'] == 'NPDES')
+    & (~facility_permit['PERMIT_NUMBER'].astype(str).str.upper().str.startswith('CAS'))
+]
+required_ids = set(ca_npdes_permits['CWNS_ID'].astype(str).str.strip())
+
+ciwqs_path = os.path.join('data', 'ciwqs_to_cwns.csv')
+ciwqs_mapping = (
+    pd.read_csv(ciwqs_path, dtype=str).fillna('')
+    if os.path.isfile(ciwqs_path)
+    else pd.DataFrame()
+)
+for cid in ciwqs_mapping.get('CWNS_ID', pd.Series(dtype=str)).astype(str).str.strip():
+    if cid and cid.upper() != 'NA':
+        required_ids.add(pad_cwns_id(cid))
+
+missing_ids = sorted(required_ids - ids_in_export)
+if missing_ids:
+    permits_by_cwns = (
+        ca_npdes_permits.drop_duplicates('CWNS_ID', keep='first')
+        .assign(cwns_key=lambda d: d['CWNS_ID'].astype(str).str.strip())
+        .set_index('cwns_key')
+    )
+
+    ciwqs_by_cwns = pd.DataFrame()
+    stripped_cwns = ciwqs_mapping['CWNS_ID'].astype(str).str.strip()
+    ciwqs_rows = ciwqs_mapping.loc[stripped_cwns.ne('') & stripped_cwns.str.upper().ne('NA')].copy()
+    ciwqs_rows['padded_cwns_id'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
+    ciwqs_by_cwns = ciwqs_rows.drop_duplicates('padded_cwns_id', keep='first').set_index('padded_cwns_id')
+
+    fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
+
+    placeholder_rows = []
+    for cwns_id in missing_ids:
+        row = {col: '0' for col in process_columns}
+        row['CWNS_ID'] = cwns_id
+        row['STATE_CODE'] = 'CA'
+        row['NPDES_PERMIT'] = ''
+        row['PERMIT_NUMBER'] = ''
+
+        # Name: 2022 survey → 2012 survey → ciwqs mapping
+        row['FACILITY_NAME'] = (
+            fac_name_map_2022.get(cwns_id)
+            or fac12_map.get(cwns_id, '')
+        )
+
+        if cwns_id in permits_by_cwns.index:
+            permit = str(permits_by_cwns.loc[cwns_id, 'PERMIT_NUMBER']).strip()
+            row['PERMIT_NUMBER'] = permit
+            row['NPDES_PERMIT'] = permit
+
+        if len(ciwqs_by_cwns) and cwns_id in ciwqs_by_cwns.index:
+            mapping_row = ciwqs_by_cwns.loc[cwns_id]
+            if not row['NPDES_PERMIT']:
+                row['NPDES_PERMIT'] = str(mapping_row.get('NPDES_No', '')).strip()
+            cw_name = str(mapping_row.get('CWNS_Facility_Name', '')).strip()
+            fq_name = str(mapping_row.get('Facility_Name', '')).strip()
+            row['FACILITY_NAME'] = row['FACILITY_NAME'] or cw_name or fq_name
+
+        if not row['PERMIT_NUMBER']:
+            row['PERMIT_NUMBER'] = row['NPDES_PERMIT']
+
+        placeholder_rows.append(row)
+
+    ca_consolidated = pd.concat(
+        [ca_consolidated, pd.DataFrame(placeholder_rows).reindex(columns=ca_consolidated.columns)],
+        ignore_index=True,
+    )
+    print(f"Added {len(placeholder_rows)} CA CWNS placeholder rows")
+
+ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_processes_by_facility.csv"), index=False)
+print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")

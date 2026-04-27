@@ -6,7 +6,7 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
 
 
 0. Build CWNS process tables
-    - [npdes_permits/step0_build_cwns_table.py](npdes_permits/step0_build_cwns_table.py): creates unit_processes_by_facility.csv from CWNS 2004/2008/2012 data. 2022 doesn't include CA
+    - [npdes_permits/step0_build_cwns_table.py](npdes_permits/step0_build_cwns_table.py): creates cwns_processes_by_facility.csv from CWNS 2004/2008/2012 data. 2022 doesn't include CA
 
 1. Scrape permits and site metadata
     - [npdes_permits/step1_scrape_npdes.py](npdes_permits/scrape_npdes.py): downloads NPDES permit PDFs and writes site_data.csv and matched_cwns_npdes_ca.csv
@@ -14,7 +14,7 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
     Uses npdes_detection.py helpers to detect which files are actually NPDES
 
 2. Detect treatment processes in permits with keyword search
-    - [npdes_permits/step2_search_npdes_text.py](npdes_permits/search_npdes_text.py): scans PDFs against unitprocess_keywords and writes unit_processes.csv with present/future status
+    - [npdes_permits/step2_search_npdes_text.py](npdes_permits/search_npdes_text.py): scans PDFs against unitprocess_keywords and writes kw_unit_processes.csv with present/future status
     
 3. Detect treatment processes in permits with LLM search
     - [npdes_permits/step3a_llm_ontology.py](npdes_permits/step3a_llm_ontology.py): run the LLM extraction using the ontology format
@@ -24,11 +24,10 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
         - use *--model "model_name" --pdf "pdf_file_or_pdf_folder_path"* to run the LLM extraction using the specific model on the specific pdf(s) : the results are saved as json file under output/date/llm_search_list
 
 4. Post-process LLM output back to CWNS format
-    - [npdes_permits/step4_postprocess_llm_output.py](npdes_permits/step4_postprocess_llm_output.py): post-process the outputs of the LLM using the ontology and writes llm_ontology_unit_processes_by_facility.csv with present/planned/past status.
+    - [npdes_permits/step4_postprocess_llm_output.py](npdes_permits/step4_postprocess_llm_output.py): post-process the outputs of the LLM using the ontology and writes llm_ontology_cwns_processes_by_facility.csv with present/planned/past status.
 
 5. Compare NPDES text extraction vs CWNS survey data
-    - [npdes_permits/step5a_compare_aggregate_results.py](npdes_permits/step5a_compare_aggregate_results.py): compares unit_processes.csv to unit_processes_by_facility.csv with bar chart comparisons
-    - [npdes_permits/step5b_compare_facility_results.py](npdes_permits/step5b_compare_facility_results.py): compares unit_processes.csv to unit_processes_by_facility.csv (CA facilities matched by permit number) - facility-by-facility accuracy metrics (missed/hallucinated processes)
+    - [npdes_permits/step5a_compare_aggregate_results.py](npdes_permits/step5a_compare_aggregate_results.py): compares llm_unit_processes.csv to cwns_processes_by_facility.csv with bar chart comparisons
 
 ## How to Run
 Executing from the repository root directory:
@@ -38,7 +37,7 @@ python npdes_permits/step0_build_cwns_table.py
 python npdes_permits/step1_scrape_npdes.py
 python npdes_permits/step2_search_npdes_text.py
 python npdes_permits/step3a_llm_ontology.py --init_ontology
-python npdes_permits/step3a_llm_ontology.py --model gemini-2.0-flash-001 --pdf_folder npdes_permits/output/2026-2-18/npdes --facilities_information npdes_permits/data/test_data.csv
+python npdes_permits/step3a_llm_ontology.py --model gemini-2.0-flash-001 --pdf_folder npdes_permits/output/2026-2-18/npdes --facilities_information npdes_permits/data/test_set_npdes_manual.csv
 python npdes_permits/step4_postprocess_llm_output.py
 python npdes_permits/step5a_compare_aggregate_results.py
 python npdes_permits/step5b_compare_facility_results.py

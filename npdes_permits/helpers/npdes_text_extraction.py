@@ -97,8 +97,7 @@ _CHANGES_SEP = '\n\n===PLANNED CHANGES===\n\n'
 
 # Flexible patterns: allow optional spaces within "Description" to handle PDF extraction
 # artifacts where a word is split (e.g. "D ESCRIPTION" or "Descrip tion").
-_FAC_DESC_RE   = re.compile(r'Facility\s*D\s*e\s*s\s*c\s*r\s*i\s*p\s*t\s*i\s*o\s*n', re.IGNORECASE)
-_DISCH_DESC_RE = re.compile(r'Discharge\s*D\s*e\s*s\s*c\s*r\s*i\s*p\s*t\s*i\s*o\s*n', re.IGNORECASE)
+_FAC_DESC_RE = re.compile(r'Facility\s*D\s*e\s*s\s*c\s*r\s*i\s*p\s*t\s*i\s*o\s*n', re.IGNORECASE)
 
 
 def _txt_cache_path(pdf_path):
@@ -133,19 +132,7 @@ def _find_section_start(full_text):
         return second_fac, _FAC_DESC_RE, 2
     first_fac = _find_nth_re(full_text, _FAC_DESC_RE, n=1)
     if first_fac != -1:
-        second_disch = _find_nth_re(full_text, _DISCH_DESC_RE, n=2)
-        if second_disch != -1:
-            return second_disch, _DISCH_DESC_RE, 2
-        first_disch = _find_nth_re(full_text, _DISCH_DESC_RE, n=1)
-        if first_disch != -1 and first_fac > first_disch:
-            return first_disch, _DISCH_DESC_RE, 1
         return first_fac, _FAC_DESC_RE, 1
-    second_disch = _find_nth_re(full_text, _DISCH_DESC_RE, n=2)
-    if second_disch != -1:
-        return second_disch, _DISCH_DESC_RE, 2
-    first_disch = _find_nth_re(full_text, _DISCH_DESC_RE, n=1)
-    if first_disch != -1:
-        return first_disch, _DISCH_DESC_RE, 1
     return -1, None, None
 
 

@@ -27,13 +27,18 @@ def main():
     site   = pd.read_csv(SITE_DATA,  dtype=str).fillna('')
     npdes  = pd.read_csv(ALL_NPDES,  dtype=str).fillna('')
     cwns   = pd.read_csv(CWNS_TABLE, dtype=str).fillna('')
-    ciwqs  = pd.read_csv(CIWQS_MAP,  dtype=str).fillna('')
+    # keep_default_na=False preserves literal "NA" strings (manually entered no-match markers)
+    ciwqs  = pd.read_csv(CIWQS_MAP,  dtype=str, keep_default_na=False).fillna('')
 
     site['NPDES_No'] = site['NPDES_No'].str.strip().str.upper()
     ciwqs['NPDES_No'] = ciwqs['NPDES_No'].str.strip().str.upper()
 
     already_mapped = set(ciwqs['NPDES_No'].unique())
-    unmapped = site[~site['NPDES_No'].isin(already_mapped)].copy()
+    unmapped = (
+        site[~site['NPDES_No'].isin(already_mapped)]
+        .drop_duplicates(subset=['NPDES_No'])
+        .copy()
+    )
     print(f'Unmapped facilities: {len(unmapped)}')
 
     # WDID lookup from all_ca_npdes

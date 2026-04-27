@@ -4,7 +4,7 @@ import json
 from helpers.utils import extract_leaves
 from helpers.npdes_text_extraction import extract_permit_sections
 
-DATE_FOLDER = '2026-4-25'
+DATE_FOLDER = '2026-4-26'
 
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
@@ -96,53 +96,55 @@ def main():
     headers.extend(name for name, _, _ in leaves)
     
     upi.writerow(headers)
-    
-    # Main processing loop
-    for i in range(len(pdfs)):
-        path = os.path.join(directory, pdfs[i])
-        
-        print(f"Processing {pdfs[i]} ({i+1}/{len(pdfs)})")
-        
-        # Extract sections from PDF and cache to text/
-        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=True)
-        
+
+    # Pre-compute unique PDFs so shared files are only extracted once
+    unique_pdfs = list(dict.fromkeys(p for p in pdfs[1:]))  # skip header row
+    pdf_cache = {}  # filename -> (present_results, future_results) or None
+
+    for j, pdf_file in enumerate(unique_pdfs):
+        path = os.path.join(directory, pdf_file)
+        print(f"Processing {pdf_file} ({j+1}/{len(unique_pdfs)})")
+
+        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=False)
         if extraction_result is None:
-            print(f"Skipping {pdfs[i]} - extraction failed")
+            print(f"Skipping {pdf_file} - extraction failed")
+            pdf_cache[pdf_file] = None
             continue
-        
-        # Search for treatments in both sections
+
         present_results = {}
         future_results = {}
-        
-        # Search Facility Description section (present treatments)
+
         for category, processes in keywords.items():
-            if isinstance(processes, dict):
-                search_processes_in_text(
-                    extraction_result['txt_section'], 
-                    processes, 
-                    present_results, 
-                    None
-                )
-        
-        # Search Planned Changes section (future treatments)
-        if extraction_result['txt_changes']:
-            for category, processes in keywords.items():
-                if isinstance(processes, dict):
-                    search_processes_in_text(
-                        extraction_result['txt_changes'], 
-                        processes, 
-                        future_results, 
-                        None
-                    )
-        
-        # Build data row
-        data_row = [agency_name[i], facility_name[i], npdesNO[i], pdfs[i], shared_pdfs[i] if len(shared_pdfs) > i else '']
-        
+            if not isinstance(processes, dict):
+                continue
+            if 'alt_names' in processes:
+                # Top-level leaf node — wrap so search_processes_in_text sees expected structure
+                wrapped = {category: processes}
+                search_processes_in_text(extraction_result['txt_section'], wrapped, present_results, None)
+                if extraction_result['txt_changes']:
+                    search_processes_in_text(extraction_result['txt_changes'], wrapped, future_results, None)
+            else:
+                # Category node containing sub-processes
+                search_processes_in_text(extraction_result['txt_section'], processes, present_results, None)
+                if extraction_result['txt_changes']:
+                    search_processes_in_text(extraction_result['txt_changes'], processes, future_results, None)
+
+        pdf_cache[pdf_file] = (present_results, future_results)
+
+    # Write one output row per facility (shared PDFs reuse cached results)
+    for i in range(1, len(pdfs)):  # skip header row
+        pdf_file = pdfs[i]
+        cached = pdf_cache.get(pdf_file)
+        if cached is None:
+            continue
+
+        present_results, future_results = cached
+        data_row = [agency_name[i], facility_name[i], npdesNO[i], pdf_file, shared_pdfs[i] if len(shared_pdfs) > i else '']
+
         for key in all_keys:
             is_present = present_results.get(key, 0) == 1
             is_future = future_results.get(key, 0) == 1
-            
-            # Determine status: 0, "present", "present_and_future", or "future"
+
             if is_present and is_future:
                 status = "PRESENT_AND_FUTURE"
             elif is_present:
@@ -151,9 +153,9 @@ def main():
                 status = "FUTURE"
             else:
                 status = "0"
-            
+
             data_row.append(status)
-        
+
         upi.writerow(data_row)
     
     csv_file.close()

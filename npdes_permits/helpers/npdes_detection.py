@@ -113,16 +113,23 @@ def length_of_pdf(pdf_path: str) -> int:
         reader = PyPDF2.PdfReader(f)
         return len(reader.pages)
 
+_CAG_PERMIT_RE = re.compile(r'\bca\s*g\d+', re.IGNORECASE)
+
 def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> bool:
     """Detect NPDES-like patterns in the PDF at 'pdf_file'."""
     if length_of_pdf(pdf_file) < min_length:
         return False
-    # detect patterns in pdfs : 
+    early_text = extract_pdf_text(pdf_file, max_pages)
+    has_noa = bool(re.search(r'notice\s+of\s+applicability', early_text))
+    # General order documents contain a CAG permit number but are not NOAs — they cover
+    # all enrollees and are not facility-specific, so reject them.
+    if _CAG_PERMIT_RE.search(early_text) and not has_noa:
+        return False
+    # detect patterns in pdfs :
     # 1. "Table 1. Discharger Information" (for some pdfs without the full sentence)
     # 2. flexible NPDES-like sentence pattern ("the following <...> subject to <...> set forth in this <...> order")
     has_pattern = detect_text_from_pdf(pdf_file, "Table 1. Discharger Information", max_pages)
     has_pattern2 = detect_npdes_pattern(pdf_file, max_pages)
-    has_noa = detect_text_from_pdf(pdf_file, "notice of applicability", max_pages)
     return has_pattern or has_pattern2 or has_noa
 
 

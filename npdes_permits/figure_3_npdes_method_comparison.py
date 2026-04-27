@@ -13,7 +13,6 @@ from helpers.plotting import COLORS, HATCH_PATTERNS, plot_stacked_counts
 from helpers.utils import get_leaf_names
 
 DATE_FOLDER = '2026-2-18'
-GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
 
 MANUAL_SOURCE_ORDER = ['Manual', 'LLM', 'Keyword']
 MANUAL_SOURCE_COLORS = {

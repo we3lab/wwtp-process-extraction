@@ -19,9 +19,9 @@ from helpers.utils import (
 )
 from helpers.plotting import create_ground_truth_plot
 
-DATE_FOLDER = '2026-2-18'
-GOOGLE_SHEET_ID = '18U4IlfAiNH1UNdUYH5fF35fX99ll9SciKYRUuHUdT8w'
-
+DATE_FOLDER = '2026-4-26'
+figures_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
+os.makedirs(figures_dir, exist_ok=True)
 
 def build_category_facility_sets(process_cols, gt_common, text_common, cwns_common,
                                   leaf_to_category):
@@ -97,27 +97,9 @@ ca_cwns_data = pd.read_csv(CWNS_CA_CSV, dtype=str, low_memory=False)
 ca_cwns_data['CWNS_ID'] = ca_cwns_data['CWNS_ID'].astype(str).str.strip()
 merged_mapping_cwns = merge_mapping_with_cwns_processes(mapping_tbl, ca_cwns_data)
 n_with_cwns = int(rows_with_cwns_survey_attach(merged_mapping_cwns).sum())
-print(f"CIWQS mapping rows with CA CWNS survey attach: {n_with_cwns} / {len(merged_mapping_cwns)}")
-
-all_ca_npdes = pd.read_csv(f'npdes_permits/output/{DATE_FOLDER}/all_ca_npdes.csv', dtype=str)
-_npdes_clean = all_ca_npdes[all_ca_npdes['NPDES No.'].notna()][['NPDES No.', 'Facility Name']]
-npdes_permit_to_name = (
-    _npdes_clean.drop_duplicates(subset='NPDES No.', keep='first')
-    .set_index('NPDES No.')['Facility Name'].to_dict()
-)
-npdes_permit_numbers = {str(x).strip() for x in all_ca_npdes['NPDES No.'].dropna().unique()}
 npdes_with_mapping_cw = mapping_npdes_with_declared_cw(mapping_tbl)
-unmatched_npdes = sorted((npdes_permit_numbers - npdes_with_mapping_cw) - confirmed_no_cwns)
-if unmatched_npdes:
-    unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
-    pd.DataFrame({
-        'NPDES_No': unmatched_npdes,
-        'Facility_Name': [npdes_permit_to_name.get(p, '') for p in unmatched_npdes],
-    }).to_csv(unmatched_path, index=False)
-    print(f"Unmatched NPDES (no CWNS): {len(unmatched_npdes)} → {os.path.basename(unmatched_path)}")
 
-figures_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
-os.makedirs(figures_dir, exist_ok=True)
+print(f"CIWQS mapping rows with CA CWNS survey attach: {n_with_cwns} / {len(merged_mapping_cwns)}")
 
 # Build leaf → top-level category mapping
 leaf_to_category = {

@@ -332,6 +332,8 @@ active_ups = uplist_eicodes[(uplist_eicodes['PRES_IND'] == 1) | (uplist_eicodes[
 active_ups = active_ups.sort_values('REPORT_YEAR').drop_duplicates(
     subset=['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME'], keep='last'
 )
+# Restrict to treatment plants only (wwtps was already inner-joined on FACILITY_TYPE)
+active_ups = active_ups[active_ups['CWNS_NUM'].isin(set(wwtps['CWNS_NUM']))]
 
 def map_to_taxonomy(row):
     cwns_name = str(row.get('FINAL_UNIT_PROCESS_NAME', '')).lower().strip()
@@ -433,6 +435,7 @@ ids_in_export = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
 ca_npdes_permits = facility_permit[
     (facility_permit['STATE_CODE'].astype(str).str.strip() == 'CA')
     & (facility_permit['PERMIT_SOURCE'] == 'NPDES')
+    & (~facility_permit['PERMIT_NUMBER'].astype(str).str.upper().str.startswith('CAS'))
 ]
 required_ids = set(ca_npdes_permits['CWNS_ID'].astype(str).str.strip())
 
@@ -460,14 +463,21 @@ if missing_ids:
     ciwqs_rows['padded_cwns_id'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
     ciwqs_by_cwns = ciwqs_rows.drop_duplicates('padded_cwns_id', keep='first').set_index('padded_cwns_id')
 
+    fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
+
     placeholder_rows = []
     for cwns_id in missing_ids:
         row = {col: '0' for col in process_columns}
         row['CWNS_ID'] = cwns_id
         row['STATE_CODE'] = 'CA'
-        row['FACILITY_NAME'] = ''
         row['NPDES_PERMIT'] = ''
         row['PERMIT_NUMBER'] = ''
+
+        # Name: 2022 survey → 2012 survey → ciwqs mapping
+        row['FACILITY_NAME'] = (
+            fac_name_map_2022.get(cwns_id)
+            or fac12_map.get(cwns_id, '')
+        )
 
         if cwns_id in permits_by_cwns.index:
             permit = str(permits_by_cwns.loc[cwns_id, 'PERMIT_NUMBER']).strip()
@@ -480,7 +490,7 @@ if missing_ids:
                 row['NPDES_PERMIT'] = str(mapping_row.get('NPDES_No', '')).strip()
             cw_name = str(mapping_row.get('CWNS_Facility_Name', '')).strip()
             fq_name = str(mapping_row.get('Facility_Name', '')).strip()
-            row['FACILITY_NAME'] = cw_name or fq_name
+            row['FACILITY_NAME'] = row['FACILITY_NAME'] or cw_name or fq_name
 
         if not row['PERMIT_NUMBER']:
             row['PERMIT_NUMBER'] = row['NPDES_PERMIT']

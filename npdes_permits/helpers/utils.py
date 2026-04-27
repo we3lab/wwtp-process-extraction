@@ -106,59 +106,6 @@ def get_werf_codes_for_cwns_process(cwns_process_name):
     return matching['WERF_CODE'].unique().tolist() if not matching.empty else []
 
 
-def prepare_cwns_ca(cwns_proc_df, manual_csv_path, facility_name_matches_path):
-    """Consolidate CWNS CA process data with facility names and clean NPDES permits.
-
-    Input df must include FACILITY_NAME and NPDES_PERMIT columns (provided by step0 output).
-
-    Matching tiers (applied in order, later tiers override earlier):
-    1. NPDES_PERMIT from step0 output (FACILITY_PERMIT.csv, NPDES source only)
-    2. Manual overrides from cwns_permits_match_manual.csv (CWNS_ID-keyed)
-    3. Name-based matches from cwns_facility_name_match_manual.csv
-    """
-    ca = cwns_proc_df[cwns_proc_df['STATE_CODE'] == 'CA'].copy()
-    src_cols = ['CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT']
-    proc_cols = [c for c in ca.columns if c not in src_cols]
-
-    # Consolidate by CWNS_ID
-    consolidated = ca.groupby('CWNS_ID').agg(
-        raw_permit_list=('PERMIT_NUMBER', lambda x: list(x.dropna().unique())),
-        FACILITY_NAME=('FACILITY_NAME', 'first'),
-        NPDES_PERMIT=('NPDES_PERMIT', 'first'),
-        **{col: (col, 'first') for col in proc_cols}
-    ).reset_index()
-    consolidated['CWNS_ID'] = consolidated['CWNS_ID'].astype(str)
-
-    # Apply manual CSV overrides (CWNS_ID-keyed: CWNS_ID,NPDES_PERMIT,FACILITY_NAME)
-    manual = pd.read_csv(manual_csv_path, dtype=str).fillna('')
-    cwns_id_map = (manual[manual['NPDES_PERMIT'].str.strip() != '']
-                   .drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT'])
-    mask = consolidated['CWNS_ID'].isin(cwns_id_map.index)
-    consolidated.loc[mask, 'NPDES_PERMIT'] = consolidated.loc[mask, 'CWNS_ID'].map(cwns_id_map)
-
-    # Apply name-based matches
-    facility_name_manual = pd.read_csv(facility_name_matches_path, dtype=str).fillna('')
-    if len(facility_name_manual) > 0:
-        facility_name_manual_map = facility_name_manual.drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES_PERMIT']
-        missing = consolidated['NPDES_PERMIT'].isna() | (consolidated['NPDES_PERMIT'].str.strip() == '')
-        fmask = consolidated['CWNS_ID'].isin(facility_name_manual_map.index) & missing
-        consolidated.loc[fmask, 'NPDES_PERMIT'] = consolidated.loc[fmask, 'CWNS_ID'].map(facility_name_manual_map)
-
-    return consolidated
-
-
-_SUFFIX_RE = re.compile(
-    r'\b(WWTF|WWTP|WRP|WPCF|WWRF|WQCP|WPCP|WRF|WWRP|STP|SD|CSD|'
-    r'CITY\s+OF|TOWN\s+OF|COUNTY\s+OF|DISTRICT|SANITARY|SANITATION|'
-    r'WATER\s+RECLAMATION|WATER\s+POLLUTION\s+CONTROL|'
-    r'TREATMENT\s+PLANT|TREATMENT\s+FACILITY|RECLAMATION\s+FACILITY|'
-    r'RECLAMATION\s+PLANT)\b',
-    re.IGNORECASE,
-)
-
-
-
-
 def load_ciwqs_to_cwns_table(mapping_csv_path: str) -> pd.DataFrame:
     """Load ``ciwqs_to_cwns.csv`` with string cells stripped of surrounding whitespace."""
     df = pd.read_csv(mapping_csv_path, dtype=str, keep_default_na=False).fillna('')

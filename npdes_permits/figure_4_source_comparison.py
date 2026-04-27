@@ -45,7 +45,7 @@ from helpers.utils import (
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar
 
-DATE_FOLDER = '2026-4-25'
+DATE_FOLDER = '2026-4-26'
 OUTPUT_DIR  = f'npdes_permits/output/{DATE_FOLDER}/figures'
 MIN_COUNT   = 15  # drop bar groups where both sources are below this threshold
 
@@ -250,6 +250,39 @@ def make_legend(ax, fontsize=12):
     return leg
 
 
+def draw_group_kw(ax, x, bar_w, cwns_counts, kw_counts, alpha_scale=1.0):
+    """Draw CWNS | KW bars centred at position x."""
+    spec = _plot_stack_spec()
+    draw_stacked_bar(ax, x - bar_w / 2, bar_w, cwns_counts, COLORS['cwns'],  spec, alpha_scale)
+    draw_stacked_bar(ax, x + bar_w / 2, bar_w, kw_counts,   COLORS['npdes'], spec, alpha_scale)
+
+def make_legend_kw(ax, fontsize=12):
+    """Build legend for keyword comparison."""
+    source_handles = [
+        mpatches.Patch(facecolor=COLORS['cwns'],  edgecolor='black', lw=0.5, label='CWNS'),
+        mpatches.Patch(facecolor=COLORS['npdes'], edgecolor='black', lw=0.5, label='NPDES - Keyword Search'),
+    ]
+    status_handles = [
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['PRESENT'],  edgecolor='black', lw=0.5, label='Present'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['PAST'],     edgecolor='black', lw=0.5, label='Past'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['FUTURE'],   edgecolor='black', lw=0.5, label='Future'),
+        mpatches.Patch(facecolor='grey', hatch=HATCH_PATTERNS['OFFSITE'], edgecolor='black', lw=0.5, alpha=0.85, label='Offsite'),
+    ]
+    header_source = mpatches.Patch(color='none', label='Data Source')
+    header_status = mpatches.Patch(color='none', label='Status')
+    handles = [header_source] + list(source_handles) + [header_status] + list(status_handles)
+    header_indices = {0, 1 + len(source_handles)}
+    leg = ax.legend(handles=handles, loc='upper left', bbox_to_anchor=(1.01, 1.0),
+                    borderaxespad=0, fontsize=fontsize, framealpha=0.85)
+    for i, (h, t) in enumerate(zip(leg.legend_handles, leg.get_texts())):
+        if i in header_indices:
+            h.set_visible(False)
+            t.set_fontweight('bold')
+        if i == 0:
+            t.set_horizontalalignment('left')
+    return leg
+
+
 def sort_leaf_items_by_count(items, labels, cwns_counts_list, llm_counts_list):
     """Sort leaf items by total count descending within each category group; totals stay first."""
     tuples = list(zip(items, labels, cwns_counts_list, llm_counts_list))
@@ -288,6 +321,36 @@ past_count   = sum((llm_df[c] == 'PAST').sum() for c in proc_cols_llm)
 future_count = sum((llm_df[c] == 'FUTURE').sum() for c in proc_cols_llm)
 print(f"  LLM facilities: {len(llm_df)}  |  'PAST' (in plot stacks): {past_count}"
       f"  |  'FUTURE': {future_count}")
+
+
+print("Loading keyword search data …")
+kw_path = f'npdes_permits/output/{DATE_FOLDER}/unit_processes.csv'
+kw_df = pd.read_csv(kw_path, dtype=str)
+_meta = {'AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'PDF_File', 'Shared_PDF'}
+proc_cols_kw = [c for c in kw_df.columns if c not in _meta]
+for col in proc_cols_kw:
+    kw_df[col] = kw_df[col].str.strip().str.upper().replace({'0': '', 'NAN': ''})
+kw_df['PERMIT_NUMBER'] = kw_df['PERMIT_NUMBER'].astype(str).str.strip()
+print(f"  Keyword rows (pre-dedup): {len(kw_df)}")
+
+
+def deduplicate_kw_facilities(df, proc_cols):
+    """Collapse multiple rows per permit: PRESENT if any row has it."""
+    rows = []
+    for permit, group in df.groupby('PERMIT_NUMBER', dropna=False, sort=False):
+        out = {
+            'PERMIT_NUMBER': permit,
+            'FACILITY_NAME': next((v for v in group.get('FACILITY_NAME', []) if pd.notna(v) and v), ''),
+            'AGENCY_NAME':   next((v for v in group.get('AGENCY_NAME',   []) if pd.notna(v) and v), ''),
+        }
+        for col in proc_cols:
+            out[col] = 'PRESENT' if (group[col] == 'PRESENT').any() else ''
+        rows.append(out)
+    return pd.DataFrame(rows)
+
+before_kw = len(kw_df)
+kw_df = deduplicate_kw_facilities(kw_df, proc_cols_kw)
+print(f"  Keyword facilities deduplicated: {before_kw} rows → {len(kw_df)} facilities")
 
 print("Loading and matching CWNS data (ciwqs_to_cwns.csv + exact CWNS_ID join)")
 mapping_tbl = load_ciwqs_to_cwns_table('npdes_permits/data/ciwqs_to_cwns.csv')
@@ -331,8 +394,12 @@ if unmatched_npdes:
 llm_df = llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(matched_permits)].copy()
 print(f"  LLM rows after filter: {len(llm_df)}")
 
+kw_df = kw_df[kw_df['PERMIT_NUMBER'].isin(matched_permits)].copy()
+print(f"  Keyword rows after filter: {len(kw_df)}")
+
 N_CWNS = len(cwns_df)
 N_LLM  = len(llm_df)
+N_KW   = len(kw_df)
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -432,45 +499,51 @@ for group_title, json_cats in PLOT_GROUPS.items():
 # One bar group per top-level JSON category. Stacks sum status counts over all
 # leaves in that category (same rule as combined treatment-stage bars).
 
-print("\nGenerating major-categories plot …")
-cat_labels = list(keywords.keys())
+print("\nGenerating major-categories plots …")
 
-all_cwns = []
-all_llm  = []
-for cat_name, cat_val in keywords.items():
-    leaves = get_leaf_names(cat_name, cat_val)
-    all_cwns.append(get_facility_counts(cwns_df, leaves))
-    all_llm.append(get_facility_counts(llm_df, leaves))
+# REPLACE WITH:
+for comparison_type in ['llm', 'kw']:
+    print(f"\n  Generating {comparison_type.upper()} major-categories plot…")
+    comparison_df = llm_df if comparison_type == 'llm' else kw_df
+    draw_fn = draw_group if comparison_type == 'llm' else draw_group_kw
+    legend_fn = make_legend if comparison_type == 'llm' else make_legend_kw
+    suffix = 'source_comparison' if comparison_type == 'llm' else 'kw_compare'
+    
+    cat_labels = list(keywords.keys())
 
-cat_filtered = [
-    (lbl, cwns_c, llm_c)
-    for lbl, cwns_c, llm_c in zip(cat_labels, all_cwns, all_llm)
-    if total_count(cwns_c) >= MIN_COUNT or total_count(llm_c) >= MIN_COUNT
-]
-if cat_filtered:
-    cat_labels, all_cwns, all_llm = map(list, zip(*cat_filtered))
+    all_cwns = []
+    all_comp  = []
+    for cat_name, cat_val in keywords.items():
+        leaves = get_leaf_names(cat_name, cat_val)
+        all_cwns.append(get_facility_counts(cwns_df, leaves))
+        all_comp.append(get_facility_counts(comparison_df, leaves))
 
-# Sort by combined total descending
-order = sorted(range(len(cat_labels)),
-               key=lambda i: -(total_count(all_cwns[i]) + total_count(all_llm[i])))
-cat_labels = [cat_labels[i] for i in order]
-all_cwns   = [all_cwns[i]   for i in order]
-all_llm    = [all_llm[i]    for i in order]
+    cat_filtered = [
+        (lbl, cwns_c, comp_c)
+        for lbl, cwns_c, comp_c in zip(cat_labels, all_cwns, all_comp)
+        if total_count(cwns_c) >= MIN_COUNT or total_count(comp_c) >= MIN_COUNT
+    ]
+    if cat_filtered:
+        cat_labels, all_cwns, all_comp = map(list, zip(*cat_filtered))
 
-n = len(cat_labels)
-fig, ax = plt.subplots(figsize=(max(14, n * 0.55), 6))
+    order = sorted(range(len(cat_labels)),
+                   key=lambda i: -(total_count(all_cwns[i]) + total_count(all_comp[i])))
+    cat_labels = [cat_labels[i] for i in order]
+    all_cwns   = [all_cwns[i]   for i in order]
+    all_comp   = [all_comp[i]   for i in order]
 
-for i, (cwns_c, llm_c) in enumerate(zip(all_cwns, all_llm)):
-    draw_group(ax, i, bar_w, cwns_c, llm_c)
+    n = len(cat_labels)
+    fig, ax = plt.subplots(figsize=(max(14, n * 0.55), 6))
 
-set_axes(ax, cat_labels, list(range(n)), rotation=45)
-make_legend(ax)
+    for i, (cwns_c, comp_c) in enumerate(zip(all_cwns, all_comp)):
+        draw_fn(ax, i, bar_w, cwns_c, comp_c)
 
-final_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
-os.makedirs(final_dir, exist_ok=True)
-path = f'{final_dir}/figure_4_major_categories_source_comparison.png'
-plt.savefig(path, dpi=200, bbox_inches='tight')
-plt.close(fig)
-print(f"  Saved {os.path.basename(path)}")
+    set_axes(ax, cat_labels, list(range(n)), rotation=45)
+    legend_fn(ax)
 
-print("\nDone.")
+    final_dir = f'npdes_permits/output/{DATE_FOLDER}/final'
+    os.makedirs(final_dir, exist_ok=True)
+    path = f'{final_dir}/figure_4_major_categories_{suffix}.png'
+    plt.savefig(path, dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print(f"    Saved {os.path.basename(path)}")

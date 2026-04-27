@@ -14,7 +14,7 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
     Uses npdes_detection.py helpers to detect which files are actually NPDES
 
 2. Detect treatment processes in permits with keyword search
-    - [npdes_permits/step2_search_npdes_text.py](npdes_permits/search_npdes_text.py): scans PDFs against unitprocess_keywords and writes unit_processes.csv with present/future status
+    - [npdes_permits/step2_search_npdes_text.py](npdes_permits/search_npdes_text.py): scans PDFs against unitprocess_keywords and writes kw_unit_processes.csv with present/future status
     
 3. Detect treatment processes in permits with LLM search
     - [npdes_permits/step3a_llm_ontology.py](npdes_permits/step3a_llm_ontology.py): run the LLM extraction using the ontology format
@@ -27,8 +27,7 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
     - [npdes_permits/step4_postprocess_llm_output.py](npdes_permits/step4_postprocess_llm_output.py): post-process the outputs of the LLM using the ontology and writes llm_ontology_cwns_processes_by_facility.csv with present/planned/past status.
 
 5. Compare NPDES text extraction vs CWNS survey data
-    - [npdes_permits/step5a_compare_aggregate_results.py](npdes_permits/step5a_compare_aggregate_results.py): compares unit_processes.csv to cwns_processes_by_facility.csv with bar chart comparisons
-    - [npdes_permits/step5b_compare_facility_results.py](npdes_permits/step5b_compare_facility_results.py): compares unit_processes.csv to cwns_processes_by_facility.csv (CA facilities matched by permit number) - facility-by-facility accuracy metrics (missed/hallucinated processes)
+    - [npdes_permits/step5a_compare_aggregate_results.py](npdes_permits/step5a_compare_aggregate_results.py): compares llm_unit_processes.csv to cwns_processes_by_facility.csv with bar chart comparisons
 
 ## How to Run
 Executing from the repository root directory:

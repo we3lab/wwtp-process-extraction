@@ -25,7 +25,7 @@ CIWQS_ROOT = "https://ciwqs.waterboards.ca.gov"
 CIWQS_SERVLET = f"{CIWQS_ROOT}/ciwqs/readOnly/CiwqsReportServlet"
 
 # Link to Interactive Regulated Facilities Report
-rfr_url = 'https://ciwqs.waterboards.ca.gov/ciwqs/readOnly/CiwqsReportServlet?inCommand=reset&reportName=RegulatedFacility'
+rfr_url = "https://ciwqs.waterboards.ca.gov/ciwqs/readOnly/CiwqsReportServlet?inCommand=reset&reportName=RegulatedFacility"
 
 # Set INCLUDE_WDR=False to restrict collection to NPDES-only facilities (exclude WDR/WDRMUNIL).
 INCLUDE_WDR = True
@@ -40,32 +40,44 @@ CIWQS_RELATED_PERMIT_STATUS = "Active"
 # Maps output CSV key -> CIWQS table column header.
 # Used both to build facility dicts and to validate header detection.
 FACILITY_FIELDS = [
-    ('Agency',        'Agency'),
-    ('Facility_Name', 'Facility Name'),
-    ('NPDES_No',      'NPDES No.'),
-    ('Region',        'Region'),
-    ('Major/Minor',   'Major/Minor'),
-    ('Order_No',      'Order No.'),
+    ("Agency", "Agency"),
+    ("Facility_Name", "Facility Name"),
+    ("NPDES_No", "NPDES No."),
+    ("Region", "Region"),
+    ("Major/Minor", "Major/Minor"),
+    ("Order_No", "Order No."),
 ]
 
-# Output path
-path = 'npdes_permits/output'
-now = datetime.now()
-pdf_folder = f'{now.year}-{now.month}-{now.day}'
-full_path = os.path.join(path, pdf_folder)
-pdfs_path = os.path.join(full_path, 'pdfs')
+# Output path — set DATE_FOLDER to re-run steps 3/4 against an existing run's folder.
+DATE_FOLDER = "2026-4-26"  # set to e.g. '2026-4-26' to re-run steps 3/4 against an existing folder
+path = "npdes_permits/output"
+if DATE_FOLDER:
+    full_path = os.path.join(path, DATE_FOLDER)
+else:
+    now = datetime.now()
+    full_path = os.path.join(path, f"{now.year}-{now.month}-{now.day}")
+pdfs_path = os.path.join(full_path, "pdfs")
 os.makedirs(full_path, exist_ok=True)
 os.makedirs(pdfs_path, exist_ok=True)
 
 _SEP = " .-_"
 _BASE_KW = ["noa", "noi", "rpts", "rowd", "per"]
-_PHRASE_KW = ["report", "financial", "notice of", "response to",
-              "rate study", "ratestudy", "study", "letter"]
+_PHRASE_KW = [
+    "report",
+    "financial",
+    "notice of",
+    "response to",
+    "rate study",
+    "ratestudy",
+    "study",
+    "letter",
+]
 SKIP_CONFIG = {
-    "embedded":  [f"{s1}{kw}{s2}" for kw in _BASE_KW for s1 in _SEP for s2 in _SEP] + _PHRASE_KW,
+    "embedded": [f"{s1}{kw}{s2}" for kw in _BASE_KW for s1 in _SEP for s2 in _SEP] + _PHRASE_KW,
     "beginning": [f"{kw}{s}" for kw in _BASE_KW for s in _SEP],
 }
 NOA_SET = {"noa", "noi"}
+
 
 def abs_url(href):
     if not href or href.startswith("http"):
@@ -76,8 +88,11 @@ def abs_url(href):
 
 
 def hidden_fields(soup):
-    return {i["name"]: i.get("value", "")
-            for i in soup.find_all("input", type="hidden") if i.get("name")}
+    return {
+        i["name"]: i.get("value", "")
+        for i in soup.find_all("input", type="hidden")
+        if i.get("name")
+    }
 
 
 def select_value(soup, name, visible_text, *, required_label=None):
@@ -143,10 +158,10 @@ def ciwqs_post_data(hidden, soup, programs, *, facility_type, waste_type, status
         list(hidden.items())
         + [("programDrop", select_value(soup, "programDrop", p)) for p in programs]
         + [
-            ("typeDrop",      select_value(soup, "typeDrop",      facility_type)),
+            ("typeDrop", select_value(soup, "typeDrop", facility_type)),
             ("wasteTypeDrop", select_value(soup, "wasteTypeDrop", waste_type)),
-            ("inStatus",      status),
-            ("enpRepButton",  ""),
+            ("inStatus", status),
+            ("enpRepButton", ""),
         ]
     )
 
@@ -154,7 +169,8 @@ def ciwqs_post_data(hidden, soup, programs, *, facility_type, waste_type, status
 def extract_drilldown_url(soup, *, allow_program_scope=True):
     """Extract the best drilldown URL from a CIWQS search results page."""
     candidates = [
-        abs_url(a["href"]) for a in soup.find_all("a", href=True)
+        abs_url(a["href"])
+        for a in soup.find_all("a", href=True)
         if "RegulatedFacilityDetail" in a["href"] and "drilldown" in a["href"]
     ]
     excluded = ["place=", "majorminor="] + ([] if allow_program_scope else ["program="])
@@ -180,12 +196,14 @@ def process_all_facilities(driver, facility_url_to_facilities, output_dir):
             if not order_url:
                 print("  X No suitable active NPDES order found")
                 facility_order_info[facility_url] = {
-                    'pdfs': [], 'total_pdfs': 0,
-                    'reg_measure_id': None, 'reg_measure_type': None,
+                    "pdfs": [],
+                    "total_pdfs": 0,
+                    "reg_measure_id": None,
+                    "reg_measure_type": None,
                 }
                 continue
 
-            reg_id = parse_qs(urlparse(order_url).query).get('regMeasID', [None])[0]
+            reg_id = parse_qs(urlparse(order_url).query).get("regMeasID", [None])[0]
 
             if reg_id and reg_id in reg_id_to_info:
                 print(f"  Dedup: reusing already-processed order {reg_id}")
@@ -193,14 +211,17 @@ def process_all_facilities(driver, facility_url_to_facilities, output_dir):
                 continue
 
             downloaded_pdfs, total_pdfs = download_pdfs_for_order(
-                driver, order_url, output_dir,
-                allow_noa=(rm_type == "ENROLLEE - NPDES"), main_window=main_window
+                driver,
+                order_url,
+                output_dir,
+                allow_noa=(rm_type == "ENROLLEE - NPDES"),
+                main_window=main_window,
             )
             info = {
-                'pdfs': downloaded_pdfs,
-                'total_pdfs': total_pdfs,
-                'reg_measure_id': reg_id,
-                'reg_measure_type': rm_type,
+                "pdfs": downloaded_pdfs,
+                "total_pdfs": total_pdfs,
+                "reg_measure_id": reg_id,
+                "reg_measure_type": rm_type,
             }
             facility_order_info[facility_url] = info
             if reg_id:
@@ -209,7 +230,7 @@ def process_all_facilities(driver, facility_url_to_facilities, output_dir):
         except Exception as e:
             print(f"  X {e}")
             for f in facilities:
-                failed_facilities.append({**f, 'error': str(e)[:200]})
+                failed_facilities.append({**f, "error": str(e)[:200]})
             try:
                 if driver.current_window_handle != main_window:
                     driver.close()
@@ -220,16 +241,27 @@ def process_all_facilities(driver, facility_url_to_facilities, output_dir):
     return failed_facilities, facility_order_info
 
 
+def build_pdf_group_context(facility_order_info):
+    """PDF filename -> reg_measure groups; group key -> PDFs (for NOA companion checks)."""
+    pdf_to_groups, group_to_pdfs = {}, {}
+    for url, info in facility_order_info.items():
+        g = info.get("reg_measure_id") or url
+        for pdf in info.get("pdfs", []):
+            pdf_to_groups.setdefault(pdf, set()).add(g)
+            group_to_pdfs.setdefault(g, set()).add(pdf)
+    return pdf_to_groups, group_to_pdfs
+
+
 def find_best_order(driver, facility_url, main_window):
     """Navigate to facility page, parse HTML, and return best active NPDES order.
-    
+
     Returns: (order_url, reg_measure_type) or (None, None)
     """
     TYPE_RANK = {"NPDES PERMIT": 0, "CO-PERMITTEE": 1, "ENROLLEE - NPDES": 2}
-    REQUIRED_HEADERS = ['Reg Measure Type', 'Order No']
+    REQUIRED_HEADERS = ["Reg Measure Type", "Order No"]
     COLUMN_CHECKS = [
-        ('Status', lambda v: v.lower() == 'active'),
-        ('Reg Measure Type', lambda v: v.upper() in TYPE_RANK),
+        ("Status", lambda v: v.lower() == "active"),
+        ("Reg Measure Type", lambda v: v.upper() in TYPE_RANK),
     ]
 
     # Navigate to facility page
@@ -237,30 +269,30 @@ def find_best_order(driver, facility_url, main_window):
     time.sleep(1)
     new_win = [h for h in driver.window_handles if h != main_window][0]
     driver.switch_to.window(new_win)
-    
-    WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.TAG_NAME, 'table')))
+
+    WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.TAG_NAME, "table")))
     time.sleep(1)
-    
+
     page_html = driver.page_source
     driver.close()
     driver.switch_to.window(main_window)
-    
+
     # Parse HTML for best order
     soup = BeautifulSoup(page_html, "html.parser")
-    for table in soup.find_all('table'):
-        all_rows = table.find_all('tr')
-        
+    for table in soup.find_all("table"):
+        all_rows = table.find_all("tr")
+
         # Find header row
         for hdr_idx, row in enumerate(all_rows[:4]):
-            cells = row.find_all(['td', 'th'])
+            cells = row.find_all(["td", "th"])
             texts = [c.get_text(strip=True) for c in cells]
-            
+
             # Validate header row
             if len(texts) < 5 or any(len(t) > 80 for t in texts):
                 continue
             if not all(any(req in t for t in texts) for req in REQUIRED_HEADERS):
                 continue
-            
+
             col_index = {t: i for i, t in enumerate(texts)}
             best_href, best_type_rank = None, 99
             best_effective, best_rm_type = pd.NaT, None
@@ -271,49 +303,50 @@ def find_best_order(driver, facility_url, main_window):
                 return dcells[i].get_text(strip=True) if 0 <= i < len(dcells) else ""
 
             # Process data rows
-            for data_row in all_rows[hdr_idx + 1:]:
-                dcells = data_row.find_all('td')
+            for data_row in all_rows[hdr_idx + 1 :]:
+                dcells = data_row.find_all("td")
                 if not dcells:
                     continue
-                
+
                 # Apply validation checks
                 if not all(check_fn(gc(col_name)) for col_name, check_fn in COLUMN_CHECKS):
                     continue
-                
+
                 # Extract order URL
-                order_idx = col_index.get('Order No.', -1)
+                order_idx = col_index.get("Order No.", -1)
                 if order_idx < 0 or order_idx >= len(dcells):
                     continue
-                
-                a_tag = dcells[order_idx].find('a', href=True)
+
+                a_tag = dcells[order_idx].find("a", href=True)
                 if not a_tag:
                     continue
-                
-                href = abs_url(a_tag['href'])
+
+                href = abs_url(a_tag["href"])
                 if not href:
                     continue
-                
+
                 # Calculate priority
-                rm_type = gc('Reg Measure Type').upper()
+                rm_type = gc("Reg Measure Type").upper()
                 type_rank = TYPE_RANK[rm_type]
-                effective_dt = pd.to_datetime(gc('Effective Date'), errors='coerce')
-                
+                effective_dt = pd.to_datetime(gc("Effective Date"), errors="coerce")
+
                 if pd.isna(effective_dt):
                     continue
-                
+
                 # Update best if higher priority
-                if (type_rank < best_type_rank or 
-                    (type_rank == best_type_rank and effective_dt > best_effective)):
+                if type_rank < best_type_rank or (
+                    type_rank == best_type_rank and effective_dt > best_effective
+                ):
                     best_href = href
                     best_type_rank = type_rank
                     best_effective = effective_dt
                     best_rm_type = rm_type
-            
+
             if best_href:
-                eff_str = best_effective.date() if not pd.isna(best_effective) else 'N/A'
+                eff_str = best_effective.date() if not pd.isna(best_effective) else "N/A"
                 print(f"  Best order: {best_rm_type}, rank={best_type_rank}, effective={eff_str}")
                 return best_href, best_rm_type
-    
+
     return None, None
 
 
@@ -323,9 +356,12 @@ def download_pdfs_for_order(driver, order_url, output_dir, allow_noa=False, main
         main_window = driver.window_handles[0]
 
     active_skip = (
-        {k: [p for p in v if not any(n in p.lower() for n in NOA_SET)]
-         for k, v in SKIP_CONFIG.items()}
-        if allow_noa else SKIP_CONFIG
+        {
+            k: [p for p in v if not any(n in p.lower() for n in NOA_SET)]
+            for k, v in SKIP_CONFIG.items()
+        }
+        if allow_noa
+        else SKIP_CONFIG
     )
 
     driver.execute_script(f"window.open('{order_url}', '_blank');")
@@ -345,20 +381,24 @@ def download_pdfs_for_order(driver, order_url, output_dir, allow_noa=False, main
         try:
             pdf_name = pdf_element.text
             pdf_lower = pdf_name.lower()
-            if (any(kw.lower() in pdf_lower for kw in active_skip['embedded']) or
-                    any(pdf_lower.startswith(p.lower()) for p in active_skip['beginning'])):
+            if any(kw.lower() in pdf_lower for kw in active_skip["embedded"]) or any(
+                pdf_lower.startswith(p.lower()) for p in active_skip["beginning"]
+            ):
                 print(f"        Skipping: {pdf_name}")
                 continue
 
             print(f"        Downloading: {pdf_name}")
-            before = {f for f in os.listdir(output_dir) if f.lower().endswith('.pdf')}
+            before = {f for f in os.listdir(output_dir) if f.lower().endswith(".pdf")}
             pdf_element.click()
 
             end = time.time() + 60
             new_file = None
             while time.time() < end:
-                current = {f for f in os.listdir(output_dir)
-                           if f.lower().endswith('.pdf') and not f.endswith('.crdownload')}
+                current = {
+                    f
+                    for f in os.listdir(output_dir)
+                    if f.lower().endswith(".pdf") and not f.endswith(".crdownload")
+                }
                 new = current - before
                 if new:
                     newest = max(new, key=lambda f: os.path.getctime(os.path.join(output_dir, f)))
@@ -392,9 +432,12 @@ def wait_for_downloads(directory, timeout=60):
     """Wait for an .xls/.xlsx file to appear and finish downloading."""
     end_time = time.time() + timeout
     while time.time() < end_time:
-        files = [f for f in
-                 glob.glob(os.path.join(directory, '*.xlsx')) + glob.glob(os.path.join(directory, '*.xls'))
-                 if not f.lower().endswith('.crdownload')]
+        files = [
+            f
+            for f in glob.glob(os.path.join(directory, "*.xlsx"))
+            + glob.glob(os.path.join(directory, "*.xls"))
+            if not f.lower().endswith(".crdownload")
+        ]
         if files and all(_file_stable(f) for f in files):
             return files
         time.sleep(0.5)
@@ -429,13 +472,15 @@ def selection(driver, name, text):
 def _set_page_all():
     for attempt in range(1, 3):
         try:
-            selection(driver, 'pagesizeselect', 'ALL')
+            selection(driver, "pagesizeselect", "ALL")
             try:
-                wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'loading')))
+                wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, "loading")))
             except Exception:
                 pass
             return WebDriverWait(driver, 90).until(
-                EC.presence_of_element_located((By.XPATH, "//table[contains(@class,'ciwqsReportDataTable')]"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "//table[contains(@class,'ciwqsReportDataTable')]")
+                )
             )
         except Exception as e:
             print(f"[selenium] pagesizeselect ALL did not stabilize ({attempt}/2): {e}")
@@ -487,7 +532,6 @@ def _set_page_all():
 # driver.set_page_load_timeout(120)
 
 # _load_ciwqs_table(total_url, "Facility page")
-# driver.save_screenshot('npdes_permits/output/web_page.png')
 # print("Detail page loaded, filters should be preserved")
 # time.sleep(5)
 # table_body = _set_page_all()
@@ -638,7 +682,7 @@ def _set_page_all():
 # To restart from here (skip Step 1 URL scraping), comment out everything above
 # through the checkpoint save and instead load the checkpoint:
 #
-with open(os.path.join(full_path, 'facility_urls.json')) as f:
+with open(os.path.join(full_path, "facility_urls.json")) as f:
     facility_url_to_facilities = json.load(f)
 driver = new_chrome_driver(pdfs_path)
 wait = WebDriverWait(driver, 120)
@@ -656,10 +700,14 @@ failed_facilities, facility_order_info = process_all_facilities(
 
 if failed_facilities:
     pd.DataFrame(failed_facilities).to_csv(
-        os.path.join(full_path, 'failed_facilities.csv'),
-        index=False
+        os.path.join(full_path, "failed_facilities.csv"), index=False
     )
     print(f"Wrote {len(failed_facilities)} failed facilities to failed_facilities.csv")
+
+order_info_path = os.path.join(full_path, "facility_order_info.json")
+with open(order_info_path, "w") as f:
+    json.dump(facility_order_info, f, indent=2, default=str)
+print(f"Checkpoint saved: facility_order_info.json")
 
 # Quit driver
 driver.quit()
@@ -667,32 +715,65 @@ driver.quit()
 print(f"Unique facility page URLs collected: {len(facility_url_to_facilities)}")
 
 # ============================================================================
+# To re-run from STEP 3 (PDFs already in pdfs/), comment out STEP 2 above and uncomment:
+# with open(os.path.join(full_path, 'facility_urls.json')) as f:
+#     facility_url_to_facilities = json.load(f)
+# with open(os.path.join(full_path, 'facility_order_info.json')) as f:
+#     facility_order_info = json.load(f)
+# ============================================================================
+
+# ============================================================================
 # STEP 3: DETECT AND MOVE NPDES PDFs TO SEPARATE FOLDER
 # ============================================================================
 print("\n STEP 3: Detecting and moving NPDES PDFs")
 
-npdes_path = os.path.join(full_path, 'npdes')
+npdes_path = os.path.join(full_path, "npdes")
 os.makedirs(npdes_path, exist_ok=True)
 
 npdes_pdfs = set()
 non_npdes_pdfs = set()
+pdf_to_groups, group_to_pdfs = build_pdf_group_context(facility_order_info)
+pdf_signals = {}
 
 # classify everything in pdfs/ and move NPDES files to npdes/
-scan_dirs = [(pdfs_path, True)]   # (dir, move_to_npdes_if_pass)
+scan_dirs = [(pdfs_path, True)]  # (dir, move_to_npdes_if_pass)
+
+for scan_dir, _ in scan_dirs:
+    for filename in os.listdir(scan_dir):
+        if not filename.endswith(".pdf"):
+            continue
+        path = os.path.join(scan_dir, filename)
+        try:
+            pdf_signals[filename] = detect_npdes(path)
+        except Exception as e:
+            print(f"Error reading signals for {filename}: {e}")
+            non_npdes_pdfs.add(filename)
+
+group_has_noa = {
+    g: any(pdf_signals[p]["has_noa"] for p in ps if p in pdf_signals)
+    for g, ps in group_to_pdfs.items()
+}
 
 for scan_dir, move_if_pass in scan_dirs:
     for filename in os.listdir(scan_dir):
-        if not filename.endswith('.pdf'):
+        if not filename.endswith(".pdf"):
             continue
-
-        file_path = os.path.join(scan_dir, filename)
-
+        signals = pdf_signals.get(filename)
+        if signals is None:
+            continue
+        path = os.path.join(scan_dir, filename)
         try:
-            if detect_npdes(file_path):
+            if signals["is_generic_cag"] and any(group_has_noa.get(g, False) for g in pdf_to_groups.get(filename, ())):
+                print(f"Skipped generic CAG (NOA in same order): {filename}")
+                non_npdes_pdfs.add(filename)
+                continue
+            if signals["is_npdes"]:
                 if move_if_pass:
-                    os.rename(file_path, os.path.join(npdes_path, filename))
+                    os.rename(path, os.path.join(npdes_path, filename))
                 print(f"NPDES detected: {filename}")
                 npdes_pdfs.add(filename)
+            else:
+                non_npdes_pdfs.add(filename)
         except Exception as e:
             print(f"Error processing {filename}: {e}")
             non_npdes_pdfs.add(filename)
@@ -705,30 +786,53 @@ print(f"Non-NPDES PDFs kept in pdfs folder: {len(non_npdes_pdfs)}")
 # ============================================================================
 print("\n STEP 4: Creating site_data.csv with NPDES permits only")
 
-site_data_path = os.path.join(full_path, 'site_data.csv')
+site_data_path = os.path.join(full_path, "site_data.csv")
+
+
+def _build_npdes_to_wdid(full_path):
+    """Build NPDES_No → WDID lookup from all_ca_npdes.csv or the raw Excel export."""
+    csv_path = os.path.join(full_path, "all_ca_npdes.csv")
+    xls_path = os.path.join(full_path, "pdfs", "Regualted_Facility_Report_Detail.xls")
+    for path, sep in [(csv_path, ","), (xls_path, "\t")]:
+        if os.path.exists(path):
+            df = pd.read_csv(
+                path, sep=sep, dtype=str, encoding="latin-1", on_bad_lines="warn"
+            ).fillna("")
+            permit_col = next((c for c in ["NPDES No.", "NPDES_No"] if c in df.columns), None)
+            if permit_col and "WDID" in df.columns:
+                return df.set_index(df[permit_col].str.strip().str.upper())["WDID"].to_dict()
+    return {}
+
+
+npdes_to_wdid = _build_npdes_to_wdid(full_path)
+print(f"  WDID lookup: {len(npdes_to_wdid)} entries")
 
 # Count distinct facilities mapping to each NPDES PDF (for Shared_PDF flag)
 pdf_to_n_facilities = {}
 for facility_url, info in facility_order_info.items():
     n = len(facility_url_to_facilities.get(facility_url, []))
-    for pdf in info['pdfs']:
+    for pdf in info["pdfs"]:
         if pdf in npdes_pdfs:
             pdf_to_n_facilities[pdf] = pdf_to_n_facilities.get(pdf, 0) + n
 
 rows = []
 for facility_url, info in facility_order_info.items():
     for facility in facility_url_to_facilities.get(facility_url, []):
-        for pdf in info['pdfs']:
+        for pdf in info["pdfs"]:
             if pdf not in npdes_pdfs:
                 continue
-            rows.append({
-                **facility,
-                'Reg_Measure_ID':       info['reg_measure_id'],
-                'Reg_Measure_Type':     info['reg_measure_type'],
-                'PDF_File':             pdf,
-                'Shared_PDF':           'Yes' if pdf_to_n_facilities.get(pdf, 0) > 1 else 'No',
-                'Total_PDFs_Available': info['total_pdfs'],
-            })
+            npdes_key = facility.get("NPDES_No", "").strip().upper()
+            rows.append(
+                {
+                    "WDID": npdes_to_wdid.get(npdes_key, ""),
+                    **facility,
+                    "Reg_Measure_ID": info["reg_measure_id"],
+                    "Reg_Measure_Type": info["reg_measure_type"],
+                    "PDF_File": pdf,
+                    "Shared_PDF": ("Yes" if pdf_to_n_facilities.get(pdf, 0) > 1 else "No"),
+                    "Total_PDFs_Available": info["total_pdfs"],
+                }
+            )
 
 pd.DataFrame(rows).to_csv(site_data_path, index=False)
 print(f"Wrote {len(rows)} rows to site_data.csv")

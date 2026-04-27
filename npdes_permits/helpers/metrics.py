@@ -13,7 +13,9 @@ METRIC_SCORE_COLUMNS = (
 )
 
 
-def _score_from_counts(tp: int, fp: int, fn: int, tn: int, state_correct: int, state_total: int) -> dict:
+def _score_from_counts(
+    tp: int, fp: int, fn: int, tn: int, state_correct: int, state_total: int
+) -> dict:
     """Compute scalar metrics from confusion counts and state-match counts."""
     precision = tp / (tp + fp) if (tp + fp) else float("nan")
     recall = tp / (tp + fn) if (tp + fn) else float("nan")
@@ -54,7 +56,9 @@ def _confusion_and_state_counts(manual_states, pred_states) -> tuple:
     return tp, fp, fn, tn, state_correct, state_total
 
 
-def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str) -> pd.DataFrame:
+def compute_metrics(
+    manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str
+) -> pd.DataFrame:
     rows = []
     manual_indexed = manual_df.set_index("key")
     pred_indexed = pred_df.set_index("key")
@@ -63,22 +67,31 @@ def compute_metrics(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: 
     for label in label_cols:
         manual_states = manual_indexed.loc[keys, label]
         pred_states = pred_indexed.loc[keys, label]
-        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(manual_states, pred_states)
+        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(
+            manual_states, pred_states
+        )
         scores = _score_from_counts(tp, fp, fn, tn, state_correct, state_total)
 
-        rows.append({
-            "Source": source_name,
-            "Label": label,
-            "Support_Manual": int(tp + fn),
-            "Support_Pred": int(tp + fp),
-            "TP": tp, "FP": fp, "FN": fn, "TN": tn,
-            **scores,
-        })
+        rows.append(
+            {
+                "Source": source_name,
+                "Label": label,
+                "Support_Manual": int(tp + fn),
+                "Support_Pred": int(tp + fp),
+                "TP": tp,
+                "FP": fp,
+                "FN": fn,
+                "TN": tn,
+                **scores,
+            }
+        )
 
     return pd.DataFrame(rows)
 
 
-def compute_facility_metric_rows(manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str) -> list:
+def compute_facility_metric_rows(
+    manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str
+) -> list:
     """Compute per-facility metrics for violin/distribution plots."""
     manual_indexed = manual_df.set_index("key")
     pred_indexed = pred_df.set_index("key")
@@ -87,7 +100,9 @@ def compute_facility_metric_rows(manual_df: pd.DataFrame, pred_df: pd.DataFrame,
     for key in manual_indexed.index:
         manual_states = manual_indexed.loc[key, label_cols]
         pred_states = pred_indexed.loc[key, label_cols]
-        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(manual_states, pred_states)
+        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(
+            manual_states, pred_states
+        )
         scores = _score_from_counts(tp, fp, fn, tn, state_correct, state_total)
 
         row = {"Source": source_name, "key": key}
@@ -101,15 +116,19 @@ def compute_facility_metric_rows(manual_df: pd.DataFrame, pred_df: pd.DataFrame,
 def summarize_metrics(metric_df: pd.DataFrame, level_name: str) -> pd.DataFrame:
     rows = []
     for source, subset in metric_df.groupby("Source", sort=False):
-        usable = subset[subset[["Support_Manual", "Support_Pred", "TP", "FP", "FN"]].sum(axis=1) > 0]
-        rows.append({
-            "Level": level_name,
-            "Source": source,
-            "Macro_F1": usable["F1"].mean(),
-            "Macro_Accuracy": usable["Accuracy"].mean(),
-            "Macro_Missed_Rate": usable["Missed_Rate"].mean(),
-            "Macro_Hallucinated_Rate": usable["Hallucinated_Rate"].mean(),
-            "Macro_State_Accuracy": usable["State_Accuracy"].mean(),
-            "Label_Count": int(len(usable)),
-        })
+        usable = subset[
+            subset[["Support_Manual", "Support_Pred", "TP", "FP", "FN"]].sum(axis=1) > 0
+        ]
+        rows.append(
+            {
+                "Level": level_name,
+                "Source": source,
+                "Macro_F1": usable["F1"].mean(),
+                "Macro_Accuracy": usable["Accuracy"].mean(),
+                "Macro_Missed_Rate": usable["Missed_Rate"].mean(),
+                "Macro_Hallucinated_Rate": usable["Hallucinated_Rate"].mean(),
+                "Macro_State_Accuracy": usable["State_Accuracy"].mean(),
+                "Label_Count": int(len(usable)),
+            }
+        )
     return pd.DataFrame(rows)

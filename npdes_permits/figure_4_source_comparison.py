@@ -35,15 +35,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import get_leaf_names, PRESENT_STATUSES
 from helpers.utils import (
     load_ciwqs_to_cwns_table,
-    mapping_npdes_confirmed_no_cwns,
-    mapping_npdes_with_declared_cw,
+    mapping_facility_cwns_sets,
     merge_mapping_with_cwns_processes,
-    rows_mapping_declares_cwns,
-    rows_with_cwns_survey_attach,
-    union_cwns_processes_by_npdes_no,
+    union_cwns_processes,
     cwns_process_column_names,
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, draw_stacked_bar
+from figure_2_ground_truth import permit_to_fac
 
 DATE_FOLDER = '2026-4-26'
 OUTPUT_DIR  = f'npdes_permits/output/{DATE_FOLDER}/figures'
@@ -311,16 +309,20 @@ with open('npdes_permits/data/unitprocess_keywords.json', 'r') as f:
     keywords = json.load(f)
 
 print("Loading LLM search data …")
-llm_df = pd.read_csv(f'npdes_permits/output/llm_unit_processes_by_facility.csv')
-before_dedup = len(llm_df)
-llm_df = deduplicate_llm_facilities(llm_df)
-after_dedup = len(llm_df)
-print(f"  LLM rows deduplicated by facility/permit: {before_dedup} -> {after_dedup}")
-proc_cols_llm = [c for c in llm_df.columns if c not in {'PERMIT_NUMBER', 'Agency', 'Facility_Name'}]
-past_count   = sum((llm_df[c] == 'PAST').sum() for c in proc_cols_llm)
-future_count = sum((llm_df[c] == 'FUTURE').sum() for c in proc_cols_llm)
-print(f"  LLM facilities: {len(llm_df)}  |  'PAST' (in plot stacks): {past_count}"
-      f"  |  'FUTURE': {future_count}")
+_llm_path = f'npdes_permits/output/{DATE_FOLDER}/llm_unit_processes_by_facility.csv'
+if not os.path.exists(_llm_path):
+    print(f"  LLM data not found for {DATE_FOLDER} — skipping LLM")
+    llm_df = pd.DataFrame()
+else:
+    llm_df = pd.read_csv(_llm_path)
+    before_dedup = len(llm_df)
+    llm_df = deduplicate_llm_facilities(llm_df)
+    print(f"  LLM rows deduplicated by facility/permit: {before_dedup} -> {len(llm_df)}")
+    proc_cols_llm = [c for c in llm_df.columns if c not in {'PERMIT_NUMBER', 'Agency', 'Facility_Name'}]
+    past_count   = sum((llm_df[c] == 'PAST').sum() for c in proc_cols_llm)
+    future_count = sum((llm_df[c] == 'FUTURE').sum() for c in proc_cols_llm)
+    print(f"  LLM facilities: {len(llm_df)}  |  'PAST' (in plot stacks): {past_count}"
+          f"  |  'FUTURE': {future_count}")
 
 
 print("Loading keyword search data …")
@@ -352,50 +354,68 @@ before_kw = len(kw_df)
 kw_df = deduplicate_kw_facilities(kw_df, proc_cols_kw)
 print(f"  Keyword facilities deduplicated: {before_kw} rows → {len(kw_df)} facilities")
 
-print("Loading and matching CWNS data (ciwqs_to_cwns.csv + exact CWNS_ID join)")
+print("Loading and matching CWNS data …")
 mapping_tbl = load_ciwqs_to_cwns_table('npdes_permits/data/ciwqs_to_cwns.csv')
-confirmed_no_cwns = mapping_npdes_confirmed_no_cwns('npdes_permits/data/ciwqs_to_cwns.csv')
+facilities_with_cwns, facilities_without_cwns = mapping_facility_cwns_sets(mapping_tbl)
+
 ca_cwns = pd.read_csv(
     'npdes_permits/output/cwns_processes_by_facility.csv',
     low_memory=False,
     dtype={'CWNS_ID': str},
 )
 ca_cwns['CWNS_ID'] = ca_cwns['CWNS_ID'].astype(str).str.strip()
-print(f"  CA CWNS facilities (step0 export): {len(ca_cwns)}")
 
-llm_permits = {str(x).strip() for x in llm_df['PERMIT_NUMBER'].dropna().unique()}
-print(f"  LLM permits: {len(llm_permits)}")
+if not llm_df.empty:
+    llm_permits = {str(x).strip() for x in llm_df['PERMIT_NUMBER'].dropna().unique()}
+    llm_facilities = {permit_to_fac[p] for p in llm_permits if p in permit_to_fac}
+else:
+    llm_permits = set()
+    llm_facilities = set()
+
+kw_permits_raw = set(kw_df['PERMIT_NUMBER'].astype(str).str.strip())
+kw_facilities  = {permit_to_fac[p] for p in kw_permits_raw if p in permit_to_fac}
+
+# Coverage summary — before filtering to overlap only
+print(f"\nFacility coverage (unique WDID + Facility_Name, before overlap filter):")
+print(f"  CWNS in mapping:            {len(facilities_with_cwns)}")
+print(f"  Keyword:                    {len(kw_facilities)}")
+print(f"  Both CWNS + Keyword:        {len(kw_facilities & facilities_with_cwns)}")
+print(f"  Keyword only (no CWNS):     {len(kw_facilities - facilities_with_cwns)}")
+print(f"  CWNS only (not in KW):      {len(facilities_with_cwns - kw_facilities)}")
+if not llm_df.empty:
+    print(f"  LLM:                        {len(llm_facilities)}")
+    print(f"  Both CWNS + LLM:            {len(llm_facilities & facilities_with_cwns)}")
+    print(f"  LLM only (no CWNS):         {len(llm_facilities - facilities_with_cwns)}")
+    print(f"  CWNS only (not in LLM):     {len(facilities_with_cwns - llm_facilities)}")
 
 merged_map = merge_mapping_with_cwns_processes(mapping_tbl, ca_cwns)
-attached = rows_with_cwns_survey_attach(merged_map)
-n_attach = int(attached.sum())
-print(f"  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
+n_attach = int((merged_map['_cwns_merge'] == 'both').sum())
+print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
 
-declared_cw = rows_mapping_declares_cwns(merged_map)
-matched_permits = mapping_npdes_with_declared_cw(mapping_tbl)
-slice_llm = merged_map.loc[
-    declared_cw & merged_map['NPDES_No'].astype(str).str.strip().isin(llm_permits)
-]
-_proc_cols = [c for c in cwns_process_column_names(ca_cwns) if c in slice_llm.columns]
-cwns_df = union_cwns_processes_by_npdes_no(slice_llm, _proc_cols)
+fac_col = merged_map.apply(lambda r: (r['WDID'], r['Facility_Name']), axis=1)
+declared_cw = merged_map['CWNS_ID'].apply(lambda x: bool(str(x).strip() and str(x).strip().upper() != 'NA'))
+target_facs = (llm_facilities | kw_facilities) & facilities_with_cwns
+slice_map = merged_map.loc[declared_cw & fac_col.isin(target_facs)]
+_proc_cols = [c for c in cwns_process_column_names(ca_cwns) if c in slice_map.columns]
+cwns_df = union_cwns_processes(slice_map, _proc_cols)
 cwns_df['PERMIT_NUMBER'] = cwns_df['NPDES_No'].astype(str).str.strip()
-print(f"  CWNS rows for plot (union per NPDES in LLM ∩ mapping): {len(cwns_df)}")
 
-# Save unmatched LLM permits (no CWNS counterpart) for manual review
-unmatched_npdes = sorted((llm_permits - matched_permits) - confirmed_no_cwns)
-if unmatched_npdes:
-    unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
-    (llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(unmatched_npdes)]
-     [['PERMIT_NUMBER', 'Facility_Name']].drop_duplicates()
-     .to_csv(unmatched_path, index=False))
-    print(f"  Unmatched NPDES (no CWNS): {len(unmatched_npdes)} → {os.path.basename(unmatched_path)}")
+# Save unmatched LLM permits (no CWNS counterpart declared) for manual review
+if not llm_df.empty:
+    unmatched_facs = llm_facilities - facilities_with_cwns - facilities_without_cwns
+    unmatched_npdes = sorted(p for p, f in permit_to_fac.items() if f in unmatched_facs)
+    if unmatched_npdes:
+        unmatched_path = f'npdes_permits/output/{DATE_FOLDER}/unmatched_npdes_no_cwns.csv'
+        (llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(unmatched_npdes)]
+         [['PERMIT_NUMBER', 'Facility_Name']].drop_duplicates()
+         .to_csv(unmatched_path, index=False))
+        print(f"  Unmatched LLM (no CWNS): {len(unmatched_npdes)} → {os.path.basename(unmatched_path)}")
 
-# Filter LLM to only matched permit numbers
-llm_df = llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(matched_permits)].copy()
-print(f"  LLM rows after filter: {len(llm_df)}")
-
+# Filter LLM/KW to only facilities with a declared CWNS
+matched_permits = {p for p, f in permit_to_fac.items() if f in facilities_with_cwns}
+if not llm_df.empty:
+    llm_df = llm_df[llm_df['PERMIT_NUMBER'].astype(str).isin(matched_permits)].copy()
 kw_df = kw_df[kw_df['PERMIT_NUMBER'].isin(matched_permits)].copy()
-print(f"  Keyword rows after filter: {len(kw_df)}")
 
 N_CWNS = len(cwns_df)
 N_LLM  = len(llm_df)
@@ -503,6 +523,8 @@ print("\nGenerating major-categories plots …")
 
 # REPLACE WITH:
 for comparison_type in ['llm', 'kw']:
+    if comparison_type == 'llm' and llm_df.empty:
+        continue
     print(f"\n  Generating {comparison_type.upper()} major-categories plot…")
     comparison_df = llm_df if comparison_type == 'llm' else kw_df
     draw_fn = draw_group if comparison_type == 'llm' else draw_group_kw

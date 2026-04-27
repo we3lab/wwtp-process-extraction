@@ -77,15 +77,15 @@ def main():
     npdesNO = []
     pdfs = []
     shared_pdfs = []
-    
+
     # Read site data
     with open(rfr_data, 'r') as f:
-        for line in csv.reader(f):
-            agency_name.append(line[0])
-            facility_name.append(line[1])
-            npdesNO.append(line[2])
-            pdfs.append(line[5])
-            shared_pdfs.append(line[6] if len(line) > 6 else '')
+        for row in csv.DictReader(f):
+            agency_name.append(row.get('Agency', ''))
+            facility_name.append(row.get('Facility_Name', ''))
+            npdesNO.append(row.get('NPDES_No', ''))
+            pdfs.append(row.get('PDF_File', ''))
+            shared_pdfs.append(row.get('Shared_PDF', ''))
     
     # Create CSV headers - one column per process
     headers = ['AGENCY_NAME', 'FACILITY_NAME', 'PERMIT_NUMBER', 'PDF_File', 'Shared_PDF']
@@ -98,14 +98,14 @@ def main():
     upi.writerow(headers)
 
     # Pre-compute unique PDFs so shared files are only extracted once
-    unique_pdfs = list(dict.fromkeys(p for p in pdfs[1:]))  # skip header row
+    unique_pdfs = list(dict.fromkeys(p for p in pdfs if p))
     pdf_cache = {}  # filename -> (present_results, future_results) or None
 
     for j, pdf_file in enumerate(unique_pdfs):
         path = os.path.join(directory, pdf_file)
         print(f"Processing {pdf_file} ({j+1}/{len(unique_pdfs)})")
 
-        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=False)
+        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=True)
         if extraction_result is None:
             print(f"Skipping {pdf_file} - extraction failed")
             pdf_cache[pdf_file] = None
@@ -132,14 +132,14 @@ def main():
         pdf_cache[pdf_file] = (present_results, future_results)
 
     # Write one output row per facility (shared PDFs reuse cached results)
-    for i in range(1, len(pdfs)):  # skip header row
+    for i in range(len(pdfs)):
         pdf_file = pdfs[i]
         cached = pdf_cache.get(pdf_file)
         if cached is None:
             continue
 
         present_results, future_results = cached
-        data_row = [agency_name[i], facility_name[i], npdesNO[i], pdf_file, shared_pdfs[i] if len(shared_pdfs) > i else '']
+        data_row = [agency_name[i], facility_name[i], npdesNO[i], pdf_file, shared_pdfs[i]]
 
         for key in all_keys:
             is_present = present_results.get(key, 0) == 1

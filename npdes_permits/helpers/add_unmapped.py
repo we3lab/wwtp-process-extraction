@@ -2,16 +2,14 @@
 Append rows to data/ciwqs_to_cwns.csv for facilities in site_data.csv that are
 not yet mapped.
 
-Matching strategy (in order):
-  1. Exact facility name match (strip + upper) against cwns_processes_by_facility FACILITY_NAME
-  2. Exact NPDES permit number match against cwns_processes_by_facility NPDES_PERMIT
-  3. No match — row added with CWNS columns blank for manual completion
-
+Matching strategy: exact facility name match (strip + upper) against
+cwns_processes_by_facility FACILITY_NAME. No permit-number matching.
+No match — row added with CWNS columns blank for manual completion.
 """
 
 import pandas as pd
 
-DATE_FOLDER = '2026-4-25'
+DATE_FOLDER = '2026-4-26'
 
 SITE_DATA   = f'npdes_permits/output/{DATE_FOLDER}/site_data.csv'
 ALL_NPDES   = f'npdes_permits/output/{DATE_FOLDER}/all_ca_npdes.csv'
@@ -30,45 +28,35 @@ def main():
     # keep_default_na=False preserves literal "NA" strings (manually entered no-match markers)
     ciwqs  = pd.read_csv(CIWQS_MAP,  dtype=str, keep_default_na=False).fillna('')
 
-    site['NPDES_No'] = site['NPDES_No'].str.strip().str.upper()
-    ciwqs['NPDES_No'] = ciwqs['NPDES_No'].str.strip().str.upper()
+    # WDID lookup from all_ca_npdes (column name varies by version)
+    permit_col = next((c for c in ['NPDES No.', 'NPDES_No'] if c in npdes.columns), None)
+    wdid_map = (
+        npdes.set_index(npdes[permit_col].str.strip().str.upper())['WDID'].to_dict()
+        if permit_col and 'WDID' in npdes.columns else {}
+    )
 
-    already_mapped = set(ciwqs['NPDES_No'].unique())
+    already_mapped = {normalize(r['Facility_Name']) for _, r in ciwqs.iterrows()}
     unmapped = (
-        site[~site['NPDES_No'].isin(already_mapped)]
-        .drop_duplicates(subset=['NPDES_No'])
+        site[~site['Facility_Name'].apply(normalize).isin(already_mapped)]
+        .drop_duplicates(subset=['Facility_Name'])
         .copy()
     )
     print(f'Unmapped facilities: {len(unmapped)}')
 
-    # WDID lookup from all_ca_npdes
-    npdes['_permit'] = npdes['NPDES No.'].str.strip().str.upper()
-    wdid_map = npdes.set_index('_permit')['WDID'].to_dict()
-
     # CWNS CA subset, normalised keys
     cwns_ca = cwns[cwns['STATE_CODE'] == 'CA'].copy()
     cwns_ca['_name'] = cwns_ca['FACILITY_NAME'].apply(normalize)
-    cwns_ca['_permit'] = cwns_ca['NPDES_PERMIT'].str.strip().str.upper()
-
-    name_idx   = cwns_ca.groupby('_name').apply(lambda g: g.to_dict('records')).to_dict()
-    permit_idx = cwns_ca.groupby('_permit').apply(lambda g: g.to_dict('records')).to_dict()
+    name_idx = cwns_ca.groupby('_name').apply(lambda g: g.to_dict('records')).to_dict()
 
     new_rows = []
 
     for _, row in unmapped.iterrows():
-        permit    = row['NPDES_No']
+        permit    = str(row.get('NPDES_No', '')).strip().upper()
         fac_name  = row['Facility_Name'].strip()
         name_norm = normalize(fac_name)
         wdid      = wdid_map.get(permit, '')
 
-        # Try name match first (skip empty names)
         cwns_hits = name_idx.get(name_norm) if name_norm else None
-        match_how = 'name'
-
-        # Fall back to permit match (skip empty permits)
-        if not cwns_hits and permit:
-            cwns_hits = permit_idx.get(permit)
-            match_how = 'permit'
 
         if cwns_hits:
             for hit in cwns_hits:
@@ -79,7 +67,7 @@ def main():
                     'CWNS_ID':           hit['CWNS_ID'],
                     'CWNS_Facility_Name': hit['FACILITY_NAME'],
                 })
-            print(f'  [{match_how}] {permit} — {fac_name} → {len(cwns_hits)} CWNS row(s)')
+            print(f'  [name] {permit} — {fac_name} → {len(cwns_hits)} CWNS row(s)')
         else:
             new_rows.append({
                 'WDID':              wdid,
@@ -94,7 +82,7 @@ def main():
         print('Nothing to add.')
         return
 
-    new_df = pd.DataFrame(new_rows, columns=['WDID','Facility_Name','NPDES_No','CWNS_ID','CWNS_Facility_Name'])
+    new_df = pd.DataFrame(new_rows, columns=['WDID', 'Facility_Name', 'NPDES_No', 'CWNS_ID', 'CWNS_Facility_Name'])
     combined = pd.concat([ciwqs, new_df], ignore_index=True)
     combined.to_csv(CIWQS_MAP, index=False)
     print(f'\nAdded {len(new_rows)} rows. ciwqs_to_cwns.csv now has {len(combined)} rows.')

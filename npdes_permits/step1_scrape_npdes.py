@@ -1,18 +1,25 @@
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 import json
 import os
 import time
-import csv
 import glob
 import requests
-from bs4 import BeautifulSoup
 import pandas as pd
+import uuid
+import tempfile
+from urllib.parse import urlparse, parse_qs
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.select import Select
+from selenium.common.exceptions import TimeoutException
+
 from helpers.npdes_detection import detect_npdes
-from npdes_permits.helpers.scraping import process_all_facilities, abs_url, hidden_fields, select_value, retry_request, new_chrome_driver, selection
+
+# Modified using Claude 4.5
 
 CIWQS_ROOT = "https://ciwqs.waterboards.ca.gov"
 CIWQS_SERVLET = f"{CIWQS_ROOT}/ciwqs/readOnly/CiwqsReportServlet"
@@ -20,459 +27,639 @@ CIWQS_SERVLET = f"{CIWQS_ROOT}/ciwqs/readOnly/CiwqsReportServlet"
 # Link to Interactive Regulated Facilities Report
 rfr_url = 'https://ciwqs.waterboards.ca.gov/ciwqs/readOnly/CiwqsReportServlet?inCommand=reset&reportName=RegulatedFacility'
 
-# Visible labels for CIWQS form (must stay aligned with post_data and STEP 1 row checks).
-CIWQS_PROGRAMS = ["NPDES", "WDR"]   # both selected; drives form submission and row filtering
+# Set INCLUDE_WDR=False to restrict collection to NPDES-only facilities (exclude WDR/WDRMUNIL).
+INCLUDE_WDR = True
+
+# Visible labels for CIWQS form (must stay aligned with STEP 1 row checks).
+CIWQS_PROGRAMS = ["NPDES", "WDR"] if INCLUDE_WDR else ["NPDES"]
+ACCEPTED_PROGRAMS = {"NPDESWW", "NPDMUNI"} | ({"WDRMUNIL"} if INCLUDE_WDR else set())
 CIWQS_FACILITY_TYPE = "Wastewater Treatment Facility"
 CIWQS_WASTE_TYPE = "Domestic wastewater"
 CIWQS_RELATED_PERMIT_STATUS = "Active"
-CIWQS_TEST_REGION = ""       # set to "1"–"9" to scope to a single region; leave "" for statewide
-# CIWQS_TEST_REGION = "5"       # set to "1"–"9" to scope to a single region; leave "" for statewide
-# RETRY_FAILED_DIR  = None
-RETRY_FAILED_DIR  = "npdes_permits/output/2026-4-26"  # set to a previous run's output dir to retry only failed facilities. Otherwise set to None
 
-# Output path — retry mode reuses the previous run's directory.
+# Maps output CSV key -> CIWQS table column header.
+# Used both to build facility dicts and to validate header detection.
+FACILITY_FIELDS = [
+    ('Agency',        'Agency'),
+    ('Facility_Name', 'Facility Name'),
+    ('NPDES_No',      'NPDES No.'),
+    ('Region',        'Region'),
+    ('Major/Minor',   'Major/Minor'),
+    ('Order_No',      'Order No.'),
+]
+
+# Output path
 path = 'npdes_permits/output'
 now = datetime.now()
 pdf_folder = f'{now.year}-{now.month}-{now.day}'
-full_path = RETRY_FAILED_DIR if RETRY_FAILED_DIR else os.path.join(path, pdf_folder)
+full_path = os.path.join(path, pdf_folder)
 pdfs_path = os.path.join(full_path, 'pdfs')
 os.makedirs(full_path, exist_ok=True)
 os.makedirs(pdfs_path, exist_ok=True)
 
-driver = new_chrome_driver(pdfs_path)
-wait = WebDriverWait(driver, 120)
-main_window = driver.current_window_handle
-driver.set_page_load_timeout(120)
+_SEP = " .-_"
+_BASE_KW = ["noa", "noi", "rpts", "rowd", "per"]
+_PHRASE_KW = ["report", "financial", "notice of", "response to",
+              "rate study", "ratestudy", "study", "letter"]
+SKIP_CONFIG = {
+    "embedded":  [f"{s1}{kw}{s2}" for kw in _BASE_KW for s1 in _SEP for s2 in _SEP] + _PHRASE_KW,
+    "beginning": [f"{kw}{s}" for kw in _BASE_KW for s in _SEP],
+}
+NOA_SET = {"noa", "noi"}
 
-if not RETRY_FAILED_DIR:
-    ciwqs = requests.Session()
-    ciwqs.headers["User-Agent"] = (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
-    print("[requests] CIWQS reset form…")
-    r = retry_request(ciwqs, 'GET', rfr_url)
-    soup0 = BeautifulSoup(r.text, "html.parser")
-    hidden0 = hidden_fields(soup0)
-    csrf = hidden0.get("OWASP_CSRFTOKEN", "")
-    in_status = select_value(
-        soup0, "inStatus", CIWQS_RELATED_PERMIT_STATUS, required_label="Related Permit Status"
-    )
-    # Multi-select: send one programDrop value per program (list-of-tuples supports repeated keys)
-    post_data = (
-        list(hidden0.items())
-        + [("programDrop", select_value(soup0, "programDrop", prog)) for prog in CIWQS_PROGRAMS]
+def abs_url(href):
+    if not href or href.startswith("http"):
+        return href
+    if href.startswith("/"):
+        return CIWQS_ROOT + href
+    return f"{CIWQS_ROOT}/ciwqs/readOnly/{href}"
+
+
+def hidden_fields(soup):
+    return {i["name"]: i.get("value", "")
+            for i in soup.find_all("input", type="hidden") if i.get("name")}
+
+
+def select_value(soup, name, visible_text, *, required_label=None):
+    sel = soup.find("select", {"name": name})
+    if not sel:
+        if required_label:
+            raise RuntimeError(f"CIWQS form missing <select name={name!r}> ({required_label}).")
+        return visible_text
+    for opt in sel.find_all("option"):
+        if opt.get_text(strip=True) == visible_text:
+            return opt.get("value", visible_text)
+    if required_label:
+        choices = [opt.get_text(strip=True) for opt in sel.find_all("option")]
+        raise RuntimeError(
+            f"CIWQS {required_label}: no {visible_text!r} in <select name={name!r}>; choices={choices!r}"
+        )
+    return visible_text
+
+
+def retry_request(session, method, url, *, data=None, max_attempts=4, timeout=120):
+    for attempt in range(1, max_attempts + 1):
+        try:
+            r = session.request(method, url, data=data, timeout=timeout)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.Timeout:
+            print(f"[requests] {method.upper()} timed out ({attempt}/{max_attempts}): {url}")
+            if attempt == max_attempts:
+                raise
+        except requests.exceptions.RequestException:
+            raise
+
+
+def new_chrome_driver(pdfs_path):
+    """Chrome for facility report (after requests submits the CIWQS search)."""
+    options = webdriver.ChromeOptions()
+    prefs = {
+        "download.default_directory": os.path.abspath(pdfs_path),
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True,
+        "profile.default_content_settings.popups": 0,
+        "profile.default_content_setting_values.automatic_downloads": 1,
+    }
+    options.add_experimental_option("prefs", prefs)
+    # "normal" waits for load event; CIWQS often omits programDrop until then (eager returns too early).
+    options.page_load_strategy = "normal"
+    options.add_argument("--blink-settings=imagesEnabled=false")
+    user_data_dir = os.path.join(tempfile.gettempdir(), f"chrome_user_data_{uuid.uuid4().hex}")
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--headless")  # for server/SSH
+    options.binary_location = "/home/daly/bin/chrome/chrome-linux64/chrome"
+    service = Service("/home/daly/bin/chrome/chromedriver-linux64/chromedriver")
+    return webdriver.Chrome(service=service, options=options)
+
+
+def ciwqs_post_data(hidden, soup, programs, *, facility_type, waste_type, status):
+    """Build the CIWQS form POST body for one or more programs."""
+    return (
+        list(hidden.items())
+        + [("programDrop", select_value(soup, "programDrop", p)) for p in programs]
         + [
-            ("typeDrop",      select_value(soup0, "typeDrop",      CIWQS_FACILITY_TYPE)),
-            ("wasteTypeDrop", select_value(soup0, "wasteTypeDrop", CIWQS_WASTE_TYPE)),
-            ("inStatus",      in_status),
+            ("typeDrop",      select_value(soup, "typeDrop",      facility_type)),
+            ("wasteTypeDrop", select_value(soup, "wasteTypeDrop", waste_type)),
+            ("inStatus",      status),
             ("enpRepButton",  ""),
         ]
     )
-    print("[requests] Submitting filters…")
-    resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}", data=post_data)
-    soup1 = BeautifulSoup(resp.text, "html.parser")
-    drilldown_candidates = [
-        abs_url(a["href"]) for a in soup1.find_all("a", href=True)
+
+
+def extract_drilldown_url(soup, *, allow_program_scope=True):
+    """Extract the best drilldown URL from a CIWQS search results page."""
+    candidates = [
+        abs_url(a["href"]) for a in soup.find_all("a", href=True)
         if "RegulatedFacilityDetail" in a["href"] and "drilldown" in a["href"]
     ]
+    excluded = ["place=", "majorminor="] + ([] if allow_program_scope else ["program="])
+    filtered = [c for c in candidates if not any(k in c.lower() for k in excluded)]
+    return filtered[0] if filtered else (candidates[0] if candidates else None)
 
-    # Total URL (no place/majorminor/program scope) — used for Excel export only.
-    # Multi-select (NPDES+WDR) submission yields a grouped-by-agency view on drilldown;
-    # for STEP 1 we re-submit once per program to get the per-facility flat table.
-    total_url = next(
-        (c for c in drilldown_candidates
-         if "place=" not in c.lower() and "majorminor=" not in c.lower() and "program=" not in c.lower()),
-        drilldown_candidates[0] if drilldown_candidates else None,
+
+def process_all_facilities(driver, facility_url_to_facilities, output_dir):
+    """Main processing loop.
+
+    Returns: (failed_facilities, facility_order_info)
+      facility_order_info: {facility_url: {'pdfs', 'total_pdfs', 'reg_measure_id', 'reg_measure_type'}}
+    """
+    failed_facilities = []
+    facility_order_info = {}
+    reg_id_to_info = {}
+    main_window = driver.window_handles[0]
+
+    for idx, (facility_url, facilities) in enumerate(facility_url_to_facilities.items(), 1):
+        print(f"\n[{idx}/{len(facility_url_to_facilities)}] {facilities[0]['Facility_Name']}")
+        try:
+            order_url, rm_type = find_best_order(driver, facility_url, main_window)
+            if not order_url:
+                print("  X No suitable active NPDES order found")
+                facility_order_info[facility_url] = {
+                    'pdfs': [], 'total_pdfs': 0,
+                    'reg_measure_id': None, 'reg_measure_type': None,
+                }
+                continue
+
+            reg_id = parse_qs(urlparse(order_url).query).get('regMeasID', [None])[0]
+
+            if reg_id and reg_id in reg_id_to_info:
+                print(f"  Dedup: reusing already-processed order {reg_id}")
+                facility_order_info[facility_url] = reg_id_to_info[reg_id]
+                continue
+
+            downloaded_pdfs, total_pdfs = download_pdfs_for_order(
+                driver, order_url, output_dir,
+                allow_noa=(rm_type == "ENROLLEE - NPDES"), main_window=main_window
+            )
+            info = {
+                'pdfs': downloaded_pdfs,
+                'total_pdfs': total_pdfs,
+                'reg_measure_id': reg_id,
+                'reg_measure_type': rm_type,
+            }
+            facility_order_info[facility_url] = info
+            if reg_id:
+                reg_id_to_info[reg_id] = info
+
+        except Exception as e:
+            print(f"  X {e}")
+            for f in facilities:
+                failed_facilities.append({**f, 'error': str(e)[:200]})
+            try:
+                if driver.current_window_handle != main_window:
+                    driver.close()
+                driver.switch_to.window(main_window)
+            except Exception:
+                pass
+
+    return failed_facilities, facility_order_info
+
+
+def find_best_order(driver, facility_url, main_window):
+    """Navigate to facility page, parse HTML, and return best active NPDES order.
+    
+    Returns: (order_url, reg_measure_type) or (None, None)
+    """
+    TYPE_RANK = {"NPDES PERMIT": 0, "CO-PERMITTEE": 1, "ENROLLEE - NPDES": 2}
+    REQUIRED_HEADERS = ['Reg Measure Type', 'Order No']
+    COLUMN_CHECKS = [
+        ('Status', lambda v: v.lower() == 'active'),
+        ('Reg Measure Type', lambda v: v.upper() in TYPE_RANK),
+    ]
+
+    # Navigate to facility page
+    driver.execute_script(f"window.open('{facility_url}', '_blank');")
+    time.sleep(1)
+    new_win = [h for h in driver.window_handles if h != main_window][0]
+    driver.switch_to.window(new_win)
+    
+    WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.TAG_NAME, 'table')))
+    time.sleep(1)
+    
+    page_html = driver.page_source
+    driver.close()
+    driver.switch_to.window(main_window)
+    
+    # Parse HTML for best order
+    soup = BeautifulSoup(page_html, "html.parser")
+    for table in soup.find_all('table'):
+        all_rows = table.find_all('tr')
+        
+        # Find header row
+        for hdr_idx, row in enumerate(all_rows[:4]):
+            cells = row.find_all(['td', 'th'])
+            texts = [c.get_text(strip=True) for c in cells]
+            
+            # Validate header row
+            if len(texts) < 5 or any(len(t) > 80 for t in texts):
+                continue
+            if not all(any(req in t for t in texts) for req in REQUIRED_HEADERS):
+                continue
+            
+            col_index = {t: i for i, t in enumerate(texts)}
+            best_href, best_type_rank = None, 99
+            best_effective, best_rm_type = pd.NaT, None
+            dcells = []  # rebound each data row; gc closes over it by name
+
+            def gc(col_name):
+                i = col_index.get(col_name, -1)
+                return dcells[i].get_text(strip=True) if 0 <= i < len(dcells) else ""
+
+            # Process data rows
+            for data_row in all_rows[hdr_idx + 1:]:
+                dcells = data_row.find_all('td')
+                if not dcells:
+                    continue
+                
+                # Apply validation checks
+                if not all(check_fn(gc(col_name)) for col_name, check_fn in COLUMN_CHECKS):
+                    continue
+                
+                # Extract order URL
+                order_idx = col_index.get('Order No.', -1)
+                if order_idx < 0 or order_idx >= len(dcells):
+                    continue
+                
+                a_tag = dcells[order_idx].find('a', href=True)
+                if not a_tag:
+                    continue
+                
+                href = abs_url(a_tag['href'])
+                if not href:
+                    continue
+                
+                # Calculate priority
+                rm_type = gc('Reg Measure Type').upper()
+                type_rank = TYPE_RANK[rm_type]
+                effective_dt = pd.to_datetime(gc('Effective Date'), errors='coerce')
+                
+                if pd.isna(effective_dt):
+                    continue
+                
+                # Update best if higher priority
+                if (type_rank < best_type_rank or 
+                    (type_rank == best_type_rank and effective_dt > best_effective)):
+                    best_href = href
+                    best_type_rank = type_rank
+                    best_effective = effective_dt
+                    best_rm_type = rm_type
+            
+            if best_href:
+                eff_str = best_effective.date() if not pd.isna(best_effective) else 'N/A'
+                print(f"  Best order: {best_rm_type}, rank={best_type_rank}, effective={eff_str}")
+                return best_href, best_rm_type
+    
+    return None, None
+
+
+def download_pdfs_for_order(driver, order_url, output_dir, allow_noa=False, main_window=None):
+    """Download PDFs from an order page. Returns (downloaded_pdfs, total_on_page)."""
+    if main_window is None:
+        main_window = driver.window_handles[0]
+
+    active_skip = (
+        {k: [p for p in v if not any(n in p.lower() for n in NOA_SET)]
+         for k, v in SKIP_CONFIG.items()}
+        if allow_noa else SKIP_CONFIG
     )
-    if not total_url:
-        raise RuntimeError("CIWQS: no Total drilldown URL in search response")
-    print(f"[requests] Excel export URL: {total_url}")
 
-    # Re-submit once per program (single-program post) to get per-facility drilldown URLs.
-    # Single-program submissions return the non-grouped flat table that column detection works on.
-    program_urls = []
-    for prog in CIWQS_PROGRAMS:
-        single_post = (
-            list(hidden0.items())
-            + [("programDrop", select_value(soup0, "programDrop", prog))]
-            + [
-                ("typeDrop",      select_value(soup0, "typeDrop",      CIWQS_FACILITY_TYPE)),
-                ("wasteTypeDrop", select_value(soup0, "wasteTypeDrop", CIWQS_WASTE_TYPE)),
-                ("inStatus",      in_status),
-                ("enpRepButton",  ""),
-            ]
-        )
-        prog_resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}", data=single_post)
-        prog_soup = BeautifulSoup(prog_resp.text, "html.parser")
-        prog_candidates = [
-            abs_url(a["href"]) for a in prog_soup.find_all("a", href=True)
-            if "RegulatedFacilityDetail" in a["href"] and "drilldown" in a["href"]
-        ]
-        if CIWQS_TEST_REGION:
-            prog_url = next(
-                (c for c in prog_candidates if f"place={CIWQS_TEST_REGION}" in c.lower()),
-                None,
-            )
-        else:
-            prog_url = next(
-                (c for c in prog_candidates
-                 if "place=" not in c.lower() and "majorminor=" not in c.lower()),
-                prog_candidates[0] if prog_candidates else None,
-            )
-        if prog_url:
-            program_urls.append((prog, prog_url))
-            print(f"[requests] {prog} facility URL: {prog_url}")
-        else:
-            print(f"[requests] Warning: no drilldown URL found for {prog}")
+    driver.execute_script(f"window.open('{order_url}', '_blank');")
+    time.sleep(1)
+    new_window = [h for h in driver.window_handles if h != main_window][0]
+    driver.switch_to.window(new_window)
+    time.sleep(3)
 
+    pdf_documents = driver.find_elements(
+        By.XPATH, "//a[contains(text(), '.pdf') or contains(text(), '.PDF')]"
+    )
+    total_on_page = len(pdf_documents)
+    print(f"  Found {total_on_page} PDFs on page")
+
+    downloaded_pdfs = []
+    for pdf_element in pdf_documents:
+        try:
+            pdf_name = pdf_element.text
+            pdf_lower = pdf_name.lower()
+            if (any(kw.lower() in pdf_lower for kw in active_skip['embedded']) or
+                    any(pdf_lower.startswith(p.lower()) for p in active_skip['beginning'])):
+                print(f"        Skipping: {pdf_name}")
+                continue
+
+            print(f"        Downloading: {pdf_name}")
+            before = {f for f in os.listdir(output_dir) if f.lower().endswith('.pdf')}
+            pdf_element.click()
+
+            end = time.time() + 60
+            new_file = None
+            while time.time() < end:
+                current = {f for f in os.listdir(output_dir)
+                           if f.lower().endswith('.pdf') and not f.endswith('.crdownload')}
+                new = current - before
+                if new:
+                    newest = max(new, key=lambda f: os.path.getctime(os.path.join(output_dir, f)))
+                    if _file_stable(os.path.join(output_dir, newest)):
+                        new_file = newest
+                        break
+                time.sleep(0.5)
+
+            if not new_file:
+                print("        X Download did not complete or file not detected")
+                continue
+            downloaded_pdfs.append(new_file)
+        except Exception as e:
+            print(f"        X Download failed: {e}")
+
+    driver.close()
+    driver.switch_to.window(main_window)
+    return downloaded_pdfs, total_on_page
+
+
+def _file_stable(path):
+    try:
+        s = os.path.getsize(path)
+        time.sleep(0.5)
+        return s > 0 and os.path.getsize(path) == s
+    except OSError:
+        return False
+
+
+def wait_for_downloads(directory, timeout=60):
+    """Wait for an .xls/.xlsx file to appear and finish downloading."""
+    end_time = time.time() + timeout
+    while time.time() < end_time:
+        files = [f for f in
+                 glob.glob(os.path.join(directory, '*.xlsx')) + glob.glob(os.path.join(directory, '*.xls'))
+                 if not f.lower().endswith('.crdownload')]
+        if files and all(_file_stable(f) for f in files):
+            return files
+        time.sleep(0.5)
+    return []
+
+
+def _load_ciwqs_table(url, label="url"):
     for attempt in range(1, 4):
         try:
-            driver.get(total_url)
+            driver.get(url)
             wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ciwqsReportDataTable")))
-            print("[selenium] Facility table ready")
-            break
+            return
         except TimeoutException:
-            print(f"[selenium] Facility page slow ({attempt}/3), same URL…")
+            print(f"[selenium] {label} slow ({attempt}/3)…")
             if attempt == 3:
                 raise
             try:
                 driver.execute_script("window.stop();")
             except Exception:
                 pass
-    driver.save_screenshot('npdes_permits/output/web_page.png')
-    print("Detail page loaded, filters should be preserved")
-    time.sleep(5)
 
-    def _wait_for_results_table(timeout=90):
-        return WebDriverWait(driver, timeout).until(
-            EC.presence_of_element_located((By.XPATH, "//table[contains(@class,'ciwqsReportDataTable')]"))
-        )
 
-    def _set_page_size_all_and_wait():
-        page_size_set = selection(driver, 'pagesizeselect', 'ALL')
-        if page_size_set:
-            print("Waiting for table to load with ALL rows...")
-        else:
-            print("pagesizeselect not present; continuing with current rows")
-        try:
-            wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'loading')))
-            print("Loading indicator disappeared")
-        except Exception:
-            pass
-        return _wait_for_results_table(timeout=90)
+def selection(driver, name, text):
+    select_elements = driver.find_elements(By.NAME, name)
+    if not select_elements:
+        return False
+    select = Select(select_elements[0])
+    select.select_by_visible_text(text)
+    return True
 
+
+def _set_page_all():
     for attempt in range(1, 3):
         try:
-            table_body = _set_page_size_all_and_wait()
-            break
+            selection(driver, 'pagesizeselect', 'ALL')
+            try:
+                wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'loading')))
+            except Exception:
+                pass
+            return WebDriverWait(driver, 90).until(
+                EC.presence_of_element_located((By.XPATH, "//table[contains(@class,'ciwqsReportDataTable')]"))
+            )
         except Exception as e:
             print(f"[selenium] pagesizeselect ALL did not stabilize ({attempt}/2): {e}")
             if attempt == 2:
                 raise
             time.sleep(2)
 
-    table_rows = table_body.find_elements(By.TAG_NAME, 'tr')
-    print(f"Final table has {len(table_rows)} rows before export")
 
-    # Export Excel file and create mapping from it
-    export_link = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
-    driver.execute_script("arguments[0].scrollIntoView(true);", export_link)
-    driver.execute_script("arguments[0].click();", export_link)
-    time.sleep(3)
-    try:
-        export_link = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
-        driver.execute_script("arguments[0].click();", export_link)
-    except Exception:
-        print("Second export click not needed or timed out; continuing")
+# ciwqs = requests.Session()
+# ciwqs.headers["User-Agent"] = (
+#     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+#     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+# )
+# print("[requests] CIWQS reset form…")
+# r = retry_request(ciwqs, 'GET', rfr_url)
+# soup0 = BeautifulSoup(r.text, "html.parser")
+# hidden0 = hidden_fields(soup0)
+# csrf = hidden0.get("OWASP_CSRFTOKEN", "")
+# in_status = select_value(
+#     soup0, "inStatus", CIWQS_RELATED_PERMIT_STATUS, required_label="Related Permit Status"
+# )
+# # Multi-select post → total drilldown URL (used for Excel export only).
+# # Multi-select yields a grouped-by-agency view; re-submit per-program for the flat table.
+# _kwargs = dict(facility_type=CIWQS_FACILITY_TYPE, waste_type=CIWQS_WASTE_TYPE, status=in_status)
+# print("[requests] Submitting filters…")
+# resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}",
+#                      data=ciwqs_post_data(hidden0, soup0, CIWQS_PROGRAMS, **_kwargs))
+# total_url = extract_drilldown_url(BeautifulSoup(resp.text, "html.parser"), allow_program_scope=False)
+# if not total_url:
+#     raise RuntimeError("CIWQS: no Total drilldown URL in search response")
+# print(f"[requests] Excel export URL: {total_url}")
 
-    def wait_for_downloads(directory, timeout=60):
-        """Wait for an .xls/.xlsx file to appear and finish downloading."""
-        end_time = time.time() + timeout
-        while time.time() < end_time:
-            files = glob.glob(os.path.join(directory, '*.xlsx')) + glob.glob(os.path.join(directory, '*.xls'))
-            files = [f for f in files if not f.lower().endswith('.crdownload')]
-            if files:
-                stable = True
-                for f in files:
-                    try:
-                        s1 = os.path.getsize(f)
-                        time.sleep(0.5)
-                        s2 = os.path.getsize(f)
-                        if s1 != s2:
-                            stable = False
-                            break
-                    except OSError:
-                        stable = False
-                        break
-                if stable:
-                    return files
-            time.sleep(0.5)
-        return []
+# # Re-submit once per program to get per-facility flat-table drilldown URLs.
+# program_urls = []
+# for prog in CIWQS_PROGRAMS:
+#     prog_resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}",
+#                               data=ciwqs_post_data(hidden0, soup0, [prog], **_kwargs))
+#     prog_url = extract_drilldown_url(BeautifulSoup(prog_resp.text, "html.parser"))
+#     if prog_url:
+#         program_urls.append((prog, prog_url))
+#         print(f"[requests] {prog} facility URL: {prog_url}")
+#     else:
+#         print(f"[requests] Warning: no drilldown URL found for {prog}")
 
-    excel_files = wait_for_downloads(pdfs_path, timeout=60)
-    if not excel_files:
-        excel_files = wait_for_downloads(full_path, timeout=5)
+# # Create driver fresh after requests has all URLs — matches old bf548c5 pattern.
+# driver = new_chrome_driver(pdfs_path)
+# wait = WebDriverWait(driver, 120)
+# main_window = driver.current_window_handle
+# driver.set_page_load_timeout(120)
 
-    if not excel_files:
-        print("No Excel file found")
-        exit()
+# _load_ciwqs_table(total_url, "Facility page")
+# driver.save_screenshot('npdes_permits/output/web_page.png')
+# print("Detail page loaded, filters should be preserved")
+# time.sleep(5)
+# table_body = _set_page_all()
 
-    excel_file = max(excel_files, key=os.path.getctime)
-    df = pd.read_csv(excel_file, sep='\t', encoding='latin-1', on_bad_lines='warn')
+# table_rows = table_body.find_elements(By.TAG_NAME, 'tr')
+# print(f"Final table has {len(table_rows)} rows before export")
 
-    print(f"Excel file has {len(df)} rows (table had {len(table_rows)} rows)")
+# # Export Excel file and create mapping from it
+# export_link = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
+# driver.execute_script("arguments[0].scrollIntoView(true);", export_link)
+# driver.execute_script("arguments[0].click();", export_link)
+# time.sleep(3)
+# try:
+#     export_link = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'EXPORT THIS REPORT TO EXCEL')))
+#     driver.execute_script("arguments[0].click();", export_link)
+# except Exception:
+#     print("Second export click not needed or timed out; continuing")
 
-    # Enforce the same intent as the CIWQS form so downstream CSV/STEP 2 stay in sync.
-    if "Program" in df.columns:
-        df = df[df["Program"].fillna("").str.upper().str.contains(r"NPD|WDRMUNIL", na=False, regex=True)]
-    if "Regulatory Measure Status" in df.columns:
-        df = df[df["Regulatory Measure Status"].fillna("").str.upper() == CIWQS_RELATED_PERMIT_STATUS.upper()]
-    if "Place/Project Type" in df.columns:
-        df = df[
-            df["Place/Project Type"].fillna("").str.upper().str.contains(CIWQS_FACILITY_TYPE.upper(), na=False)
-        ]
-    print(f"After explicit form-aligned filtering: {len(df)} rows")
+# excel_files = wait_for_downloads(pdfs_path, timeout=60)
+# if not excel_files:
+#     excel_files = wait_for_downloads(full_path, timeout=5)
 
-    df['Expiration/Review Date'] = pd.to_datetime(df['Expiration/Review Date'], errors='coerce')
-    df_sorted = df.sort_values(['WDID', 'Facility Name', 'Expiration/Review Date'], ascending=[True, True, False])
-    df_deduplicated = df_sorted.drop_duplicates(subset=['WDID', 'Facility Name'], keep='first')
-    duplicates_removed = df_sorted[df_sorted.duplicated(subset=['WDID', 'Facility Name'], keep='first')]
-    print(f"After deduplication and filtering: {len(df_deduplicated)} rows (removed {len(df) - len(df_deduplicated)} duplicates)")
-    if len(duplicates_removed) > 0:
-        cols = [c for c in ['Facility Name', 'WDID', 'NPDES No.'] if c in duplicates_removed.columns]
-        print("Duplicates removed (Facility Name, WDID, NPDES No.):")
-        print(duplicates_removed[cols].to_string(index=False))
+# if not excel_files:
+#     print("No Excel file found")
+#     exit()
 
-    # ============================================================================
-    # STEP 1: COLLECT FACILITY PAGE URLs — navigate per-program for clean results
-    # ============================================================================
-    print("\n" + "="*80)
-    print("STEP 1: Collecting facility page URLs for Active NPDES+WDR/WWTF rows")
-    print("="*80)
+# excel_file = max(excel_files, key=os.path.getctime)
+# df = pd.read_csv(excel_file, sep='\t', encoding='latin-1', on_bad_lines='warn')
 
-    ACCEPTED_PROGRAMS = {"NPDESWW", "NPDMUNI", "WDRMUNIL"}
-    facility_url_to_facilities = {}
+# print(f"Excel file has {len(df)} rows (table had {len(table_rows)} rows)")
 
-    # Column indices are 1-based from find_col_index_by_header; convert to 0-based for BS4 indexing.
-    def _col(one_based_idx):
-        return (one_based_idx - 1) if one_based_idx else None
+# # Enforce the same intent as the CIWQS form so downstream CSV/STEP 2 stay in sync.
+# if "Program" in df.columns:
+#     df = df[df["Program"].fillna("").str.upper().str.contains(r"NPD|WDRMUNIL", na=False, regex=True)]
+# if "Regulatory Measure Status" in df.columns:
+#     df = df[df["Regulatory Measure Status"].fillna("").str.upper() == CIWQS_RELATED_PERMIT_STATUS.upper()]
+# if "Place/Project Type" in df.columns:
+#     df = df[
+#         df["Place/Project Type"].fillna("").str.upper().str.contains(CIWQS_FACILITY_TYPE.upper(), na=False)
+#     ]
+# print(f"After explicit form-aligned filtering: {len(df)} rows")
 
-    def _cell(cells, one_based_idx):
-        i = _col(one_based_idx)
-        if i is None or i >= len(cells):
-            return ""
-        return cells[i].get_text(strip=True)
+# df['Expiration/Review Date'] = pd.to_datetime(df['Expiration/Review Date'], errors='coerce')
+# df_sorted = df.sort_values(['WDID', 'Facility Name', 'Expiration/Review Date'], ascending=[True, True, False])
+# df_deduplicated = df_sorted.drop_duplicates(subset=['WDID', 'Facility Name'], keep='first')
+# duplicates_removed = df_sorted[df_sorted.duplicated(subset=['WDID', 'Facility Name'], keep='first')]
+# print(f"After deduplication and filtering: {len(df_deduplicated)} rows (removed {len(df) - len(df_deduplicated)} duplicates)")
+# if len(duplicates_removed) > 0:
+#     cols = [c for c in ['Facility Name', 'WDID', 'NPDES No.'] if c in duplicates_removed.columns]
+#     print("Duplicates removed (Facility Name, WDID, NPDES No.):")
+#     print(duplicates_removed[cols].to_string(index=False))
 
-    def _cell_href(cells, one_based_idx):
-        i = _col(one_based_idx)
-        if i is None or i >= len(cells):
-            return ""
-        a = cells[i].find("a", href=True)
-        return abs_url(a["href"]) if a else ""
+# df_deduplicated.to_csv(os.path.join(full_path, 'all_ca_npdes.csv'), index=False)
+# print(f"Saved {len(df_deduplicated)} rows to all_ca_npdes.csv")
 
-    # Navigate per-program URLs (NPDES, WDR) to avoid loading the full statewide dataset.
-    # Column indices are detected from the BS4 header row — avoids Selenium cellIndex
-    # issues on CIWQS grouped tables that lack the ciwqsReportColumnName class.
-    col_indices_found = False
-    order_no_col_index = agency_col_index = facility_col_index = npdes_col_index = None
-    region_col_index = major_minor_col_index = program_col_index = None
-    reg_measure_status_col_index = place_type_col_index = None
+# # ============================================================================
+# # STEP 1: COLLECT FACILITY PAGE URLs — navigate per-program for clean results
+# # ===========================================================================
+# print("\n STEP 1: Collecting facility page URLs for Active NPDES+WDR/WWTF rows")
 
-    for prog, prog_url in program_urls:
-        print(f"\n--- {prog}: {prog_url}")
-        for attempt in range(1, 4):
-            try:
-                driver.get(prog_url)
-                wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ciwqsReportDataTable")))
-                break
-            except TimeoutException:
-                print(f"[selenium] {prog} page slow ({attempt}/3)...")
-                if attempt == 3:
-                    raise
-                try:
-                    driver.execute_script("window.stop();")
-                except Exception:
-                    pass
+# facility_url_to_facilities = {}
 
-        for attempt in range(1, 3):
-            try:
-                _set_page_size_all_and_wait()
-                break
-            except Exception as e:
-                print(f"[selenium] pagesizeselect ALL did not stabilize ({attempt}/2): {e}")
-                if attempt == 2:
-                    raise
-                time.sleep(2)
+# # Column indices are 1-based; convert to 0-based for BS4 indexing.
+# def _col(one_based_idx):
+#     return (one_based_idx - 1) if one_based_idx else None
 
-        page_soup = BeautifulSoup(driver.page_source, "html.parser")
-        data_table = page_soup.find("table", class_=lambda c: c and "ciwqsReportDataTable" in c)
-        bs_rows_prog = data_table.find_all("tr") if data_table else []
-        print(f"{prog}: {len(bs_rows_prog)} table rows")
+# def _cell(cells, one_based_idx):
+#     i = _col(one_based_idx)
+#     if i is None or i >= len(cells):
+#         return ""
+#     return cells[i].get_text(strip=True)
 
-        if not col_indices_found:
-            # Find the first row that looks like a column header (contains "Order No.").
-            _col_idx_map = {}
-            for _tr in bs_rows_prog:
-                _tds = _tr.find_all("td")
-                _texts = [_td.get_text(strip=True) for _td in _tds]
-                if 'Order No.' in _texts or 'Facility Name' in _texts:
-                    _col_idx_map = {t: i + 1 for i, t in enumerate(_texts) if t}
-                    break
-            order_no_col_index           = _col_idx_map.get('Order No.')
-            agency_col_index             = _col_idx_map.get('Agency')
-            facility_col_index           = _col_idx_map.get('Facility Name')
-            npdes_col_index              = _col_idx_map.get('NPDES No.')
-            region_col_index             = _col_idx_map.get('Region')
-            major_minor_col_index        = _col_idx_map.get('Major/Minor')
-            program_col_index            = _col_idx_map.get('Program')
-            reg_measure_status_col_index = _col_idx_map.get('Regulatory Measure Status')
-            place_type_col_index         = _col_idx_map.get('Place/Project Type')
-            print(f"[debug] col indices: order_no={order_no_col_index} facility={facility_col_index} "
-                  f"program={program_col_index} status={reg_measure_status_col_index} "
-                  f"plc_type={place_type_col_index} region={region_col_index}")
-            if not order_no_col_index:
-                raise RuntimeError(
-                    f"Could not find 'Order No.' header in {prog} table. "
-                    f"Found cols: {list(_col_idx_map.keys())[:10]}"
-                )
-            col_indices_found = True
+# def _cell_href(cells, one_based_idx):
+#     i = _col(one_based_idx)
+#     if i is None or i >= len(cells):
+#         return ""
+#     a = cells[i].find("a", href=True)
+#     return abs_url(a["href"]) if a else ""
 
-        for tr in bs_rows_prog:
-            try:
-                if tr.find("td", class_="ciwqsReportColumnName"):
-                    continue
-                cells = tr.find_all("td")
-                if not cells:
-                    continue
+# # Navigate per-program URLs (NPDES, WDR) to avoid loading the full statewide dataset.
+# # Column indices detected from the BS4 header row — avoids Selenium cellIndex
+# # issues on CIWQS grouped tables that lack the ciwqsReportColumnName class.
+# col = {}  # CIWQS header text -> 1-based column index (detected on first program)
 
-                status   = _cell(cells, reg_measure_status_col_index).upper()
-                program  = _cell(cells, program_col_index).upper()
-                plc_type = _cell(cells, place_type_col_index).upper()
+# for prog, prog_url in program_urls:
+#     print(f"\n--- {prog}: {prog_url}")
+#     _load_ciwqs_table(prog_url, prog)
+#     _set_page_all()
 
-                if status and status != CIWQS_RELATED_PERMIT_STATUS.upper():
-                    continue
-                if plc_type and CIWQS_FACILITY_TYPE.upper() not in plc_type:
-                    continue
-                if program and not any(p in program for p in ACCEPTED_PROGRAMS):
-                    continue
-                if CIWQS_TEST_REGION and region_col_index:
-                    row_region = _cell(cells, region_col_index).upper()
-                    if row_region and not row_region.startswith(CIWQS_TEST_REGION):
-                        continue
+#     page_soup = BeautifulSoup(driver.page_source, "html.parser")
+#     data_table = page_soup.find("table", class_=lambda c: c and "ciwqsReportDataTable" in c)
+#     bs_rows_prog = data_table.find_all("tr") if data_table else []
+#     print(f"{prog}: {len(bs_rows_prog)} table rows")
 
-                facility_url = _cell_href(cells, facility_col_index)
-                if not facility_url:
-                    continue
+#     if not col:
+#         for _tr in bs_rows_prog:
+#             _tds = _tr.find_all("td")
+#             _texts = [_td.get_text(strip=True) for _td in _tds]
+#             if 'Order No.' in _texts or 'Facility Name' in _texts:
+#                 col = {t: i + 1 for i, t in enumerate(_texts) if t}
+#                 break
+#         missing = [ciwqs_col for _, ciwqs_col in FACILITY_FIELDS if not col.get(ciwqs_col)]
+#         if missing:
+#             raise RuntimeError(
+#                 f"Missing columns in {prog} table: {missing}. "
+#                 f"Found: {list(col.keys())[:10]}"
+#             )
+#         print(f"[debug] col indices: {col}")
 
-                facility = {
-                    'agency':        _cell(cells, agency_col_index),
-                    'facility_name': _cell(cells, facility_col_index),
-                    'npdes_no':      _cell(cells, npdes_col_index),
-                    'region':        _cell(cells, region_col_index),
-                    'major_minor':   _cell(cells, major_minor_col_index),
-                    'order_no':      _cell(cells, order_no_col_index),
-                    'facility_url':  facility_url,
-                }
-                facility_url_to_facilities.setdefault(facility_url, []).append(facility)
-            except Exception as e:
-                print(f"Row parse error: {e}")
-                continue
+#     for tr in bs_rows_prog:
+#         try:
+#             if tr.find("td", class_="ciwqsReportColumnName"):
+#                 continue
+#             cells = tr.find_all("td")
+#             if not cells:
+#                 continue
 
-    print(f"\n✓ Found {len(facility_url_to_facilities)} unique facility URLs")
+#             status   = _cell(cells, col.get('Regulatory Measure Status')).upper()
+#             program  = _cell(cells, col.get('Program')).upper()
+#             plc_type = _cell(cells, col.get('Place/Project Type')).upper()
 
-else:
-    # ============================================================================
-    # RETRY MODE: load failed facilities from previous run
-    # ============================================================================
-    print("\n" + "="*80)
-    print(f"RETRY MODE: loading failed facilities from {full_path}")
-    print("="*80)
-    failed_csv = os.path.join(full_path, 'failed_facilities.csv')
-    if not os.path.exists(failed_csv):
-        raise RuntimeError(f"No failed_facilities.csv found in {full_path}")
-    failed_df = pd.read_csv(failed_csv, dtype=str).fillna('')
-    facility_url_to_facilities = {}
-    for _, row in failed_df.iterrows():
-        fac = {k: row.get(k, '') for k in
-               ['agency', 'facility_name', 'npdes_no', 'region', 'major_minor', 'order_no', 'facility_url']}
-        facility_url_to_facilities.setdefault(row['facility_url'], []).append(fac)
-    df_deduplicated = pd.read_csv(os.path.join(full_path, 'site_data.csv'), dtype=str)
-    print(f"✓ {len(facility_url_to_facilities)} facility URLs to retry")
+#             if status and status != CIWQS_RELATED_PERMIT_STATUS.upper():
+#                 continue
+#             if plc_type and CIWQS_FACILITY_TYPE.upper() not in plc_type:
+#                 continue
+#             if program and not any(p in program for p in ACCEPTED_PROGRAMS):
+#                 continue
 
-    # ============================================================================
-    # SAVE TABLE DATA TO CSV (using Excel export)
-    # ============================================================================
-    print("\n" + "="*80)
-    print("STEP 6: Saving table data to CSV from Excel export")
-    print("="*80)
+#             facility_url = _cell_href(cells, col.get('Facility Name'))
+#             if not facility_url:
+#                 continue
 
-    df_deduplicated.to_csv(os.path.join(full_path, 'all_ca_npdes.csv'), index=False)
+#             facility = {key: _cell(cells, col.get(ciwqs_col)) for key, ciwqs_col in FACILITY_FIELDS}
+#             facility['Facility_URL'] = facility_url
+#             facility_url_to_facilities.setdefault(facility_url, []).append(facility)
+#         except Exception as e:
+#             print(f"Row parse error: {e}")
+#             continue
 
-    print(f"Saved {len(df_deduplicated)} rows to all_ca_npdes.csv")
+# print(f"\n✓ Found {len(facility_url_to_facilities)} unique facility URLs")
 
-# PDF keywords to skip downloading
-# base_keywords get separator-bounded patterns (_kw_, kw_ at start) to avoid false positives.
-# "per" (Performance Evaluation Reports) needs this treatment — bare "per" matches "permit".
-# "ci" (Compliance Inspection) is removed entirely — it's a valid permit identifier (e.g. CI 0066).
-base_keywords = ["noa", "noi", "rpts", "rowd", "per"]
-separators = [" ", ".", "-", "_"]
-patterns = set()
-
-for keyword in base_keywords:
-    for sep1 in separators:
-        for sep2 in separators:
-            patterns.add(f"{sep1}{keyword}{sep2}")
-skip_keywords = list(patterns)
-
-beginning_patterns = []
-for keyword in base_keywords:
-    for sep in separators:
-        beginning_patterns.append(f"{keyword}{sep}")
-skip_keywords.extend([
-    "report", "financial", "notice of", "response to",
-    "rate study", "ratestudy", "study", "letter",
-])
-
-reg_measure_id_to_url = {}
-failed_facilities = []
+# with open(os.path.join(full_path, 'facility_urls.json'), 'w') as f:
+#     json.dump(facility_url_to_facilities, f, indent=2, default=str)
+# print(f"Checkpoint saved: {len(facility_url_to_facilities)} facility URLs → facility_urls.json")
 
 # ============================================================================
 # STEP 2: VISIT FACILITY PAGES, PICK BEST ORDER NO., DOWNLOAD PDFs
+# To restart from here (skip Step 1 URL scraping), comment out everything above
+# through the checkpoint save and instead load the checkpoint:
+#
+with open(os.path.join(full_path, 'facility_urls.json')) as f:
+    facility_url_to_facilities = json.load(f)
+driver = new_chrome_driver(pdfs_path)
+wait = WebDriverWait(driver, 120)
+main_window = driver.current_window_handle
+driver.set_page_load_timeout(120)
+
 # ============================================================================
-print("\n" + "="*80)
-print("STEP 2: Visiting facility pages and downloading PDFs")
-print("="*80)
+print("\n STEP 2: Visiting facility pages and downloading PDFs")
 
-# Prepare skip keywords structure for process_all_facilities
-skip_keywords_config = {
-    'embedded': skip_keywords,
-    'beginning': beginning_patterns
-}
-
-# Call the helper function
-failed_facilities = process_all_facilities(
+failed_facilities, facility_order_info = process_all_facilities(
     driver=driver,
     facility_url_to_facilities=facility_url_to_facilities,
     output_dir=pdfs_path,
-    skip_keywords=skip_keywords_config
 )
 
-# Save failed facilities
 if failed_facilities:
     pd.DataFrame(failed_facilities).to_csv(
-        os.path.join(full_path, 'failed_facilities.csv'), 
+        os.path.join(full_path, 'failed_facilities.csv'),
         index=False
     )
     print(f"Wrote {len(failed_facilities)} failed facilities to failed_facilities.csv")
-
-
-# ============================================================================
-# STEP 3: PDF SUMMARY
-# ============================================================================
-print("\n" + "="*80)
-print("STEP 3: PDF summary")
-print("="*80)
 
 # Quit driver
 driver.quit()
@@ -480,11 +667,9 @@ driver.quit()
 print(f"Unique facility page URLs collected: {len(facility_url_to_facilities)}")
 
 # ============================================================================
-# STEP 4: DETECT AND MOVE NPDES PDFs TO SEPARATE FOLDER
+# STEP 3: DETECT AND MOVE NPDES PDFs TO SEPARATE FOLDER
 # ============================================================================
-print("\n" + "="*80)
-print("STEP 4: Detecting and moving NPDES PDFs")
-print("="*80)
+print("\n STEP 3: Detecting and moving NPDES PDFs")
 
 npdes_path = os.path.join(full_path, 'npdes')
 os.makedirs(npdes_path, exist_ok=True)
@@ -516,27 +701,35 @@ print(f"\nNPDES PDFs moved: {len(npdes_pdfs)}")
 print(f"Non-NPDES PDFs kept in pdfs folder: {len(non_npdes_pdfs)}")
 
 # ============================================================================
-# STEP 5: CREATE CSV WITH ONLY NPDES PDFs
+# STEP 4: CREATE CSV WITH ONLY NPDES PDFs
 # ============================================================================
-print("\n" + "="*80)
-print("STEP 5: Creating site_data.csv with NPDES permits only")
-print("="*80)
+print("\n STEP 4: Creating site_data.csv with NPDES permits only")
 
 site_data_path = os.path.join(full_path, 'site_data.csv')
 
-# Append when retrying a facility
-open_mode = 'a' if (RETRY_FAILED_DIR and os.path.exists(site_data_path)) else 'w'
-pdfs_csv = open(site_data_path, open_mode, newline='')
+# Count distinct facilities mapping to each NPDES PDF (for Shared_PDF flag)
+pdf_to_n_facilities = {}
+for facility_url, info in facility_order_info.items():
+    n = len(facility_url_to_facilities.get(facility_url, []))
+    for pdf in info['pdfs']:
+        if pdf in npdes_pdfs:
+            pdf_to_n_facilities[pdf] = pdf_to_n_facilities.get(pdf, 0) + n
 
-csv_row_count = 0
-skipped_non_npdes_count = 0
+rows = []
+for facility_url, info in facility_order_info.items():
+    for facility in facility_url_to_facilities.get(facility_url, []):
+        for pdf in info['pdfs']:
+            if pdf not in npdes_pdfs:
+                continue
+            rows.append({
+                **facility,
+                'Reg_Measure_ID':       info['reg_measure_id'],
+                'Reg_Measure_Type':     info['reg_measure_type'],
+                'PDF_File':             pdf,
+                'Shared_PDF':           'Yes' if pdf_to_n_facilities.get(pdf, 0) > 1 else 'No',
+                'Total_PDFs_Available': info['total_pdfs'],
+            })
 
-pdfs_csv.close()
-
-print(f"\nWrote {csv_row_count} CSV rows for NPDES permits")
-print(f"Skipped {skipped_non_npdes_count} facility entries (non-NPDES PDFs)")
-
+pd.DataFrame(rows).to_csv(site_data_path, index=False)
+print(f"Wrote {len(rows)} rows to site_data.csv")
 print(f"Non-NPDES PDFs: {len(non_npdes_pdfs)}")
-print(f"CSV rows written (NPDES only): {csv_row_count}")
-print(f"Facility entries skipped (non-NPDES): {skipped_non_npdes_count}")
-print(f"{'='*80}")

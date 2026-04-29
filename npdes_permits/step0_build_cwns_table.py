@@ -16,6 +16,8 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 EL_ABBADI_DATA_DIR = os.path.join("data", "el_abbadi")
 OUTPUT_DATA_DIR = os.path.join("output")  # Save to npdes_permits/output/ for compare_processes.py
 
+ALLOWED_FACILITY_TYPES = {"Treatment Plant", "Honey Bucket Lagoon"}
+
 # FROM SOURCE with changes to data path
 def create_wwtp_inventory():
   '''
@@ -54,7 +56,7 @@ def create_wwtp_inventory():
   types = pd.read_csv(f'data/cwns/2022/2022_FACILITY_TYPES.csv', dtype = {'CWNS_ID':str}).rename(columns= {'CWNS_ID':'CWNS_NUM'})
 
   #filter to just treatment plants and honey bucket lagoons
-  types = types.loc[(types['FACILITY_TYPE'] == 'Treatment Plant') | (types['FACILITY_TYPE'] == 'Honey Bucket Lagoon')].drop_duplicates(subset = 'CWNS_NUM')
+  types = types.loc[types['FACILITY_TYPE'].isin(ALLOWED_FACILITY_TYPES)].drop_duplicates(subset = 'CWNS_NUM')
   types.reset_index(inplace = True, drop = True)
 
   #merge facility types with main dataframe to screen out non-treatment plants and honey bucket lagoons from inventory
@@ -451,6 +453,9 @@ for cid in ciwqs_mapping.get('CWNS_ID', pd.Series(dtype=str)).astype(str).str.st
 
 missing_ids = sorted(required_ids - ids_in_export)
 if missing_ids:
+    allowed_cwns_ids = set(wwtps['CWNS_NUM'].astype(str).str.strip())
+    missing_ids = [cid for cid in missing_ids if cid in allowed_cwns_ids]
+
     permits_by_cwns = (
         ca_npdes_permits.drop_duplicates('CWNS_ID', keep='first')
         .assign(cwns_key=lambda d: d['CWNS_ID'].astype(str).str.strip())

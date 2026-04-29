@@ -79,6 +79,7 @@ def main():
     npdesNO = []
     pdfs = []
     shared_pdfs = []
+    pdf_cache = {}  # filename -> (present_results, future_results) or None
 
     # Read site data
     with open(rfr_data, "r") as f:
@@ -87,7 +88,8 @@ def main():
             agency_name.append(row.get("Agency", ""))
             facility_name.append(row.get("Facility_Name", ""))
             npdesNO.append(row.get("NPDES_No", ""))
-            pdfs.append(row.get("PDF_File", ""))
+            pdf_name = row.get("PDF_File", "")
+            pdfs.append(pdf_name)
             shared_pdfs.append(row.get("Shared_PDF", ""))
 
     # Create CSV headers - one column per process
@@ -99,7 +101,7 @@ def main():
         "PDF_File",
         "Shared_PDF",
     ]
-    leaves = extract_leaves(keywords, ignore_disposal=False)
+    leaves = extract_leaves(keywords, ignore_disposal=True)
     all_keys = [name for name, _, _ in leaves]
     group_to_columns = {}
     column_priority = {}
@@ -115,13 +117,14 @@ def main():
 
     # Pre-compute unique PDFs so shared files are only extracted once
     unique_pdfs = list(dict.fromkeys(p for p in pdfs if p))
-    pdf_cache = {}  # filename -> (present_results, future_results) or None
 
     for j, pdf_file in enumerate(unique_pdfs):
         path = os.path.join(directory, pdf_file)
         print(f"Processing {pdf_file} ({j+1}/{len(unique_pdfs)})")
-
-        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=True)
+        extraction_result = extract_permit_sections(
+            path,
+            regenerate_text_excerpts=False,
+        )
         if extraction_result is None:
             print(f"Skipping {pdf_file} - extraction failed")
             pdf_cache[pdf_file] = None
@@ -238,6 +241,21 @@ def main():
             except Exception:
                 rel = f
             print(f"  {rel}: {size} bytes")
+
+    # Deduplicate by permit number and sum PDFs available on CIWQS.
+    site_data = pd.read_csv(rfr_data, dtype=str)
+    site_data["Total_PDFs_Available"] = pd.to_numeric(
+        site_data["Total_PDFs_Available"], errors="coerce"
+    )
+    reg_measures = (
+        site_data.groupby("Reg_Measure_ID")["Total_PDFs_Available"].max().reset_index()
+    )
+    print("\nPDFs available per permit (CIWQS):")
+    print(reg_measures.sort_values("Total_PDFs_Available", ascending=False).head(10))
+    total_available = int(reg_measures["Total_PDFs_Available"].fillna(0).sum())
+    print(f"Total permits: {len(reg_measures)}")
+    print(f"Total PDFs available across permits: {total_available}")
+
 
     print(f"\n{'='*80}")
     print(f"Processing complete! Results saved to: {file}")

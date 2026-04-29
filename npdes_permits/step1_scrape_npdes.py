@@ -816,6 +816,16 @@ for facility_url, info in facility_order_info.items():
             pdf_to_n_facilities[pdf] = pdf_to_n_facilities.get(pdf, 0) + n
 
 rows = []
+WDR_TOKEN = "WDR"
+
+
+def _derive_doc_mode(pdf_name, reg_measure_type):
+    signals = pdf_signals.get(pdf_name, {})
+    if signals.get("has_noa"):
+        return "noa"
+    return "wdr" if WDR_TOKEN in str(reg_measure_type or "").upper() else "npdes"
+
+
 for facility_url, info in facility_order_info.items():
     for facility in facility_url_to_facilities.get(facility_url, []):
         for pdf in info["pdfs"]:
@@ -829,6 +839,7 @@ for facility_url, info in facility_order_info.items():
                     "Reg_Measure_ID": info["reg_measure_id"],
                     "Reg_Measure_Type": info["reg_measure_type"],
                     "PDF_File": pdf,
+                    "Doc_Mode": _derive_doc_mode(pdf, info["reg_measure_type"]),
                     "Shared_PDF": ("Yes" if pdf_to_n_facilities.get(pdf, 0) > 1 else "No"),
                     "Total_PDFs_Available": info["total_pdfs"],
                 }

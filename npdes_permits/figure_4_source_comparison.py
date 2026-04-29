@@ -27,6 +27,8 @@ import os
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
+
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import get_leaf_names, PRESENT_STATUSES
@@ -82,16 +84,28 @@ def draw_stacked_bar(ax, xpos, width, counts, color, stack_order):
         val = counts.get(key, 0)
         if val > 0:
             facecolor = "white" if key == "NOT_PRESENT" else color
-            ax.bar(
+            base = ax.bar(
                 xpos,
                 val,
                 width,
                 bottom=bottom,
                 color=facecolor,
-                hatch=hatch,
                 edgecolor="black",
                 linewidth=1.2,
             )
+            if hatch:
+                hatch_bar = ax.bar(
+                    xpos,
+                    val,
+                    width,
+                    bottom=bottom,
+                    color="none",
+                    hatch=hatch,
+                    edgecolor="white",
+                    linewidth=0.0,
+                )
+                for patch in hatch_bar:
+                    patch.set_hatch_linewidth(1.0)
             bottom += val
 
 
@@ -260,18 +274,123 @@ print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged
 cwns_df["PERMIT_NUMBER"] = cwns_df["NPDES_No"].astype(str).str.strip()
 cwns_df["_fac"] = list(zip(cwns_df["WDID"], cwns_df["Facility_Name"]))
 
-# Save facilities with no declared CWNS counterpart, for manual mapping review
-kw_unmatched = kw_facilities - facilities_with_cwns - facilities_without_cwns
-if kw_unmatched:
+# Save facilities with no declared CWNS counterpart, based on site_data + KW names.
+site_data_path = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
+site_names = set()
+if os.path.exists(site_data_path):
+    site_names = set(
+        pd.read_csv(site_data_path, dtype=str).fillna("")["Facility_Name"].astype(str).str.strip()
+    )
+kw_names = set(kw_df["FACILITY_NAME"].astype(str).str.strip())
+candidate_names = {n for n in (kw_names | site_names) if n}
+
+unmatched_names = []
+for name in sorted(candidate_names):
+    fac = name_to_fac.get(name)
+    if fac is None:
+        unmatched_names.append(name)
+    elif fac not in facilities_with_cwns and fac not in facilities_without_cwns:
+        unmatched_names.append(name)
+
+if unmatched_names:
     kw_unmatched_path = f"npdes_permits/output/{DATE_FOLDER}/unmatched_kw_no_cwns.csv"
-    kw_df[
-        kw_df["FACILITY_NAME"]
-        .apply(lambda n: name_to_fac.get(str(n).strip(), ("", str(n).strip())))
-        .isin(kw_unmatched)
-    ][["FACILITY_NAME"]].drop_duplicates().to_csv(kw_unmatched_path, index=False)
-    print(f"  Unmatched KW (no CWNS): {len(kw_unmatched)} → unmatched_kw_no_cwns.csv")
+    pd.DataFrame({"FACILITY_NAME": unmatched_names}).to_csv(kw_unmatched_path, index=False)
+    print(f"  Unmatched KW/site_data (no CWNS): {len(unmatched_names)} → unmatched_kw_no_cwns.csv")
 else:
-    print("  Unmatched KW (no CWNS): 0")
+    print("  Unmatched KW/site_data (no CWNS): 0")
+
+
+# CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
+cwns_csv = Path("npdes_permits/output/cwns_processes_by_facility.csv")
+mapping_csv = Path("npdes_permits/data/ciwqs_to_cwns.csv")
+cwns_unmatched_df = pd.read_csv(cwns_csv, dtype={"CWNS_ID": str}, low_memory=False).fillna("")
+mapping_df = pd.read_csv(mapping_csv, dtype=str, keep_default_na=False).fillna("")
+
+mapped_cwns_ids = {
+    str(cw).strip()
+    for cw in mapping_df.get("CWNS_ID", pd.Series(dtype=str))
+    if str(cw).strip() and str(cw).strip().upper() != "NA"
+}
+cwns_ids = cwns_unmatched_df.get("CWNS_ID", pd.Series(dtype=str)).astype(str).str.strip()
+unmatched_cwns_no_kw = cwns_unmatched_df[
+    cwns_ids.ne("") & cwns_ids.str.upper().ne("NA") & ~cwns_ids.isin(mapped_cwns_ids)
+][["FACILITY_NAME", "CWNS_ID"]].drop_duplicates()
+
+unmatched_cwns_no_kw_path = Path(f"npdes_permits/output/{DATE_FOLDER}/unmatched_cwns_no_kw.csv")
+unmatched_cwns_no_kw.to_csv(unmatched_cwns_no_kw_path, index=False)
+print(
+    f"Saved {len(unmatched_cwns_no_kw)} unmatched CWNS rows "
+    f"to {unmatched_cwns_no_kw_path.name}"
+)
+
+# Flow summary for unmatched CWNS facilities (2022 CWNS FLOW table)
+flow_2022_path = "npdes_permits/data/cwns/2022/FLOW_2022.csv"
+if os.path.exists(flow_2022_path) and not unmatched_cwns_no_kw.empty:
+    flow_2022_df = pd.read_csv(flow_2022_path, dtype={"CWNS_ID": str}, low_memory=False).fillna("")
+    norm_cwns = lambda s: str(s).strip().zfill(11)
+    unmatched_ids = {norm_cwns(c) for c in unmatched_cwns_no_kw["CWNS_ID"]}
+    flow_2022_df["CWNS_ID"] = flow_2022_df["CWNS_ID"].map(norm_cwns)
+    flow_subset = flow_2022_df[flow_2022_df["CWNS_ID"].isin(unmatched_ids)].copy()
+    flow_subset["CURRENT_DESIGN_FLOW"] = pd.to_numeric(
+        flow_subset.get("CURRENT_DESIGN_FLOW"), errors="coerce"
+    ).fillna(0.0)
+
+    flow_fac = (
+        flow_subset.groupby(["CWNS_ID", "FLOW_TYPE"], as_index=False)["CURRENT_DESIGN_FLOW"]
+        .sum()
+        .pivot(index="CWNS_ID", columns="FLOW_TYPE", values="CURRENT_DESIGN_FLOW")
+        .fillna(0.0)
+    )
+    lower_cols = {str(c).lower(): c for c in flow_fac.columns}
+    municipal_cols = [orig for low, orig in lower_cols.items() if "municipal" in low]
+    industrial_cols = [orig for low, orig in lower_cols.items() if "industrial" in low]
+    municipal = (
+        flow_fac[municipal_cols].sum(axis=1)
+        if municipal_cols
+        else pd.Series(0.0, index=flow_fac.index)
+    )
+    industrial = (
+        flow_fac[industrial_cols].sum(axis=1)
+        if industrial_cols
+        else pd.Series(0.0, index=flow_fac.index)
+    )
+    total = (
+        flow_fac["Total Flow"] if "Total Flow" in flow_fac.columns else flow_fac.sum(axis=1)
+    )
+    nonzero_total = total[total > 0]
+    max_total = float(nonzero_total.max()) if len(nonzero_total) else 0.0
+    avg_total = float(nonzero_total.mean()) if len(nonzero_total) else 0.0
+    n_fac = len(flow_fac)
+    n_nonzero_muni = int((municipal > 0).sum())
+    n_only_industrial = int(((industrial > 0) & (municipal <= 0)).sum())
+    pct_nonzero_muni = (100.0 * n_nonzero_muni / n_fac) if n_fac else 0.0
+    pct_only_ind = (100.0 * n_only_industrial / n_fac) if n_fac else 0.0
+
+    print("  Unmatched CWNS flow summary (FLOW_2022):")
+    print(f"    Matched in FLOW_2022: {n_fac}/{len(unmatched_ids)}")
+    print(f"    Max total flow (MGD, nonzero): {max_total:.3f}")
+    print(f"    Avg total flow (MGD, nonzero): {avg_total:.3f}")
+    print(f"    Nonzero municipal flow: {n_nonzero_muni} ({pct_nonzero_muni:.2f}%)")
+    print(f"    Only industrial flow: {n_only_industrial} ({pct_only_ind:.2f}%)")
+
+    flow_rank = pd.DataFrame(
+        {"CWNS_ID": total.index, "Total_Flow_MGD": total.values}
+    )
+    flow_rank = flow_rank[flow_rank["Total_Flow_MGD"] > 0]
+    flow_rank = flow_rank.merge(
+        unmatched_cwns_no_kw.rename(columns={"FACILITY_NAME": "Facility_Name"}),
+        on="CWNS_ID",
+        how="left",
+    ).sort_values("Total_Flow_MGD", ascending=False)
+    top5 = flow_rank.head(5)
+    if not top5.empty:
+        print("    Top 5 unmatched facilities by total flow (MGD):")
+        for _, row in top5.iterrows():
+            print(
+                f"      - {row.get('Facility_Name', '')} "
+                f"(CWNS_ID={row['CWNS_ID']}, flow={row['Total_Flow_MGD']:.3f})"
+            )
+
 
 # Filter LLM/KW to only facilities with a declared CWNS
 kw_df = kw_df[
@@ -342,11 +461,15 @@ stack_order_with_not_present = [
     (status, HATCH_PATTERNS.get(status, "")) for status in status_order_with_not_present
 ]
 status_legend_items = [
-    (status.title(), {"facecolor": "grey", "hatch": HATCH_PATTERNS.get(status, "")})
+    (status.title(), {
+        "facecolor": "grey", 
+        "hatch": HATCH_PATTERNS.get(status, ""),
+        "edgecolor": "white" if HATCH_PATTERNS.get(status, "") else "black"
+    })
     for status in status_order
 ]
 status_legend_items_with_not_present = status_legend_items + [
-    ("Not Present", {"facecolor": "white"}),
+    ("Not Present", {"facecolor": "white", "edgecolor": "black"}),
 ]
 
 for group_title, json_cats in PLOT_GROUPS.items():

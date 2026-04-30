@@ -1,0 +1,276 @@
+{
+  "items": [
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP headworks consists of the coarse bar screens, influent pump station wet-well, flow meter, fine drum screens, grit collectors, drain pump station to receive the SRTTP return flows, and (if necessary, to neutralize phosphorous) alum feed system.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The effluent from the grit collectors gravity-flows into secondary treatment (sequencing batch reactors, SBR).",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-Alum"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.98,
+      "Sentence": "The SRTTP headworks consists of ... (if necessary, to neutralize phosphorous) alum feed system.",
+      "trigger_process": [
+        "Alum Addition",
+        "Coagulation"
+      ]
+    },
+    {
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The effluent from the grit collectors gravity-flows into secondary treatment (sequencing batch reactors, SBR). The SBRs operate in four different sequences or steps which are fill, react/compressed air, settle, and decant.",
+      "trigger_process": [
+        "SBR",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "A methanol feed system is available to provide supplemental carbon to the SBRs through a dedicated line at each SBR.",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Flocculation",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.85,
+      "Sentence": "To address this issue, the Discharger increased the air loading and added polymer to improve solids settling within the sequence batch reactor.",
+      "trigger_process": [
+        "Flocculation",
+        "Polymer Addition",
+        "Primary Clarification",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP\u2019s tertiary treatment process includes three flow equalization basins (total storage capacity of one million gallons)...",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP\u2019s tertiary treatment process includes three flow equalization basins (total storage capacity of one million gallons), filter feed pumps, disk filters, sodium hypochlorite generation system, disinfection contact basins, and recycled water pumps and metering facilities.",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP\u2019s tertiary treatment process includes ... sodium hypochlorite generation system, disinfection contact basins, and recycled water pumps and metering facilities.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP\u2019s tertiary treatment process includes ... sodium hypochlorite generation system, disinfection contact basins, and recycled water pumps and metering facilities.",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "The SRTTP\u2019s biosolids processing facilities include a waste activated sludge holding tank, three aerobic digesters for sludge stabilization, gravity belt thickener for sludge thickening, centrifuges for sludge dewatering, and an onsite biosolids storage facility.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion",
+        "Digestion"
+      ],
+      "Role": [
+        "Stabilization",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP\u2019s biosolids processing facilities include ... three aerobic digesters for sludge stabilization ...",
+      "trigger_process": [
+        "Aerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "The SRTTP\u2019s biosolids processing facilities include ... gravity belt thickener for sludge thickening ...",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The SRTTP\u2019s biosolids processing facilities include ... centrifuges for sludge dewatering ...",
+      "trigger_process": [
+        "Centrifuge",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Score": 1,
+      "Sentence": "If the sludge is non-hazardous, the Discharger send the biosolids to the municipal landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    }
+  ]
+}

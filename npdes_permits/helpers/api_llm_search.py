@@ -18,10 +18,10 @@ def get_headers():
     }
 
 
-def build_pdf_jobs(pdf_folder: str, facilities_information: str):
-    pdf_folder_path = Path(pdf_folder)
-    if not pdf_folder_path.exists() or not pdf_folder_path.is_dir():
-        raise ValueError(f"--pdf_folder must be an existing directory: {pdf_folder_path}")
+def build_txt_jobs(txt_folder: str, facilities_information: str):
+    txt_folder_path = Path(txt_folder)
+    if not txt_folder_path.exists() or not txt_folder_path.is_dir():
+        raise ValueError(f"--txt_folder must be an existing directory: {txt_folder_path}")
 
     facilities_path = Path(facilities_information)
     if not facilities_path.exists() or not facilities_path.is_file():
@@ -48,22 +48,31 @@ def build_pdf_jobs(pdf_folder: str, facilities_information: str):
         if not pdf_file_value or pdf_file_value.lower() == "nan":
             continue
 
-        pdf_path = Path(pdf_file_value)
-        if not pdf_path.is_absolute():
-            pdf_path = pdf_folder_path / pdf_file_value
+        txt_path = Path(pdf_file_value)
+        if not txt_path.is_absolute():
+            txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
 
-        if pdf_path.suffix.lower() != ".pdf":
+        if txt_path.suffix.lower() != ".txt":
             raise ValueError(
-                f"PDF_File value is not a .pdf for facility '{facility_name}': {pdf_file_value}"
+                f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
             )
-        if not pdf_path.exists() or not pdf_path.is_file():
+        if not txt_path.exists() or not txt_path.is_file():
             raise FileNotFoundError(
-                f"PDF not found for facility '{facility_name}': {pdf_path}"
+                f"TXT not found for facility '{facility_name}': {txt_path}"
             )
 
-        jobs.append((row_idx, pdf_path, pdf_path.name, facility_name))
+        jobs.append((row_idx, txt_path, txt_path.name, facility_name))
 
     return jobs
+
+
+def txt_file_value_to_txt_name(file_value: str) -> str:
+    path_value = Path(file_value)
+    return path_value.with_suffix(".txt").name
+
+
+def build_pdf_jobs(pdf_folder: str, facilities_information: str):
+    return build_txt_jobs(pdf_folder, facilities_information)
 
 
 def get_models():
@@ -168,7 +177,7 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                             },
                             "Implementation": {
                                 "type": "string",
-                                "enum": ["present", "future", "past"],
+                                "enum": ["present", "planned", "past"],
                             },
                             "Location": {
                                 "type": ["string", "null"],
@@ -231,7 +240,7 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                         },
                         "Implementation": {
                             "type": "string",
-                            "enum": ["present", "future", "past"],
+                            "enum": ["present", "planned", "past"],
                         },
                         "Location": {
                             "type": ["string", "null"],

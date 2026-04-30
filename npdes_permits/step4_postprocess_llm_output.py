@@ -19,7 +19,7 @@ from helpers.utils import parse_status, extract_leaves
 
 DATE_STR = "2026-4-26"
 
-input_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_search_ontology")
+input_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_extraction")
 output_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_facility.csv")
 site_data_csv = Path(f"npdes_permits/output/{DATE_STR}/site_data.csv")
 output_json_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_postprocess_ontology")
@@ -92,28 +92,71 @@ for filename in [
         print(f"Could not download {filename} from GitHub")
 
 site_df = pd.read_csv(site_data_csv, dtype=str).fillna("")
-pdf_map = {
-    row["PDF_File"]
-    .replace(".pdf", "")
-    .lower(): {
+
+
+def _norm_pdf(s):
+    """Normalize a PDF stem for lookup: lowercase, spaces → underscores."""
+    return s.lower().replace(" ", "_")
+
+
+def _norm_fac(s):
+    """Normalize a facility name for lookup: lowercase, spaces/slashes/hyphens → underscores."""
+    return re.sub(r"[\s/\-]+", "_", s.lower()).strip("_")
+
+
+def _row_info(row):
+    return {
         "WDID": row.get("WDID", ""),
         "PERMIT_NUMBER": row["NPDES_No"],
         "Agency": row["Agency"],
         "Facility_Name": row["Facility_Name"],
     }
+
+
+pdf_map = {
+    _norm_pdf(row["PDF_File"].replace(".pdf", "")): _row_info(row)
+    for _, row in site_df.iterrows()
+}
+facility_name_map = {
+    _norm_fac(row["Facility_Name"]): _row_info(row)
     for _, row in site_df.iterrows()
 }
 
 
 def resolve_identity(filename):
-    m = re.match(r"^(.+)__\d{4}__.+$", Path(filename).stem)
-    pdf_stem = m.group(1) if m else Path(filename).stem
-    if pdf_stem.lower().endswith(".pdf"):  # strip spurious .pdf embedded in stem
-        pdf_stem = pdf_stem[:-4]
-    return pdf_map.get(pdf_stem.lower(), {})
+    stem = Path(filename).stem
+
+    # Primary: {pdf_stem}__N__{facility_name} pattern — extract each part explicitly.
+    m = re.match(r"^(.+)__\d+__(.+)$", stem)
+    if m:
+        pdf_stem, fac_part = m.group(1), m.group(2)
+        if pdf_stem.lower().endswith(".pdf"):
+            pdf_stem = pdf_stem[:-4]
+        info = pdf_map.get(_norm_pdf(pdf_stem))
+        if info:
+            return info
+        # PDF stem didn't match — try matching the facility name part instead.
+        info = facility_name_map.get(_norm_fac(fac_part))
+        if info:
+            return info
+
+    # Fallback: files named {pdf_stem}_{facility_name} with no __N__ separator.
+    # Try progressively shorter underscore-delimited prefixes (longest first)
+    # so the most specific PDF-stem match wins.
+    norm_stem = _norm_pdf(stem)
+    if norm_stem.endswith(".pdf"):
+        norm_stem = norm_stem[:-4]
+    parts = norm_stem.split("_")
+    for i in range(len(parts), 0, -1):
+        candidate = "_".join(parts[:i])
+        if candidate in pdf_map:
+            return pdf_map[candidate]
+
+    return {}
 
 
 results = []
+unmatched_files = []
 
 
 def normalize_records(json_data):
@@ -424,7 +467,10 @@ for filename in os.listdir(input_dir):
     with open(output_json_dir / filename, "w") as f:
         json.dump(output_json_data, f, indent=2)
 
-    result.update(resolve_identity(filename))
+    identity = resolve_identity(filename)
+    if not identity:
+        unmatched_files.append(filename)
+    result.update(identity)
     results.append(result)
 
 df = pd.DataFrame(results)
@@ -434,4 +480,8 @@ for c in cols:
     if c not in id_cols:
         df[c] = df[c].map(parse_status)
 df[cols].to_csv(output_csv, index=False)
-print(f"Saved {len(results)} facilities")
+print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
+if unmatched_files:
+    print(f"\nNo facility match found in site_data.csv for {len(unmatched_files)} file(s):")
+    for f in sorted(unmatched_files):
+        print(f"  {f}")

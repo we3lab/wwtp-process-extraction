@@ -34,7 +34,7 @@ DATE_FOLDER = "2026-4-26"
 MANUAL_STATUS_ORDER = ["PRESENT", "FUTURE", "PAST", "off_site"]
 
 # Subset of METRIC_SCORE_COLUMNS for the facility violin (CSV / tables still use full set).
-VIOLIN_METRIC_COLUMNS = tuple(c for c in METRIC_SCORE_COLUMNS if c not in {"Precision", "Recall"})
+VIOLIN_METRIC_COLUMNS = tuple(c for c in METRIC_SCORE_COLUMNS if c not in {"Missed_Rate", "Hallucinated_Rate"})
 
 
 def facility_key(fac_tuple):

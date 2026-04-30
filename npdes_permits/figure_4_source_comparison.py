@@ -42,7 +42,7 @@ from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_a
 
 DATE_FOLDER = "2026-4-26"
 OUTPUT_DIR = f"npdes_permits/output/{DATE_FOLDER}/figures"
-MIN_COUNT = 15  # drop bar groups where both sources are below this threshold
+MIN_COUNT = 10  # drop bar groups where both sources are below this threshold
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
 

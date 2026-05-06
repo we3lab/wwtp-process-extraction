@@ -11,6 +11,8 @@ DESC = [
     "facility information",
     "project description",
     "existing facility",
+    "facility and discharge description",
+    "wastewater system description",
 ]
 PLANNED = ["Planned Changes", "Planned upgrades"]
 APPLICABLE = [
@@ -20,7 +22,7 @@ APPLICABLE = [
     "plans, policies and regulations",
     "plans and regulations",
 ]
-TRUNCATE_AFTER = [r"Historic\s*Ef", r"Effluent\s*Mon"]
+TRUNCATE_AFTER = [r"Historic\s*Ef", r"Effluent\s*Mon",r"Effluent\s*Lim"]
 SEP = "\n\n===PLANNED CHANGES===\n\n"
 DOT_RE = re.compile(r"\.{5,}")
 ATTACHMENT_RE = re.compile(r"ATTACHMENT\s+F\s*[-–—‐]\s*FACT\s+SHEET", re.IGNORECASE)
@@ -42,21 +44,21 @@ def _phrase_re(phrases):
 
 
 SPEC = {
-    "npdes": {
+    "NPDES": {
         "contexts": ("attachment", "full"),
         "start": "regex",
         "end": "planned",
         "phrases": DESC,
         "strip_toc": True,
     },
-    "noa": {
+    "NOA": {
         "contexts": ("full",),
         "start": "priority",
         "end": "receiving_water",
         "phrases": DESC,
         "strip_toc": False,
     },
-    "wdr": {
+    "WDR": {
         "contexts": ("full",),
         "start": "priority",
         "end": "receiving_water",
@@ -229,7 +231,7 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     pdf_path = Path(pdf_path)
     site_data = next((p / "site_data.csv" for p in [pdf_path.parent] + list(pdf_path.parents) if (p / "site_data.csv").exists()), pdf_path.parent.parent / "site_data.csv")
     with site_data.open("r", newline="", encoding="utf-8") as f:
-        mode = next((row.get("Doc_Mode", "").strip().lower() for row in csv.DictReader(f) if (row.get("PDF_File") or "").strip() == pdf_path.name), "npdes")
+        mode = next((row.get("RegMeasureType", "").strip() for row in csv.DictReader(f) if (row.get("PDF_File") or "").strip() == pdf_path.name), "NPDES")
     cache = Path(pdf_path).parent / "text" / f"{Path(pdf_path).stem}.{mode}.txt"
     if not regenerate_text_excerpts and cache.exists():
         content = cache.read_text(encoding="utf-8")

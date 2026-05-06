@@ -38,8 +38,8 @@ def main():
 
     already_mapped = {normalize(r["Facility_Name"]) for _, r in ciwqs.iterrows()}
     unmapped = (
-        site[~site["Facility_Name"].apply(normalize).isin(already_mapped)]
-        .drop_duplicates(subset=["Facility_Name"])
+        site[~site["Facility Name"].apply(normalize).isin(already_mapped)]
+        .drop_duplicates(subset=["Facility Name"])
         .copy()
     )
     print(f"Unmapped facilities: {len(unmapped)}")
@@ -52,8 +52,8 @@ def main():
     new_rows = []
 
     for _, row in unmapped.iterrows():
-        permit = str(row.get("NPDES_No", "")).strip().upper()
-        fac_name = row["Facility_Name"].strip()
+        permit = str(row.get("NPDES No.", "")).strip().upper()
+        fac_name = row["Facility Name"].strip()
         name_norm = normalize(fac_name)
         wdid = wdid_map.get(permit, "")
 
@@ -89,7 +89,7 @@ def main():
 
     new_df = pd.DataFrame(
         new_rows,
-        columns=["WDID", "Facility_Name", "NPDES_No", "CWNS_ID", "CWNS_Facility_Name"],
+        columns=["WDID", "Facility_Name", "NPDES_No", "CWNS_ID", "CWNS_Facility_Name"]
     )
     combined = pd.concat([ciwqs, new_df], ignore_index=True)
     combined.to_csv(CIWQS_MAP, index=False)

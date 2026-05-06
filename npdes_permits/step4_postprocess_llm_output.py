@@ -97,9 +97,9 @@ pdf_map = {
     .replace(".pdf", "")
     .lower(): {
         "WDID": row.get("WDID", ""),
-        "PERMIT_NUMBER": row["NPDES_No"],
+        "PERMIT_NUMBER": row["NPDES No."],
         "Agency": row["Agency"],
-        "Facility_Name": row["Facility_Name"],
+        "Facility_Name": row["Facility Name"],
     }
     for _, row in site_df.iterrows()
 }

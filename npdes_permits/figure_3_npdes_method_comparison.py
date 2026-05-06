@@ -221,6 +221,7 @@ def _add_split_violin_gap(ax, gap=0.04):
         if side != 0:
             verts[:, 0] += side * gap
 
+_PALETTE_METRIC = {"LLM": COLORS["npdes_total"], "Keyword": COLORS["npdes"]}
 
 def draw_split_violin(ax, facility_metrics_df, panel_label):
     score_cols = [c for c in VIOLIN_METRIC_COLUMNS if c in facility_metrics_df.columns]
@@ -234,6 +235,8 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         )
         .dropna(subset=["Value"])
     )
+    n_fac = int(plot_df["key"].nunique())
+
     sns.violinplot(
         data=plot_df,
         x="Metric",
@@ -242,7 +245,7 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         order=score_cols,
         hue_order=["LLM", "Keyword"],
         split=True,
-        palette={"LLM": COLORS["npdes_total"], "Keyword": COLORS["npdes"]},
+        palette=_PALETTE_METRIC,
         inner=None,
         cut=0,
         linewidth=1.2,
@@ -255,18 +258,15 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
             poly.set_linewidth(1.2)
     _add_split_violin_gap(ax, gap=0.04)
     ax.set_ylim(0, 1)
-    ax.set_ylabel("Facility-level score\n(N=30)", fontsize=14)
+    ax.set_ylabel(f"Facility-level score\n(N={n_fac})", fontsize=14)
     ax.tick_params(axis="x", rotation=0, labelsize=12)
+    ax.set_xticks(range(len(score_cols)))
     ax.set_xticklabels([label.replace("_", " ") for label in score_cols], fontsize=12)
     ax.tick_params(axis="y", labelsize=12)
-    # remove x-axis label
     ax.set_xlabel("")
-    # ax.legend(loc="upper right")
-    # put legend ABOVE subplot with 2 columns
     ax.legend(loc="upper right", bbox_to_anchor=(1.01, 1.15), ncol=2, fontsize=11, frameon=False)
-    ax.text(-0.1, 1.0, panel_label, transform=ax.transAxes, ha="left", va="top", fontsize=13)
+    ax.text(-0.15, 1.05, panel_label, transform=ax.transAxes, ha="left", va="top", fontsize=16)
     set_thick_spines(ax, linewidth=1.6)
-
 
 def aggregate_to_category_states(metric_df, category_to_leaves):
     """Collapse leaf-status columns into category-status columns per facility key."""
@@ -490,9 +490,8 @@ if not kw_hallucinated.empty:
 
 violin_path = f"{final_dir}/figure_3_npdes_method_comparison_metrics_violin.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
-draw_split_violin(ax_top, unit_process_metrics_df, panel_label="A.")
-draw_split_violin(ax_bottom, category_metrics_df, panel_label="B.")
-# add subplot titles
+draw_split_violin(ax_top, unit_process_metrics_df, "A.")
+draw_split_violin(ax_bottom, category_metrics_df, "B.")
 ax_top.set_title("Unit Process-Level Metrics", fontsize=14)
 ax_bottom.set_title("Category-Level Metrics", fontsize=14)
 fig.tight_layout(h_pad=2.0)

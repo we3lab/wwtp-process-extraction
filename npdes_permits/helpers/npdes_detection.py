@@ -1,6 +1,7 @@
 import re
 import unicodedata
 import PyPDF2
+from pdfminer.high_level import extract_text
 
 
 def normalize_text(s: str) -> str:
@@ -18,32 +19,24 @@ def normalize_text(s: str) -> str:
 
 
 def extract_pdf_text(pdf_path: str, max_pages=5) -> str:
-    page_texts = []
-    try:
-        with open(pdf_path, "rb") as f:
-            try:
-                reader = PyPDF2.PdfReader(f)
-            except Exception:
-                # try pdfminer fallback
+    raw = ""
+    with open(pdf_path, "rb") as f:
+        try:
+            reader = PyPDF2.PdfReader(f)
+        except Exception:
+            raw = extract_text(pdf_path, maxpages=max_pages) or ""
+        else:
+            parts = []
+            for i in range(min(len(reader.pages), max_pages)):
                 try:
-                    from pdfminer.high_level import extract_text
+                    t = reader.pages[i].extract_text()
+                except Exception:
+                    t = None
+                if t:
+                    parts.append(t)
+            raw = " ".join(parts)
 
-                    txt = extract_text(pdf_path, maxpages=max_pages)
-                    return normalize_text(txt) if txt else ""
-                except Exception:
-                    return ""
-            num_pages = min(len(reader.pages), max_pages)
-            for i in range(num_pages):
-                try:
-                    page = reader.pages[i]
-                    text = page.extract_text() or ""
-                except Exception:
-                    text = ""
-                if text:
-                    page_texts.append(text)
-    except Exception:
-        return ""
-    return normalize_text(" ".join(page_texts))
+    return normalize_text(raw)
 
 
 def detect_text_from_pdf(pdf_path: str, text_searched: str, max_pages=5):
@@ -108,10 +101,13 @@ def detect_npdes_pattern(pdf_path: str, max_pages=5) -> bool:
 
 
 def length_of_pdf(pdf_path: str) -> int:
-    """Return the number of pages in the PDF at 'pdf_path'."""
-    with open(pdf_path, "rb") as f:
-        reader = PyPDF2.PdfReader(f)
-        return len(reader.pages)
+    """Return the number of pages in the PDF at 'pdf_path', or 0 if it can't be opened.
+    """
+    try:
+        with open(pdf_path, "rb") as f:
+            return len(PyPDF2.PdfReader(f).pages)
+    except Exception:
+        return 0  # lets detect_npdes treat brokenPDFs as failing the min_length gate
 
 
 _CAG_PERMIT_RE = re.compile(r"\bca\s*g\d+", re.IGNORECASE)

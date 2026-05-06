@@ -6,7 +6,7 @@ from pathlib import Path
 from helpers.utils import extract_leaves, collapse_facility_processes, PRESENT_STATUSES
 from helpers.npdes_text_extraction import extract_permit_sections
 
-DATE_FOLDER = "2026-4-26"
+DATE_FOLDER = "2026-5-5"
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
     """Search that supports the JSON structure.
@@ -86,20 +86,15 @@ def main():
         for row in csv.DictReader(f):
             wdids.append(row.get("WDID", ""))
             agency_name.append(row.get("Agency", ""))
-            facility_name.append(row.get("Facility_Name", ""))
-            npdesNO.append(row.get("NPDES_No", ""))
+            facility_name.append(row.get("Facility Name", ""))
+            npdesNO.append(row.get("NPDES No.", ""))
             pdf_name = row.get("PDF_File", "")
             pdfs.append(pdf_name)
             shared_pdfs.append(row.get("Shared_PDF", ""))
 
     # Create CSV headers - one column per process
     headers = [
-        "WDID",
-        "AGENCY_NAME",
-        "FACILITY_NAME",
-        "PERMIT_NUMBER",
-        "PDF_File",
-        "Shared_PDF",
+        "WDID", "AGENCY_NAME", "FACILITY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"
     ]
     leaves = extract_leaves(keywords, ignore_disposal=True)
     all_keys = [name for name, _, _ in leaves]
@@ -122,8 +117,7 @@ def main():
         path = os.path.join(directory, pdf_file)
         print(f"Processing {pdf_file} ({j+1}/{len(unique_pdfs)})")
         extraction_result = extract_permit_sections(
-            path,
-            regenerate_text_excerpts=False,
+            path, regenerate_text_excerpts=True,
         )
         if extraction_result is None:
             print(f"Skipping {pdf_file} - extraction failed")
@@ -216,7 +210,7 @@ def main():
     collapsed = collapse_facility_processes(
         raw_df,
         key_cols=["PERMIT_NUMBER", "FACILITY_NAME"],
-        meta_cols=["WDID", "AGENCY_NAME", "PDF_File", "Shared_PDF"],
+        meta_cols=["WDID", "AGENCY_NAME", "PDF_File", "Shared_PDF"]
     )
     collapsed.to_csv(kw_by_fac_path, index=False)
     print(
@@ -243,7 +237,7 @@ def main():
             print(f"  {rel}: {size} bytes")
 
     # Deduplicate by permit number and sum PDFs available on CIWQS.
-    site_data = pd.read_csv(rfr_data, dtype=str)
+    site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
     site_data["Total_PDFs_Available"] = pd.to_numeric(
         site_data["Total_PDFs_Available"], errors="coerce"
     )

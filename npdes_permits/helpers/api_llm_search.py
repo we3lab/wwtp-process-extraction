@@ -29,8 +29,8 @@ def build_pdf_jobs(pdf_folder: str, facilities_information: str):
             f"--facilities_information must be an existing CSV file: {facilities_path}"
         )
 
-    facilities_df = pd.read_csv(facilities_path)
-    required_columns = {"Facility_Name", "PDF_File"}
+    facilities_df = pd.read_csv(facilities_path, dtype=str).fillna("")
+    required_columns = {"Facility Name", "PDF_File"}
     missing_columns = required_columns.difference(set(facilities_df.columns))
     if missing_columns:
         raise ValueError(
@@ -40,7 +40,7 @@ def build_pdf_jobs(pdf_folder: str, facilities_information: str):
 
     jobs = []
     for row_idx, row in facilities_df.iterrows():
-        facility_name = str(row["Facility_Name"]).strip()
+        facility_name = str(row["Facility Name"]).strip()
         pdf_file_value = str(row["PDF_File"]).strip()
 
         if not facility_name or facility_name.lower() == "nan":

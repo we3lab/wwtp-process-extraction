@@ -124,7 +124,7 @@ def main():
 
     extractions = {}
     args = [(directory, pdf_file, j, total) for j, pdf_file in enumerate(unique_pdfs)]
-    with ProcessPoolExecutor(max_workers=2) as executor:
+    with ProcessPoolExecutor(max_workers=4) as executor:
         for pdf_file, result in executor.map(_extract_one, args):
             extractions[pdf_file] = result
 

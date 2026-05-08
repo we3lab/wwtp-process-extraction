@@ -19,7 +19,7 @@ Researchers have utilized the CWNS to quantify greenhouse gas emissions. However
 3. Detect treatment processes in permits with LLM search
     - [npdes_permits/step3a_llm_ontology.py](npdes_permits/step3a_llm_ontology.py): run the LLM extraction using the ontology format
         - use *--init_ontology* to reload the ontology and make it up-to-date as a .txt file under npdes_permits/data
-        - use *--model "model_name" --pdf_folder "path_to_pdf_folder" --facilities_information "path_to_facilities_csv"* to run the LLM extraction using one PDF per facility (first PDF_File per Facility_Name): the results are saved as json file under output/date/llm_search_ontology
+        - use *--model "model_name" --pdf_folder "path_to_pdf_folder" --facilities_information "path_to_facilities_csv"* to run the LLM extraction using one PDF per facility (first PDF_File per Facility Name): the results are saved as json file under output/date/llm_search_ontology
     - [npdes_permits/step3b_llm_list.py](npdes_permits/step3b_llm_list.py): run the LLM extraction using the unitprocess_list format
         - use *--model "model_name" --pdf "pdf_file_or_pdf_folder_path"* to run the LLM extraction using the specific model on the specific pdf(s) : the results are saved as json file under output/date/llm_search_list
 

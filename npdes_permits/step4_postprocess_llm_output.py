@@ -15,12 +15,13 @@ GITHUB_BASE = (
 )
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes
 
 DATE_STR = "2026-4-26"
 
 input_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_extraction")
-output_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_facility.csv")
+output_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_pdf.csv")
+output_fac_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_facility.csv")
 site_data_csv = Path(f"npdes_permits/output/{DATE_STR}/site_data.csv")
 output_json_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_postprocess_ontology")
 output_json_dir.mkdir(parents=True, exist_ok=True)
@@ -106,10 +107,12 @@ def _norm_fac(s):
 
 def _row_info(row):
     return {
-        "WDID": row.get("WDID", ""),
-        "PERMIT_NUMBER": row["NPDES No."],
+        "Place ID": row["Place ID"],
+        "WDID": row["WDID"],
+        "Order_No": row["Order_No"],
+        "NPDES No.": row["NPDES No."],
         "Agency": row["Agency"],
-        "Facility_Name": row["Facility Name"],
+        "Facility Name": row["Facility Name"],
     }
 
 
@@ -118,7 +121,7 @@ pdf_map = {
     for _, row in site_df.iterrows()
 }
 facility_name_map = {
-    _norm_fac(row["Facility_Name"]): _row_info(row)
+    _norm_fac(row["Facility Name"]): _row_info(row)
     for _, row in site_df.iterrows()
 }
 
@@ -474,13 +477,22 @@ for filename in os.listdir(input_dir):
     results.append(result)
 
 df = pd.DataFrame(results)
-id_cols = ["WDID", "PERMIT_NUMBER", "Agency", "Facility_Name"]
+id_cols = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"]
 cols = id_cols + [c for c in columns if c in df.columns]
 for c in cols:
     if c not in id_cols:
         df[c] = df[c].map(parse_status)
 df[cols].to_csv(output_csv, index=False)
 print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
+
+raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
+collapsed = collapse_facility_processes(
+    raw_df,
+    key_cols=["Place ID", "Facility Name"],
+    meta_cols=["WDID", "Order_No", "NPDES No.", "Agency"],
+)
+collapsed.to_csv(output_fac_csv, index=False)
+print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → llm_unit_processes_by_facility.csv")
 if unmatched_files:
     print(f"\nNo facility match found in site_data.csv for {len(unmatched_files)} file(s):")
     for f in sorted(unmatched_files):

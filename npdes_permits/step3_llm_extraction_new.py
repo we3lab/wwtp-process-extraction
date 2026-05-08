@@ -59,7 +59,7 @@ def parse_args():
         "--facilities_info_path",
         default=DEFAULT_FACILITIES_INFO_PATH,
         help=(
-            "Path to CSV with columns Facility_Name and PDF_File. "
+            "Path to CSV with columns Facility Name and PDF_File. "
             f"Each row is processed and saved separately, even when multiple facilities share the same PDF (default: {DEFAULT_FACILITIES_INFO_PATH})."
         ),
     )

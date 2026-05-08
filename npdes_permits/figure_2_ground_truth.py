@@ -11,9 +11,7 @@ from helpers.utils import (
     build_cwns_presence_mask,
     is_present,
     get_leaf_names,
-    name_to_fac,
-    facilities_with_cwns,
-    map_facility_names_to_tuples,
+    cwns_mapping,
     build_cwns_facility_processes,
 )
 from helpers.plotting import COLORS
@@ -30,7 +28,7 @@ def build_category_facility_sets(
     """
     Aggregate facility-level sets per top-level category for GT, NPDES text, and CWNS.
     Returns three defaultdict(set): gt_fac, npdes_fac, cwns_fac.
-    Each set contains (WDID, Facility_Name) tuples.
+    Each set contains (Place ID, Facility Name) tuples.
     """
     gt_fac = defaultdict(set)
     npdes_fac = defaultdict(set)
@@ -41,15 +39,15 @@ def build_category_facility_sets(
         if col in gt_common.columns:
             for _, row in gt_common.iterrows():
                 if is_present(row.get(col, "")):
-                    gt_fac[category].add(row["_fac"])
+                    gt_fac[category].add(row["Place ID"])
         if col in text_common.columns:
             for _, row in text_common.iterrows():
                 if is_present(row.get(col, "")):
-                    npdes_fac[category].add(row["_fac"])
+                    npdes_fac[category].add(row["Place ID"])
         if col in cwns_common.columns:
             mask = build_cwns_presence_mask(cwns_common[col])
-            for _, r in cwns_common.loc[mask, ["WDID", "Facility_Name"]].iterrows():
-                cwns_fac[category].add((r["WDID"], r["Facility_Name"]))
+            for pid in cwns_common.loc[mask, "Place ID"]:
+                cwns_fac[category].add(pid)
 
     return gt_fac, npdes_fac, cwns_fac
 
@@ -99,7 +97,7 @@ CWNS_CA_CSV = "npdes_permits/output/cwns_processes_by_facility.csv"
 def main():
 
     ca_cwns_data = pd.read_csv(CWNS_CA_CSV, dtype=str, low_memory=False)
-    ca_cwns_data["CWNS_ID"] = ca_cwns_data["CWNS_ID"].astype(str).str.strip()
+    ca_cwns_data["CWNS_ID"] = ca_cwns_data["CWNS_ID"].str.strip()
     # Build leaf → top-level category mapping
     leaf_to_category = {
         leaf: cat_name
@@ -108,16 +106,20 @@ def main():
     }
 
     # Load Google Sheets
-    ground_truth_df = pd.read_csv("npdes_permits/data/train_set_ground_truth.csv", dtype=str)
-    npdes_text_df = pd.read_csv("npdes_permits/data/train_set_npdes_manual.csv", dtype=str)
+    ground_truth_df = pd.read_csv("npdes_permits/data/train_set_ground_truth.csv", dtype=str).fillna("")
+    ground_truth_df["Place ID"] = ground_truth_df["Place ID"].str.strip()
+    npdes_text_df = pd.read_csv("npdes_permits/data/train_set_npdes_manual.csv", dtype=str).fillna("")
+    npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
     print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")
     print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
 
     meta_cols = [
         "Agency",
-        "Facility_Name",
-        "NPDES_No",
+        "Place ID",
+        "WDID",
+        "Facility Name",
+        "NPDES No.",
         "PDF_File",
         "Ground Truth Sources",
     ]
@@ -137,18 +139,11 @@ def main():
         if c not in disposal_leaves
     ]
 
-    # TRAIN ground truth comparison — identify common facilities via (WDID, Facility_Name) tuples
-    gt_facilities = map_facility_names_to_tuples(ground_truth_df, "Facility_Name", name_to_fac)
-    text_facilities = map_facility_names_to_tuples(npdes_text_df, "Facility_Name", name_to_fac)
-    common_facilities = gt_facilities & text_facilities & facilities_with_cwns
+    common_facilities = set(ground_truth_df["Place ID"]) & set(npdes_text_df["Place ID"]) & set(cwns_mapping["Place ID"])
     print(f"Facilities in all 3 sources (Train): {len(common_facilities)}")
 
-    # Add facility tuple column to source DataFrames for accumulation
-    ground_truth_df["_fac"] = ground_truth_df["Facility_Name"].str.strip().map(name_to_fac)
-    npdes_text_df["_fac"] = npdes_text_df["Facility_Name"].str.strip().map(name_to_fac)
-
-    ground_truth_common = ground_truth_df[ground_truth_df["_fac"].isin(common_facilities)].copy()
-    text_common = npdes_text_df[npdes_text_df["_fac"].isin(common_facilities)].copy()
+    ground_truth_common = ground_truth_df[ground_truth_df["Place ID"].isin(common_facilities)].copy()
+    text_common = npdes_text_df[npdes_text_df["Place ID"].isin(common_facilities)].copy()
 
     cwns_common, merged_mapping_cwns = build_cwns_facility_processes(
         ca_cwns_data, target_facilities=common_facilities
@@ -205,7 +200,7 @@ def main():
             npdes_x,
             row["NPDES_Missed_Rate"] * 100,
             w,
-            color=to_rgba(COLORS["npdes"], 0.9),
+            color=to_rgba(COLORS["npdes_kw"], 0.9),
             edgecolor="black",
             linewidth=1.2,
             zorder=2,
@@ -215,7 +210,7 @@ def main():
             row["NPDES_Extra_Rate"] * 100,
             w,
             bottom=row["NPDES_Missed_Rate"] * 100,
-            color=to_rgba(COLORS["npdes"], 0.45),
+            color=to_rgba(COLORS["npdes_kw"], 0.45),
             edgecolor="black",
             linewidth=1.2,
             zorder=2,
@@ -242,7 +237,7 @@ def main():
 
     npdes_avg = float(gt_plot_df["NPDES_Error_Rate"].mean() * 100)
     cwns_avg = float(gt_plot_df["CWNS_Error_Rate"].mean() * 100)
-    ax.axhline(npdes_avg, color=COLORS["npdes"], linewidth=1.6, linestyle="-", zorder=1)
+    ax.axhline(npdes_avg, color=COLORS["npdes_kw"], linewidth=1.6, linestyle="-", zorder=1)
     ax.axhline(cwns_avg, color=COLORS["cwns"], linewidth=1.6, linestyle="-", zorder=1)
 
     ax.set_xticks(range(len(gt_plot_df)))
@@ -260,7 +255,7 @@ def main():
         {
             "header": "Data Source",
             "items": [
-                ("  NPDES Text", {"facecolor": COLORS["npdes"]}),
+                ("  NPDES Text", {"facecolor": COLORS["npdes_kw"]}),
                 ("  CWNS", {"facecolor": COLORS["cwns"]}),
             ],
         },
@@ -296,19 +291,17 @@ def main():
 
     facility_rows = []
     for fac in sorted(common_facilities):
-        gt_rows_match = ground_truth_common[ground_truth_common["_fac"] == fac]
-        text_rows_match = text_common[text_common["_fac"] == fac]
-        cwns_rows_match = cwns_common[
-            (cwns_common["WDID"] == fac[0]) & (cwns_common["Facility_Name"] == fac[1])
-        ]
+        gt_rows_match = ground_truth_common[ground_truth_common["Place ID"] == fac]
+        text_rows_match = text_common[text_common["Place ID"] == fac]
+        cwns_rows_match = cwns_common[cwns_common["Place ID"] == fac]
         if gt_rows_match.empty or text_rows_match.empty or cwns_rows_match.empty:
             continue
 
         ground_truth_row = gt_rows_match.iloc[0]
         text_row = text_rows_match.iloc[0]
         cwns_row = cwns_rows_match.iloc[0]
-        npdes = str(ground_truth_row.get("NPDES_No", "")).strip()
-        facility_name = ground_truth_row.get("Facility_Name", npdes)
+        npdes = ground_truth_row["NPDES No."]
+        facility_name = ground_truth_row["Facility Name"]
 
         gt_set = {
             col
@@ -352,8 +345,8 @@ def main():
 
         facility_rows.append(
             {
-                "NPDES_No": npdes,
-                "Facility_Name": facility_name,
+                "NPDES No.": npdes,
+                "Facility Name": facility_name,
                 "GT_Count": len(gt_set),
                 "NPDES_TP": npdes_tp,
                 "NPDES_FP": npdes_fp,

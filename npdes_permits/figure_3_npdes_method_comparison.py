@@ -17,7 +17,6 @@ from helpers.utils import (
     get_leaf_names,
     extract_leaves,
     merge_column_statuses,
-    name_to_fac,
     collapse_facility_processes,
 )
 from helpers.plotting import (
@@ -36,12 +35,6 @@ MANUAL_STATUS_ORDER = ["PRESENT", "FUTURE", "PAST", "off_site"]
 # Subset of METRIC_SCORE_COLUMNS for the facility violin (CSV / tables still use full set).
 VIOLIN_METRIC_COLUMNS = tuple(c for c in METRIC_SCORE_COLUMNS if c not in {"Missed_Rate", "Hallucinated_Rate"})
 
-
-def facility_key(fac_tuple):
-    """Stable scalar key for (WDID, Facility_Name) tuple."""
-    if not isinstance(fac_tuple, tuple) or len(fac_tuple) != 2:
-        return ""
-    return f"{fac_tuple[0]}||{fac_tuple[1]}"
 
 
 def get_status_counts(process_name, unit_process_results):
@@ -64,27 +57,27 @@ def create_method_deviation_plot(
     save_path=None,
 ):
     """Plot LLM and keyword deviations from manual readings (above y=0: extra; below: missed)."""
-    manual_facilities = set(manual_df["_fac"].dropna())
-    llm_common = manual_facilities & set(llm_df["_fac"].dropna()) if llm_df is not None else set()
-    kw_common = manual_facilities & set(keyword_df["_fac"].dropna())
+    manual_facilities = set(manual_df["Place ID"].dropna())
+    llm_common = manual_facilities & set(llm_df["Place ID"].dropna()) if llm_df is not None else set()
+    kw_common = manual_facilities & set(keyword_df["Place ID"].dropna())
 
     rows = []
     for process in process_names:
-        manual_proc = set(manual_df.loc[manual_df[process].map(is_present), "_fac"])
+        manual_proc = set(manual_df.loc[manual_df[process].map(is_present), "Place ID"])
         manual_count = len(manual_proc)
 
         llm_fp = llm_fn = 0
         if llm_df is not None:
-            sub = llm_df[llm_df["_fac"].isin(llm_common)]
+            sub = llm_df[llm_df["Place ID"].isin(llm_common)]
             mask = sub[process].map(parse_status).isin(PRESENT_STATUSES)
-            llm_proc = set(sub.loc[mask, "_fac"])
+            llm_proc = set(sub.loc[mask, "Place ID"])
             m = manual_proc & llm_common
             llm_fp, llm_fn = len(llm_proc - m), len(m - llm_proc)
 
         kw_fp = kw_fn = 0
-        sub = keyword_df[keyword_df["_fac"].isin(kw_common)]
+        sub = keyword_df[keyword_df["Place ID"].isin(kw_common)]
         mask = sub[process].map(parse_status).isin(PRESENT_STATUSES)
-        kw_proc = set(sub.loc[mask, "_fac"])
+        kw_proc = set(sub.loc[mask, "Place ID"])
         m = manual_proc & kw_common
         kw_fp, kw_fn = len(kw_proc - m), len(m - kw_proc)
 
@@ -111,8 +104,8 @@ def create_method_deviation_plot(
 
     for idx, row in df.iterrows():
         for x_off, fp, fn, color in [
-            (-w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_total"]),
-            (+w, row["KW_FP"], row["KW_FN"], COLORS["npdes"]),
+            (-w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
+            (+w, row["KW_FP"], row["KW_FN"], COLORS["npdes_kw"]),
         ]:
             draw_above_below_zero_bar(
                 ax,
@@ -129,20 +122,15 @@ def create_method_deviation_plot(
     ax.set_xticklabels(df["Process"], rotation=45, ha="right", fontsize=fontsize)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.set_ylabel("WWTP Count vs Manual Reading", fontsize=14)
-    ax.set_title(
-        f'{category_name.replace("_", " ").title()} – Method vs Manual Reading',
-        fontsize=16,
-    )
     set_thick_spines(ax, linewidth=1.6)
-
     make_grouped_legend(
         ax,
         groups=[
             {
                 "header": "Method",
                 "items": [
-                    ("  NPDES - LLM Extraction", {"facecolor": COLORS["npdes_total"]}),
-                    ("  NPDES Keyword", {"facecolor": COLORS["npdes"]}),
+                    ("  NPDES - LLM Extraction", {"facecolor": COLORS["npdes_llm"]}),
+                    ("  NPDES Keyword", {"facecolor": COLORS["npdes_kw"]}),
                 ],
             },
             {
@@ -181,14 +169,14 @@ def get_manual_status_counts(process_name, manual_df):
     return counts
 
 
-def build_method_metric_inputs(process_names, manual_df, pred_df, pred_key_col):
+def build_method_metric_inputs(process_names, manual_df, pred_df, pred_key_col="Place ID"):
     """Build key-aligned manual/pred dataframes for helpers.metrics.compute_metrics."""
-    common_keys = sorted(set(manual_df["_fac_key"].dropna()) & set(pred_df[pred_key_col].dropna()))
+    common_keys = sorted(set(manual_df["Place ID"].dropna()) & set(pred_df[pred_key_col].dropna()))
 
     manual_sub = (
-        manual_df[manual_df["_fac_key"].isin(common_keys)]
-        .drop_duplicates(subset="_fac_key")
-        .set_index("_fac_key")
+        manual_df[manual_df["Place ID"].isin(common_keys)]
+        .drop_duplicates(subset="Place ID")
+        .set_index("Place ID")
     )
     pred_sub = (
         pred_df[pred_df[pred_key_col].isin(common_keys)].drop_duplicates(subset=pred_key_col).set_index(pred_key_col)
@@ -221,6 +209,7 @@ def _add_split_violin_gap(ax, gap=0.04):
         if side != 0:
             verts[:, 0] += side * gap
 
+_PALETTE_METRIC = {"LLM": COLORS["npdes_llm"], "Keyword": COLORS["npdes_kw"]}
 
 def draw_split_violin(ax, facility_metrics_df, panel_label):
     score_cols = [c for c in VIOLIN_METRIC_COLUMNS if c in facility_metrics_df.columns]
@@ -234,6 +223,8 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         )
         .dropna(subset=["Value"])
     )
+    n_fac = int(plot_df["key"].nunique())
+
     sns.violinplot(
         data=plot_df,
         x="Metric",
@@ -242,7 +233,7 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         order=score_cols,
         hue_order=["LLM", "Keyword"],
         split=True,
-        palette={"LLM": COLORS["npdes_total"], "Keyword": COLORS["npdes"]},
+        palette=_PALETTE_METRIC,
         inner=None,
         cut=0,
         linewidth=1.2,
@@ -255,18 +246,15 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
             poly.set_linewidth(1.2)
     _add_split_violin_gap(ax, gap=0.04)
     ax.set_ylim(0, 1)
-    ax.set_ylabel("Facility-level score\n(N=30)", fontsize=14)
+    ax.set_ylabel(f"Facility-level score\n(N={n_fac})", fontsize=14)
     ax.tick_params(axis="x", rotation=0, labelsize=12)
+    ax.set_xticks(range(len(score_cols)))
     ax.set_xticklabels([label.replace("_", " ") for label in score_cols], fontsize=12)
     ax.tick_params(axis="y", labelsize=12)
-    # remove x-axis label
     ax.set_xlabel("")
-    # ax.legend(loc="upper right")
-    # put legend ABOVE subplot with 2 columns
     ax.legend(loc="upper right", bbox_to_anchor=(1.01, 1.15), ncol=2, fontsize=11, frameon=False)
-    ax.text(-0.1, 1.0, panel_label, transform=ax.transAxes, ha="left", va="top", fontsize=13)
+    ax.text(-0.15, 1.05, panel_label, transform=ax.transAxes, ha="left", va="top", fontsize=16)
     set_thick_spines(ax, linewidth=1.6)
-
 
 def aggregate_to_category_states(metric_df, category_to_leaves):
     """Collapse leaf-status columns into category-status columns per facility key."""
@@ -291,16 +279,10 @@ print(f"Categories: {categories_to_plot}")
 unit_process_results = pd.read_csv(
     f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv", dtype=str
 ).fillna("")
-unit_process_results["WDID"] = unit_process_results["WDID"].astype(str).str.strip()
-unit_process_results["FACILITY_NAME"] = unit_process_results["FACILITY_NAME"].astype(str).str.strip()
-unit_process_results["_fac"] = list(
-    zip(unit_process_results["WDID"], unit_process_results["FACILITY_NAME"])
-)
-unit_process_results["_fac_key"] = unit_process_results["_fac"].map(facility_key)
 unit_process_results = collapse_facility_processes(
     unit_process_results,
-    key_cols=["WDID", "FACILITY_NAME", "_fac", "_fac_key"],
-    meta_cols=["AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"],
+    key_cols=["Place ID"],
+    meta_cols=["WDID", "FACILITY_NAME", "AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"],
 )
 print(f"NPDES keyword data: Loaded {len(unit_process_results)} unique facilities")
 
@@ -310,37 +292,18 @@ unit_full = unit_process_results.copy()
 llm_results_path = f"npdes_permits/output/{DATE_FOLDER}/llm_unit_processes_by_facility.csv"
 llm_results = pd.read_csv(llm_results_path, dtype=str).fillna("") if os.path.exists(llm_results_path) else None
 if llm_results is not None:
-    llm_results["Facility_Name"] = llm_results["Facility_Name"].astype(str).str.strip()
-    if "WDID" in llm_results.columns:
-        llm_results["WDID"] = llm_results["WDID"].astype(str).str.strip()
-        llm_results["_fac"] = list(zip(llm_results["WDID"], llm_results["Facility_Name"]))
-        missing_wdid = llm_results["WDID"] == ""
-        if missing_wdid.any():
-            llm_results.loc[missing_wdid, "_fac"] = (
-                llm_results.loc[missing_wdid, "Facility_Name"].map(name_to_fac)
-            )
-    else:
-        llm_results["_fac"] = llm_results["Facility_Name"].map(name_to_fac)
-    llm_results = llm_results[llm_results["_fac"].notna()].copy()
-    llm_results["_fac_key"] = llm_results["_fac"].map(facility_key)
-    llm_results["WDID"] = llm_results["_fac"].map(lambda t: t[0])
-    llm_results["Facility_Name"] = llm_results["_fac"].map(lambda t: t[1])
-    llm_results = collapse_facility_processes(
-        llm_results,
-        key_cols=["WDID", "Facility_Name", "_fac", "_fac_key"],
-        meta_cols=["PERMIT_NUMBER", "Agency"],
-    )
+    llm_results = llm_results[llm_results["Place ID"].ne("")].copy()
     print(f"LLM results: {len(llm_results)} unique facilities")
 else:
     print(f"LLM results not found at {llm_results_path}; breakdown plots will show keyword only")
 
 # Filter to facilities processed by BOTH methods
 if llm_results is not None:
-    llm_facilities = set(llm_results["_fac"].dropna())
-    kw_facilities = set(unit_full["_fac"].dropna())
+    llm_facilities = set(llm_results["Place ID"])
+    kw_facilities = set(unit_full["Place ID"])
     both_facilities = llm_facilities & kw_facilities
-    llm_results_both = llm_results[llm_results["_fac"].isin(both_facilities)].copy()
-    unit_full_both = unit_full[unit_full["_fac"].isin(both_facilities)].copy()
+    llm_results_both = llm_results[llm_results["Place ID"].isin(both_facilities)].copy()
+    unit_full_both = unit_full[unit_full["Place ID"].isin(both_facilities)].copy()
     print(
         f"Facilities processed by both LLM and keyword: {len(both_facilities)} "
         f"(LLM only: {len(llm_facilities - kw_facilities)}, "
@@ -351,26 +314,25 @@ else:
     unit_full_both = unit_full
 
 # Load manual readings (train + test) as the deviation baseline
-train_manual = pd.read_csv("npdes_permits/data/train_set_npdes_manual.csv", dtype=str)
-test_manual = pd.read_csv("npdes_permits/data/test_set_npdes_manual.csv", dtype=str)
+train_manual = pd.read_csv("npdes_permits/data/train_set_npdes_manual.csv", dtype=str).fillna("")
+train_manual["Place ID"] = train_manual["Place ID"].str.strip()
+test_manual = pd.read_csv("npdes_permits/data/test_set_npdes_manual.csv", dtype=str).fillna("")
+test_manual["Place ID"] = test_manual["Place ID"].str.strip()
 manual_combined = (
-    pd.concat([train_manual, test_manual]).drop_duplicates(subset="NPDES_No").reset_index(drop=True)
+    pd.concat([train_manual, test_manual]).drop_duplicates(subset="Place ID").reset_index(drop=True)
 )
-manual_combined["Facility_Name"] = manual_combined["Facility_Name"].astype(str).str.strip()
-manual_combined["_fac"] = manual_combined["Facility_Name"].map(name_to_fac)
-manual_combined = manual_combined[manual_combined["_fac"].notna()].copy()
-manual_combined["_fac_key"] = manual_combined["_fac"].map(facility_key)
-manual_facilities = set(manual_combined["_fac"].dropna())
+manual_combined = manual_combined[manual_combined["Place ID"].ne("")].copy()
+manual_facilities = set(manual_combined["Place ID"])
 llm_results_manual = (
-    llm_results_both[llm_results_both["_fac"].isin(manual_facilities)].copy()
+    llm_results_both[llm_results_both["Place ID"].isin(manual_facilities)].copy()
     if llm_results_both is not None
     else None
 )
-unit_full_manual = unit_full_both[unit_full_both["_fac"].isin(manual_facilities)].copy()
+unit_full_manual = unit_full_both[unit_full_both["Place ID"].isin(manual_facilities)].copy()
 print(
     f"Manual baseline: {len(manual_combined)} facilities "
-    f"({len(manual_facilities & set(unit_full_both['_fac']))} matched to keyword, "
-    f"{len(manual_facilities & set(llm_results_both['_fac'])) if llm_results_both is not None else 0} matched to LLM)"
+    f"({len(manual_facilities & set(unit_full_both['Place ID']))} matched to keyword, "
+    f"{len(manual_facilities & set(llm_results_both['Place ID'])) if llm_results_both is not None else 0} matched to LLM)"
 )
 
 figures_dir = f"npdes_permits/output/{DATE_FOLDER}/figures"
@@ -410,7 +372,7 @@ metrics_frames = []
 facility_metric_rows = []
 
 manual_metric_kw, pred_metric_kw, _ = build_method_metric_inputs(
-    all_process_list, manual_combined, unit_full_both, "_fac_key"
+    all_process_list, manual_combined, unit_full_both, "Place ID"
 )
 kw_metrics = compute_metrics(manual_metric_kw, pred_metric_kw, unit_process_list, "Keyword")
 metrics_frames.append(
@@ -422,7 +384,7 @@ facility_metric_rows.extend(
 
 if llm_results_both is not None:
     manual_metric_llm, pred_metric_llm, _ = build_method_metric_inputs(
-        all_process_list, manual_combined, llm_results_both, "_fac_key"
+        all_process_list, manual_combined, llm_results_both, "Place ID"
     )
     llm_metrics = compute_metrics(manual_metric_llm, pred_metric_llm, unit_process_list, "LLM")
     metrics_frames.append(
@@ -490,11 +452,8 @@ if not kw_hallucinated.empty:
 
 violin_path = f"{final_dir}/figure_3_npdes_method_comparison_metrics_violin.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
-draw_split_violin(ax_top, unit_process_metrics_df, panel_label="A.")
-draw_split_violin(ax_bottom, category_metrics_df, panel_label="B.")
-# add subplot titles
-ax_top.set_title("Unit Process-Level Metrics", fontsize=14)
-ax_bottom.set_title("Category-Level Metrics", fontsize=14)
+draw_split_violin(ax_top, unit_process_metrics_df, "A.")
+draw_split_violin(ax_bottom, category_metrics_df, "B.")
 fig.tight_layout(h_pad=2.0)
 save_and_close(fig, violin_path, dpi=300)
 print(f"Saved {os.path.basename(violin_path)}")
@@ -503,7 +462,7 @@ print(f"Saved {os.path.basename(violin_path)}")
 total_present = total_present_and_future = total_future = 0
 for category in categories_to_plot:
     for process_name in get_leaf_names(category, unitprocess_keywords[category]):
-        s = unit_full[process_name].astype(str).str.strip().str.upper()
+        s = unit_full[process_name].str.upper()
         total_present += int((s == "PRESENT").sum())
         total_present_and_future += int((s == "PRESENT_AND_FUTURE").sum())
         total_future += int((s == "FUTURE").sum())

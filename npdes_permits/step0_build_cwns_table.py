@@ -7,7 +7,7 @@ import pandas as pd
 import os
 # WE3Lab additions
 import json
-from helpers.utils import extract_leaves, get_cwns_unit_process_names
+from helpers.utils import extract_leaves
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -15,6 +15,8 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Use local input data from el_abbadi/input_data directory
 EL_ABBADI_DATA_DIR = os.path.join("data", "el_abbadi")
 OUTPUT_DATA_DIR = os.path.join("output")  # Save to npdes_permits/output/ for compare_processes.py
+
+ALLOWED_FACILITY_TYPES = {"Treatment Plant", "Honey Bucket Lagoon"}
 
 # FROM SOURCE with changes to data path
 def create_wwtp_inventory():
@@ -24,7 +26,7 @@ def create_wwtp_inventory():
       wwtps_all = dataframe containing the active wwtps and relevant characteristics (ie. location, flow rate, and nutrient removal flags) for 2022
   '''
   #upload facility flow rates from 2022 CWNS
-  flow = pd.read_csv(f'data/cwns/2022/FLOW_2022.csv', dtype = {'CWNS_ID':str})
+  flow = pd.read_csv(f'data/cwns/2022/FLOW.csv', dtype = {'CWNS_ID':str})
 
   #filter to total flow
   flow = flow.loc[flow['FLOW_TYPE'] == 'Total Flow']
@@ -34,7 +36,7 @@ def create_wwtp_inventory():
   flow.reset_index(inplace = True, drop = True)
 
   #create dataframe of active wwtps based on facilities that report flow in 2022
-  wwtps_all = flow[['CWNS_ID', 'CURRENT_DESIGN_FLOW', 'FUTURE_DESIGN_FLOW']].rename(columns = {'CURRENT_DESIGN_FLOW':'FLOW_2022_MGD', 'FUTURE_DESIGN_FLOW':'FLOW_PROJ_MGD'})
+  wwtps_all = flow[['CWNS_ID', 'CURRENT_DESIGN_FLOW', 'FUTURE_DESIGN_FLOW']].rename(columns = {'CURRENT_DESIGN_FLOW':'FLOW_MGD', 'FUTURE_DESIGN_FLOW':'FLOW_PROJ_MGD'})
 
   #upload columns indicating nutrient removal in 2012 (note, 2022 CWNS does not include these columns, so we have to rely on outdated information)
   nutr_rem = pd.read_excel(f'data/cwns/2012/2012_SUMMARY_EFFLUENT.xlsx', sheet_name = 'SUMMARY_EFFLUENT', dtype = {'CWNS_NUMBER':str})
@@ -44,30 +46,33 @@ def create_wwtp_inventory():
   wwtps_all = wwtps_all.merge(nutr_rem, on = 'CWNS_ID', how = 'left')
 
   #upload facility locations
-  locations = pd.read_csv('data/cwns/2022/FACILITIES.csv', dtype = {'CWNS_ID':str})
+  locations = pd.concat([
+      pd.read_csv('data/cwns/2022/FACILITIES.csv', dtype=str),
+      pd.read_csv('data/cwns/2022/FACILITIES_CONFIRMED.csv', dtype=str),
+  ])
 
   #add state column to main dataframe
   wwtps_all = wwtps_all.merge(locations[['CWNS_ID','STATE_CODE']], on = 'CWNS_ID', how = 'left')
   wwtps_all.rename(columns = {'CWNS_ID':'CWNS_NUM','STATE_CODE':'STATE'}, inplace = True)
 
   #upload facility types
-  types = pd.read_csv(f'data/cwns/2022/2022_FACILITY_TYPES.csv', dtype = {'CWNS_ID':str}).rename(columns= {'CWNS_ID':'CWNS_NUM'})
+  types = pd.read_csv(f'data/cwns/2022/FACILITY_TYPES.csv', dtype=str).rename(columns={'CWNS_ID': 'CWNS_NUM'})
 
   #filter to just treatment plants and honey bucket lagoons
-  types = types.loc[(types['FACILITY_TYPE'] == 'Treatment Plant') | (types['FACILITY_TYPE'] == 'Honey Bucket Lagoon')].drop_duplicates(subset = 'CWNS_NUM')
+  types = types.loc[types['FACILITY_TYPE'].isin(ALLOWED_FACILITY_TYPES)].drop_duplicates(subset = 'CWNS_NUM')
   types.reset_index(inplace = True, drop = True)
 
   #merge facility types with main dataframe to screen out non-treatment plants and honey bucket lagoons from inventory
   wwtps_all = wwtps_all.merge(types[['CWNS_NUM','FACILITY_TYPE']], on = 'CWNS_NUM', how = 'inner')
 
   #categorize average daily flow rate
-  wwtps_all.loc[wwtps_all['FLOW_2022_MGD'] < 2, '2022_FLOW_CAT_MGD'] = 'LESS THAN 2'
-  wwtps_all.loc[(wwtps_all['FLOW_2022_MGD'] >= 2) & (wwtps_all['FLOW_2022_MGD'] < 4), '2022_FLOW_CAT_MGD'] = '2 TO 4'
-  wwtps_all.loc[(wwtps_all['FLOW_2022_MGD'] >= 4) & (wwtps_all['FLOW_2022_MGD'] < 7), '2022_FLOW_CAT_MGD'] = '4 TO 7'
-  wwtps_all.loc[(wwtps_all['FLOW_2022_MGD'] >= 7) & (wwtps_all['FLOW_2022_MGD'] < 16), '2022_FLOW_CAT_MGD'] = '7 TO 16'
-  wwtps_all.loc[(wwtps_all['FLOW_2022_MGD'] >= 16) & (wwtps_all['FLOW_2022_MGD'] < 46), '2022_FLOW_CAT_MGD'] = '16 TO 46'
-  wwtps_all.loc[(wwtps_all['FLOW_2022_MGD'] >= 46) & (wwtps_all['FLOW_2022_MGD'] < 100), '2022_FLOW_CAT_MGD'] = '46 TO 100'
-  wwtps_all.loc[(wwtps_all['FLOW_2022_MGD'] >= 100), '2022_FLOW_CAT_MGD'] = '100 AND ABOVE'
+  wwtps_all.loc[wwtps_all['FLOW_MGD'] < 2, '2022_FLOW_CAT_MGD'] = 'LESS THAN 2'
+  wwtps_all.loc[(wwtps_all['FLOW_MGD'] >= 2) & (wwtps_all['FLOW_MGD'] < 4), '2022_FLOW_CAT_MGD'] = '2 TO 4'
+  wwtps_all.loc[(wwtps_all['FLOW_MGD'] >= 4) & (wwtps_all['FLOW_MGD'] < 7), '2022_FLOW_CAT_MGD'] = '4 TO 7'
+  wwtps_all.loc[(wwtps_all['FLOW_MGD'] >= 7) & (wwtps_all['FLOW_MGD'] < 16), '2022_FLOW_CAT_MGD'] = '7 TO 16'
+  wwtps_all.loc[(wwtps_all['FLOW_MGD'] >= 16) & (wwtps_all['FLOW_MGD'] < 46), '2022_FLOW_CAT_MGD'] = '16 TO 46'
+  wwtps_all.loc[(wwtps_all['FLOW_MGD'] >= 46) & (wwtps_all['FLOW_MGD'] < 100), '2022_FLOW_CAT_MGD'] = '46 TO 100'
+  wwtps_all.loc[(wwtps_all['FLOW_MGD'] >= 100), '2022_FLOW_CAT_MGD'] = '100 AND ABOVE'
 
   #categorize projected flow rate
   wwtps_all.loc[wwtps_all['FLOW_PROJ_MGD'] < 2, 'PROJ_FLOW_CAT_MGD'] = 'LESS THAN 2'
@@ -195,7 +200,7 @@ up_old.rename(columns = {'CWNS_NUMBER':'CWNS_NUM'}, inplace = True)
 up_old['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up_old['CWNS_NUM']]
 
 #reconcile unit process naming conventions between report years
-upnames = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_NAMES.csv')
+upnames = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_NAMES.csv', dtype=str)
 up_old = pd.merge(left = up_old, right = upnames, how = 'left', left_on = 'UNIT_PROCESS', right_on = 'ORIGINAL_UP_NAME')
 up_old.drop(['ORIGINAL_UP_NAME'], inplace = True, axis = 1)
 
@@ -239,7 +244,7 @@ uplist_recent = uplist_all.reset_index(drop = True)
 # uplist_recent = pd.concat([uplist_recent, wef_biogas_ad, doe_biogas_ad], axis = 0, ignore_index = False)
 
 #assign key unit processes a code (ie. 'Activated Sludge' is assigned the code 'AS'); note, not all unit processes receive a code
-up_eicodes = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_EI_CODES_WERF_modified.csv') # MODIFIED
+up_eicodes = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_EI_CODES_WERF_modified.csv', dtype=str)
 uplist_eicodes = uplist_recent.merge(up_eicodes[['FINAL_UNIT_PROCESS_NAME','WERF_CODE','DISPOSAL_CODE']].drop_duplicates(subset = ['FINAL_UNIT_PROCESS_NAME']), how = 'left', on = 'FINAL_UNIT_PROCESS_NAME')
 
 #create column to indicate if a unit process was present in 2022
@@ -321,7 +326,7 @@ leaves = extract_leaves(unitprocess_keywords, ignore_disposal=False)
 all_keys = [name for name, _, _ in leaves]
 cwns_to_taxonomy = {}
 for process_name, details, _ in leaves:
-    cwns_names = get_cwns_unit_process_names(process_name, details)
+    cwns_names = details["cwns_processes"]
     for cwns_name in cwns_names:
         key = cwns_name.lower().strip()
         cwns_to_taxonomy.setdefault(key, []).append(process_name)
@@ -386,8 +391,11 @@ unit_processes_df = unit_processes_df.drop('CWNS_ID', axis=1)
 unit_processes_df = unit_processes_df.rename(columns={'CWNS_NUM': 'CWNS_ID'})
 
 # Add FACILITY_NAME from 2022 survey
-facilities_2022 = pd.read_csv('data/cwns/2022/FACILITIES.csv', dtype=str)
-facility_names = facilities_2022[['CWNS_ID', 'FACILITY_NAME']].drop_duplicates('CWNS_ID')
+facilities_2022 = pd.concat([
+    pd.read_csv('data/cwns/2022/FACILITIES.csv', dtype=str),
+    pd.read_csv('data/cwns/2022/FACILITIES_CONFIRMED.csv', dtype=str),
+])
+facility_names = facilities_2022[['CWNS_ID', 'FACILITY_NAME', 'FACILITY_ID']].drop_duplicates(['CWNS_ID', 'FACILITY_ID'])
 unit_processes_df = unit_processes_df.merge(facility_names, on='CWNS_ID', how='left')
 
 # Fill missing FACILITY_NAME from 2012 data (older facilities not in 2022 survey)
@@ -412,10 +420,10 @@ unit_processes_df.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_processes_by_facili
 
 # Save CA-consolidated subset for use in figure_2 and figure_4
 ca_only = unit_processes_df[unit_processes_df['STATE_CODE'] == 'CA'].copy()
-src_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT'}
+src_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT', 'FACILITY_ID'}
 proc_cols = [c for c in ca_only.columns if c not in src_cols]
 agg_spec = {col: (col, 'first') for col in proc_cols}
-for meta_col in ('FACILITY_NAME', 'PERMIT_NUMBER', 'STATE_CODE', 'NPDES_PERMIT'):
+for meta_col in ('FACILITY_NAME', 'PERMIT_NUMBER', 'STATE_CODE', 'NPDES_PERMIT', 'FACILITY_ID'):
     if meta_col in ca_only.columns:
         agg_spec[meta_col] = (meta_col, 'first')
 ca_consolidated = ca_only.groupby('CWNS_ID', dropna=False, sort=False).agg(**agg_spec).reset_index()
@@ -428,7 +436,7 @@ def pad_cwns_id(raw):
     return '0' + s if len(s) < 11 else s
 
 
-meta_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT'}
+meta_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT', 'FACILITY_ID'}
 process_columns = [c for c in ca_consolidated.columns if c not in meta_cols]
 ids_in_export = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
 
@@ -451,6 +459,9 @@ for cid in ciwqs_mapping.get('CWNS_ID', pd.Series(dtype=str)).astype(str).str.st
 
 missing_ids = sorted(required_ids - ids_in_export)
 if missing_ids:
+    allowed_cwns_ids = set(wwtps['CWNS_NUM'].astype(str).str.strip())
+    missing_ids = [cid for cid in missing_ids if cid in allowed_cwns_ids]
+
     permits_by_cwns = (
         ca_npdes_permits.drop_duplicates('CWNS_ID', keep='first')
         .assign(cwns_key=lambda d: d['CWNS_ID'].astype(str).str.strip())
@@ -464,6 +475,7 @@ if missing_ids:
     ciwqs_by_cwns = ciwqs_rows.drop_duplicates('padded_cwns_id', keep='first').set_index('padded_cwns_id')
 
     fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
+    fac_id_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_ID'].to_dict()
 
     placeholder_rows = []
     for cwns_id in missing_ids:
@@ -472,6 +484,7 @@ if missing_ids:
         row['STATE_CODE'] = 'CA'
         row['NPDES_PERMIT'] = ''
         row['PERMIT_NUMBER'] = ''
+        row['FACILITY_ID'] = fac_id_map_2022.get(cwns_id, '')
 
         # Name: 2022 survey → 2012 survey → ciwqs mapping
         row['FACILITY_NAME'] = (
@@ -484,12 +497,12 @@ if missing_ids:
             row['PERMIT_NUMBER'] = permit
             row['NPDES_PERMIT'] = permit
 
-        if len(ciwqs_by_cwns) and cwns_id in ciwqs_by_cwns.index:
+        if cwns_id in ciwqs_by_cwns.index:
             mapping_row = ciwqs_by_cwns.loc[cwns_id]
             if not row['NPDES_PERMIT']:
-                row['NPDES_PERMIT'] = str(mapping_row.get('NPDES_No', '')).strip()
-            cw_name = str(mapping_row.get('CWNS_Facility_Name', '')).strip()
-            fq_name = str(mapping_row.get('Facility_Name', '')).strip()
+                row['NPDES_PERMIT'] = str(mapping_row.get("NPDES No.", '')).strip()
+            cw_name = str(mapping_row.get('CWNS Facility Name', '')).strip()
+            fq_name = str(mapping_row.get('Facility Name', '')).strip()
             row['FACILITY_NAME'] = row['FACILITY_NAME'] or cw_name or fq_name
 
         if not row['PERMIT_NUMBER']:

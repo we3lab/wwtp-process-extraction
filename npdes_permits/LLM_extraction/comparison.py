@@ -171,7 +171,7 @@ def compare_results(ground_truth_csv, predictions_df):
     )
 
     # identify process columns in ground truth (exclude metadata)
-    meta_cols = {"Agency", "Facility_Name", "NPDES_No", "PDF_File", "Prediction_File"}
+    meta_cols = {"Agency", "Facility Name", "NPDES_No", "PDF_File", "Prediction_File"}
     processes = [c for c in gt.columns if c not in meta_cols]
 
     # map canonical process names to their lower form

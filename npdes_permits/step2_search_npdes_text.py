@@ -2,11 +2,18 @@ import os
 import csv
 import json
 import pandas as pd
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from helpers.utils import extract_leaves, collapse_facility_processes, PRESENT_STATUSES
 from helpers.npdes_text_extraction import extract_permit_sections
 
 DATE_FOLDER = "2026-4-26"
+
+def _extract_one(args):
+    directory, pdf_file, j, total = args
+    path = os.path.join(directory, pdf_file)
+    print(f"Processing {pdf_file} ({j+1}/{total})")
+    return pdf_file, extract_permit_sections(path, regenerate_text_excerpts=True)
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
     """Search that supports the JSON structure.
@@ -62,7 +69,6 @@ def main():
     rfr_data = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
     os.makedirs(os.path.dirname(file), exist_ok=True)
     csv_file = open(file, "w", newline="")
-    ps_file = open(rfr_data, "r", newline="")
     upi = csv.writer(csv_file)
 
     # Opens JSON file with keywords
@@ -73,33 +79,32 @@ def main():
     directory = f"npdes_permits/output/{DATE_FOLDER}/npdes"
 
     # Lists to store headers & data
+    place_ids = []
     wdids = []
     agency_name = []
     facility_name = []
     npdesNO = []
     pdfs = []
     shared_pdfs = []
+    pdf_cache = {}  # filename -> (present_results, future_results) or None
 
     # Read site data
     with open(rfr_data, "r") as f:
         for row in csv.DictReader(f):
+            place_ids.append(row.get("Place ID", ""))
             wdids.append(row.get("WDID", ""))
             agency_name.append(row.get("Agency", ""))
-            facility_name.append(row.get("Facility_Name", ""))
-            npdesNO.append(row.get("NPDES_No", ""))
-            pdfs.append(row.get("PDF_File", ""))
+            facility_name.append(row.get("Facility Name", ""))
+            npdesNO.append(row.get("Order_No", ""))
+            pdf_name = row.get("PDF_File", "")
+            pdfs.append(pdf_name)
             shared_pdfs.append(row.get("Shared_PDF", ""))
 
     # Create CSV headers - one column per process
     headers = [
-        "WDID",
-        "AGENCY_NAME",
-        "FACILITY_NAME",
-        "PERMIT_NUMBER",
-        "PDF_File",
-        "Shared_PDF",
+        "Place ID", "WDID", "AGENCY_NAME", "FACILITY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"
     ]
-    leaves = extract_leaves(keywords, ignore_disposal=False)
+    leaves = extract_leaves(keywords, ignore_disposal=True)
     all_keys = [name for name, _, _ in leaves]
     group_to_columns = {}
     column_priority = {}
@@ -115,13 +120,15 @@ def main():
 
     # Pre-compute unique PDFs so shared files are only extracted once
     unique_pdfs = list(dict.fromkeys(p for p in pdfs if p))
-    pdf_cache = {}  # filename -> (present_results, future_results) or None
+    total = len(unique_pdfs)
 
-    for j, pdf_file in enumerate(unique_pdfs):
-        path = os.path.join(directory, pdf_file)
-        print(f"Processing {pdf_file} ({j+1}/{len(unique_pdfs)})")
+    extractions = {}
+    args = [(directory, pdf_file, j, total) for j, pdf_file in enumerate(unique_pdfs)]
+    with ProcessPoolExecutor(max_workers=2) as executor:
+        for pdf_file, result in executor.map(_extract_one, args):
+            extractions[pdf_file] = result
 
-        extraction_result = extract_permit_sections(path, regenerate_text_excerpts=True)
+    for pdf_file, extraction_result in extractions.items():
         if extraction_result is None:
             print(f"Skipping {pdf_file} - extraction failed")
             pdf_cache[pdf_file] = None
@@ -167,6 +174,7 @@ def main():
 
         present_results, future_results = cached
         row_meta = [
+            place_ids[i],
             wdids[i],
             agency_name[i],
             facility_name[i],
@@ -206,14 +214,13 @@ def main():
         upi.writerow(data_row)
 
     csv_file.close()
-    ps_file.close()
 
     kw_by_fac_path = f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv"
     raw_df = pd.read_csv(file, dtype=str).fillna("")
     collapsed = collapse_facility_processes(
         raw_df,
-        key_cols=["PERMIT_NUMBER", "FACILITY_NAME"],
-        meta_cols=["WDID", "AGENCY_NAME", "PDF_File", "Shared_PDF"],
+        key_cols=["Place ID", "FACILITY_NAME"],
+        meta_cols=["WDID", "AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"]
     )
     collapsed.to_csv(kw_by_fac_path, index=False)
     print(
@@ -238,6 +245,21 @@ def main():
             except Exception:
                 rel = f
             print(f"  {rel}: {size} bytes")
+
+    # Deduplicate by permit number and sum PDFs available on CIWQS.
+    site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
+    site_data["Total_PDFs_Available"] = pd.to_numeric(
+        site_data["Total_PDFs_Available"], errors="coerce"
+    )
+    reg_measures = (
+        site_data.groupby("Reg_Measure_ID")["Total_PDFs_Available"].max().reset_index()
+    )
+    print("\nPDFs available per permit (CIWQS):")
+    print(reg_measures.sort_values("Total_PDFs_Available", ascending=False).head(10))
+    total_available = int(reg_measures["Total_PDFs_Available"].fillna(0).sum())
+    print(f"Total permits: {len(reg_measures)}")
+    print(f"Total PDFs available across permits: {total_available}")
+
 
     print(f"\n{'='*80}")
     print(f"Processing complete! Results saved to: {file}")

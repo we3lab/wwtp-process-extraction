@@ -1,7 +1,7 @@
 """
 Grouped stacked bar-chart comparison of unit process detection across two data sources:
   - CWNS (California facilities from output/cwns_processes_by_facility.csv)
-  - LLM Search (output/llm_unit_processes_by_facility.csv)
+  - LLM Search (output/date/llm_unit_processes_by_facility.csv)
 
 CWNS rows join ``ciwqs_to_cwns.csv`` to the CA step0 export (exact ``CWNS_ID``).
 The export includes placeholder rows for CA ``CWNS_ID`` values missing from CWNS
@@ -27,22 +27,41 @@ import os
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from pathlib import Path
 from helpers.utils import get_leaf_names, PRESENT_STATUSES
 from helpers.utils import (
-    name_to_fac,
-    facilities_with_cwns,
-    facilities_without_cwns,
-    map_facility_names_to_tuples,
+    cwns_mapping,
+    no_cwns_pids,
     build_cwns_facility_processes,
-    collapse_facility_processes,
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_and_close, set_thick_spines
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 DATE_FOLDER = "2026-4-26"
+DATA_DIR = f"npdes_permits/output/{DATE_FOLDER}"
 OUTPUT_DIR = f"npdes_permits/output/{DATE_FOLDER}/figures"
 MIN_COUNT = 10  # drop bar groups where both sources are below this threshold
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+PLOT_GROUPS = {
+    "Primary Treatment": [
+        "Screening/Microstrainer",
+        "Comminution",
+        "Grit Removal",
+        "Equalization",
+        "Flotation",
+    ],
+    "Clarification": ["Clarification"],
+    "Secondary Treatment": ["Activated Sludge", "Lagoon"],
+    "Nutrient Removal": ["Nutrient Removal"],
+    "Filtration": ["Filtration"],
+    "Disinfection": ["Disinfection"],
+    "Chemical Treatment": ["Coagulation", "Flocculation", "Chemical Addition"],
+    "Advanced Treatment": ["Ion Exchange", "Activated Carbon", "UV-AOP", "Wetland"],
+    "Solids Processing": ["Anaerobic Digestion", "Aerobic Digestion"],
+}
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
 
@@ -82,16 +101,28 @@ def draw_stacked_bar(ax, xpos, width, counts, color, stack_order):
         val = counts.get(key, 0)
         if val > 0:
             facecolor = "white" if key == "NOT_PRESENT" else color
-            ax.bar(
+            base = ax.bar(
                 xpos,
                 val,
                 width,
                 bottom=bottom,
                 color=facecolor,
-                hatch=hatch,
                 edgecolor="black",
                 linewidth=1.2,
             )
+            if hatch:
+                hatch_bar = ax.bar(
+                    xpos,
+                    val,
+                    width,
+                    bottom=bottom,
+                    color="none",
+                    hatch=hatch,
+                    edgecolor="white",
+                    linewidth=0.0,
+                )
+                for patch in hatch_bar:
+                    patch.set_hatch_linewidth(1.0)
             bottom += val
 
 
@@ -112,20 +143,22 @@ def set_standard_axes(
     set_thick_spines(ax, linewidth=1.6)
 
 
-def render_source_pair_plot(
+def render_source_plot(
     ax,
     labels,
     positions,
-    left_counts,
-    right_counts,
-    right_color_key,
+    source_counts,
     source_items,
     stack_order,
     status_legend_items,
+    bar_width,
 ):
-    for pos, left_c, right_c in zip(positions, left_counts, right_counts):
-        draw_stacked_bar(ax, pos - bar_w / 2, bar_w, left_c, COLORS["cwns"], stack_order)
-        draw_stacked_bar(ax, pos + bar_w / 2, bar_w, right_c, COLORS[right_color_key], stack_order)
+    n_sources = len(source_counts)
+    offsets = [(idx - (n_sources - 1) / 2) * bar_width for idx in range(n_sources)]
+
+    for pos, *counts in zip(positions, *source_counts):
+        for count, (_, color_key), offset in zip(counts, source_items, offsets):
+            draw_stacked_bar(ax, pos + offset, bar_width, count, COLORS[color_key], stack_order)
     set_standard_axes(ax, labels, positions, rotation=45)
     make_grouped_legend(
         ax,
@@ -142,6 +175,48 @@ def render_source_pair_plot(
         bbox_to_anchor=(1.01, 1.0),
         fontsize=12,
     )
+
+
+def build_major_category_sources(common_facilities, include_kw=False):
+    cwns_compare_df = cwns_df[cwns_df["Place ID"].isin(common_facilities)].copy()
+    llm_compare_df = llm_df[llm_df["Place ID"].isin(common_facilities)].copy()
+    kw_compare_df = kw_df[kw_df["Place ID"].isin(common_facilities)].copy() if include_kw else None
+
+    cat_labels = []
+    cwns_counts = []
+    llm_counts = []
+    kw_counts = []
+
+    for cat_name, cat_val in keywords.items():
+        leaves = get_leaf_names(cat_name, cat_val)
+        cat_labels.append(cat_name)
+        cwns_counts.append(get_facility_counts(cwns_compare_df, leaves))
+        llm_counts.append(get_facility_counts(llm_compare_df, leaves))
+        if include_kw:
+            kw_counts.append(get_facility_counts(kw_compare_df, leaves))
+
+    if include_kw:
+        kept = [
+            (label, cwns_c, llm_c, kw_c)
+            for label, cwns_c, llm_c, kw_c in zip(cat_labels, cwns_counts, llm_counts, kw_counts)
+            if sum(cwns_c.values()) >= MIN_COUNT
+            or sum(llm_c.values()) >= MIN_COUNT
+            or sum(kw_c.values()) >= MIN_COUNT
+        ]
+        if kept:
+            cat_labels, cwns_counts, llm_counts, kw_counts = map(list, zip(*kept))
+        order = sorted(range(len(cat_labels)), key=lambda i: (llm_counts[i]["NOT_PRESENT"], cat_labels[i]))
+        return [cat_labels[i] for i in order], [cwns_counts[i] for i in order], [llm_counts[i] for i in order], [kw_counts[i] for i in order]
+
+    kept = [
+        (label, cwns_c, llm_c)
+        for label, cwns_c, llm_c in zip(cat_labels, cwns_counts, llm_counts)
+        if sum(cwns_c.values()) >= MIN_COUNT or sum(llm_c.values()) >= MIN_COUNT
+    ]
+    if kept:
+        cat_labels, cwns_counts, llm_counts = map(list, zip(*kept))
+    order = sorted(range(len(cat_labels)), key=lambda i: (llm_counts[i]["NOT_PRESENT"], cat_labels[i]))
+    return [cat_labels[i] for i in order], [cwns_counts[i] for i in order], [llm_counts[i] for i in order], []
 
 
 # ── Item-list builder for per-category plots ──────────────────────────────────
@@ -184,151 +259,110 @@ def build_sorted_plot_items(json_cats, keywords, cwns_df, llm_df):
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 
-print("Loading unitprocess_keywords.json …")
 with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
     keywords = json.load(f)
-
-print("Loading LLM search data …")
-_llm_path = f"npdes_permits/output/{DATE_FOLDER}/llm_unit_processes_by_facility.csv"
-if not os.path.exists(_llm_path):
-    print(f"  LLM data not found for {DATE_FOLDER} — skipping LLM")
-    llm_df = pd.DataFrame()
-else:
-    llm_df = pd.read_csv(_llm_path, dtype=str).fillna("")
-    before_collapse = len(llm_df)
-    llm_df = collapse_facility_processes(
-        llm_df,
-        key_cols=["PERMIT_NUMBER", "Facility_Name"],
-        meta_cols=["Agency"],
-    )
-    print(f"  LLM rows collapsed: {before_collapse} → {len(llm_df)} facilities")
-    proc_cols_llm = [
-        c for c in llm_df.columns if c not in {"PERMIT_NUMBER", "Agency", "Facility_Name"}
-    ]
-    past_count = sum((llm_df[c] == "PAST").sum() for c in proc_cols_llm)
-    future_count = sum((llm_df[c] == "FUTURE").sum() for c in proc_cols_llm)
-    print(f"  LLM facilities: {len(llm_df)}  |  'PAST': {past_count}  |  'FUTURE': {future_count}")
-
-
-print("Loading keyword search data …")
-kw_path = f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv"
-kw_df = pd.read_csv(kw_path, dtype=str).fillna("")
+ 
 all_leaf_processes = {
     leaf
     for cat_name, cat_val in keywords.items()
     for leaf in get_leaf_names(cat_name, cat_val)
 }
-proc_cols_kw = sorted(all_leaf_processes)
-for col in proc_cols_kw:
-    kw_df[col] = kw_df[col].str.strip().str.upper().replace({"0": "", "NAN": ""})
-kw_df["PERMIT_NUMBER"] = kw_df["PERMIT_NUMBER"].astype(str).str.strip()
-print(f"  Keyword facilities (pre-collapsed by step2): {len(kw_df)}")
+proc_cols = sorted(all_leaf_processes)
 
-print("Loading and matching CWNS data …")
+llm_df = pd.read_csv(
+    f"{DATA_DIR}/llm_unit_processes_by_facility.csv", dtype=str
+    )
+
+kw_df = pd.read_csv(
+    f"{DATA_DIR}/kw_unit_processes_by_facility.csv", dtype=str
+    )
 
 ca_cwns = pd.read_csv(
     "npdes_permits/output/cwns_processes_by_facility.csv",
-    low_memory=False,
-    dtype={"CWNS_ID": str},
+    dtype=str,
 )
-ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].astype(str).str.strip()
+ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].str.strip()
 
-if not llm_df.empty:
-    llm_facilities = map_facility_names_to_tuples(llm_df, "Facility_Name", name_to_fac)
-else:
-    llm_facilities = set()
-
-kw_facilities = map_facility_names_to_tuples(kw_df, "FACILITY_NAME", name_to_fac)
+llm_facilities = set(llm_df["Place ID"])
+kw_facilities = set(kw_df["Place ID"])
+cwns_pids = set(cwns_mapping["Place ID"])
 
 # Coverage summary — before filtering to overlap only
-print(f"\nFacility coverage (unique WDID + Facility_Name, before overlap filter):")
-print(f"  CWNS in mapping:            {len(facilities_with_cwns)}")
+print(f"\nFacility coverage (unique WDID + Facility Name, before overlap filter):")
+print(f"  CWNS in mapping:            {len(cwns_pids)}")
 print(f"  Keyword:                    {len(kw_facilities)}")
-print(f"  Both CWNS + Keyword:        {len(kw_facilities & facilities_with_cwns)}")
-print(f"  Keyword only (no CWNS):     {len(kw_facilities - facilities_with_cwns)}")
-print(f"  CWNS only (not in KW):      {len(facilities_with_cwns - kw_facilities)}")
-if not llm_df.empty:
-    print(f"  LLM:                        {len(llm_facilities)}")
-    print(f"  Both CWNS + LLM:            {len(llm_facilities & facilities_with_cwns)}")
-    print(f"  LLM only (no CWNS):         {len(llm_facilities - facilities_with_cwns)}")
-    print(f"  CWNS only (not in LLM):     {len(facilities_with_cwns - llm_facilities)}")
+print(f"  Both CWNS + Keyword:        {len(kw_facilities & cwns_pids)}")
+print(f"  Keyword only (no CWNS):     {len(kw_facilities - cwns_pids)}")
+print(f"  CWNS only (not in KW):      {len(cwns_pids - kw_facilities)}")
+print(f"  LLM:                        {len(llm_facilities)}")
+print(f"  Both CWNS + LLM:            {len(llm_facilities & cwns_pids)}")
+print(f"  All 3 sources:              {len(llm_facilities & kw_facilities & cwns_pids)}")
 
-target_facs = (llm_facilities | kw_facilities) & facilities_with_cwns
-cwns_df, merged_map = build_cwns_facility_processes(ca_cwns, target_facilities=target_facs)
+cwns_df, merged_map = build_cwns_facility_processes(ca_cwns, target_facilities=llm_facilities | kw_facilities)
+
 n_attach = int((merged_map["_cwns_merge"] == "both").sum())
 print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
-cwns_df["PERMIT_NUMBER"] = cwns_df["NPDES_No"].astype(str).str.strip()
-cwns_df["_fac"] = list(zip(cwns_df["WDID"], cwns_df["Facility_Name"]))
 
-# Save facilities with no declared CWNS counterpart, for manual mapping review
-kw_unmatched = kw_facilities - facilities_with_cwns - facilities_without_cwns
-if kw_unmatched:
-    kw_unmatched_path = f"npdes_permits/output/{DATE_FOLDER}/unmatched_kw_no_cwns.csv"
-    kw_df[
-        kw_df["FACILITY_NAME"]
-        .apply(lambda n: name_to_fac.get(str(n).strip(), ("", str(n).strip())))
-        .isin(kw_unmatched)
-    ][["FACILITY_NAME"]].drop_duplicates().to_csv(kw_unmatched_path, index=False)
-    print(f"  Unmatched KW (no CWNS): {len(kw_unmatched)} → unmatched_kw_no_cwns.csv")
-else:
-    print("  Unmatched KW (no CWNS): 0")
+# Save facilities with no CWNS match
+site_data_path = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
+pid_to_name = {}
+_site = pd.read_csv(site_data_path, dtype=str).fillna("")
+site_facs = set(_site["Place ID"]) - {""}
+for _, r in _site.iterrows():
+    pid = r["Place ID"]
+    if pid:
+        pid_to_name.setdefault(pid, r["Facility Name"])
+for _, r in kw_df.iterrows():
+    pid = r["Place ID"]
+    if pid:
+        pid_to_name.setdefault(pid, r["FACILITY_NAME"])
+candidate_facs = (kw_facilities | site_facs) - {""}
 
-# Filter LLM/KW to only facilities with a declared CWNS
-kw_df = kw_df[
-    kw_df["FACILITY_NAME"].apply(lambda n: name_to_fac.get(str(n).strip()) in facilities_with_cwns)
-].copy()
-kw_df["_fac"] = kw_df["FACILITY_NAME"].apply(lambda n: name_to_fac.get(str(n).strip()))
-kw_df = kw_df[kw_df["_fac"].notna()].copy()
-kw_df["WDID"] = kw_df["_fac"].map(lambda t: t[0])
-kw_df["FACILITY_NAME"] = kw_df["_fac"].map(lambda t: t[1])
-kw_df = collapse_facility_processes(
-    kw_df,
-    key_cols=["WDID", "FACILITY_NAME", "_fac"],
-    meta_cols=["AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"],
+unmatched_pids = [
+    pid for pid in sorted(candidate_facs)
+    if pid not in cwns_pids and pid not in no_cwns_pids
+]
+
+kw_has_data = set(
+    kw_df.loc[(kw_df[proc_cols].ne("")).any(axis=1), "Place ID"]
 )
-if not llm_df.empty:
-    llm_df = llm_df[
-        llm_df["Facility_Name"].apply(
-            lambda n: name_to_fac.get(str(n).strip()) in facilities_with_cwns
-        )
-    ].copy()
-    llm_df["_fac"] = llm_df["Facility_Name"].apply(lambda n: name_to_fac.get(str(n).strip()))
-    llm_df = llm_df[llm_df["_fac"].notna()].copy()
-    llm_df["WDID"] = llm_df["_fac"].map(lambda t: t[0])
-    llm_df["Facility_Name"] = llm_df["_fac"].map(lambda t: t[1])
-    llm_df = collapse_facility_processes(
-        llm_df,
-        key_cols=["WDID", "Facility_Name", "_fac"],
-        meta_cols=["Agency", "PERMIT_NUMBER"],
-    )
+unmatched_df = pd.DataFrame({
+    "Place ID": unmatched_pids,
+    "FACILITY_NAME": [pid_to_name.get(pid, "") for pid in unmatched_pids],
+    "has_kw_unit_process_data": ["yes" if pid in kw_has_data else "no" for pid in unmatched_pids],
+}).sort_values("has_kw_unit_process_data", ascending=True, key=lambda s: s.map({"yes": 0, "no": 1}))
+unmatched_df.to_csv(f"{DATA_DIR}/unmatched_kw_no_cwns.csv", index=False)
+print(f"  Unmatched KW/site_data (no CWNS): {len(unmatched_pids)} → unmatched_kw_no_cwns.csv")
 
-cwns_facilities_all = set(cwns_df["_fac"])
-llm_common_facilities = cwns_facilities_all & set(llm_df["_fac"]) if not llm_df.empty else set()
-kw_common_facilities = cwns_facilities_all & set(kw_df["_fac"])
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+# CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
+cwns_csv = Path("npdes_permits/output/cwns_processes_by_facility.csv")
+mapping_csv = Path("npdes_permits/data/ciwqs_to_cwns.csv")
+cwns_unmatched_df = pd.read_csv(cwns_csv, dtype=str).fillna("")
+mapping_df = pd.read_csv(mapping_csv, dtype=str, keep_default_na=False).fillna("")
+
+mapped_cwns_ids = {
+    cw.strip()
+    for cw in mapping_df["CWNS_ID"]
+    if cw.strip() and cw.strip().upper() != "NA"
+}
+cwns_ids = cwns_unmatched_df["CWNS_ID"].str.strip()
+_unmatched_cols = [c for c in ["CWNS_ID", "FACILITY_ID", "FACILITY_NAME"] if c in cwns_unmatched_df.columns]
+unmatched_cwns_no_kw = cwns_unmatched_df[
+    cwns_ids.ne("") & cwns_ids.str.upper().ne("NA") & ~cwns_ids.isin(mapped_cwns_ids)
+][_unmatched_cols].drop_duplicates()
+
+unmatched_cwns_no_kw.to_csv(f"{DATA_DIR}/unmatched_cwns_no_kw.csv", index=False)
+
+
+cwns_facilities_all = set(cwns_df["Place ID"])
+kw_df, llm_df = [df[df["Place ID"].isin(cwns_facilities_all)].copy() for df in [kw_df, llm_df]]
+llm_common_facilities, kw_common_facilities = [set(df["Place ID"]) for df in [llm_df, kw_df]]
 
 # ── Treatment-stage groupings for per-category plots ─────────────────────────
 # Each entry: plot_title → [list of top-level JSON category names to combine]
 # Leaf processes from all listed categories are shown together on one plot,
 # with shaded bands separating categories that have multiple leaves.
-PLOT_GROUPS = {
-    "Primary Treatment": [
-        "Screening/Microstrainer",
-        "Comminution",
-        "Grit Removal",
-        "Equalization",
-        "Flotation",
-    ],
-    "Clarification": ["Clarification"],
-    "Secondary Treatment": ["Activated Sludge", "Lagoon"],
-    "Nutrient Removal": ["Nutrient Removal"],
-    "Filtration": ["Filtration"],
-    "Disinfection": ["Disinfection"],
-    "Chemical Treatment": ["Coagulation", "Flocculation", "Chemical Addition"],
-    "Advanced Treatment": ["Ion Exchange", "Activated Carbon", "UV-AOP", "Wetland"],
-    "Solids Processing": ["Anaerobic Digestion", "Aerobic Digestion"],
-}
 
 
 # ── 1. Per-treatment-stage plots ──────────────────────────────────────────────
@@ -342,16 +376,20 @@ stack_order_with_not_present = [
     (status, HATCH_PATTERNS.get(status, "")) for status in status_order_with_not_present
 ]
 status_legend_items = [
-    (status.title(), {"facecolor": "grey", "hatch": HATCH_PATTERNS.get(status, "")})
+    (status.title(), {
+        "facecolor": "grey", 
+        "hatch": HATCH_PATTERNS.get(status, ""),
+        "edgecolor": "white" if HATCH_PATTERNS.get(status, "") else "black"
+    })
     for status in status_order
 ]
 status_legend_items_with_not_present = status_legend_items + [
-    ("Not Present", {"facecolor": "white"}),
+    ("Not Present", {"facecolor": "white", "edgecolor": "black"}),
 ]
 
 for group_title, json_cats in PLOT_GROUPS.items():
-    cwns_plot_df = cwns_df[cwns_df["_fac"].isin(llm_common_facilities)].copy()
-    llm_plot_df = llm_df[llm_df["_fac"].isin(llm_common_facilities)].copy()
+    cwns_plot_df = cwns_df[cwns_df["Place ID"].isin(llm_common_facilities)].copy()
+    llm_plot_df = llm_df[llm_df["Place ID"].isin(llm_common_facilities)].copy()
     items, labels, cwns_counts_list, llm_counts_list = build_sorted_plot_items(
         json_cats, keywords, cwns_plot_df, llm_plot_df
     )
@@ -379,16 +417,15 @@ for group_title, json_cats in PLOT_GROUPS.items():
     safe = group_title.replace("/", "_").replace(" ", "_")
     path = f"{OUTPUT_DIR}/{safe}_source_comparison.png"
     fig, ax = plt.subplots(figsize=(fig_w, 5))
-    render_source_pair_plot(
+    render_source_plot(
         ax=ax,
         labels=labels,
         positions=positions,
-        left_counts=cwns_counts_list,
-        right_counts=llm_counts_list,
-        right_color_key="npdes_total",
-        source_items=[("CWNS", "cwns"), ("NPDES - LLM extraction", "npdes_total")],
+        source_counts=[cwns_counts_list, llm_counts_list],
+        source_items=[("CWNS", "cwns"), ("NPDES - LLM extraction", "npdes_llm")],
         stack_order=stack_order_with_not_present,
         status_legend_items=status_legend_items_with_not_present,
+        bar_width=bar_w,
     )
     cat_spans = {}
     for item, pos in zip(items, positions):
@@ -422,7 +459,7 @@ for group_title, json_cats in PLOT_GROUPS.items():
                 "header": "Data Source",
                 "items": [
                     ("CWNS", {"facecolor": COLORS["cwns"]}),
-                    ("NPDES - LLM extraction", {"facecolor": COLORS["npdes_total"]}),
+                    ("NPDES - LLM extraction", {"facecolor": COLORS["npdes_llm"]}),
                 ],
             },
             {"header": "Status", "items": status_legend_items},
@@ -433,7 +470,6 @@ for group_title, json_cats in PLOT_GROUPS.items():
     )
     plt.tight_layout()
     save_and_close(fig, path, dpi=200)
-    print(f"  Saved {os.path.basename(path)}")
 
 
 # ── 2. Major-categories plot ─────────────────────────────────────────────────
@@ -442,65 +478,35 @@ for group_title, json_cats in PLOT_GROUPS.items():
 
 print("\nGenerating major-categories plots …")
 
-# REPLACE WITH:
 for comparison_type in ["llm", "kw"]:
-    if comparison_type == "llm" and llm_df.empty:
-        continue
     print(f"\n  Generating {comparison_type.upper()} major-categories plot…")
-    comparison_df = llm_df if comparison_type == "llm" else kw_df
-    common_facilities = (
-        llm_common_facilities if comparison_type == "llm" else kw_common_facilities
-    )
-    cwns_compare_df = cwns_df[cwns_df["_fac"].isin(common_facilities)].copy()
-    comparison_df = comparison_df[comparison_df["_fac"].isin(common_facilities)].copy()
-    right_color_key = "npdes_total" if comparison_type == "llm" else "npdes"
-    source_items = (
-        [("CWNS", "cwns"), ("NPDES - LLM extraction", "npdes_total")]
-        if comparison_type == "llm"
-        else [("CWNS", "cwns"), ("NPDES - Keyword Search", "npdes")]
-    )
+    include_kw = comparison_type == "kw"
+    common_facilities = llm_common_facilities if not include_kw else kw_common_facilities & llm_common_facilities
+    cat_labels, all_cwns, all_llm, all_kw = build_major_category_sources(common_facilities, include_kw=include_kw)
     suffix = "source_comparison" if comparison_type == "llm" else "kw_compare"
-
-    cat_labels = list(keywords.keys())
-
-    all_cwns = []
-    all_comp = []
-    for cat_name, cat_val in keywords.items():
-        leaves = get_leaf_names(cat_name, cat_val)
-        all_cwns.append(get_facility_counts(cwns_compare_df, leaves))
-        all_comp.append(get_facility_counts(comparison_df, leaves))
-
-    cat_filtered = [
-        (lbl, cwns_c, comp_c)
-        for lbl, cwns_c, comp_c in zip(cat_labels, all_cwns, all_comp)
-        if sum(cwns_c.values()) >= MIN_COUNT or sum(comp_c.values()) >= MIN_COUNT
+    source_items = [
+        ("CWNS", "cwns"),
+        ("NPDES - LLM extraction", "npdes_llm"),
+    ] if not include_kw else [
+        ("CWNS", "cwns"),
+        ("NPDES - Keyword Search", "npdes_kw"),
+        ("NPDES - LLM extraction", "npdes_llm"),
     ]
-    if cat_filtered:
-        cat_labels, all_cwns, all_comp = map(list, zip(*cat_filtered))
-
-    order = sorted(
-        range(len(cat_labels)),
-        key=lambda i: (all_comp[i]["NOT_PRESENT"], cat_labels[i]),
-    )
-    cat_labels = [cat_labels[i] for i in order]
-    all_cwns = [all_cwns[i] for i in order]
-    all_comp = [all_comp[i] for i in order]
 
     n = len(cat_labels)
     final_dir = f"npdes_permits/output/{DATE_FOLDER}/final"
     os.makedirs(final_dir, exist_ok=True)
     path = f"{final_dir}/figure_4_major_categories_{suffix}.png"
-    fig, ax = plt.subplots(figsize=(max(14, n * 0.55), 6))
-    render_source_pair_plot(
+    fig, ax = plt.subplots(figsize=(max(14, n * (0.55 if not include_kw else 0.7)), 6))
+    render_source_plot(
         ax=ax,
         labels=cat_labels,
         positions=list(range(n)),
-        left_counts=all_cwns,
-        right_counts=all_comp,
-        right_color_key=right_color_key,
         source_items=source_items,
         stack_order=stack_order_with_not_present,
         status_legend_items=status_legend_items_with_not_present,
+        source_counts=[all_cwns, all_llm] if not include_kw else [all_cwns, all_kw, all_llm],
+        bar_width=bar_w if not include_kw else 0.24,
     )
     plt.tight_layout()
     save_and_close(fig, path, dpi=200)

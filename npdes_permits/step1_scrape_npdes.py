@@ -189,10 +189,30 @@ def _open_in_new_tab(driver, url, main_window, *, post_switch_sleep=0):
         driver.switch_to.window(main_window)
 
 
+def _resolve_download_url(href, soup):
+    reg_id_val = parse_qs(urlparse(href).query).get("regMeasID", [None])[0]
+    attach_tag = soup.find(
+        "a", href=lambda h, r=reg_id_val: h and "rmAttachmentPopup" in h
+        and (not r or f"regMeasID={r}" in h)
+    )
+    return abs_url(attach_tag["href"]) if attach_tag else href
+
+
+def _download_and_move(driver, url, worker_dir, main_window, check_dirs, pdfs_path):
+    pdfs, missed, total = download_pdfs_for_order(driver, url, worker_dir, main_window, check_dirs=check_dirs)
+    for fname in pdfs:
+        src, dst = os.path.join(worker_dir, fname), os.path.join(pdfs_path, fname)
+        if os.path.exists(src) and not os.path.exists(dst):
+            shutil.move(src, dst)
+    return pdfs, missed, total
+
+
 def find_best_order(driver, fac_url, main_window):
     """Navigate to facility page, parse HTML, and return best active NPDES order.
 
-    Returns: (order_url, reg_measure_type, wdid) or (None, None, None)
+    Returns: (order_url, reg_measure_type, wdid, eff, addtl_orders)
+      order_url may be None if best order has no clickable link.
+      addtl_orders is a list of (url, wdid, eff) for additional NPDES PERMIT orders with valid links.
     """
     # Navigate to facility page
     with _open_in_new_tab(driver, fac_url, main_window):
@@ -222,7 +242,8 @@ def find_best_order(driver, fac_url, main_window):
                 i = col_index.get(col_name, -1)
                 return dcells[i].get_text(strip=True) if 0 <= i < len(dcells) else ""
 
-            # Process data rows: collect (rank, -eff, href, rm_type, eff) tuples; min() picks the best.
+            # Process data rows: collect (rank, -eff, href, rm_type, eff, wdid) tuples; min() picks the best.
+            # href may be None for rows without a clickable link — still included so we can store order metadata.
             candidates = []
             for data_row in all_rows[hdr_idx + 1:]:
                 dcells = data_row.find_all("td")
@@ -236,31 +257,31 @@ def find_best_order(driver, fac_url, main_window):
                 if rm_type == "WDR" and gc("Program").upper() not in PROGRAMS["WDR"]:
                     continue
 
-                # Require a clickable Order No.
                 order_idx = col_index.get("Order No.", -1)
                 a_tag = dcells[order_idx].find("a", href=True) if 0 <= order_idx < len(dcells) else None
                 href = abs_url(a_tag["href"]) if a_tag else None
                 eff = pd.to_datetime(gc("Effective Date"), errors="coerce")
-                if not href or pd.isna(eff):
+                if pd.isna(eff):
                     continue
 
-                # Calculate priority
                 candidates.append((TYPE_RANK[rm_type], -eff.value, href, rm_type, eff, gc("WDID")))
 
-            # Update best if higher priority (lowest tuple wins: smaller rank, then newer eff date)
             if candidates:
                 rank, _, href, rm_type, eff, wdid = min(candidates)
-                print(f"  Best order: {rm_type}, rank={rank}, effective={eff.date()}")
-                # Prefer the attachment popup link (carries correct reportID) over the order detail link
-                reg_id_val = parse_qs(urlparse(href).query).get("regMeasID", [None])[0]
-                attach_tag = soup.find(
-                    "a", href=lambda h: h and "rmAttachmentPopup" in h
-                    and (not reg_id_val or f"regMeasID={reg_id_val}" in h)
-                )
-                download_url = abs_url(attach_tag["href"]) if attach_tag else href
-                return download_url, rm_type, wdid
+                print(f"  Best order: {rm_type}, rank={rank}, effective={eff.date()}, link={'yes' if href else 'no'}")
 
-    return None, None, None
+                download_url = _resolve_download_url(href, soup) if href else None
+
+                # Collect additional NPDES PERMIT orders (rank=0) with valid links, excluding primary
+                addtl_orders = []
+                for _, _, c_href, c_rm_type, c_eff, c_wdid in candidates:
+                    if TYPE_RANK.get(c_rm_type, 99) != 0 or not c_href or c_href == href:
+                        continue
+                    addtl_orders.append((_resolve_download_url(c_href, soup), c_wdid, c_eff))
+
+                return download_url, rm_type, wdid, eff, addtl_orders
+
+    return None, None, None, None, []
 
 
 def download_pdfs_for_order(driver, order_url, output_dir, main_window, check_dirs=None):
@@ -617,8 +638,8 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
         fac_name = entry["facilities"][0]["Facility Name"] if "facilities" in entry else entry.get("Facility Name", place_id)
         print(f"\n[{idx}/{total}] {fac_name}")
         try:
-            order_url, rm_type, wdid = find_best_order(driver, fac_url, main_window)
-            if not order_url:
+            order_url, rm_type, wdid, eff, addtl_orders = find_best_order(driver, fac_url, main_window)
+            if rm_type is None:
                 print("  X No suitable active NPDES order found")
                 entry.update(
                     {"Facility Name": fac_name,
@@ -631,7 +652,17 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
                 entry.pop("facilities", None)
                 return
 
-            reg_id = parse_qs(urlparse(order_url).query).get("regMeasID", [None])[0]
+            reg_id = parse_qs(urlparse(order_url).query).get("regMeasID", [None])[0] if order_url else None
+
+            # Store order metadata but skip PDFs if no link or pre-2004
+            if not order_url or (eff and eff.year < 2004):
+                reason = "pre-2004" if (eff and eff.year < 2004) else "no link"
+                print(f"  Skipping PDFs ({reason}): {rm_type}, eff={eff.date() if eff else 'unknown'}")
+                entry.update({"Facility Name": fac_name, "WDID": wdid, "pdfs": [],
+                              "total_pdfs": 0, "reg_measure_id": reg_id,
+                              "reg_measure_type": rm_type})
+                entry.pop("facilities", None)
+                return
 
             with lock:
                 if reg_id and reg_id in reg_id_to_info:
@@ -642,24 +673,45 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
                     entry.pop("facilities", None)
                     return
 
-            downloaded_pdfs, missed_pdfs, total_pdfs = download_pdfs_for_order(
-                driver, order_url, worker_dir, main_window, check_dirs=check_dirs
+            downloaded_pdfs, missed_pdfs, total_pdfs = _download_and_move(
+                driver, order_url, worker_dir, main_window, check_dirs, pdfs_path
             )
-            # Move new files from worker temp dir to shared pdfs_path
-            for fname in downloaded_pdfs:
-                src = os.path.join(worker_dir, fname)
-                dst = os.path.join(pdfs_path, fname)
-                if os.path.exists(src) and not os.path.exists(dst):
-                    shutil.move(src, dst)
 
             info = {
                 "Facility Name": fac_name,
                 "WDID": wdid,
                 "pdfs": downloaded_pdfs,
+                "missed_pdfs": missed_pdfs,
                 "total_pdfs": total_pdfs,
                 "reg_measure_id": reg_id,
                 "reg_measure_type": rm_type,
             }
+
+            # Download PDFs for additional NPDES PERMIT orders (effective 2004+)
+            addtl_reg_ids, addtl_wdids = [], []
+            for addtl_url, addtl_wdid, addtl_eff in addtl_orders:
+                if addtl_eff.year < 2004:
+                    continue
+                addtl_reg_id = parse_qs(urlparse(addtl_url).query).get("regMeasID", [None])[0]
+                with lock:
+                    cached = addtl_reg_id and addtl_reg_id in reg_id_to_info
+                if cached:
+                    extra_pdfs = reg_id_to_info[addtl_reg_id].get("pdfs", [])
+                else:
+                    extra_pdfs, extra_missed, _ = _download_and_move(
+                        driver, addtl_url, worker_dir, main_window, check_dirs, pdfs_path
+                    )
+                    info["missed_pdfs"].extend(extra_missed)
+                    with lock:
+                        if addtl_reg_id:
+                            reg_id_to_info[addtl_reg_id] = {"pdfs": extra_pdfs}
+                info["pdfs"].extend(extra_pdfs)
+                addtl_reg_ids.append(addtl_reg_id or "")
+                addtl_wdids.append(addtl_wdid or "")
+            if addtl_reg_ids:
+                info["addtl_reg_measure_id"] = ",".join(addtl_reg_ids)
+                info["addtl_WDID"] = ",".join(addtl_wdids)
+
             entry.update(info)
             entry.pop("facilities", None)
             with lock:
@@ -679,22 +731,29 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         executor.map(process_facility, enumerate(items, 1))
 
+    def _needs_retry(entry):
+        # Unprocessed (exception during process_facility left "facilities" key intact)
+        if "facilities" in entry:
+            return True
+        # Download was attempted but some PDFs timed out
+        return bool(entry.get("missed_pdfs"))
+
     retry_count = 0
     try:
         while True:
             retry_items = [
                 (place_id, entry)
                 for place_id, entry in facilities_by_place.items()
-                if "facilities" in entry
-                or (entry.get("reg_measure_id") and not entry.get("pdfs"))
+                if _needs_retry(entry)
             ]
             if not retry_items:
                 break
             retry_count += 1
-            print(f"\nRetry pass {retry_count}: {len(retry_items)} facilities still need PDFs")
+            print(f"\nRetry pass {retry_count}: {len(retry_items)} facilities with failed downloads")
             with lock:
                 for _, entry in retry_items:
                     reg_id_to_info.pop(entry.get("reg_measure_id"), None)
+                    entry.pop("missed_pdfs", None)
             total = len(retry_items)
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 executor.map(process_facility, [(i + 1, item) for i, item in enumerate(retry_items)])
@@ -702,8 +761,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
         still_failing = [
             {"Facility Name": entry.get("Facility Name", place_id), "place_id": place_id}
             for place_id, entry in facilities_by_place.items()
-            if "facilities" in entry
-            or (entry.get("reg_measure_id") and not entry.get("pdfs"))
+            if _needs_retry(entry)
         ]
         if still_failing:
             pd.DataFrame(still_failing).to_csv(
@@ -809,6 +867,8 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
                     "Facility_URL": fac_url,
                     "Reg_Measure_ID": entry.get("reg_measure_id"),
                     "Reg_Measure_Type": rm_type,
+                    "Addtl_Reg_Measure_ID": entry.get("addtl_reg_measure_id", ""),
+                    "Addtl_WDID": entry.get("addtl_WDID", ""),
                     "PDF_File": pdf,
                     "Shared_PDF": ("Yes" if pdf_to_n_facilities.get(pdf, 0) > 1 else "No"),
                     "Total_PDFs_Available": entry.get("total_pdfs")
@@ -827,6 +887,6 @@ if __name__ == "__main__":
     # Try a few times or wait a couple of hours to let CIWQS stabilize if needed
     # program_urls = run_ciwqs_search()
     # facilities = collect_facility_page_urls(program_urls)
-    # facilities = download_facility_page_pdfs(facilities)
+    facilities = download_facility_page_pdfs(facilities)
     npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs, pdf_signals)

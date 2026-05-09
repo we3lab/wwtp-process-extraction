@@ -78,31 +78,21 @@ def main():
     # Directory where PDFs are stored
     directory = f"npdes_permits/output/{DATE_FOLDER}/npdes"
 
-    # Lists to store headers & data
-    place_ids = []
-    wdids = []
-    agency_name = []
-    facility_name = []
-    npdesNO = []
-    pdfs = []
-    shared_pdfs = []
     pdf_cache = {}  # filename -> (present_results, future_results) or None
 
-    # Read site data
-    with open(rfr_data, "r") as f:
-        for row in csv.DictReader(f):
-            place_ids.append(row.get("Place ID", ""))
-            wdids.append(row.get("WDID", ""))
-            agency_name.append(row.get("Agency", ""))
-            facility_name.append(row.get("Facility Name", ""))
-            npdesNO.append(row.get("Order_No", ""))
-            pdf_name = row.get("PDF_File", "")
-            pdfs.append(pdf_name)
-            shared_pdfs.append(row.get("Shared_PDF", ""))
+    site_df = pd.read_csv(rfr_data, dtype=str).fillna("")
+    place_ids   = site_df["Place ID"].tolist()
+    wdids       = site_df["WDID"].tolist()
+    agency_name = site_df["Agency"].tolist()
+    facility_name = site_df["Facility Name"].tolist()
+    order_no     = site_df["Order_No"].tolist()
+    npdes_no    = site_df["NPDES No."].tolist()
+    pdfs        = site_df["PDF_File"].tolist()
+    shared_pdfs = site_df["Shared_PDF"].tolist()
 
     # Create CSV headers - one column per process
     headers = [
-        "Place ID", "WDID", "AGENCY_NAME", "FACILITY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"
+        "Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"
     ]
     leaves = extract_leaves(keywords, ignore_disposal=True)
     all_keys = [name for name, _, _ in leaves]
@@ -124,7 +114,7 @@ def main():
 
     extractions = {}
     args = [(directory, pdf_file, j, total) for j, pdf_file in enumerate(unique_pdfs)]
-    with ProcessPoolExecutor(max_workers=4) as executor:
+    with ProcessPoolExecutor(max_workers=20) as executor:
         for pdf_file, result in executor.map(_extract_one, args):
             extractions[pdf_file] = result
 
@@ -140,28 +130,12 @@ def main():
         for category, processes in keywords.items():
             if not isinstance(processes, dict):
                 continue
-            if "alt_names" in processes:
-                # Top-level leaf node — wrap so search_processes_in_text sees expected structure
-                wrapped = {category: processes}
-                search_processes_in_text(
-                    extraction_result["txt_section"], wrapped, present_results, None
-                )
-                if extraction_result["txt_changes"]:
-                    search_processes_in_text(
-                        extraction_result["txt_changes"], wrapped, future_results, None
-                    )
-            else:
-                # Category node containing sub-processes
-                search_processes_in_text(
-                    extraction_result["txt_section"], processes, present_results, None
-                )
-                if extraction_result["txt_changes"]:
-                    search_processes_in_text(
-                        extraction_result["txt_changes"],
-                        processes,
-                        future_results,
-                        None,
-                    )
+            proc_dict = {category: processes} if "alt_names" in processes else processes
+            txt_sources = [(extraction_result["txt_section"], present_results)]
+            if extraction_result["txt_changes"]:
+                txt_sources.append((extraction_result["txt_changes"], future_results))
+            for txt, results in txt_sources:
+                search_processes_in_text(txt, proc_dict, results, None)
 
         pdf_cache[pdf_file] = (present_results, future_results)
 
@@ -178,7 +152,8 @@ def main():
             wdids[i],
             agency_name[i],
             facility_name[i],
-            npdesNO[i],
+            order_no[i],
+            npdes_no[i],
             pdf_file,
             shared_pdfs[i],
         ]
@@ -219,8 +194,8 @@ def main():
     raw_df = pd.read_csv(file, dtype=str).fillna("")
     collapsed = collapse_facility_processes(
         raw_df,
-        key_cols=["Place ID", "FACILITY_NAME"],
-        meta_cols=["WDID", "AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"]
+        key_cols=["Place ID"],
+        meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"]
     )
     collapsed.to_csv(kw_by_fac_path, index=False)
     print(
@@ -246,7 +221,7 @@ def main():
                 rel = f
             print(f"  {rel}: {size} bytes")
 
-    # Deduplicate by permit number and sum PDFs available on CIWQS.
+    # Deduplicate by place ID and sum PDFs available on CIWQS.
     site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
     site_data["Total_PDFs_Available"] = pd.to_numeric(
         site_data["Total_PDFs_Available"], errors="coerce"

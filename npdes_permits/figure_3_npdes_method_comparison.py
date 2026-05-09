@@ -17,7 +17,6 @@ from helpers.utils import (
     get_leaf_names,
     extract_leaves,
     merge_column_statuses,
-    collapse_facility_processes,
 )
 from helpers.plotting import (
     COLORS,
@@ -279,11 +278,6 @@ print(f"Categories: {categories_to_plot}")
 unit_process_results = pd.read_csv(
     f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv", dtype=str
 ).fillna("")
-unit_process_results = collapse_facility_processes(
-    unit_process_results,
-    key_cols=["Place ID"],
-    meta_cols=["WDID", "FACILITY_NAME", "AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"],
-)
 print(f"NPDES keyword data: Loaded {len(unit_process_results)} unique facilities")
 
 unit_full = unit_process_results.copy()

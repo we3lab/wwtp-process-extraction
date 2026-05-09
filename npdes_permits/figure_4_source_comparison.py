@@ -315,7 +315,7 @@ for _, r in _site.iterrows():
 for _, r in kw_df.iterrows():
     pid = r["Place ID"]
     if pid:
-        pid_to_name.setdefault(pid, r["FACILITY_NAME"])
+        pid_to_name.setdefault(pid, r["Facility Name"])
 candidate_facs = (kw_facilities | site_facs) - {""}
 
 unmatched_pids = [

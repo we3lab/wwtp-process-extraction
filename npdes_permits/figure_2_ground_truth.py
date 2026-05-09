@@ -196,44 +196,13 @@ def main():
     for i, row in gt_plot_df.iterrows():
         npdes_x = i - w / 2
         cwns_x = i + w / 2
-        ax.bar(
-            npdes_x,
-            row["NPDES_Missed_Rate"] * 100,
-            w,
-            color=to_rgba(COLORS["npdes_kw"], 0.9),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
-        ax.bar(
-            npdes_x,
-            row["NPDES_Extra_Rate"] * 100,
-            w,
-            bottom=row["NPDES_Missed_Rate"] * 100,
-            color=to_rgba(COLORS["npdes_kw"], 0.45),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
-        ax.bar(
-            cwns_x,
-            row["CWNS_Missed_Rate"] * 100,
-            w,
-            color=to_rgba(COLORS["cwns"], 0.9),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
-        ax.bar(
-            cwns_x,
-            row["CWNS_Extra_Rate"] * 100,
-            w,
-            bottom=row["CWNS_Missed_Rate"] * 100,
-            color=to_rgba(COLORS["cwns"], 0.45),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
+        for x, color_key, missed_col, extra_col in [
+            (npdes_x, "npdes_kw", "NPDES_Missed_Rate", "NPDES_Extra_Rate"),
+            (cwns_x,  "cwns",     "CWNS_Missed_Rate",  "CWNS_Extra_Rate"),
+        ]:
+            missed = row[missed_col] * 100
+            ax.bar(x, missed, w, color=to_rgba(COLORS[color_key], 0.9), edgecolor="black", linewidth=1.2, zorder=2)
+            ax.bar(x, row[extra_col] * 100, w, bottom=missed, color=to_rgba(COLORS[color_key], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
 
     npdes_avg = float(gt_plot_df["NPDES_Error_Rate"].mean() * 100)
     cwns_avg = float(gt_plot_df["CWNS_Error_Rate"].mean() * 100)
@@ -321,49 +290,32 @@ def main():
             and build_cwns_presence_mask(pd.Series([cwns_row.get(col, "")])).iloc[0]
         }
 
-        npdes_tp = len(gt_set & npdes_set)
-        npdes_fp = len(npdes_set - gt_set)
-        npdes_fn = len(gt_set - npdes_set)
-        npdes_precision = npdes_tp / (npdes_tp + npdes_fp) if (npdes_tp + npdes_fp) else 0
-        npdes_recall = npdes_tp / (npdes_tp + npdes_fn) if (npdes_tp + npdes_fn) else 0
-        npdes_f1 = (
-            2 * npdes_precision * npdes_recall / (npdes_precision + npdes_recall)
-            if (npdes_precision + npdes_recall)
-            else 0
-        )
+        src_metrics = {}
+        for prefix, pred_set in [("NPDES", npdes_set), ("CWNS", cwns_set)]:
+            tp = len(gt_set & pred_set)
+            fp = len(pred_set - gt_set)
+            fn = len(gt_set - pred_set)
+            p = tp / (tp + fp) if (tp + fp) else 0
+            r = tp / (tp + fn) if (tp + fn) else 0
+            src_metrics[prefix] = dict(
+                TP=tp, FP=fp, FN=fn, Precision=p, Recall=r,
+                F1=2 * p * r / (p + r) if (p + r) else 0,
+                Missed="|".join(sorted(gt_set - pred_set)),
+                Extra="|".join(sorted(pred_set - gt_set)),
+            )
 
-        cwns_tp = len(gt_set & cwns_set)
-        cwns_fp = len(cwns_set - gt_set)
-        cwns_fn = len(gt_set - cwns_set)
-        cwns_precision = cwns_tp / (cwns_tp + cwns_fp) if (cwns_tp + cwns_fp) else 0
-        cwns_recall = cwns_tp / (cwns_tp + cwns_fn) if (cwns_tp + cwns_fn) else 0
-        cwns_f1 = (
-            2 * cwns_precision * cwns_recall / (cwns_precision + cwns_recall)
-            if (cwns_precision + cwns_recall)
-            else 0
-        )
-
+        nm, cm = src_metrics["NPDES"], src_metrics["CWNS"]
         facility_rows.append(
             {
                 "NPDES No.": npdes,
                 "Facility Name": facility_name,
                 "GT_Count": len(gt_set),
-                "NPDES_TP": npdes_tp,
-                "NPDES_FP": npdes_fp,
-                "NPDES_FN": npdes_fn,
-                "NPDES_Precision": npdes_precision,
-                "NPDES_Recall": npdes_recall,
-                "NPDES_F1": npdes_f1,
-                "NPDES_Missed": "|".join(sorted(gt_set - npdes_set)),
-                "NPDES_Extra": "|".join(sorted(npdes_set - gt_set)),
-                "CWNS_TP": cwns_tp,
-                "CWNS_FP": cwns_fp,
-                "CWNS_FN": cwns_fn,
-                "CWNS_Precision": cwns_precision,
-                "CWNS_Recall": cwns_recall,
-                "CWNS_F1": cwns_f1,
-                "CWNS_Missed": "|".join(sorted(gt_set - cwns_set)),
-                "CWNS_Extra": "|".join(sorted(cwns_set - gt_set)),
+                "NPDES_TP": nm["TP"], "NPDES_FP": nm["FP"], "NPDES_FN": nm["FN"],
+                "NPDES_Precision": nm["Precision"], "NPDES_Recall": nm["Recall"], "NPDES_F1": nm["F1"],
+                "NPDES_Missed": nm["Missed"], "NPDES_Extra": nm["Extra"],
+                "CWNS_TP": cm["TP"], "CWNS_FP": cm["FP"], "CWNS_FN": cm["FN"],
+                "CWNS_Precision": cm["Precision"], "CWNS_Recall": cm["Recall"], "CWNS_F1": cm["F1"],
+                "CWNS_Missed": cm["Missed"], "CWNS_Extra": cm["Extra"],
             }
         )
 

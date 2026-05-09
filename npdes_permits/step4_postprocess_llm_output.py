@@ -488,8 +488,8 @@ print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched
 raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
 collapsed = collapse_facility_processes(
     raw_df,
-    key_cols=["Place ID", "Facility Name"],
-    meta_cols=["WDID", "Order_No", "NPDES No.", "Agency"],
+    key_cols=["Place ID"],
+    meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
 )
 collapsed.to_csv(output_fac_csv, index=False)
 print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → llm_unit_processes_by_facility.csv")

@@ -63,11 +63,22 @@ os.makedirs(full_path, exist_ok=True)
 os.makedirs(pdfs_path, exist_ok=True)
 
 # PDF filenames matching this regex are skipped on the order page.
-SEP = " .-_"
-BASE_KW = ["rpts|rowd|memo|nov|map"]  # match only with separators (e.g. "_memo_")
-PHRASE_KW = "report|financial|response to|rate study|ratestudy|study|letter|addendum|amendment|registration|cover_l|cover l" # skip if anywhere in filename
-SKIP_RE = re.compile(rf"^(?:{'|'.join(BASE_KW)})[{SEP}]|[{SEP}](?:{'|'.join(BASE_KW)})[{SEP}]|{PHRASE_KW}", re.IGNORECASE)
-KEEP_RE = re.compile(r"(?<![a-zA-Z])noa(?![a-zA-Z])", re.IGNORECASE)  # always keep NOA files
+SEP = r"[ ._-]"  # - must be last to avoid range interpretation
+SKIP_BASE_KW = ["rpts|rowd|memo|nov|map|rwd"]  # match only with separators (e.g. "_memo_")
+SKIP_PHRASE = (
+    "report|financial|response to|rate study|ratestudy|study|"
+    "addendum|registration|adoption|"
+    "letter|covltr|cover_l|cover l|volumetric|"
+    "form200|form 200"
+)  # skip if anywhere in filename
+SKIP_RE = re.compile(rf"^(?:{'|'.join(SKIP_BASE_KW)}){SEP}|{SEP}(?:{'|'.join(SKIP_BASE_KW)}){SEP}|{SKIP_PHRASE}", re.IGNORECASE)
+
+# skip these UNLESS keep_re is present too
+CONTINGENT_SKIP_PHRASE = "amendment|mrp"
+CONTINGENT_SKIP_RE = re.compile(CONTINGENT_SKIP_PHRASE, re.IGNORECASE)
+
+# keep these, overriding contingent skip
+KEEP_RE = re.compile(r"(?<![a-zA-Z])(noa|wdrs?|order|npdes)(?![a-zA-Z])", re.IGNORECASE)  # always keep NOA/WDR/NPDES files
 
 def abs_url(href):
     return urljoin(f"{CIWQS_ROOT}/ciwqs/readOnly/", href) if href else href
@@ -303,9 +314,12 @@ def download_pdfs_for_order(driver, order_url, output_dir, main_window, check_di
         for pdf_element in pdf_documents:
             try:
                 pdf_name = pdf_element.text
-                if SKIP_RE.search(pdf_name) and not KEEP_RE.search(pdf_name):
-                    continue
-                
+                if total_on_page > 1:
+                    if SKIP_RE.search(pdf_name):
+                        continue
+                    if CONTINGENT_SKIP_RE.search(pdf_name) and not KEEP_RE.search(pdf_name):
+                        continue
+
 
                 # TODO: can remove if not re-running old dates
                 if any(os.path.exists(os.path.join(d, pdf_name)) for d in check_dirs):
@@ -735,8 +749,10 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
         # Unprocessed (exception during process_facility left "facilities" key intact)
         if "facilities" in entry:
             return True
-        # Download was attempted but some PDFs timed out
-        return bool(entry.get("missed_pdfs"))
+        # Download was attempted (missed_pdfs key present), page found zero PDFs — likely didn't load
+        if "missed_pdfs" in entry and not entry.get("pdfs") and not entry.get("total_pdfs"):
+            return True
+        return False
 
     retry_count = 0
     try:
@@ -797,6 +813,13 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     # Detect NPDES signals for every PDF in pdfs/, then move NPDES-positive files to npdes/.
     pdf_files = [f for f in os.listdir(pdfs_path) if f.endswith(".pdf")]
 
+    single_pdf_files = {
+        pdf
+        for entry in facilities_by_place.values()
+        for pdf in entry.get("pdfs", [])
+        if len(entry.get("pdfs", [])) == 1
+    }
+
     for filename in pdf_files:
         pdf_signals[filename] = detect_npdes(os.path.join(pdfs_path, filename))
 
@@ -806,6 +829,10 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
         if matched_type:
             os.rename(src, os.path.join(npdes_path, filename))
             print(f"{matched_type} detected: {filename}")
+            npdes_pdfs.add(filename)
+        elif filename in single_pdf_files:
+            os.rename(src, os.path.join(npdes_path, filename))
+            print(f"single PDF, kept: {filename}")
             npdes_pdfs.add(filename)
         else:
             non_npdes_pdfs.add(filename)

@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import re
+import subprocess
 from pathlib import Path
 
 import pandas as pd
@@ -115,6 +116,20 @@ def parse_args():
             "Server-side/model limits may still apply."
         ),
     )
+    parser.add_argument(
+        "--web_search",
+        action="store_true",
+        help=(
+            "Use Claude Code CLI (claude -p) with WebSearch/WebFetch tools instead of the "
+            "Stanford proxy. Tracks cost_usd instead of token counts."
+        ),
+    )
+    parser.add_argument(
+        "--max_facilities",
+        type=int,
+        default=None,
+        help="Limit number of facilities processed (useful for testing).",
+    )
     return parser.parse_args()
 
 
@@ -151,9 +166,89 @@ def resolve_method_paths(args):
 
     prompt_path = Path(args.system_prompt_path or method_paths["prompt_path"])
     examples_dir = Path(args.icl_examples_dir or method_paths["examples_dir"])
-    output_dir = Path(args.output_dir or method_paths["output_dir"])
+
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+    elif getattr(args, "web_search", False):
+        output_dir = Path(method_paths["output_dir"] + "-web")
+    else:
+        output_dir = Path(method_paths["output_dir"])
 
     return method_paths, reference_path, prompt_path, examples_dir, output_dir
+
+
+_WEB_SYSTEM_SUFFIX = """
+For each extracted item, set the Source field:
+- "permit_text": evidence is only in the permit extract
+- "web_search": evidence found via web search
+- "both": evidence supported by both sources
+
+For items with Source "web_search" or "both", also set the Website field to the URL or website name where you found the information.
+If from multiple sites, pick the most relevant one. Set Website to null if the source is only the permit text.
+
+Search the web for additional information about this facility when the permit text is unclear or incomplete.
+"""
+
+
+def chat_completion_web(
+    model: str,
+    system_message: str,
+    user_message: str,
+    schema: dict,
+) -> tuple:
+    """Call claude CLI with WebSearch/WebFetch. Returns (parsed_json, cost_usd)."""
+    cmd = [
+        "claude", "-p", user_message,
+        "--system-prompt", system_message,
+        "--allowedTools", "WebSearch,WebFetch",
+        "--json-schema", json.dumps(schema),
+        "--output-format", "json",
+        "--model", model,
+        "--no-session-persistence",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    if result.returncode != 0:
+        raise RuntimeError(f"CLI failed: {result.stderr[:200]}")
+    if not result.stdout.strip():
+        raise RuntimeError("empty output from CLI")
+    return _parse_claude_json(result.stdout, schema)
+
+
+def _parse_claude_json(stdout: str, schema: dict) -> tuple:
+    """Parse JSON result from claude CLI output, handling multiple objects and markdown wrapping."""
+    output = None
+    decoder = json.JSONDecoder()
+    idx = 0
+    while idx < len(stdout):
+        try:
+            obj, end_idx = decoder.raw_decode(stdout, idx)
+            if isinstance(obj, dict) and obj.get("type") == "result":
+                output = obj
+                break
+            idx = end_idx
+            while idx < len(stdout) and stdout[idx].isspace():
+                idx += 1
+        except json.JSONDecodeError:
+            break
+    if not output:
+        raise RuntimeError("No result found in CLI output")
+    if output.get("is_error"):
+        raise RuntimeError(f"API error: {output.get('api_error_status')}")
+    raw = output["result"]
+    if isinstance(raw, dict):
+        parsed = raw
+    elif isinstance(raw, str) and raw.strip().startswith("{"):
+        parsed = json.loads(raw.strip())
+    else:
+        # Extract JSON from markdown wrapper or empty result
+        if not raw or not raw.strip():
+            raise RuntimeError("Model returned empty result (possibly hit timeout during web search)")
+        import re
+        match = re.search(r'\{.*\}', str(raw), re.DOTALL)
+        if not match:
+            raise RuntimeError(f"No JSON found in result: {str(raw)[:100]}")
+        parsed = json.loads(match.group())
+    return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
 if __name__ == "__main__":
@@ -208,9 +303,12 @@ if __name__ == "__main__":
         examples_dir=str(examples_dir),
     )
     system_prompt_template = prompt_path.read_text(encoding="utf-8")
-    example_schema = None if args.skip_schema_validation else build_example_schema(args.method)
+    example_schema = None if args.skip_schema_validation else build_example_schema(args.method, web=args.web_search)
 
     facilities_source_df = pd.read_csv(args.facilities_information, dtype=str).fillna('')
+
+    if args.max_facilities is not None:
+        jobs = jobs[:args.max_facilities]
 
     for row_idx, txt_path_candidate, txt_file, facility_name in jobs:
         print("#" * 80)
@@ -232,6 +330,10 @@ if __name__ == "__main__":
             )
             continue
 
+        txt_stem = txt_path.stem
+        extraction_file_name = f"{txt_stem}_{slugify(facility_name)}.json"
+        output_json_path = output_dir / extraction_file_name
+
         system_msg = render_system_message(
             template_text=system_prompt_template,
             facility_name=facility_name,
@@ -239,37 +341,55 @@ if __name__ == "__main__":
             prompt_examples=prompt_examples,
             reference_placeholder=method_paths["reference_placeholder"],
         )
+        if args.web_search:
+            system_msg = system_msg + _WEB_SYSTEM_SUFFIX
 
         user_msg = f"""Find all the treatment processes explicitely used in the {facility_name} facility. Here is the permit extract:
         {permit_extract}
         """
+        if args.web_search:
+            user_msg = (
+                f"Search the web for information about {facility_name} wastewater treatment "
+                f"facility to supplement the permit extract below.\n\n"
+                + user_msg
+                + "\n\nIMPORTANT: Your entire response must be ONLY a valid JSON object matching the schema. No other text, no explanation, no markdown."
+            )
 
         try:
-            result = chat_completion_json(
-                model=args.model,
-                system_message=system_msg,
-                user_message=user_msg,
-                temperature=0.0,
-                max_tokens=None if args.no_token_limit else 10000,
-                max_completion_tokens=None if args.no_token_limit else 20000,
-                schema=example_schema,
-            )
-            parsed, completion_token, prompt_token, total_token, reasoning_tokens = result
-            print("Parsed JSON result:")
-            print(json.dumps(parsed, indent=2, ensure_ascii=False))
+            if args.web_search:
+                parsed, cost_usd = chat_completion_web(
+                    model=args.model,
+                    system_message=system_msg,
+                    user_message=user_msg,
+                    schema=example_schema,
+                )
+                completion_token = prompt_token = total_token = reasoning_tokens = 0
+                print("Parsed JSON result:")
+                print(json.dumps(parsed, indent=2, ensure_ascii=False))
+                print(f"Cost: ${cost_usd:.6f}")
+            else:
+                result = chat_completion_json(
+                    model=args.model,
+                    system_message=system_msg,
+                    user_message=user_msg,
+                    temperature=0.0,
+                    max_tokens=None if args.no_token_limit else 10000,
+                    max_completion_tokens=None if args.no_token_limit else 20000,
+                    schema=example_schema,
+                )
+                parsed, completion_token, prompt_token, total_token, reasoning_tokens = result
+                cost_usd = None
+                print("Parsed JSON result:")
+                print(json.dumps(parsed, indent=2, ensure_ascii=False))
+                print(
+                    f"Token usage: completion={completion_token}, prompt={prompt_token}, "
+                    f"total={total_token}, reasoning={reasoning_tokens}"
+                )
 
-            # Output JSON file named as {txt_filename}_{facility_name}.json
-            txt_stem = txt_path.stem
-            extraction_file_name = f"{txt_stem}_{slugify(facility_name)}.json"
-            output_json_path = output_dir / extraction_file_name
             with open(output_json_path, "w", encoding="utf-8") as output_file:
                 json.dump(parsed, output_file, ensure_ascii=False, indent=2)
 
             print(f"Saved {output_json_path}")
-            print(
-                f"Token usage: completion={completion_token}, prompt={prompt_token}, "
-                f"total={total_token}, reasoning={reasoning_tokens}"
-            )
 
             token_usage_rows.append(
                 {
@@ -280,6 +400,7 @@ if __name__ == "__main__":
                     "prompt_token": prompt_token,
                     "total_token": total_token,
                     "reasoning_token": reasoning_tokens,
+                    "cost_usd": cost_usd,
                 }
             )
 
@@ -303,6 +424,7 @@ if __name__ == "__main__":
             "prompt_token",
             "total_token",
             "reasoning_token",
+            "cost_usd",
         ],
     )
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
@@ -313,3 +435,18 @@ if __name__ == "__main__":
     manifest_csv_path = output_dir / "facility_extraction_manifest.csv"
     manifest_df.to_csv(manifest_csv_path, index=False)
     print(f"Saved facility manifest CSV: {manifest_csv_path}")
+
+# python npdes_permits/step3_llm_extraction_new.py \
+#   --method ontology-based \
+#   --model claude-sonnet-4-5 \
+#   --web_search \
+#   --facilities_information npdes_permits/data/model_comparison_facilities.csv \
+#   --output_dir npdes_permits/output/llm_model_comparison/ontology-based_claude-sonnet-web
+
+
+# python npdes_permits/step3_llm_extraction_new.py \
+#   --method list-based \
+#   --model claude-sonnet-4-5 \
+#   --web_search \
+#   --facilities_information npdes_permits/data/model_comparison_facilities.csv \
+#   --output_dir npdes_permits/output/llm_model_comparison/list-based_claude-sonnet-web

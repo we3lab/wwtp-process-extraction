@@ -15,7 +15,7 @@ GITHUB_BASE = (
 )
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
 
 DATE_STR = "2026-4-26"
 
@@ -35,25 +35,19 @@ for top_cat, cat_val in keywords.items():
         leaves.append((name, details, group_id, top_cat))
 columns = [name for name, _, _, _ in leaves]
 group_to_columns = {}
-top_category_to_columns = {}
 column_priority = {}
-column_global_priority = {}
 column_exclude_if_any = {}
-column_secondary_categories = {}
 column_trigger_clauses = {}
-for name, _, group_id, top_category in leaves:
+top_category_to_columns, column_secondary_categories, column_global_priority = \
+    build_secondary_category_lookup(keywords)
+for name, _, group_id, _ in leaves:
     if group_id:
         group_to_columns.setdefault(group_id, []).append(name)
-    top_category_to_columns.setdefault(top_category, []).append(name)
 for name, details, _, _ in leaves:
     column_priority[name] = details.get("priority", 1)
-    column_global_priority[name] = details.get("global_priority", 1)
     exclude_tokens = details.get("exclude_if_any", [])
     if exclude_tokens and isinstance(exclude_tokens, list):
         column_exclude_if_any[name] = exclude_tokens
-    secondary_categories = details.get("secondary_category", [])
-    if secondary_categories and isinstance(secondary_categories, list):
-        column_secondary_categories[name] = secondary_categories
     trigger = details.get("ontology_triggers")
     if trigger:
         column_trigger_clauses[name] = [trigger] if isinstance(trigger[0], str) else trigger
@@ -407,55 +401,24 @@ for filename in os.listdir(input_dir):
                 if column_global_priority.get(col, 1) > best_global_priority:
                     item_result[col] = ""
 
-        # secondary_category backfill (best effort): if a triggered process requests
-        # one or more secondary categories, try to mark at least one process from
-        # each requested category using ontology trigger matching on the same item.
-        present_cols = [c for c, value in item_result.items() if value == "PRESENT"]
-        for source_col in present_cols:
-            for secondary_category in column_secondary_categories.get(source_col, []):
-                secondary_cols = top_category_to_columns.get(secondary_category, [])
-                if not secondary_cols:
-                    continue
-                if any(item_result.get(c) == "PRESENT" for c in secondary_cols):
-                    continue
+        # secondary_category backfill (best effort): ontology trigger matching first,
+        # then unspecified-first fallback via shared helper.
+        def _ontology_resolve(source_col, sec_cat, sec_cols):
+            matching = [
+                c for c in sec_cols
+                if column_trigger_clauses.get(c) and any(
+                    all(matches_item(token, components) for token in clause)
+                    for clause in column_trigger_clauses[c]
+                )
+            ]
+            if matching:
+                return min(matching, key=lambda c: (column_priority.get(c, 1), column_global_priority.get(c, 1), c))
+            return None
 
-                matching_secondary_cols = []
-                for candidate_col in secondary_cols:
-                    clauses = column_trigger_clauses.get(candidate_col)
-                    if not clauses:
-                        continue
-                    if any(
-                        all(matches_item(token, components) for token in clause)
-                        for clause in clauses
-                    ):
-                        matching_secondary_cols.append(candidate_col)
-
-                if not matching_secondary_cols:
-                    fallback_secondary_cols = [c for c in secondary_cols if c in item_result]
-                    if not fallback_secondary_cols:
-                        continue
-                    unspecified_fallback = [
-                        c for c in fallback_secondary_cols if "Unspecified" in c
-                    ]
-                    candidate_pool = unspecified_fallback or fallback_secondary_cols
-                    chosen_col = min(
-                        candidate_pool,
-                        key=lambda c: (
-                            column_priority.get(c, 1),
-                            column_global_priority.get(c, 1),
-                            c,
-                        ),
-                    )
-                else:
-                    chosen_col = min(
-                        matching_secondary_cols,
-                        key=lambda c: (
-                            column_priority.get(c, 1),
-                            column_global_priority.get(c, 1),
-                            c,
-                        ),
-                    )
-                item_result[chosen_col] = "PRESENT"
+        apply_secondary_category_backfill(
+            item_result, column_secondary_categories, top_category_to_columns,
+            column_global_priority, column_priority, ontology_resolve_fn=_ontology_resolve,
+        )
 
         triggered = sorted(col for col, v in item_result.items() if v == "PRESENT")
         if item_idx < len(output_json_data["items"]) and isinstance(

@@ -1,11 +1,12 @@
 import os
+import re
 import csv
 import json
 import pandas as pd
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from helpers.utils import extract_leaves, collapse_facility_processes, PRESENT_STATUSES
-from helpers.npdes_text_extraction import extract_permit_sections
+from helpers.utils import extract_leaves, collapse_facility_processes, PRESENT_STATUSES, build_secondary_category_lookup, apply_secondary_category_backfill
+from helpers.npdes_text_extraction import extract_permit_sections, WASTEWATER_VOCAB_RE, SEP
 
 DATE_FOLDER = "2026-4-26"
 
@@ -94,7 +95,7 @@ def main():
     headers = [
         "Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"
     ]
-    leaves = extract_leaves(keywords, ignore_disposal=True)
+    leaves = [(name, details, group) for name, details, group in extract_leaves(keywords, ignore_disposal=True)]
     all_keys = [name for name, _, _ in leaves]
     group_to_columns = {}
     column_priority = {}
@@ -102,6 +103,8 @@ def main():
         if group_id:
             group_to_columns.setdefault(group_id, []).append(name)
         column_priority[name] = details.get("priority", 1) if isinstance(details, dict) else 1
+    top_category_to_columns, column_secondary_categories, column_global_priority = \
+        build_secondary_category_lookup(keywords)
 
     # Add one column for each treatment process
     headers.extend(name for name, _, _ in leaves)
@@ -118,9 +121,31 @@ def main():
         for pdf_file, result in executor.map(_extract_one, args):
             extractions[pdf_file] = result
 
-    for pdf_file, extraction_result in extractions.items():
-        if extraction_result is None:
-            print(f"Skipping {pdf_file} - extraction failed")
+    _septic_re = re.compile(r"septic|leach.?field|drainfield", re.IGNORECASE)
+    _page_marker_re = re.compile(r"===PAGE \d+===")
+    septic_pdfs, unreadable_pdfs = [], []
+
+    def _flag(pdf_file, lst):
+        cache = Path(directory) / "text" / f"{Path(pdf_file).stem}.txt"
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(SEP, encoding="utf-8")
+        lst.append(pdf_file)
+        pdf_cache[pdf_file] = None
+
+    for pdf_file, r in extractions.items():
+        if r is None:
+            pdf_cache[pdf_file] = None
+            continue
+        txt = r.get("txt_section", "")
+        full_text = r.get("full_text", "")
+        check_text = txt or full_text
+        if not txt and len(_page_marker_re.sub("", full_text).strip()) < 100:
+            _flag(pdf_file, unreadable_pdfs)
+            continue
+        if len(WASTEWATER_VOCAB_RE.findall(txt)) <= 1 and _septic_re.search(check_text):
+            _flag(pdf_file, septic_pdfs)
+            continue
+        if not txt:
             pdf_cache[pdf_file] = None
             continue
 
@@ -131,13 +156,16 @@ def main():
             if not isinstance(processes, dict):
                 continue
             proc_dict = {category: processes} if "alt_names" in processes else processes
-            txt_sources = [(extraction_result["txt_section"], present_results)]
-            if extraction_result["txt_changes"]:
-                txt_sources.append((extraction_result["txt_changes"], future_results))
-            for txt, results in txt_sources:
-                search_processes_in_text(txt, proc_dict, results, None)
+            txt_sources = [(txt, present_results)]
+            if r["txt_changes"]:
+                txt_sources.append((r["txt_changes"], future_results))
+            for t, results in txt_sources:
+                search_processes_in_text(t, proc_dict, results, None)
 
         pdf_cache[pdf_file] = (present_results, future_results)
+
+    print(f"\nNon-machine-readable PDFs ({len(unreadable_pdfs)}):")
+    print(f"\nSeptic/leachfield PDFs ({len(septic_pdfs)}):")
 
     # Write one output row per facility (shared PDFs reuse cached results)
     for i in range(len(pdfs)):
@@ -184,6 +212,11 @@ def main():
                 if col != winner:
                     row_status[col] = "0"
 
+        apply_secondary_category_backfill(
+            row_status, column_secondary_categories, top_category_to_columns,
+            column_global_priority, column_priority,
+        )
+
         data_row = row_meta + [row_status[key] for key in all_keys]
 
         upi.writerow(data_row)
@@ -229,16 +262,9 @@ def main():
     reg_measures = (
         site_data.groupby("Reg_Measure_ID")["Total_PDFs_Available"].max().reset_index()
     )
-    print("\nPDFs available per permit (CIWQS):")
-    print(reg_measures.sort_values("Total_PDFs_Available", ascending=False).head(10))
     total_available = int(reg_measures["Total_PDFs_Available"].fillna(0).sum())
     print(f"Total permits: {len(reg_measures)}")
     print(f"Total PDFs available across permits: {total_available}")
-
-
-    print(f"\n{'='*80}")
-    print(f"Processing complete! Results saved to: {file}")
-    print(f"{'='*80}")
 
 
 if __name__ == "__main__":

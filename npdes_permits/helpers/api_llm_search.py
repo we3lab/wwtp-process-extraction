@@ -160,8 +160,41 @@ def init_unit_process_list_from_json(keywords_json_path: str, output_txt_path: s
     return output_path
 
 
-def build_example_schema(method: str) -> Dict[str, Any]:
+_SOURCE_FIELD = {
+    "type": "string",
+    "enum": ["permit_text", "web_search", "both"],
+}
+
+_WEBSITE_FIELD = {
+    "type": ["string", "null"],
+    "description": "Website or URL source if Source includes web_search",
+}
+
+
+def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
     if method == "list-based":
+        props = {
+            "Process": {
+                "type": "array",
+                "items": {"type": "string"},
+                "minItems": 1,
+            },
+            "Implementation": {
+                "type": "string",
+                "enum": ["present", "planned", "past"],
+            },
+            "Location": {
+                "type": ["string", "null"],
+                "enum": ["on-site", "off-site", None],
+            },
+            "Score": {"type": "number", "minimum": 0, "maximum": 1},
+            "Sentence": {"type": "string"},
+        }
+        required = ["Process", "Implementation", "Location", "Score", "Sentence"]
+        if web:
+            props["Source"] = _SOURCE_FIELD
+            props["Website"] = _WEBSITE_FIELD
+            required.append("Source")
         return {
             "type": "object",
             "properties": {
@@ -169,30 +202,8 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "properties": {
-                            "Process": {
-                                "type": "array",
-                                "items": {"type": "string"},
-                                "minItems": 1,
-                            },
-                            "Implementation": {
-                                "type": "string",
-                                "enum": ["present", "planned", "past"],
-                            },
-                            "Location": {
-                                "type": ["string", "null"],
-                                "enum": ["on-site", "off-site", None],
-                            },
-                            "Score": {"type": "number", "minimum": 0, "maximum": 1},
-                            "Sentence": {"type": "string"},
-                        },
-                        "required": [
-                            "Process",
-                            "Implementation",
-                            "Location",
-                            "Score",
-                            "Sentence",
-                        ],
+                        "properties": props,
+                        "required": required,
                         "additionalProperties": False,
                     },
                 }
@@ -201,6 +212,55 @@ def build_example_schema(method: str) -> Dict[str, Any]:
             "additionalProperties": False,
         }
 
+    props = {
+        "Equipment": {"type": ["string", "null"]},
+        "Process": {
+            "anyOf": [
+                {"type": "null"},
+                {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 1,
+                },
+            ]
+        },
+        "Role": {
+            "anyOf": [
+                {"type": "null"},
+                {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            ]
+        },
+        "Substance": {
+            "anyOf": [
+                {"type": "null"},
+                {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            ]
+        },
+        "Implementation": {
+            "type": "string",
+            "enum": ["present", "planned", "past"],
+        },
+        "Location": {
+            "type": ["string", "null"],
+            "enum": ["on-site", "off-site", None],
+        },
+        "Score": {"type": "number", "minimum": 0, "maximum": 1},
+        "Sentence": {"type": "string"},
+    }
+    required = [
+        "Equipment", "Process", "Role", "Substance",
+        "Implementation", "Location", "Score", "Sentence",
+    ]
+    if web:
+        props["Source"] = _SOURCE_FIELD
+        props["Website"] = _WEBSITE_FIELD
+        required.append("Source")
     return {
         "type": "object",
         "properties": {
@@ -208,57 +268,8 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {
-                        "Equipment": {"type": ["string", "null"]},
-                        "Process": {
-                            "anyOf": [
-                                {"type": "null"},
-                                {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                    "minItems": 1,
-                                },
-                            ]
-                        },
-                        "Role": {
-                            "anyOf": [
-                                {"type": "null"},
-                                {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                },
-                            ]
-                        },
-                        "Substance": {
-                            "anyOf": [
-                                {"type": "null"},
-                                {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                },
-                            ]
-                        },
-                        "Implementation": {
-                            "type": "string",
-                            "enum": ["present", "planned", "past"],
-                        },
-                        "Location": {
-                            "type": ["string", "null"],
-                            "enum": ["on-site", "off-site", None],
-                        },
-                        "Score": {"type": "number", "minimum": 0, "maximum": 1},
-                        "Sentence": {"type": "string"},
-                    },
-                    "required": [
-                        "Equipment",
-                        "Process",
-                        "Role",
-                        "Substance",
-                        "Implementation",
-                        "Location",
-                        "Score",
-                        "Sentence",
-                    ],
+                    "properties": props,
+                    "required": required,
                     "not": {
                         "properties": {
                             "Equipment": {"type": "null"},

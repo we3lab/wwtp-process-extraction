@@ -140,19 +140,19 @@ def main():
     ]
 
     common_facilities = set(ground_truth_df["Place ID"]) & set(npdes_text_df["Place ID"]) & set(cwns_mapping["Place ID"])
-    print(f"Facilities in all 3 sources (Train): {len(common_facilities)}")
-
     ground_truth_common = ground_truth_df[ground_truth_df["Place ID"].isin(common_facilities)].copy()
     text_common = npdes_text_df[npdes_text_df["Place ID"].isin(common_facilities)].copy()
-
     cwns_common, merged_mapping_cwns = build_cwns_facility_processes(
         ca_cwns_data, target_facilities=common_facilities
     )
-    n_with_cwns = int((merged_mapping_cwns["_cwns_merge"] == "both").sum())
-    print(
-        f"CIWQS mapping rows with CA CWNS survey attach: {n_with_cwns} / {len(merged_mapping_cwns)}"
-    )
 
+    # print facilities from the ground truth dataNOT in common_facilities
+    gt_not_common = set(ground_truth_df["Place ID"]) - common_facilities
+    if gt_not_common:
+        print(f"\nFacilities in Ground Truth but not in common set (N={len(gt_not_common)}):")
+        for pid in gt_not_common:
+            name = ground_truth_df.loc[ground_truth_df["Place ID"] == pid, "Facility Name"].iloc[0]
+            print(f"  {pid}: {name}")
     gt_fac, npdes_fac, cwns_fac = build_category_facility_sets(
         all_sheet_process_cols,
         ground_truth_common,
@@ -162,13 +162,6 @@ def main():
     )
 
     gt_simple_rows = build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities)
-
-    gt_simple_df = (
-        pd.DataFrame(gt_simple_rows)
-        .sort_values("GroundTruth", ascending=False)
-        .reset_index(drop=True)
-    )
-    print(gt_simple_df.to_string(index=False))
 
     tick_fontsize = 12
     label_fontsize = 14
@@ -189,7 +182,9 @@ def main():
         denom = gt_plot_df[total_err_col].where(gt_plot_df[total_err_col] > 0, 1)
         gt_plot_df[f"{source}_Missed_Share"] = gt_plot_df[fn_col] / denom
         gt_plot_df[f"{source}_Extra_Share"] = gt_plot_df[fp_col] / denom
-    gt_plot_df = gt_plot_df.sort_values("NPDES_Error_Rate", ascending=True).reset_index(drop=True)
+    gt_plot_df = gt_plot_df.sort_values(
+        ["CWNS_Error_Rate", "NPDES_Error_Rate"], ascending=[True, True]
+    ).reset_index(drop=True)
 
     fig, ax = plt.subplots(figsize=(10, 5))
     w = 0.35
@@ -231,8 +226,8 @@ def main():
         {
             "header": "Error Composition",
             "items": [
-                ("  Extra (FP share)", {"facecolor": "gray", "alpha": 0.45}),
-                ("  Missed (FN share)", {"facecolor": "gray", "alpha": 0.9}),
+                ("  False Positive", {"facecolor": "gray", "alpha": 0.45}),
+                ("  False Negative", {"facecolor": "gray", "alpha": 0.9}),
             ],
         },
         {
@@ -254,9 +249,6 @@ def main():
     plt.subplots_adjust(bottom=0.35)
     save_path = f"{figures_dir}/figure_2_ground_truth_ground_truth_vs_npdes_text_vs_cwns.png"
     save_and_close(fig, save_path, dpi=300)
-    print(f"  Saved {os.path.basename(save_path)}")
-
-    print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (GroundTruth)")
 
     facility_rows = []
     for fac in sorted(common_facilities):
@@ -324,25 +316,16 @@ def main():
         f"npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv"
     )
     gt_comparison_df.to_csv(gt_comparison_csv, index=False)
-    print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
 
-    # Overall error vs ground truth — only for categories where GT > 0
     gt_rows_with_gt = [r for r in gt_simple_rows if r["GroundTruth"] > 0]
     if gt_rows_with_gt:
-        cwns_overall_error = sum(r["CWNS_FP"] + r["CWNS_FN"] for r in gt_rows_with_gt) / sum(
-            r["GroundTruth"] for r in gt_rows_with_gt
-        )
-        npdes_overall_error = sum(r["NPDES_FP"] + r["NPDES_FN"] for r in gt_rows_with_gt) / sum(
-            r["GroundTruth"] for r in gt_rows_with_gt
-        )
         gt_zero_cwns_fp = sum(r["CWNS_FP"] for r in gt_simple_rows if r["GroundTruth"] == 0)
         print(
-            f"\nOverall error vs Ground Truth (categories with GT>0): CWNS = {cwns_overall_error:.1%}, NPDES Text = {npdes_overall_error:.1%}"
+            f"\nAverage error vs Ground Truth (categories with GT>0): CWNS = {cwns_avg:.1f}%, NPDES Text = {npdes_avg:.1f}%"
         )
-        if gt_zero_cwns_fp:
-            print(
-                f"  (CWNS also has {gt_zero_cwns_fp} FP detections in categories with no ground truth annotations)"
-            )
+        for r in gt_simple_rows:
+            if r["GroundTruth"] == 0 and r["CWNS_FP"] > 0:
+                print(f"  CWNS FP in category '{r['Process_Category']}' with GT=0, FP={r['CWNS_FP']}")
 
 
 if __name__ == "__main__":

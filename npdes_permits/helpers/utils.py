@@ -81,6 +81,72 @@ def get_leaf_names(cat_name, cat_val):
     return [name for name, _, _ in extract_leaves(cat_val)]
 
 
+def get_unspecified_leaf_names(keywords_dict) -> frozenset:
+    """Return leaf names that are catch-all 'Unspecified X' entries (priority == 1000)."""
+    return frozenset(
+        name
+        for name, details, _ in extract_leaves(keywords_dict, ignore_disposal=False)
+        if str(name).lower().startswith("unspecified")
+        and isinstance(details, dict)
+        and details.get("priority") == 1000
+    )
+
+
+def build_secondary_category_lookup(keywords_dict):
+    """Return (top_category_to_columns, column_secondary_categories, column_global_priority)."""
+    top_category_to_columns = {}
+    column_secondary_categories = {}
+    column_global_priority = {}
+    for top_cat, cat_val in keywords_dict.items():
+        for name, details, _ in extract_leaves({top_cat: cat_val}, ignore_disposal=False):
+            top_category_to_columns.setdefault(top_cat, []).append(name)
+            if isinstance(details, dict):
+                column_global_priority[name] = details.get("global_priority", 1)
+                sc = details.get("secondary_category", [])
+                if sc and isinstance(sc, list):
+                    column_secondary_categories[name] = sc
+    return top_category_to_columns, column_secondary_categories, column_global_priority
+
+
+def apply_secondary_category_backfill(
+    status_dict,
+    column_secondary_categories,
+    top_category_to_columns,
+    column_global_priority,
+    column_priority,
+    ontology_resolve_fn=None,
+):
+    """Backfill secondary categories: if a PRESENT process requests a secondary category
+    that has no PRESENT process, mark the best fallback (unspecified-first) as PRESENT.
+
+    ontology_resolve_fn(source_col, sec_cat, sec_cols) -> str | None: optional hook for
+    ontology-based selection (used by step4). Returns the chosen column name, or None to
+    fall back to unspecified-first heuristic.
+    """
+    present_cols = [c for c, v in status_dict.items() if v in PRESENT_STATUSES]
+    for source_col in present_cols:
+        for sec_cat in column_secondary_categories.get(source_col, []):
+            sec_cols = top_category_to_columns.get(sec_cat, [])
+            if not sec_cols or any(status_dict.get(c) in PRESENT_STATUSES for c in sec_cols):
+                continue
+            available = [c for c in sec_cols if c in status_dict]
+            if not available:
+                continue
+            chosen = ontology_resolve_fn(source_col, sec_cat, sec_cols) if ontology_resolve_fn else None
+            if chosen is None:
+                # Prefer the category-level catch-all (e.g., "Unspecified Filtration")
+                # before nested catch-alls (e.g., "Unspecified FFR").
+                target_unspecified = f"Unspecified {sec_cat}".strip().lower()
+                exact_unspecified = [
+                    c for c in available
+                    if str(c).strip().lower() == target_unspecified
+                ]
+                unspecified = [c for c in available if "Unspecified" in c]
+                pool = exact_unspecified or unspecified or available
+                chosen = min(pool, key=lambda c: (column_priority.get(c, 1), column_global_priority.get(c, 1), c))
+            status_dict[chosen] = "PRESENT"
+
+
 def get_werf_codes_for_cwns_process(cwns_process_name):
     """for future mapping back to El Abbadi codes. Not directly used in this codebase"""
     el_abbadi_dir = os.path.join(os.path.dirname(__file__), "data", "el_abbadi", "input")

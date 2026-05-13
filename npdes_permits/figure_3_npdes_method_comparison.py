@@ -15,13 +15,12 @@ from helpers.utils import (
     is_present,
     PRESENT_STATUSES,
     get_leaf_names,
-    extract_leaves,
     merge_column_statuses,
+    get_unspecified_leaf_names,
 )
 from helpers.plotting import (
     COLORS,
     HATCH_PATTERNS,
-    draw_above_below_zero_bar,
     make_grouped_legend,
     save_and_close,
     set_thick_spines,
@@ -106,15 +105,30 @@ def create_method_deviation_plot(
             (-w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
             (+w, row["KW_FP"], row["KW_FN"], COLORS["npdes_kw"]),
         ]:
-            draw_above_below_zero_bar(
-                ax,
-                idx + x_off,
-                w * 2,
-                fp,
-                fn,
-                color,
-                below_hatch=HATCH_PATTERNS["FUTURE"],
-            )
+            x = idx + x_off
+            width = w * 2
+            if fp:
+                ax.bar(
+                    x,
+                    fp,
+                    width,
+                    bottom=0,
+                    color=color,
+                    edgecolor="black",
+                    linewidth=1.2,
+                )
+            if fn:
+                y = -fn
+                ax.bar(
+                    x,
+                    y,
+                    width,
+                    bottom=0,
+                    color=color,
+                    hatch=HATCH_PATTERNS["FUTURE"],
+                    edgecolor="black",
+                    linewidth=1.2,
+                )
 
     ax.axhline(0, color="black", linewidth=0.8)
     ax.set_xticks(range(len(df)))
@@ -332,11 +346,16 @@ print(
 figures_dir = f"npdes_permits/output/{DATE_FOLDER}/figures"
 os.makedirs(figures_dir, exist_ok=True)
 
+excluded_unspecified = get_unspecified_leaf_names(unitprocess_keywords)
+
 for category in categories_to_plot:
     print(f"\nProcessing category: {category}")
     safe_category = category.replace("/", "_").replace(os.sep, "_")
 
-    process_names = get_leaf_names(category, unitprocess_keywords[category])
+    process_names = [
+        p for p in get_leaf_names(category, unitprocess_keywords[category])
+        if p not in excluded_unspecified
+    ]
 
     # Method vs manual reading: deviation bars (FP above zero, FN below)
     create_method_deviation_plot(
@@ -354,13 +373,6 @@ for category in categories_to_plot:
 all_process_list = [
     p for cat in categories_to_plot for p in get_leaf_names(cat, unitprocess_keywords[cat])
 ]
-excluded_unspecified = {
-    name
-    for name, details, _ in extract_leaves(unitprocess_keywords, ignore_disposal=False)
-    if str(name).lower().startswith("unspecified")
-    and isinstance(details, dict)
-    and details.get("priority") == 1000
-}
 unit_process_list = [p for p in all_process_list if p not in excluded_unspecified]
 metrics_frames = []
 facility_metric_rows = []
@@ -448,6 +460,9 @@ violin_path = f"{final_dir}/figure_3_npdes_method_comparison_metrics_violin.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
 draw_split_violin(ax_top, unit_process_metrics_df, "A.")
 draw_split_violin(ax_bottom, category_metrics_df, "B.")
+# subplot titles
+ax_top.set_title("Unit Process-Level Metrics")
+ax_bottom.set_title("Category-Level Metrics")
 fig.tight_layout(h_pad=2.0)
 save_and_close(fig, violin_path, dpi=300)
 print(f"Saved {os.path.basename(violin_path)}")

@@ -6,7 +6,7 @@ import pandas as pd
 import os
 # WE3Lab additions
 import json
-from helpers.utils import extract_leaves
+from helpers.utils import extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, PRESENT_STATUSES
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -128,6 +128,9 @@ with open('data/unitprocess_keywords.json', 'r') as f:
 
 leaves = extract_leaves(unitprocess_keywords, ignore_disposal=False)
 all_keys = [name for name, _, _ in leaves]
+column_priority = {name: details.get("priority", 1) for name, details, _ in leaves if isinstance(details, dict)}
+top_category_to_columns, column_secondary_categories, column_global_priority = \
+    build_secondary_category_lookup(unitprocess_keywords)
 
 cwns_to_taxonomy = {}
 for process_name, details, _ in leaves:
@@ -273,6 +276,15 @@ if missing_ids:
         ignore_index=True,
     )
     print(f"Added {len(placeholder_rows)} CA CWNS placeholder rows")
+
+proc_cols_backfill = [c for c in ca_consolidated.columns if c in set(all_keys)]
+for idx in ca_consolidated.index:
+    status_dict = ca_consolidated.loc[idx, proc_cols_backfill].to_dict()
+    apply_secondary_category_backfill(
+        status_dict, column_secondary_categories, top_category_to_columns,
+        column_global_priority, column_priority,
+    )
+    ca_consolidated.loc[idx, proc_cols_backfill] = pd.Series(status_dict)
 
 ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_processes_by_facility.csv"), index=False)
 print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")

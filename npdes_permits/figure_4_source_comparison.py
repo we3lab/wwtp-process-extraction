@@ -28,7 +28,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
-from helpers.utils import get_leaf_names, PRESENT_STATUSES
+from helpers.utils import get_leaf_names, PRESENT_STATUSES, get_unspecified_leaf_names
 from helpers.utils import (
     cwns_mapping,
     no_cwns_pids,
@@ -41,7 +41,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 DATE_FOLDER = "2026-4-26"
 DATA_DIR = f"npdes_permits/output/{DATE_FOLDER}"
 OUTPUT_DIR = f"npdes_permits/output/{DATE_FOLDER}/figures"
-MIN_COUNT = 10  # drop bar groups where both sources are below this threshold
+MIN_COUNT = 20  # drop bar groups where both sources are below this threshold
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -228,7 +228,7 @@ def build_sorted_plot_items(json_cats, keywords, cwns_df, llm_df):
     for cat_name in json_cats:
         if cat_name not in keywords:
             continue
-        leaves = get_leaf_names(cat_name, keywords[cat_name])
+        leaves = [l for l in get_leaf_names(cat_name, keywords[cat_name]) if l not in excluded_unspecified]
         for leaf in leaves:
             items.append({"label": leaf, "cols": [leaf], "cat": cat_name})
             labels.append(leaf)
@@ -261,7 +261,9 @@ def build_sorted_plot_items(json_cats, keywords, cwns_df, llm_df):
 
 with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
     keywords = json.load(f)
- 
+
+excluded_unspecified = get_unspecified_leaf_names(keywords)
+
 all_leaf_processes = {
     leaf
     for cat_name, cat_val in keywords.items()
@@ -367,7 +369,6 @@ llm_common_facilities, kw_common_facilities = [set(df["Place ID"]) for df in [ll
 
 # ── 1. Per-treatment-stage plots ──────────────────────────────────────────────
 
-print("\nGenerating per-treatment-stage plots …")
 bar_w = 0.35
 status_order = ["PRESENT", "PAST", "FUTURE", "OFFSITE"]
 stack_order = [(status, HATCH_PATTERNS.get(status, "")) for status in status_order]
@@ -476,10 +477,7 @@ for group_title, json_cats in PLOT_GROUPS.items():
 # One bar group per top-level JSON category. Stacks sum status counts over all
 # leaves in that category (same rule as combined treatment-stage bars).
 
-print("\nGenerating major-categories plots …")
-
 for comparison_type in ["llm", "kw"]:
-    print(f"\n  Generating {comparison_type.upper()} major-categories plot…")
     include_kw = comparison_type == "kw"
     common_facilities = llm_common_facilities if not include_kw else kw_common_facilities & llm_common_facilities
     cat_labels, all_cwns, all_llm, all_kw = build_major_category_sources(common_facilities, include_kw=include_kw)

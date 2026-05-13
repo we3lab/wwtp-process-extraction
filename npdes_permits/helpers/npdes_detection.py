@@ -16,9 +16,9 @@ RULES = {
         "max_pages": 5,
     },
     "WDR": {
-        "patterns": ["waste discharge requirements"],
+        "patterns": ["waste discharge requirements", "wdrs", "water recycling requirements", "information sheet"],
         "detect_npdes_pattern": True,
-        "max_pages": 2,
+        "max_pages": 5,
     },
 }
 

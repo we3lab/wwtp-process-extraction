@@ -135,11 +135,11 @@ def resolve_identity(filename):
         pdf_stem, fac_part = m.group(1), m.group(2)
         if pdf_stem.lower().endswith(".pdf"):
             pdf_stem = pdf_stem[:-4]
-        info = pdf_map.get(_norm_pdf(pdf_stem))
+        # Try fac_part first — it disambiguates multi-facility PDFs that share the same PDF stem.
+        info = facility_name_map.get(_norm_fac(fac_part))
         if info:
             return info
-        # PDF stem didn't match — try matching the facility name part instead.
-        info = facility_name_map.get(_norm_fac(fac_part))
+        info = pdf_map.get(_norm_pdf(pdf_stem))
         if info:
             return info
 

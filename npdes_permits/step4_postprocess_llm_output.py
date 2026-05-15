@@ -26,6 +26,9 @@ site_data_csv = Path(f"npdes_permits/output/{DATE_STR}/site_data.csv")
 output_json_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_postprocess_ontology")
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
+MODEL_COMPARISON_DIR = Path("npdes_permits/output/llm_model_comparison")
+WORKBOOK_PATH = MODEL_COMPARISON_DIR / "model_perfomrance_5_test.xlsx"
+
 with open("npdes_permits/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
 
@@ -73,6 +76,13 @@ for name, details, group_id, _ in leaves:
             multi_rules.append((name, rule, group_id))
 multi_rules.sort(key=lambda r: r[1]["priority"])
 
+# Pre-group multi rules once; applied per-item below.
+multi_rules_by_group = {}
+for col, rule, group_id in multi_rules:
+    if not group_id:
+        continue
+    multi_rules_by_group.setdefault(group_id, []).append((col, rule))
+
 # Load ontology from GitHub
 for filename in [
     "ontology.ttl",
@@ -90,13 +100,7 @@ site_df = pd.read_csv(site_data_csv, dtype=str).fillna("")
 
 
 def _norm_pdf(s):
-    """Normalize a PDF stem for lookup: lowercase, spaces → underscores."""
     return s.lower().replace(" ", "_")
-
-
-def _norm_fac(s):
-    """Normalize a facility name for lookup: lowercase, spaces/slashes/hyphens → underscores."""
-    return re.sub(r"[\s/\-]+", "_", s.lower()).strip("_")
 
 
 def _row_info(row):
@@ -114,54 +118,20 @@ pdf_map = {
     _norm_pdf(row["PDF_File"].replace(".pdf", "")): _row_info(row)
     for _, row in site_df.iterrows()
 }
-facility_name_map = {
-    _norm_fac(row["Facility Name"]): _row_info(row)
-    for _, row in site_df.iterrows()
-}
-
-
-def resolve_identity(filename):
-    stem = Path(filename).stem
-
-    # Primary: {pdf_stem}__N__{facility_name} pattern — extract each part explicitly.
-    m = re.match(r"^(.+)__\d+__(.+)$", stem)
-    if m:
-        pdf_stem, fac_part = m.group(1), m.group(2)
-        if pdf_stem.lower().endswith(".pdf"):
-            pdf_stem = pdf_stem[:-4]
-        info = pdf_map.get(_norm_pdf(pdf_stem))
-        if info:
-            return info
-        # PDF stem didn't match — try matching the facility name part instead.
-        info = facility_name_map.get(_norm_fac(fac_part))
-        if info:
-            return info
-
-    # Fallback: files named {pdf_stem}_{facility_name} with no __N__ separator.
-    # Try progressively shorter underscore-delimited prefixes (longest first)
-    # so the most specific PDF-stem match wins.
-    norm_stem = _norm_pdf(stem)
-    if norm_stem.endswith(".pdf"):
-        norm_stem = norm_stem[:-4]
-    parts = norm_stem.split("_")
-    for i in range(len(parts), 0, -1):
-        candidate = "_".join(parts[:i])
-        if candidate in pdf_map:
-            return pdf_map[candidate]
-
-    return {}
-
-
-results = []
-unmatched_files = []
 
 
 def normalize_records(json_data):
     if not isinstance(json_data, dict):
         return []
-    items = json_data.get("items")
-    if isinstance(items, list):
-        return items
+    # Handle {"items": [...]} and {"result": {"items": [...]}}
+    for key in ("items", "result"):
+        val = json_data.get(key)
+        if isinstance(val, list):
+            return val
+        if isinstance(val, dict):
+            inner = val.get("items")
+            if isinstance(inner, list):
+                return inner
     return []
 
 
@@ -185,7 +155,6 @@ def normalize_values(value):
 
 
 def apply_implementation(existing, impl_value, location=None):
-    """Normalize impl+location to canonical status and merge with existing facility-level status."""
     text = str(impl_value or "").strip().lower().replace("-", "_")
     is_offsite = False
 
@@ -211,7 +180,7 @@ def normalize_component_name(component_type, name):
         return ""
     prefix = f"{component_type}-"
     if text.startswith(prefix):
-        return text[len(prefix) :]
+        return text[len(prefix):]
     return text
 
 
@@ -243,18 +212,25 @@ def ontology_labels(component_type, name, include_descendants=False):
     return labels
 
 
-for filename in os.listdir(input_dir):
-    if not filename.endswith(".json"):
-        continue
-    with open(input_dir / filename) as f:
-        json_data = json.load(f)
+def matches_item(item, components):
+    for comp_type in components:
+        prefix = f"{comp_type}-"
+        if item.startswith(prefix):
+            return normalize_component_name(comp_type, item) in components[comp_type]
+    if item in components.get("Substance", set()):
+        return True
+    return normalize_component_name("Substance", item) in components.get("Substance", set())
 
+
+def process_json_to_unit_process_dict(json_data, output_json_path=None):
+    """Run ontology mapping on a single JSON extraction result. Returns {col: status} dict."""
     result = {col: "" for col in columns}
-
     records = normalize_records(json_data)
-    output_json_data = {
-        "items": [dict(item) if isinstance(item, dict) else item for item in records]
-    }
+    output_json_data = None
+    if output_json_path is not None:
+        output_json_data = {
+            "items": [dict(item) if isinstance(item, dict) else item for item in records]
+        }
 
     item_components = []
     for item_idx, item in enumerate(records):
@@ -287,25 +263,6 @@ for filename in os.listdir(input_dir):
 
         item_components.append((item_idx, components, item_role_counts, impl_value, impl_location))
 
-    # ontology_triggers: list = AND, list-of-lists = OR across clauses
-    # within sibling group, higher-priority fires first; skip lower-priority siblings
-    def matches_item(item, components):
-        for comp_type in components:
-            prefix = f"{comp_type}-"
-            if item.startswith(prefix):
-                return normalize_component_name(comp_type, item) in components[comp_type]
-        if item in components.get("Substance", set()):
-            return True
-        return normalize_component_name("Substance", item) in components.get("Substance", set())
-
-    # Pre-group multi rules once; applied per-item below.
-    multi_rules_by_group = {}
-    for col, rule, group_id in multi_rules:
-        if not group_id:
-            continue
-        multi_rules_by_group.setdefault(group_id, []).append((col, rule))
-
-    # Evaluate each item independently, then merge item-level positives into facility result.
     for item_idx, components, role_counts, impl_value, impl_location in item_components:
         item_result = {col: "" for col in columns}
 
@@ -371,7 +328,6 @@ for filename in os.listdir(input_dir):
                         item_result[sibling_col] = ""
                 item_result[match_col] = "PRESENT"
 
-        # Keep highest-priority sibling within this item only.
         for group_id, sibling_cols in group_to_columns.items():
             present_cols = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
             if len(present_cols) <= 1:
@@ -421,7 +377,7 @@ for filename in os.listdir(input_dir):
         )
 
         triggered = sorted(col for col, v in item_result.items() if v == "PRESENT")
-        if item_idx < len(output_json_data["items"]) and isinstance(
+        if output_json_data is not None and item_idx < len(output_json_data["items"]) and isinstance(
             output_json_data["items"][item_idx], dict
         ):
             output_json_data["items"][item_idx]["trigger_process"] = triggered
@@ -430,10 +386,62 @@ for filename in os.listdir(input_dir):
             if value == "PRESENT":
                 result[col] = apply_implementation(result.get(col, ""), impl_value, impl_location)
 
-    with open(output_json_dir / filename, "w") as f:
-        json.dump(output_json_data, f, indent=2)
+    if output_json_data is not None and output_json_path is not None:
+        with open(output_json_path, "w") as f:
+            json.dump(output_json_data, f, indent=2)
 
-    identity = resolve_identity(filename)
+    return result
+
+
+def process_list_based_json(json_data):
+    """Map list-based LLM output directly to unit process columns.
+
+    List-based items use Process names that are leaf keys from the unit process
+    list, so no ontology trigger resolution is needed. The JSON structure is also
+    nested differently: {"output": {"items": [...]}}.
+    """
+    result = {col: "" for col in columns}
+    if not isinstance(json_data, dict):
+        return result
+
+    # Flat list format (e.g. claude-haiku): {"array_of_strings": ["Process A", ...]}
+    if "array_of_strings" in json_data:
+        for proc in normalize_values(json_data["array_of_strings"]):
+            if proc in result:
+                result[proc] = "PRESENT"
+        return result
+
+    # Structured format: {"output": {"items": [{"Process": [...], "Implementation": ...}]}}
+    inner = json_data.get("output", json_data)
+    items = inner.get("items", []) if isinstance(inner, dict) else []
+    for item in items:
+        impl_value = get_field(item, "Implementation")
+        impl_location = get_field(item, "Location")
+        for proc in normalize_values(get_field(item, "Process")):
+            if proc in result:
+                result[proc] = apply_implementation(result.get(proc, ""), impl_value, impl_location)
+    return result
+
+
+# ── 2026-4-26 full dataset ────────────────────────────────────────────────────
+
+results = []
+unmatched_files = []
+
+for filename in os.listdir(input_dir):
+    if not filename.endswith(".json"):
+        continue
+    with open(input_dir / filename) as f:
+        json_data = json.load(f)
+
+    result = process_json_to_unit_process_dict(json_data, output_json_path=output_json_dir / filename)
+
+    identity = {}
+    norm_stem = _norm_pdf(Path(filename).stem)
+    for pdf_stem in sorted(pdf_map, key=len, reverse=True):
+        if norm_stem == pdf_stem or norm_stem.startswith(pdf_stem + "_"):
+            identity = pdf_map[pdf_stem]
+            break
     if not identity:
         unmatched_files.append(filename)
     result.update(identity)
@@ -460,3 +468,64 @@ if unmatched_files:
     print(f"\nNo facility match found in site_data.csv for {len(unmatched_files)} file(s):")
     for f in sorted(unmatched_files):
         print(f"  {f}")
+
+
+# ── Model comparison CSV ──────────────────────────────────────────────────────
+# Truth rows come from the Excel workbook (read-only); predictions are generated
+# fresh from all JSON dirs. Output is model_comparison_all.csv which table_1 loads.
+
+wb_df = pd.read_excel(WORKBOOK_PATH, dtype=str).fillna("")
+truth_rows = wb_df[wb_df["Method"] == "Truth"].copy()
+up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
+truth_pdf_stems = set(
+    pdf.replace(".pdf", "") for pdf in truth_rows["PDF_File"].dropna() if pdf
+)
+
+
+def resolve_pdf_file(json_stem, known_stems):
+    for known in sorted(known_stems, key=len, reverse=True):
+        if json_stem == known or json_stem.startswith(known + "_"):
+            return known + ".pdf"
+    return None
+
+
+prediction_rows = []
+for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
+    if not dir_path.is_dir():
+        continue
+    dir_name = dir_path.name
+    if dir_name.startswith("ontology-based_"):
+        method_label = "Ontology"
+        model_label = dir_name[len("ontology-based_"):]
+    elif dir_name.startswith("list-based_"):
+        method_label = "List"
+        model_label = dir_name[len("list-based_"):]
+    else:
+        continue
+
+    print(f"\nProcessing {dir_name} ({method_label} / {model_label})...")
+    for json_file in sorted(dir_path.glob("*.json")):
+        pdf_file = resolve_pdf_file(json_file.stem, truth_pdf_stems)
+        if not pdf_file:
+            print(f"  Could not match {json_file.name} to a known PDF stem, skipping")
+            continue
+
+        with open(json_file) as f:
+            json_data = json.load(f)
+
+        if method_label == "Ontology":
+            unit_process_result = process_json_to_unit_process_dict(json_data)
+        else:
+            unit_process_result = process_list_based_json(json_data)
+        row = {"Method": method_label, "Model": model_label, "PDF_File": pdf_file}
+        for col in up_columns:
+            val = unit_process_result.get(col, "")
+            row[col] = val if val else None
+        prediction_rows.append(row)
+        print(f"  Processed {json_file.name} → {pdf_file}")
+
+pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model", "PDF_File"] + up_columns)
+combined_df = pd.concat([truth_rows, pred_df], ignore_index=True)
+model_comparison_csv = MODEL_COMPARISON_DIR / "model_comparison_all.csv"
+combined_df.to_csv(model_comparison_csv, index=False)
+print(f"\nSaved {model_comparison_csv}")

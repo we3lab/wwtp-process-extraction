@@ -21,7 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException
-from helpers.npdes_detection import detect_npdes
+from helpers.npdes_detection import detect_npdes, length_of_pdf
 
 # Modified using Claude 4.5
 
@@ -69,7 +69,7 @@ SKIP_PHRASE = (
     "report|financial|response to|rate study|ratestudy|study|"
     "addendum|registration|adoption|"
     "letter|covltr|cover_l|cover l|volumetric|"
-    "form200|form 200"
+    "form200|form 200|management zone|management_zone"
 )  # skip if anywhere in filename
 SKIP_RE = re.compile(rf"^(?:{'|'.join(SKIP_BASE_KW)}){SEP}|{SEP}(?:{'|'.join(SKIP_BASE_KW)}){SEP}|{SKIP_PHRASE}", re.IGNORECASE)
 
@@ -803,8 +803,10 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     non_npdes_pdfs = set()
     # PDF to Reg MeasureGrouping
     pdf_to_groups, group_to_pdfs = {}, {}
+    group_to_rm_type = {}
     for place_id, entry in facilities_by_place.items():
         g = entry.get("reg_measure_id") or place_id
+        group_to_rm_type[g] = entry.get("reg_measure_type", "")
         for pdf in entry.get("pdfs", []):
             pdf_to_groups.setdefault(pdf, set()).add(g)
             group_to_pdfs.setdefault(g, set()).add(pdf)
@@ -826,11 +828,15 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     for filename in pdf_files:
         matched_type = pdf_signals[filename]
         src = os.path.join(pdfs_path, filename)
+        if matched_type in ("WDR", "NPDES"):
+            assoc_types = {group_to_rm_type.get(g, "") for g in pdf_to_groups.get(filename, set())}
+            if assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
+                matched_type = None  # general order for enrolled facilities, not facility-specific
         if matched_type:
             os.rename(src, os.path.join(npdes_path, filename))
             print(f"{matched_type} detected: {filename}")
             npdes_pdfs.add(filename)
-        elif filename in single_pdf_files:
+        elif filename in single_pdf_files and length_of_pdf(src) >= 3:
             os.rename(src, os.path.join(npdes_path, filename))
             print(f"single PDF, kept: {filename}")
             npdes_pdfs.add(filename)
@@ -850,7 +856,7 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
     # all_ca_npdes.csv (same key as excel dedupe; consistent with WDID+FACILITY in step2).
     csv_path = os.path.join(full_path, "all_ca_npdes.csv")
     xls_path = os.path.join(full_path, "pdfs", "Regualted_Facility_Report_Detail.xls")
-    meta_keys = ("Agency", "Region", "Major/Minor", "Order_No", "NPDES No.", "WDID")
+    meta_keys = ("Agency", "Region", "Major/Minor", "Order_No", "NPDES No.")
     enrich = {}
     for enrich_path, sep in [(csv_path, ","), (xls_path, "\t")]:
         if not os.path.exists(enrich_path):
@@ -861,7 +867,7 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
         for _, row in df.iterrows():
             key = (str(row["WDID"]).strip(), str(row["Facility Name"]).strip())
             if key not in enrich:
-                cell = {col: row.get(col, "") for col in ("Agency", "Region", "Major/Minor", "WDID")}
+                cell = {col: row.get(col, "") for col in ("Agency", "Region", "Major/Minor")}
                 cell["Order_No"] = row.get("Order No.", "")
                 cell["NPDES No."] = row.get("NPDES No.", "")
                 enrich[key] = cell
@@ -914,6 +920,6 @@ if __name__ == "__main__":
     # Try a few times or wait a couple of hours to let CIWQS stabilize if needed
     # program_urls = run_ciwqs_search()
     # facilities = collect_facility_page_urls(program_urls)
-    facilities = download_facility_page_pdfs(facilities)
+    # facilities = download_facility_page_pdfs(facilities)
     npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs, pdf_signals)

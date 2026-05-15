@@ -1,7 +1,30 @@
 import re
+import io
 import unicodedata
 import PyPDF2
 from pdfminer.high_level import extract_text
+
+
+def package_sub_readers(reader):
+    """For a PDF Package/Portfolio, yield a PdfReader for each embedded PDF sub-file."""
+    try:
+        root = reader.trailer['/Root'].get_object()
+        names_obj = root['/Names'].get_object()
+        emb_node = names_obj.get('/EmbeddedFiles')
+        if not emb_node:
+            return
+        emb_names = emb_node.get_object()['/Names']
+        for i in range(0, len(emb_names), 2):
+            try:
+                fspec = emb_names[i + 1].get_object()
+                ef = fspec.get('/EF', {}).get_object()
+                fstream = ef.get('/F') or ef.get('/UF')
+                if fstream:
+                    yield PyPDF2.PdfReader(io.BytesIO(fstream.get_object().get_data()))
+            except Exception:
+                continue
+    except Exception:
+        return
 
 
 RULES = {
@@ -43,14 +66,17 @@ def extract_pdf_text(pdf_path: str, max_pages=5, lowercase=True) -> str:
         except Exception:
             raw = extract_text(pdf_path, maxpages=max_pages) or ""
         else:
+            root = reader.trailer['/Root'].get_object()
+            readers = list(package_sub_readers(reader)) if '/Collection' in root else [reader]
             parts = []
-            for i in range(min(len(reader.pages), max_pages)):
-                try:
-                    t = reader.pages[i].extract_text()
-                except Exception:
-                    t = None
-                if t:
-                    parts.append(t)
+            for r in readers:
+                for i in range(min(len(r.pages), max_pages)):
+                    try:
+                        t = r.pages[i].extract_text()
+                    except Exception:
+                        t = None
+                    if t:
+                        parts.append(t)
             raw = " ".join(parts)
 
     raw = unicodedata.normalize("NFKC", raw)
@@ -119,7 +145,11 @@ def detect_npdes_pattern(pdf_path: str, max_pages=5) -> bool:
 def length_of_pdf(pdf_path: str) -> int:
     try:
         with open(pdf_path, "rb") as f:
-            return len(PyPDF2.PdfReader(f).pages)
+            r = PyPDF2.PdfReader(f)
+            root = r.trailer['/Root'].get_object()
+            if '/Collection' in root:
+                return sum(len(sub.pages) for sub in package_sub_readers(r))
+            return len(r.pages)
     except Exception:
         return 0
 

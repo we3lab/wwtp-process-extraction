@@ -121,7 +121,6 @@ def main():
         for pdf_file, result in executor.map(_extract_one, args):
             extractions[pdf_file] = result
 
-    _septic_re = re.compile(r"septic|leach.?field|drainfield", re.IGNORECASE)
     _page_marker_re = re.compile(r"===PAGE \d+===")
     septic_pdfs, unreadable_pdfs = [], []
 
@@ -142,7 +141,7 @@ def main():
         if not txt and len(_page_marker_re.sub("", full_text).strip()) < 100:
             _flag(pdf_file, unreadable_pdfs)
             continue
-        if len(WASTEWATER_VOCAB_RE.findall(txt)) <= 1 and _septic_re.search(check_text):
+        if len(WASTEWATER_VOCAB_RE.findall(txt)) <= 1 and "septic" in check_text.lower():
             _flag(pdf_file, septic_pdfs)
             continue
         if not txt:

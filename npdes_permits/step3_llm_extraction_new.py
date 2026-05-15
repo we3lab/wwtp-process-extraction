@@ -279,12 +279,6 @@ if __name__ == "__main__":
             print("Unit process list initialization completed. Exiting.")
             raise SystemExit(0)
 
-    if not reference_path.exists() or not reference_path.is_file():
-        raise FileNotFoundError(f"Reference file not found: {reference_path}")
-
-    if not prompt_path.exists() or not prompt_path.is_file():
-        raise FileNotFoundError(f"System prompt template not found: {prompt_path}")
-
     os.makedirs(output_dir, exist_ok=True)
     token_usage_rows = []
     manifest_rows = []
@@ -333,6 +327,10 @@ if __name__ == "__main__":
         txt_stem = txt_path.stem
         extraction_file_name = f"{txt_stem}_{slugify(facility_name)}.json"
         output_json_path = output_dir / extraction_file_name
+
+        if output_json_path.exists():
+            print(f"Already processed: {output_json_path.name}, skipping.")
+            continue
 
         system_msg = render_system_message(
             template_text=system_prompt_template,

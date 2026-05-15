@@ -1,6 +1,7 @@
 from PyPDF2 import PdfReader
 from pathlib import Path
 from .utils import unitprocess_keywords, extract_leaves
+from .npdes_detection import package_sub_readers
 import re
 import os
 import csv
@@ -29,7 +30,17 @@ WASTEWATER_VOCAB_RE = re.compile(
     ),
     re.IGNORECASE,
 )
-VOCAB_WINDOW = 1500
+DESC_PRIORITY_RE = re.compile(
+    r"treatment process|consists of|septic|leach\s*field",
+    re.IGNORECASE,
+)
+_VOCAB_COMBINED_RE = re.compile(
+    WASTEWATER_VOCAB_RE.pattern + "|" + DESC_PRIORITY_RE.pattern,
+    re.IGNORECASE,
+)
+# short header lines in raw text: start with cap/digit, not a page marker, ≤80 chars
+RAW_HEADER_RE = re.compile(r"(?:^|\n)((?!===)[A-Z\d][^\n]{2,79})(?=\n)", re.MULTILINE)
+VOCAB_WINDOW = 5000
 LOOKBACK_PAGES = 2
 LOOKBACK_CHARS = 100
 
@@ -46,9 +57,19 @@ NOA_WDR_PHRASES = NPDES_PHRASES + [
     "wastewater reclamation plant",
     "wastewater system operation summary",
     "wastewater treatment facility and discharge",
+    "description of wastewater",
 ]
 BACKUP_PHRASES = ["consists of"]
-HISTORIC_EFF = ["Historic Eff", "Historical Eff", "Effluent Lim"]
+EFF_TERMS = [
+    "historic eff",
+    "historical eff",
+    "effluent lim",
+    "groundwater qual",
+    "effluent water qual",
+    "parameter unit",
+    "constituent unit",
+    "effluent character",
+    "discharge_points"]
 APPLICABLE_PLANS = [
     "applicable plans, policies and regulations",
     "applicable plans and policies",
@@ -64,9 +85,9 @@ NOA_WDR_SPEC = {
     "context": "full",
     "strip_toc": False,
     "desc_start": NOA_WDR_PHRASES,
-    "desc_end": OTHER_PLANNED_END + HISTORIC_EFF + ["following table"],
+    "desc_end": OTHER_PLANNED_END + EFF_TERMS + ["following table"],
     "changes_start": PLANNED_TEXT,
-    "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END,
+    "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS,
 }
 
 SPEC = {
@@ -74,9 +95,9 @@ SPEC = {
         "context": "attachment",
         "strip_toc": True,
         "desc_start": NPDES_PHRASES,
-        "desc_end": APPLICABLE_PLANS + OTHER_PLANNED_END + PLANNED_HEADER + ["Table F-2"] + HISTORIC_EFF,
+        "desc_end": APPLICABLE_PLANS + OTHER_PLANNED_END + PLANNED_HEADER + ["Table F-2"] + EFF_TERMS,
         "changes_start": PLANNED_TEXT,
-        "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END,
+        "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS,
     },
     "NOA": NOA_WDR_SPEC,
     "WDR": NOA_WDR_SPEC,
@@ -129,13 +150,26 @@ def find_attachment_f_page(raw):
     return None, None
 
 
-def find_best_desc_match(text, pattern, start=0):
-    best_pos, best_score = -1, 0
+def snap_to_header(raw_ctx, raw_pos):
+    """Slide raw_pos forward to the last header line before the first vocab hit from raw_pos."""
+    first_hit = _VOCAB_COMBINED_RE.search(raw_ctx, raw_pos)
+    if not first_hit:
+        return raw_pos
+    between = raw_ctx[raw_pos:first_hit.start()]
+    headers = list(RAW_HEADER_RE.finditer(between))
+    if not headers:
+        return raw_pos
+    return raw_pos + headers[-1].start(1)
+
+
+def find_best_desc_match(text, pattern, start=0, min_score=1):
+    best_pos, best_score = -1, min_score - 1
     for match in pattern.finditer(text, start):
         following = text[match.end():match.end() + 100]
         if BACK_REFERENCE_RE.search(following) or DOT_RE.search(following) or ATTACHMENT_LIST_RE.search(following):
             continue
-        score = len(WASTEWATER_VOCAB_RE.findall(text[match.start():match.start() + VOCAB_WINDOW]))
+        window = text[match.start():match.start() + VOCAB_WINDOW]
+        score = len(WASTEWATER_VOCAB_RE.findall(window)) + len(DESC_PRIORITY_RE.findall(window))
         if score > best_score:
             best_score, best_pos = score, match.start()
     return best_pos
@@ -154,9 +188,10 @@ def extract_section(raw, text, raw_start, start, attachment_page, spec, mode):
         return None
 
     # planned changes: independent of desc boundary
-    changes_pos, changes_phrase = first_match_after(text, spec["changes_start"], start + LOOKBACK_CHARS)
+    changes_re = phrase_pattern(spec["changes_start"])
+    changes_pos = find_best_desc_match(text, changes_re, start + LOOKBACK_CHARS, min_score=0)
     if changes_pos != -1:
-        raw_changes_start = find_phrase_in_raw(raw, changes_phrase, start=raw_start + LOOKBACK_CHARS)
+        raw_changes_start = find_best_desc_match(raw, changes_re, raw_start + LOOKBACK_CHARS, min_score=0)
         if raw_changes_start != -1:
             planned_pos = changes_pos
             changes_end_pos, changes_end_phrase = first_match_after(text, spec["changes_end"], changes_pos + LOOKBACK_CHARS)
@@ -194,10 +229,15 @@ def extract_from_pdf(pdf_path, mode):
     desc_re = phrase_pattern(spec["desc_start"])
 
     reader = PdfReader(pdf_path)
+    root = reader.trailer['/Root'].get_object()
+    readers = list(package_sub_readers(reader)) if '/Collection' in root else [reader]
     page_parts = []
-    for i, page in enumerate(reader.pages):
-        page_parts.append(f"===PAGE {i}===")
-        page_parts.append(page.extract_text() or "")
+    page_num = 0
+    for r in readers:
+        for page in r.pages:
+            page_parts.append(f"===PAGE {page_num}===")
+            page_parts.append(page.extract_text() or "")
+            page_num += 1
     raw = "\n".join(page_parts)
 
     contexts = []
@@ -230,6 +270,7 @@ def extract_from_pdf(pdf_path, mode):
         raw_start = find_best_desc_match(raw_ctx, desc_re)
         if raw_start == -1:
             continue
+        raw_start = snap_to_header(raw_ctx, raw_start)
         result = extract_section(raw_ctx, text, raw_start, start, attachment_page, spec, mode)
         if result:
             return result

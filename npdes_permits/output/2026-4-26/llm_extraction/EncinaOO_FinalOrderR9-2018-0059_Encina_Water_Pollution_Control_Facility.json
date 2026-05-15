@@ -37,12 +37,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "WastewaterTreatmentChemical"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
+      "Score": 0.9,
       "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of bar screening, peroxide addition, grit removal, primary sedimentation, biological treatment using activated sludge, and secondary clarification."
     },
     {
@@ -65,7 +63,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -90,11 +89,12 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
         "Posttreatment",
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -112,7 +112,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
@@ -124,10 +126,13 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "SolidsHandling",
         "Anaerobic",
-        "SolidsHandling"
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
@@ -142,7 +147,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
@@ -154,30 +161,15 @@
         "Drying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
       "Sentence": "Solids treatment unit operations and processes consist of dissolved air flotation (DAF) thickening, anaerobic digestion, mechanical dewatering (centrifuges), and heat drying."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to landfills in San Diego County, California ; trucked to land application sites in Yuma County, Arizona; or used in an application approved by the Executive Officer."
     },
     {
       "Equipment": null,
@@ -188,11 +180,27 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
+      "Score": 1,
+      "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to landfills in San Diego County, California ; trucked to land application sites in Yuma County, Arizona; or used in an application approved by the Executive Officer."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Score": 1,
       "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to landfills in San Diego County, California ; trucked to land application sites in Yuma County, Arizona; or used in an application approved by the Executive Officer."
     }
   ]

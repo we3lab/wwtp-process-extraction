@@ -41,19 +41,28 @@
       "global_priority": 1000
     }
   },
-  "Screening/Microstrainer": {
-    "alt_names": ["screening", "bar screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack"],
-    "alt_names_case_sensitive": [],
-    "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
-    "ontology_triggers": ["Process-Screening"],
-    "priority": 1
-  },
-  "Grit Removal": {
-    "alt_names": ["grit remov", "grit chamber", "vortex grit", "aerated grit", "grit collect"],
-    "alt_names_case_sensitive": [],
-    "cwns_processes": ["Dewatering assc. w/Grit Removal", "Grit Removal", "Aerated Grit Chambers"],
-    "ontology_triggers": ["Equipment-GritChamber"],
-    "priority": 1
+  "Headworks": {
+    "Screening/Microstrainer": {
+      "alt_names": ["screening", "bar screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
+      "ontology_triggers": ["Process-Screening"],
+      "priority": 1
+    },
+    "Grit Removal": {
+      "alt_names": ["grit remov", "grit chamber", "vortex grit", "aerated grit", "grit collect"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": ["Dewatering assc. w/Grit Removal", "Grit Removal", "Aerated Grit Chambers"],
+      "ontology_triggers": ["Equipment-GritChamber"],
+      "priority": 1
+    },
+    "Unspecified Headworks": {
+      "alt_names": ["headwork"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": [],
+      "ontology_triggers": [],
+      "priority": 1000
+    }
   },
   "Equalization": {
     "alt_names": ["equalization", "equalize the flows"],
@@ -222,7 +231,7 @@
         "secondary_category": ["Activated Sludge"]
       },
       "Denitrification": {
-        "alt_names": ["denitrif", "denitrification"],
+        "alt_names": ["denitrif", "denitrification", "anoxic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biological Denitrification", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification", "Denitrification Filter"],
         "ontology_triggers": ["Process-Denitrification"]
@@ -243,7 +252,7 @@
         "ontology_triggers": [["Role-NitrogenRemoval", "Equipment-IonExchangeMembrane"], ["Role-NutrientRemoval", "Process-Stripping"]]
       },
       "Chemical P Removal": {
-        "alt_names": ["chemical phosphorus removal", "phosphorus precipitation", "p precipitation", "ferric sulfate", "aluminum chlorohydrate", "struvite"],
+        "alt_names": ["chemical phosphorus", "phosphorus precipitation", "p precipitation", "ferric sulfate", "aluminum chlorohydrate", "struvite"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Phosphorus Removal, Chemical"],
         "ontology_triggers": ["Role-PhosphorusRemoval", "Process-ChemicalProcess"]
@@ -425,7 +434,7 @@
   },
   "Disinfection": {
     "Chlorination": {
-      "alt_names": ["chlorination", "chlorine disinfection", "disinfection chlorine", "sodium hypochlorite", "chloramine"],
+      "alt_names": ["chlorination", "chlorine disinfection", "disinfection chlorine", "sodium hypochlorite", "chloramine", "chlorine contact"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Disinfection, Chlorination", "Disinfection, Gaseous Chloride", "Disinfection, Liquid Chloride", "Disinfection, Breakpoint Chlorination", "Disinfection, Sodium Hypochlorite", "Disinfection Hypochlorite Bisulfite"],
       "ontology_triggers": ["Process-Chlorination"]

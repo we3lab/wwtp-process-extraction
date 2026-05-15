@@ -12,7 +12,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "Existing plant operations and processes include preliminary treatment with bar screening and grit removal",
+      "Sentence": "Existing plant operations and processes include preliminary treatment with bar screening and grit removal , primary treatment with primary sedimentation tanks , secondary treatment with trickling filters and secondary sedimentation , disinfection with sodium hypochlorite , and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -29,7 +29,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "Existing plant operations and processes include preliminary treatment with bar screening and grit removal",
+      "Sentence": "Existing plant operations and processes include preliminary treatment with bar screening and grit removal , primary treatment with primary sedimentation tanks , secondary treatment with trickling filters and secondary sedimentation , disinfection with sodium hypochlorite , and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -46,7 +46,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "Existing plant operations and processes include ... primary treatment with primary sedimentation tanks",
+      "Sentence": "Existing plant operations and processes include preliminary treatment with bar screening and grit removal , primary treatment with primary sedimentation tanks , secondary treatment with trickling filters and secondary sedimentation , disinfection with sodium hypochlorite , and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,7 +54,8 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -62,8 +63,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Existing plant operations and processes include ... secondary treatment with trickling filters and secondary sedimentation",
+      "Score": 0.95,
+      "Sentence": "Existing plant operations and processes include ... secondary treatment with trickling filters and secondary sedimentation ... The Discharger returned the trickling filter to service in March 2016 and updated its Standard Operating Procedures for chlorine contact channel cleaning to prevent solids carry-over into the final effluent.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -80,7 +81,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "Existing plant operations and processes include ... secondary treatment with trickling filters and secondary sedimentation",
+      "Sentence": "Existing plant operations and processes include ... secondary treatment with trickling filters and secondary sedimentation ...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -88,19 +89,18 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
-        "Posttreatment"
+        "Disinfection"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Existing plant operations and processes include ... disinfection with sodium hypochlorite",
+      "Score": 1,
+      "Sentence": "Existing plant operations and processes include ... disinfection with sodium hypochlorite , and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -110,46 +110,99 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Existing plant operations and processes include ... dechlorination with sodium bisulfite.",
+      "Score": 1,
+      "Sentence": "Existing plant operations and processes include ... disinfection with sodium hypochlorite , and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Score": 0.95,
+      "Sentence": "Solids and sludge from the Facility are sent to Oceanside Water Pollution Control Plant in San Francisco for treatment and disposal .",
+      "trigger_process": [
+        "Unspecified Disposal"
       ]
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "Planned Facility operations and processes are anticipated to include an equalization basin for storage of instantaneous peak flows;",
+      "Sentence": "Planned Facility operations and processes are anticipated to include an equalizatio n basin for storage of instantaneous peak flows; preliminary treatment, including screening and grit removal; secondary treatment by means of a membrane bioreactor (MBR), consisting of activated sludge biological process basins and submerged membrane filtr ation trains; and ultraviolet disinfection.",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "Screen",
       "Process": [
-        "ActivatedSludge",
-        "Biofiltration"
+        "Screening"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "Planned Facility operations and processes are anticipated to include ... secondary treatment by means of a membrane bioreactor (MBR), consisting of activated sludge biological process basins and submerged membrane filtration trains;",
+      "Sentence": "Planned Facility operations and processes are anticipated to include ... preliminary treatment, including screening and grit removal; ...",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "Planned Facility operations and processes are anticipated to include ... preliminary treatment, including screening and grit removal; ...",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Biofiltration",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "Planned Facility operations and processes are anticipated to include ... secondary treatment by means of a membrane bioreactor (MBR), consisting of activated sludge biological process basins and submerged membrane filtration trains; ...",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -157,12 +210,10 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "planned",
@@ -179,6 +230,7 @@
         "Chlorination"
       ],
       "Role": [
+        "Disinfection",
         "Posttreatment"
       ],
       "Substance": [
@@ -186,7 +238,7 @@
       ],
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 0.95,
       "Sentence": "Effluent recycled for use onsite or distributed to other users will be chlorinated.",
       "trigger_process": [
         "Chlorination"
@@ -194,7 +246,9 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Biofiltration"
+      ],
       "Role": [
         "Posttreatment"
       ],
@@ -204,24 +258,8 @@
       "Score": 0.95,
       "Sentence": "Effluent in excess of recycled water demands will not be chlorinated and will be pumped to a constructed wetland adjacent to the new treatment plant for polishing treatment.",
       "trigger_process": [
+        "Unspecified FFR",
         "Wetland"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids and sludge from the Facility are sent to Oceanside Water Pollution Control Plant in San Francisco for treatment and disposal.",
-      "trigger_process": [
-        "Unspecified Disposal"
       ]
     }
   ]

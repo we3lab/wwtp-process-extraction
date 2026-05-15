@@ -40,23 +40,21 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "The treatment process includes perforated plate screens, grit removal, aerated equalization basins, aeration basins, secondary clarification, tertiary treatment via cloth media disk filtration, chlorine gas disinfection, and dechlorination via sulfur dioxide or sodium bisulfite."
+      "Sentence": "The treatment process includes ... aerated equalization basins ..."
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The treatment process includes ... aeration basins, secondary clarification, tertiary treatment via cloth media disk filtration, chlorine gas disinfection, and dechlorination ..."
+      "Score": 0.95,
+      "Sentence": "The treatment process includes ... aeration basins, secondary clarification ..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -70,10 +68,10 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process includes ... aeration basins, secondary clarification, tertiary treatment via cloth media disk filtration, chlorine gas disinfection, and dechlorination ..."
+      "Sentence": "The treatment process includes ... aeration basins, secondary clarification, ..."
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltration",
       "Process": [
         "MediaFiltration"
       ],
@@ -89,7 +87,8 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
         "Posttreatment"
@@ -113,25 +112,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 0.9,
       "Sentence": "The treatment process includes ... dechlorination via sulfur dioxide or sodium bisulfite."
     },
     {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Flocculation"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Equalization"
       ],
-      "Substance": [
-        "Flocculant-Polymer"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "The solids handling process at the Facility includes polymer injection, thickening, and sludge dewatering via a screw press."
+      "Sentence": "When influent flows exceed 16 MGD, flows are routed to the Facility’s four equalization basins for temporary storage for later treatment."
     },
     {
       "Equipment": "Thickener",
@@ -164,6 +158,40 @@
     {
       "Equipment": null,
       "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "The solids handling process at the Facility includes polymer injection, thickening, and sludge dewatering via a screw press."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.7,
+      "Sentence": "The Discharger uses Metal Solve and Zeta Floc for zinc removal and it purchased new injection equipment for Zeta Floc and Metal Solve during the previous order term."
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "BiosolidsDisposal",
         "Landfill"
       ],
@@ -173,8 +201,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "All of the Facility’s sludge (approximately 22 wet tons per year in 2023) is hauled offsite for treatment and landfill disposal."
+      "Score": 0.95,
+      "Sentence": "All of the Facility’s sludge ... is hauled offsite for treatment and landfill disposal."
     },
     {
       "Equipment": "Pond",
@@ -185,45 +213,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 1,
       "Sentence": "The Discharger’s recycled water facilities include recycled water storage ponds and approximately 20 miles of pipeline for recycled water distribution."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Discharger is currently constructing its influent/effluent pumping and piping upgrade project, with planned completion in Fall 2027. The project includes the replacement and upgrade of seven influent and effluent pumps, and their associated piping and equipment."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination",
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "The Discharger also plans to complete plans for future dechlorination and disinfection practices due to its sulfur dioxide gas (dechlorinating chemical) supplier stopping its distribution to the Discharger during the previous order term."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Coagulation",
-        "Flocculation",
-        "ChemicalAddition"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Discharger uses Metal Solve and Zeta Floc for zinc removal and it purchased new injection equipment for Zeta Floc and Metal Solve during the previous order term."
     }
   ]
 }

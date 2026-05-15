@@ -6,7 +6,8 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -23,12 +24,13 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.97,
+      "Score": 1,
       "Sentence": "The primary treatment consists of screening, grit removal, primary sedimentation and flow equalization.",
       "trigger_process": [
         "Grit Removal"
@@ -45,8 +47,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.97,
-      "Sentence": "Ferrous chloride is injected into the primary sedimentation sludge to control hydrogen sulfide production and to aid in primary settling. Settled solids are removed from the primary clarifier for biosolids processing.",
+      "Score": 0.98,
+      "Sentence": "The primary treatment consists of screening, grit removal, primary sedimentation and flow equalization.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -55,7 +57,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -67,20 +70,43 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Reactor",
       "Process": [
-        "ChemicalAddition"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
-        "Primary"
+        "Aerobic",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.65,
-      "Sentence": "Ferrous chloride is injected into the primary sedimentation sludge to control hydrogen sulfide production and to aid in primary settling.",
+      "Score": 0.85,
+      "Sentence": "Biological treatment consists of bio-augmentation at a biologically activated reaeration (BAR) tank, feeding into two parallel anoxic tanks and four parallel aeration tanks for full nitrification and denitrification (NDN).",
       "trigger_process": [
-        "Unspecified Chemical Addition"
+        "Unspecified AS",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "Denitrification",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval",
+        "NutrientRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "Biological treatment consists of bio-augmentation at a biologically activated reaeration (BAR) tank, feeding into two parallel anoxic tanks and four parallel aeration tanks for full nitrification and denitrification (NDN).",
+      "trigger_process": [
+        "Denitrification"
       ]
     },
     {
@@ -88,56 +114,21 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "BiologicalProcess"
+        "Denitrification"
       ],
       "Role": [
-        "NutrientRemoval",
+        "Aerobic",
         "NitrogenRemoval",
-        "Aerobic"
+        "NutrientRemoval"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "bio-augmentation at a biologically activated reaeration (BAR) tank, feeding into two parallel anoxic tanks and four parallel aeration tanks for full nitrification and denitrification (NDN).",
-      "trigger_process": [
-        "Denitrification",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "BiologicalProcess"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.75,
-      "Sentence": "bio-augmentation at a biologically activated reaeration (BAR) tank, feeding into two parallel anoxic tanks and four parallel aeration tanks for full nitrification and denitrification (NDN).",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "Activated sludge and mixed liquor recycling is utilized to balance load demands within the system.",
+      "Sentence": "Biological treatment consists of bio-augmentation at a biologically activated reaeration (BAR) tank, feeding into two parallel anoxic tanks and four parallel aeration tanks for full nitrification and denitrification (NDN).",
       "trigger_process": [
-        "Unspecified AS"
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
@@ -182,21 +173,22 @@
       ],
       "Role": [
         "Tertiary",
-        "Posttreatment"
+        "Posttreatment",
+        "Disinfection"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.99,
+      "Score": 0.98,
       "Sentence": "The tertiary-treated effluent is disinfected using gaseous chlorine and ammonia to create chloramines with contact time through the chlorine contact chambers.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "DisinfectionUnit",
+      "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
@@ -223,7 +215,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.97,
       "Sentence": "The biosolids system consists of dissolved air flotation thickening, anaerobic digestion, and centrifuge dewatering.",
       "trigger_process": [
         "Flotation",
@@ -237,24 +229,24 @@
         "Digestion"
       ],
       "Role": [
+        "Anaerobic",
         "Stabilization",
-        "SolidsHandling",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.99,
       "Sentence": "Thickened primary and secondary sludge is sent to three anaerobic digesters operated in parallel for stabilization to achieve Class B biosolids.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -262,11 +254,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.98,
       "Sentence": "Anaerobically digested sludge is dewatered through one of two centrifuges to produce a cake of 18 to 23 percent solids.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering",
+        "Unspecified Filtration"
       ]
     },
     {
@@ -274,9 +267,7 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": [
-        "Stabilization"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -288,18 +279,59 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "BiologicallyActiveFiltration"
+      ],
       "Role": [
-        "Equalization"
+        "Tertiary",
+        "Posttreatment",
+        "NutrientRemoval"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Centrate flows can be equalized by entering the filtrate equalization tank prior to the BAR tank so that the BAR tank receives constant flow.",
+      "Score": 0.95,
+      "Sentence": "New BNR tanks, MBR, and UV will replace the secondary, tertiary, and chlorination systems currently used at the Ventura WRF.",
       "trigger_process": [
-        "Equalization"
+        "Biologically Active Filtration",
+        "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "New BNR tanks, MBR, and UV will replace the secondary, tertiary, and chlorination systems currently used at the Ventura WRF.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "off-site",
+      "Score": 0.9,
+      "Sentence": "Tertiary-treated wastewater from the Ventura WRF will be diverted to the AWPF for further treatment for indirect potable reuse.",
+      "trigger_process": [
+        "Reverse Osmosis"
       ]
     },
     {
@@ -313,63 +345,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
+      "Score": 0.93,
       "Sentence": "All the Class B anaerobically digested sludge is dewatered and sent to an offsite contracted composting facility.",
       "trigger_process": [
         "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.96,
-      "Sentence": "New BNR tanks, MBR, and UV will replace the secondary, tertiary, and chlorination systems currently used at the Ventura WRF.",
-      "trigger_process": [
-        "Membrane Bioreactor"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "New BNR tanks, MBR, and UV will replace the secondary, tertiary, and chlorination systems currently used at the Ventura WRF.",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "planned",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "This outfall will also discharge reverse osmosis concentrate from an AWPF that has not yet been constructed. Tertiary-treated wastewater from the Ventura WRF will be diverted to the AWPF for further treatment for indirect potable reuse.",
-      "trigger_process": [
-        "Reverse Osmosis"
       ]
     }
   ]

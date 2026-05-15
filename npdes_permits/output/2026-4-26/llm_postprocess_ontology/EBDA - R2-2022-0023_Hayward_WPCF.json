@@ -5,7 +5,9 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -20,7 +22,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -42,7 +46,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process consists of ... primary sedimentation, ...",
+      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -56,8 +60,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "The treatment process consists of ... flow equalization, ...",
+      "Score": 0.95,
+      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Equalization"
       ]
@@ -74,7 +78,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process consists of ... trickling filtration, ...",
+      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -93,7 +97,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process consists of ... activated sludge aeration, ...",
+      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -110,7 +114,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process consists of ... secondary clarification, ...",
+      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -120,14 +124,17 @@
       "Process": [
         "Chlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "The treatment process consists of ... chlorine disinfection.",
+      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -141,7 +148,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 1,
       "Sentence": "The plant also has 240 acres of out-of-service oxidation ponds that can be used for emergency storage (e.g., during peak wet weather).",
       "trigger_process": [
         "Unspecified Lagoon"
@@ -153,10 +160,13 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "SolidsHandling",
         "Anaerobic",
-        "SolidsHandling"
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
@@ -173,10 +183,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 1,
       "Sentence": "Sludge at the City of Hayward Water Pollution Control Facility is anaerobically digested, dewatered in dewatering beds, and air dried for up to two years.",
       "trigger_process": [
         "Mechanical Dewatering",
@@ -184,43 +196,48 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.95,
       "Sentence": "Sludge at the City of Hayward Water Pollution Control Facility is anaerobically digested, dewatered in dewatering beds, and air dried for up to two years.",
       "trigger_process": [
         "Drying",
-        "Evaporation Pond"
+        "Evaporation Pond",
+        "Mechanical Dewatering",
+        "Unspecified Filtration"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
-        "Landfill"
+        "BiosolidsDisposal"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Score": 1,
       "Sentence": "The City hauls dried biosolids to an authorized disposal site for use as alternative daily cover.",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Unspecified Disposal"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "NutrientRemoval"
@@ -228,11 +245,11 @@
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "The City of Hayward plans to replace its trickling filter with a biological nutrient removal system that will treat half of the plant\u2019s dry weather flow, ...",
+      "Score": 0.9,
+      "Sentence": "The City of Hayward plans to replace its trickling filter with a biological nutrient removal system that will treat half of the plant\u2019s dry weather flow, upgrade the main switchboard that powers the older features of the plant, and install a new final clarifier.",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified AS",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -247,7 +264,7 @@
       "Implementation": "planned",
       "Location": "on-site",
       "Score": 0.9,
-      "Sentence": "The City of Hayward plans to ... install a new final clarifier.",
+      "Sentence": "The City of Hayward plans to replace its trickling filter with a biological nutrient removal system that will treat half of the plant\u2019s dry weather flow, upgrade the main switchboard that powers the older features of the plant, and install a new final clarifier.",
       "trigger_process": [
         "Secondary Clarification"
       ]

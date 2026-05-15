@@ -79,13 +79,17 @@ APPLICABLE_PLANS = [
 ]
 PLANNED_HEADER = [". Planned Changes", ". Planned upgrades"]
 PLANNED_TEXT = ["planned changes", "planned upgrade"]
-OTHER_PLANNED_END = ["receiving water", "Attachment G", "hydrogeology"]
+OTHER_PLANNED_END = [
+    "receiving water",
+    "Attachment G",
+    "hydrogeology",
+    "or anticipated noncompliance"]
 
 NOA_WDR_SPEC = {
     "context": "full",
     "strip_toc": False,
     "desc_start": NOA_WDR_PHRASES,
-    "desc_end": OTHER_PLANNED_END + EFF_TERMS + ["following table"],
+    "desc_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS + ["following table"],
     "changes_start": PLANNED_TEXT,
     "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS,
 }
@@ -243,22 +247,16 @@ def extract_from_pdf(pdf_path, mode):
     contexts = []
     if spec["context"] == "attachment":
         att_pos, attachment_page = find_attachment_f_page(raw)
+        if att_pos is None and ATTACHMENT_F_RE.search(raw):
+            att_pos, attachment_page = 0, 0  # standalone Attachment F file
         if att_pos is not None:
             raw_att = raw[att_pos:]
-            if spec["strip_toc"]:
-                # find end of dotted TOC lines (may span many pages)
-                dot_hits = list(DOT_RE.finditer(raw_att.lower()[:20000]))
-                stripped = None
-                if len(dot_hits) >= 2:
-                    after_toc = raw_att[dot_hits[-1].end():]
-                    # sanity check: if we land on a page that still looks like tables, extend further
-                    if len(DOT_RE.findall(after_toc[:500])) == 0:
-                        stripped = after_toc
-                if stripped is None:
-                    # backup: find first narrative page after Attachment F header (no dots, has prose)
-                    j = raw_att.lower().find("attachment f", 1000)
-                    stripped = raw_att[j:] if j != -1 else raw_att
-                raw_att = stripped
+            if spec["strip_toc"] and att_pos > 0:
+                dot_hits = list(DOT_RE.finditer(raw_att[:20000]))
+                if len(dot_hits) >= 2 and not DOT_RE.search(raw_att[dot_hits[-1].end():dot_hits[-1].end() + 500]):
+                    raw_att = raw_att[dot_hits[-1].end():]
+                elif (j := raw_att.lower().find("attachment f", 1000)) != -1:
+                    raw_att = raw_att[j:]
             contexts.append((raw_att, normalize_text(raw_att), attachment_page))
     if spec["context"] == "full":
         contexts.append((raw, normalize_text(raw), None))
@@ -284,13 +282,7 @@ def extract_from_pdf(pdf_path, mode):
         raw_match = find_best_desc_match(raw_ctx, backup_re)
         if raw_match == -1:
             continue
-        # go back 3 newlines to include the section heading context
-        i, count = raw_match - 1, 0
-        while i >= 0 and count < 3:
-            if raw_ctx[i] == "\n":
-                count += 1
-            i -= 1
-        raw_start = i + 2
+        raw_start = snap_to_header(raw_ctx, raw_match)
         result = extract_section(raw_ctx, text, raw_start, start, attachment_page, spec, mode)
         if result:
             return result

@@ -13,7 +13,7 @@ DATE_FOLDER = "2026-4-26"
 def _extract_one(args):
     directory, pdf_file, j, total = args
     path = os.path.join(directory, pdf_file)
-    print(f"Processing {pdf_file} ({j+1}/{total})")
+    # print(f"Processing {pdf_file} ({j+1}/{total})")
     return pdf_file, extract_permit_sections(path, regenerate_text_excerpts=True)
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
@@ -122,13 +122,13 @@ def main():
             extractions[pdf_file] = result
 
     _page_marker_re = re.compile(r"===PAGE \d+===")
-    septic_pdfs, unreadable_pdfs = [], []
+    flag_counts = {"unreadable": 0, "septic": 0}
 
-    def _flag(pdf_file, lst):
+    def _flag(pdf_file, reason):
         cache = Path(directory) / "text" / f"{Path(pdf_file).stem}.txt"
         cache.parent.mkdir(parents=True, exist_ok=True)
         cache.write_text(SEP, encoding="utf-8")
-        lst.append(pdf_file)
+        flag_counts[reason] += 1
         pdf_cache[pdf_file] = None
 
     for pdf_file, r in extractions.items():
@@ -139,10 +139,10 @@ def main():
         full_text = r.get("full_text", "")
         check_text = txt or full_text
         if not txt and len(_page_marker_re.sub("", full_text).strip()) < 100:
-            _flag(pdf_file, unreadable_pdfs)
+            _flag(pdf_file, "unreadable")
             continue
         if len(WASTEWATER_VOCAB_RE.findall(txt)) <= 1 and "septic" in check_text.lower():
-            _flag(pdf_file, septic_pdfs)
+            _flag(pdf_file, "septic")
             continue
         if not txt:
             pdf_cache[pdf_file] = None
@@ -163,8 +163,8 @@ def main():
 
         pdf_cache[pdf_file] = (present_results, future_results)
 
-    print(f"\nNon-machine-readable PDFs ({len(unreadable_pdfs)}):")
-    print(f"\nSeptic/leachfield PDFs ({len(septic_pdfs)}):")
+    print(f"\nNon-machine-readable PDFs: {flag_counts['unreadable']}")
+    print(f"Septic/leachfield PDFs: {flag_counts['septic']}")
 
     # Write one output row per facility (shared PDFs reuse cached results)
     for i in range(len(pdfs)):

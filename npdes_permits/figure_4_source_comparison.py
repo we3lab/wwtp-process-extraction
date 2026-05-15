@@ -46,13 +46,7 @@ MIN_COUNT = 20  # drop bar groups where both sources are below this threshold
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 PLOT_GROUPS = {
-    "Primary Treatment": [
-        "Screening/Microstrainer",
-        "Comminution",
-        "Grit Removal",
-        "Equalization",
-        "Flotation",
-    ],
+    "Primary Treatment": ["Headworks", "Comminution", "Equalization", "Flotation"],
     "Clarification": ["Clarification"],
     "Secondary Treatment": ["Activated Sludge", "Lagoon"],
     "Nutrient Removal": ["Nutrient Removal"],
@@ -335,7 +329,9 @@ unmatched_df = pd.DataFrame({
 }).sort_values("has_kw_unit_process_data", ascending=True, key=lambda s: s.map({"yes": 0, "no": 1}))
 unmatched_df.to_csv(f"{DATA_DIR}/unmatched_kw_no_cwns.csv", index=False)
 print(f"  Unmatched KW/site_data (no CWNS): {len(unmatched_pids)} → unmatched_kw_no_cwns.csv")
-
+facility_names = unmatched_df['FACILITY_NAME'].tolist()
+# print plain text, comma-separated around strings
+print(', '.join(facility_names))
 
 # CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
 cwns_csv = Path("npdes_permits/output/cwns_processes_by_facility.csv")

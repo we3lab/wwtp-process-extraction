@@ -38,13 +38,15 @@
       "Role": [
         "Secondary",
         "NutrientRemoval",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.98,
-      "Sentence": "Treatment at the Saugus WRP consists of influent screening, primary sedimentation, activated sludge biological treatment with nitrification and denitrification, secondary sedimentation, dual media pressure filtration, disinfection (UV and/or chloramination) , and dechlorination as needed."
+      "Sentence": "Treatment at the Saugus WRP consists of ... activated sludge biological treatment with nitrification and denitrification ..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -57,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
+      "Score": 1,
       "Sentence": "Treatment at the Saugus WRP consists of influent screening, primary sedimentation, activated sludge biological treatment with nitrification and denitrification, secondary sedimentation, dual media pressure filtration, disinfection (UV and/or chloramination) , and dechlorination as needed."
     },
     {
@@ -72,7 +74,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "Treatment at the Saugus WRP consists of influent screening, primary sedimentation, activated sludge biological treatment with nitrification and denitrification, secondary sedimentation, dual media pressure filtration, disinfection (UV and/or chloramination) , and dechlorination as needed."
+      "Sentence": "Treatment at the Saugus WRP consists of ... dual media pressure filtration ..."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -80,13 +82,13 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Disinfection",
-        "Posttreatment"
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.99,
+      "Score": 1,
       "Sentence": "SCVSD installed the UV disinfection system at the Saugus WRP on July 20, 2021, in accordance with the milestones established in Time Schedule Order No. R4 -2019- 0056- A02, adopted by the Los Angeles Water Board on July 8, 2021."
     },
     {
@@ -95,8 +97,8 @@
         "Chlorination"
       ],
       "Role": [
-        "Disinfection",
-        "Posttreatment"
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -104,7 +106,7 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "Hypochlorite and ammonia are used to disinfect treated effluent at the Saugus WRP prior to discharging the effluent to the Santa Clara River. ... However, the chloramination disinfection system will be retained as a backup disinfection process."
+      "Sentence": "Disinfection (UV and/or chloramination). Hypochlorite and ammonia are used to disinfect treated effluent at the Saugus WRP prior to discharging the effluent to the Santa Clara River."
     },
     {
       "Equipment": null,
@@ -130,24 +132,25 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.96,
+      "Location": "on-site",
+      "Score": 0.95,
       "Sentence": "Waste activated sludge from both the Saugus and Valencia WRPs is thickened by dissolved air flotation."
     },
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
-        "Stabilization",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.96,
-      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application."
+      "Score": 0.9,
+      "Sentence": "Biosolids from both the Valencia and the Saugus WRPs are processed at the Valencia WRP and hauled offsite. Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting..."
     },
     {
       "Equipment": "DewateringUnit",
@@ -160,26 +163,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.96,
+      "Score": 0.9,
       "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application."
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Biosolids from both the Valencia and the Saugus WRPs are processed at the Valencia WRP and hauled offsite."
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "BiosolidsDisposal",
+        "LandApplication",
         "Landfill"
       ],
       "Role": [
@@ -188,51 +179,39 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.7,
+      "Score": 0.9,
       "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application."
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "The Permittee has constructed a biological nutrient removal system with a nitrogen denitrification process (NDN) in order to achieve compliance with the ammonia Basin Plan objectives. The system was completed and has been in operation since September 2003."
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.7,
-      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application."
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Denitrification"
-      ],
-      "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Permittee has constructed a biological nutrient removal system with a nitrogen denitrification process (NDN) in order to achieve compliance with the ammonia Basin Plan objectives. The system was completed and has been in operation since September 2003."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
         "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.75,
-      "Sentence": "Planned Changes SCVSD plans on meeting the TMDL- based chloride final effluent limitation by upgrading its disinfection system, designing, and constructing additional treatment equipment, in accordance with the deadlines established in TSO No. R4- 2019- 0056- A02. The UV technology will be designed to disinfect the treated effluent, lower the amounts of disinfection byproducts produced, as well as reduce chloride concentrations by approximately 7 mg/L."
+      "Score": 0.7,
+      "Sentence": "SCVSD plans on meeting the TMDL- based chloride final effluent limitation by upgrading its disinfection system, designing, and constructing additional treatment equipment, in accordance with the deadlines established in TSO No. R4- 2019- 0056- A02."
     }
   ]
 }

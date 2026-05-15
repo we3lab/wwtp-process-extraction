@@ -20,9 +20,10 @@ from helpers.api_llm_search import (
 
 TXT_DIR = "npdes_permits/output/2026-4-26/npdes/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
-DEFAULT_ONTOLOGY_PATH = "npdes_permits/data/llm_extraction/input/ontology.txt"
-DEFAULT_FACILITIES_INFO_PATH = "npdes_permits/output/2026-4-26/site_data.csv"
-DEFAULT_UNITPROCESS_KEYWORDS_JSON = "npdes_permits/data/unitprocess_keywords.json"
+ONTOLOGY_PATH = "npdes_permits/data/llm_extraction/input/ontology.txt"
+FACILITIES_INFO_PATH = "npdes_permits/output/2026-4-26/site_data.csv"
+UNITPROCESS_KEYWORDS_JSON = "npdes_permits/data/unitprocess_keywords.json"
+NUM_ICL_EXAMPLES = 1
 
 
 def parse_args():
@@ -34,16 +35,6 @@ def parse_args():
         choices=["ontology-based", "list-based"],
         default="ontology-based",
         help="Prompting/extraction method to use (default: ontology-based).",
-    )
-    parser.add_argument(
-        "--init_ontology",
-        action="store_true",
-        help="Refresh ontology text file from source ontology repository and exit.",
-    )
-    parser.add_argument(
-        "--init_unit_process_list",
-        action="store_true",
-        help="Initialize unit process list text from unitprocess_keywords.json and exit.",
     )
     parser.add_argument(
         "--model",
@@ -58,50 +49,11 @@ def parse_args():
     parser.add_argument(
         "--facilities_information",
         "--facilities_info_path",
-        default=DEFAULT_FACILITIES_INFO_PATH,
+        default=FACILITIES_INFO_PATH,
         help=(
             "Path to CSV with columns Facility Name and PDF_File. "
-            f"Each row is processed and saved separately, even when multiple facilities share the same PDF (default: {DEFAULT_FACILITIES_INFO_PATH})."
+            f"Each row is processed and saved separately, even when multiple facilities share the same PDF (default: {FACILITIES_INFO_PATH})."
         ),
-    )
-    parser.add_argument(
-        "--ontology_path",
-        default=DEFAULT_ONTOLOGY_PATH,
-        help=f"Path to ontology text file (default: {DEFAULT_ONTOLOGY_PATH}).",
-    )
-    parser.add_argument(
-        "--unitprocess_keywords_json",
-        default=DEFAULT_UNITPROCESS_KEYWORDS_JSON,
-        help=(
-            "Path to unitprocess_keywords.json used to initialize "
-            "the list-based unit process text file."
-        ),
-    )
-    parser.add_argument(
-        "--unit_process_list_path",
-        default=None,
-        help="Optional override path for list-based unit process text file.",
-    )
-    parser.add_argument(
-        "--system_prompt_path",
-        default=None,
-        help="Optional override path for system prompt template file.",
-    )
-    parser.add_argument(
-        "--icl_examples_dir",
-        default=None,
-        help="Optional override folder for ICL example files named exampleN.txt.",
-    )
-    parser.add_argument(
-        "--output_dir",
-        default=None,
-        help="Optional override output directory.",
-    )
-    parser.add_argument(
-        "--num_examples",
-        type=int,
-        default=1,
-        help="Number of in-context learning examples to include (default: 1).",
     )
     parser.add_argument(
         "--skip_schema_validation",
@@ -133,6 +85,22 @@ def parse_args():
     return parser.parse_args()
 
 
+def resolve_output_dir(method, model, web_search, txt_folder, facilities_information):
+    if "model_comparison" in str(facilities_information):
+        suffix = f"{method}_{model}" + ("-web" if web_search else "")
+        return Path("npdes_permits/output/llm_model_comparison") / suffix
+
+    # Derive date from txt_folder path (e.g. output/2026-4-26/npdes/text → 2026-4-26)
+    date_segment = next(
+        (p for p in Path(txt_folder).parts if re.match(r'\d{4}-\d{1,2}-\d{1,2}', p)),
+        None,
+    )
+    if date_segment:
+        return Path("npdes_permits/output") / date_segment / "llm_extraction"
+
+    return Path("npdes_permits/output/llm_extraction")
+
+
 def render_system_message(
     template_text: str,
     facility_name: str,
@@ -154,27 +122,6 @@ def slugify(text):
     slug = re.sub(r'[^A-Za-z0-9]+', '_', str(text or '').strip())
     slug = re.sub(r'_+', '_', slug).strip('_')
     return slug or 'facility'
-
-
-def resolve_method_paths(args):
-    method_paths = get_method_paths(args.method)
-
-    if args.method == "ontology-based":
-        reference_path = Path(args.ontology_path)
-    else:
-        reference_path = Path(args.unit_process_list_path or method_paths["reference_path"])
-
-    prompt_path = Path(args.system_prompt_path or method_paths["prompt_path"])
-    examples_dir = Path(args.icl_examples_dir or method_paths["examples_dir"])
-
-    if args.output_dir:
-        output_dir = Path(args.output_dir)
-    elif getattr(args, "web_search", False):
-        output_dir = Path(method_paths["output_dir"] + "-web")
-    else:
-        output_dir = Path(method_paths["output_dir"])
-
-    return method_paths, reference_path, prompt_path, examples_dir, output_dir
 
 
 _WEB_SYSTEM_SUFFIX = """
@@ -253,31 +200,30 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
 
 if __name__ == "__main__":
     args = parse_args()
-    method_paths, reference_path, prompt_path, examples_dir, output_dir = resolve_method_paths(args)
+    method_paths = get_method_paths(args.method)
+    reference_path = Path(method_paths["reference_path"])
+    prompt_path = Path(method_paths["prompt_path"])
+    examples_dir = Path(method_paths["examples_dir"])
+    output_dir = resolve_output_dir(
+        args.method, args.model, args.web_search, args.txt_folder, args.facilities_information
+    )
 
-    if args.init_ontology:
+    if args.method == "ontology-based":
         print("Initializing ontology from source repository...")
         ontology_to_txt()
         generated_path = Path(ONTOLOGY_GENERATED_PATH)
-        ontology_target = Path(args.ontology_path)
+        ontology_target = Path(ONTOLOGY_PATH)
         if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
             ontology_target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(generated_path, ontology_target)
             print(f"Copied generated ontology file to {ontology_target}")
-        print("Ontology initialization completed. Exiting without running LLM extraction.")
-        raise SystemExit(0)
 
-    if args.method == "list-based" and (
-        args.init_unit_process_list or not reference_path.exists()
-    ):
+    if args.method == "list-based":
         generated_list_path = init_unit_process_list_from_json(
-            keywords_json_path=args.unitprocess_keywords_json,
+            keywords_json_path=UNITPROCESS_KEYWORDS_JSON,
             output_txt_path=str(reference_path),
         )
         print(f"Initialized unit process list file: {generated_list_path}")
-        if args.init_unit_process_list:
-            print("Unit process list initialization completed. Exiting.")
-            raise SystemExit(0)
 
     os.makedirs(output_dir, exist_ok=True)
     token_usage_rows = []
@@ -293,7 +239,7 @@ if __name__ == "__main__":
 
     reference_text = reference_path.read_text(encoding="utf-8")
     prompt_examples = load_icl_examples(
-        num_examples=args.num_examples,
+        num_examples=NUM_ICL_EXAMPLES,
         examples_dir=str(examples_dir),
     )
     system_prompt_template = prompt_path.read_text(encoding="utf-8")
@@ -438,13 +384,10 @@ if __name__ == "__main__":
 #   --method ontology-based \
 #   --model claude-sonnet-4-5 \
 #   --web_search \
-#   --facilities_information npdes_permits/data/model_comparison_facilities.csv \
-#   --output_dir npdes_permits/output/llm_model_comparison/ontology-based_claude-sonnet-web
-
+#   --facilities_information npdes_permits/data/model_comparison_facilities.csv
 
 # python npdes_permits/step3_llm_extraction_new.py \
 #   --method list-based \
 #   --model claude-sonnet-4-5 \
 #   --web_search \
-#   --facilities_information npdes_permits/data/model_comparison_facilities.csv \
-#   --output_dir npdes_permits/output/llm_model_comparison/list-based_claude-sonnet-web
+#   --facilities_information npdes_permits/data/model_comparison_facilities.csv

@@ -43,7 +43,7 @@
   },
   "Headworks": {
     "Screening/Microstrainer": {
-      "alt_names": ["screening", "bar screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack"],
+      "alt_names": ["screening", "bar screen", "bar-screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack", "primary screen"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
       "ontology_triggers": ["Process-Screening"],
@@ -57,7 +57,7 @@
       "priority": 1
     },
     "Unspecified Headworks": {
-      "alt_names": ["headwork"],
+      "alt_names": ["headwork", "primary treat", "preliminary treat"],
       "alt_names_case_sensitive": [],
       "cwns_processes": [],
       "ontology_triggers": [],
@@ -110,13 +110,13 @@
       "ontology_triggers": ["Process-ActivatedSludge", "Role-StepFeed"]
     },
     "Nitrification": {
-      "alt_names": ["nitrif"],
+      "alt_names": [" nitrif"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Nitrification, Biological (Combined and BOD Reduction)", "Nitrification, Biological (Other)", "Nitrification, Biological (Separate Stage)"],
       "ontology_triggers": ["Process-Nitrification"]
     },
     "Unspecified AS": {
-      "alt_names": ["activated sludge", "aerated", "aeration", "secondary treatment"],
+      "alt_names": ["activated sludge", "aerated", "aeration", " oxic"],
       "alt_names_case_sensitive": ["CAS"],
       "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix"],
       "ontology_triggers_multi": {
@@ -231,10 +231,11 @@
         "secondary_category": ["Activated Sludge"]
       },
       "Denitrification": {
-        "alt_names": ["denitrif", "denitrification", "anoxic"],
+        "alt_names": ["denitrif", "anoxic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biological Denitrification", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification", "Denitrification Filter"],
-        "ontology_triggers": ["Process-Denitrification"]
+        "ontology_triggers": ["Process-Denitrification"],
+        "secondary_category": ["Activated Sludge"]
       },
       "Unspecified Nutrient Removal": {
         "alt_names": ["nutrient removal"],
@@ -528,7 +529,7 @@
         "priority": 1
       },
       "Unspecified Digestion": {
-        "alt_names": ["digestion", "digester"],
+        "alt_names": ["digestion", "digester", "digestor"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Digestion, Other"],
         "ontology_triggers": ["Process-Digestion"],
@@ -540,8 +541,7 @@
         "alt_names": ["mechanical dewatering", "belt press", "belt filter press", "rotary drum", "screw press"],
         "alt_names_case_sensitive": ["RDF"],
         "cwns_processes": ["Mechanical Dewatering", "Biosolids Mechanical Dewatering (Filter Press)", "Biosolids Mechanical Dewatering (Pressure Filter)", "Biosolids Mechanical Dewatering (Vacuum Filter)", "Biosolids Mechanical Dewatering (Other)"],
-        "ontology_triggers": ["Equipment-DewateringUnit"],
-        "secondary_category": ["Filtration"]
+        "ontology_triggers": ["Equipment-DewateringUnit"]
       },
       "Centrifuge": {
         "alt_names": ["centrifuge", "centrifugal dewatering"],
@@ -580,7 +580,7 @@
     },
     "Disposal": {
       "Land Application": {
-        "alt_names": ["land application", "land based", "land-based", "land treatment", "compost"],
+        "alt_names": ["applied to land", "land treatment", "compost", "spread"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Land Application (Spreading)", "Land Treatment", "Biosolids Composting, Other", "Biosolids Composting, In-Vessel", "Biosolids Composting, Window", "Land Application, Slow Rate, W/O Underdrain", "Land Application, Slow Rate, With Underdrain"],
         "ontology_triggers": ["Process-LandApplication"]
@@ -641,5 +641,11 @@
         "ontology_triggers": [["Equipment-HeatExchanger", "Role-SolidsHandling"], ["Equipment-HeatExchanger", "Process-BiosolidsDisposal"]]
       }
     }
+  },
+  "Septic Tank": {
+    "alt_names": ["septic", "imhoff"],
+    "alt_names_case_sensitive": [],
+    "cwns_processes": ["Septic Tank", "Imhoff Tank"],
+    "ontology_triggers": [["Equipment-SepticTank"], ["Equipment-ImhoffTank"]]
   }
 }

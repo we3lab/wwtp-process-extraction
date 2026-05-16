@@ -17,7 +17,7 @@ GITHUB_BASE = (
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
 
-DATE_STR = "2026-4-26"
+DATE_STR = "2026-5-15"
 
 input_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_extraction")
 output_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_pdf.csv")
@@ -114,10 +114,12 @@ def _row_info(row):
     }
 
 
-pdf_map = {
-    _norm_pdf(row["PDF_File"].replace(".pdf", "")): _row_info(row)
-    for _, row in site_df.iterrows()
-}
+pdf_map = {}
+for _, row in site_df.iterrows():
+    # Use Path.stem so double-extension files (*.pdf.pdf) map to the same stem
+    # the LLM JSON generator uses when naming output files.
+    key = _norm_pdf(Path(row["PDF_File"]).stem)
+    pdf_map.setdefault(key, []).append(_row_info(row))
 
 
 def normalize_records(json_data):
@@ -423,7 +425,7 @@ def process_list_based_json(json_data):
     return result
 
 
-# ── 2026-4-26 full dataset ────────────────────────────────────────────────────
+# ── full dataset ────────────────────────────────────────────────────
 
 results = []
 unmatched_files = []
@@ -440,7 +442,14 @@ for filename in os.listdir(input_dir):
     norm_stem = _norm_pdf(Path(filename).stem)
     for pdf_stem in sorted(pdf_map, key=len, reverse=True):
         if norm_stem == pdf_stem or norm_stem.startswith(pdf_stem + "_"):
-            identity = pdf_map[pdf_stem]
+            rows = pdf_map[pdf_stem]
+            if len(rows) == 1:
+                identity = rows[0]
+            else:
+                # multi-facility PDF: suffix is the Place ID
+                place_id_suffix = norm_stem[len(pdf_stem) + 1:]
+                matching = [r for r in rows if r["Place ID"] == place_id_suffix]
+                identity = matching[0] if matching else rows[0]
             break
     if not identity:
         unmatched_files.append(filename)

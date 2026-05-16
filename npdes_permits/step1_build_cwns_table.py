@@ -5,8 +5,7 @@
 import pandas as pd
 import os
 # WE3Lab additions
-import json
-from helpers.utils import extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, PRESENT_STATUSES
+from helpers.utils import extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -123,8 +122,6 @@ uplist_eicodes = uplist_recent.merge(up_eicodes[['FINAL_UNIT_PROCESS_NAME','WERF
 uplist_eicodes['2022_MIN_IND'] = uplist_eicodes['PRES_IND']
 
 # WE3LAB NEW ADDITIONS
-with open('data/unitprocess_keywords.json', 'r') as f:
-    unitprocess_keywords = json.load(f)
 
 leaves = extract_leaves(unitprocess_keywords, ignore_disposal=False)
 all_keys = [name for name, _, _ in leaves]

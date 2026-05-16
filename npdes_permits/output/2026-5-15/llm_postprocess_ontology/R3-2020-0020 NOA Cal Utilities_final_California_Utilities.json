@@ -1,0 +1,164 @@
+{
+  "items": [
+    {
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Two SBR tanks in parallel, one is filled while the other performs its various treatment process steps. Secondary Treatment 4 cycles/day",
+      "trigger_process": [
+        "SBR"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Wedge wire static screen that removes solids from the influent to the aerobic digester before they reach the Sequencing Batch Reactors (SBR) tanks.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "Aerobic",
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "Settled (waste) activated sludge is wasted to an aerobic digester where it further degrades aerobically to a solids concentration of 1.5-3.5%.",
+      "trigger_process": [
+        "Aerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "Subsequently, the waste activated sludge is pumped, with the addition of polymer, into a wedge wire type sludge drying bed for further dewatering to an approximate solids concentration of 10%-30%.",
+      "trigger_process": [
+        "Drying",
+        "Evaporation Pond",
+        "Mechanical Dewatering",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "Emergency storage pond has storage capacity of approximately 3.23 MG (approximately ten-day storage capacity)",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "Storage pond; storage capacity is approximately 7.8 million gallons (MG); managed as a treated effluent Effluent storage disposal/storage pond, as the pond is not lined.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "The effluent pump has the ability to pump through either of these 2 pipes, depending upon valving. The effluent pump is located at the plant.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "Wastewater is then land applied via an overhead irrigation system.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Score": 0.95,
+      "Sentence": "The ultimate destination of biosolids produced is Monterey Regional Waste Management District landfill located at 14201 Del Monte Blvd in Marina.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    }
+  ]
+}

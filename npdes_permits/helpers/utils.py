@@ -1,8 +1,16 @@
 import pandas as pd
 import os
+import re
 import json
+import io
+import PyPDF2
+from pathlib import Path
+import unicodedata
+
 # Canonical status vocabulary: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, '' (absent)
 PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
+
+SEP = "\n\n===PLANNED CHANGES===\n\n"
 
 mapping_df = pd.read_csv(
     "npdes_permits/data/ciwqs_to_cwns.csv", dtype=str, keep_default_na=False
@@ -23,6 +31,43 @@ no_cwns_pids: set[str] = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq
 
 with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
     unitprocess_keywords = json.load(f)
+
+
+def package_sub_readers(reader):
+    """For a PDF Package/Portfolio, yield a PdfReader for each embedded PDF sub-file."""
+    try:
+        root = reader.trailer['/Root'].get_object()
+        names_obj = root['/Names'].get_object()
+        emb_node = names_obj.get('/EmbeddedFiles')
+        if not emb_node:
+            return
+        emb_names = emb_node.get_object()['/Names']
+        for i in range(0, len(emb_names), 2):
+            try:
+                fspec = emb_names[i + 1].get_object()
+                ef = fspec.get('/EF', {}).get_object()
+                fstream = ef.get('/F') or ef.get('/UF')
+                if fstream:
+                    yield PyPDF2.PdfReader(io.BytesIO(fstream.get_object().get_data()))
+            except Exception:
+                continue
+    except Exception:
+        return
+    
+
+def normalize_text(s: str) -> str:
+    """Normalize text by removing special whitespace characters and lowercasing."""
+    if not s:
+        return ""
+    # Normalize Unicode form
+    s = unicodedata.normalize("NFKC", s)
+    s = re.sub(r"[­​‌‍﻿]", "", s)
+    s = re.sub(r"[  ᠎ -   　]", "", s)
+    # Lowercase everything
+    return s.lower()
+
+def normalize_text(text):
+    return re.sub(r"\s+", " ", (text or "").replace("\n", " ").replace("\r", " ")).strip()
 
 def parse_status(val) -> str:
     """Normalize any status cell to a canonical token.
@@ -202,3 +247,49 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
         merged, ["Place ID"], ["WDID", "Facility Name", "CWNS_ID", "FACILITY_ID", "_cwns_merge"]
     ).drop(columns=["CWNS_ID", "FACILITY_ID", "_cwns_merge"], errors="ignore").fillna("")
     return cwns_by_facility, merged
+
+def build_txt_jobs(txt_folder: str, facilities_information: str):
+    txt_folder_path = Path(txt_folder)
+    facilities_path = Path(facilities_information)
+    facilities_df = pd.read_csv(facilities_path, dtype=str).fillna("")
+    required_columns = {"Facility Name", "PDF_File"}
+    missing_columns = required_columns.difference(set(facilities_df.columns))
+    if missing_columns:
+        raise ValueError(
+            "--facilities_information is missing required columns: "
+            + ", ".join(sorted(missing_columns))
+        )
+
+    jobs = []
+    for row_idx, row in facilities_df.iterrows():
+        facility_name = str(row["Facility Name"]).strip()
+        pdf_file_value = str(row["PDF_File"]).strip()
+
+        if not facility_name or facility_name.lower() == "nan":
+            continue
+        if not pdf_file_value or pdf_file_value.lower() == "nan":
+            continue
+
+        txt_path = Path(pdf_file_value)
+        if not txt_path.is_absolute():
+            txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
+
+        # if txt_path.suffix.lower() != ".txt":
+        #     raise ValueError(
+        #         f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
+        #     )
+        if not txt_path.exists() or not txt_path.is_file():
+            print(f"No txt for '{facility_name}': {txt_path.name}, skipping.")
+            continue
+
+        jobs.append((row_idx, txt_path, txt_path.name, facility_name))
+
+    return jobs
+
+
+def txt_file_value_to_txt_name(file_value: str) -> str:
+    path_value = Path(file_value)
+    return path_value.with_suffix(".txt").name
+
+
+

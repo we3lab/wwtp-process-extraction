@@ -9,8 +9,8 @@ from pathlib import Path
 import pandas as pd
 
 from helpers.ontology_to_txt import ontology_to_txt, output_file as ONTOLOGY_GENERATED_PATH
+from helpers.utils import build_txt_jobs, SEP
 from helpers.api_llm_search import (
-    build_pdf_jobs,
     chat_completion_json,
     load_icl_examples,
     init_unit_process_list_from_json,
@@ -18,10 +18,11 @@ from helpers.api_llm_search import (
     get_method_paths,
 )
 
-TXT_DIR = "npdes_permits/output/2026-4-26/npdes/text"
+DATE_FOLDER = "2026-5-15"
+TXT_DIR = f"npdes_permits/output/{DATE_FOLDER}/npdes/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
 ONTOLOGY_PATH = "npdes_permits/data/llm_extraction/input/ontology.txt"
-FACILITIES_INFO_PATH = "npdes_permits/output/2026-4-26/site_data.csv"
+FACILITIES_INFO_PATH = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
 UNITPROCESS_KEYWORDS_JSON = "npdes_permits/data/unitprocess_keywords.json"
 NUM_ICL_EXAMPLES = 1
 
@@ -90,7 +91,7 @@ def resolve_output_dir(method, model, web_search, txt_folder, facilities_informa
         suffix = f"{method}_{model}" + ("-web" if web_search else "")
         return Path("npdes_permits/output/llm_model_comparison") / suffix
 
-    # Derive date from txt_folder path (e.g. output/2026-4-26/npdes/text → 2026-4-26)
+    # Derive date from txt_folder path (e.g. output/2026-5-15/npdes/text → 2026-5-15)
     date_segment = next(
         (p for p in Path(txt_folder).parts if re.match(r'\d{4}-\d{1,2}-\d{1,2}', p)),
         None,
@@ -228,7 +229,7 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
     token_usage_rows = []
     manifest_rows = []
-    jobs = build_pdf_jobs(args.txt_folder, args.facilities_information)
+    jobs = build_txt_jobs(args.txt_folder, args.facilities_information)
 
     if not jobs:
         print(
@@ -261,6 +262,9 @@ if __name__ == "__main__":
 
         print(f"Reading text from {txt_path}...")
         permit_extract = txt_path.read_text(encoding="utf-8")
+        if not permit_extract.split(SEP, 1)[0].strip():
+            print(f"Empty description section, skipping.")
+            continue
         print(f"Read text extract (length {len(permit_extract)})")
 
         if not args.no_token_limit and len(permit_extract) > 30000:
@@ -271,11 +275,14 @@ if __name__ == "__main__":
             continue
 
         txt_stem = txt_path.stem
-        extraction_file_name = f"{txt_stem}_{slugify(facility_name)}.json"
+        place_id = str(facilities_source_df.iloc[row_idx].get("Place ID", "")).strip() if 0 <= row_idx < len(facilities_source_df) else ""
+        file_id = place_id or slugify(facility_name)
+        extraction_file_name = f"{txt_stem}_{file_id}.json"
         output_json_path = output_dir / extraction_file_name
 
-        if output_json_path.exists():
-            print(f"Already processed: {output_json_path.name}, skipping.")
+        existing = next(output_dir.glob(f"{txt_stem}_{file_id}.json"), None)
+        if existing:
+            print(f"Already processed: {existing.name}, skipping.")
             continue
 
         system_msg = render_system_message(

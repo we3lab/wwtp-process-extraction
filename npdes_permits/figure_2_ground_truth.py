@@ -1,4 +1,3 @@
-import json
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,11 +12,12 @@ from helpers.utils import (
     get_leaf_names,
     cwns_mapping,
     build_cwns_facility_processes,
+    unitprocess_keywords
 )
 from helpers.plotting import COLORS
 from helpers.plotting import make_grouped_legend, save_and_close, set_thick_spines
 
-DATE_FOLDER = "2026-4-26"
+DATE_FOLDER = "2026-5-15"
 figures_dir = f"npdes_permits/output/{DATE_FOLDER}/final"
 os.makedirs(figures_dir, exist_ok=True)
 
@@ -87,9 +87,6 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities):
         )
     return rows
 
-
-with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
-    unitprocess_keywords = json.load(f)
 
 CWNS_CA_CSV = "npdes_permits/output/cwns_processes_by_facility.csv"
 

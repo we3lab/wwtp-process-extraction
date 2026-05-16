@@ -17,6 +17,7 @@ from helpers.utils import (
     get_leaf_names,
     merge_column_statuses,
     get_unspecified_leaf_names,
+    unitprocess_keywords
 )
 from helpers.plotting import (
     COLORS,
@@ -26,7 +27,7 @@ from helpers.plotting import (
     set_thick_spines,
 )
 
-DATE_FOLDER = "2026-4-26"
+DATE_FOLDER = "2026-5-15"
 
 MANUAL_STATUS_ORDER = ["PRESENT", "FUTURE", "PAST", "off_site"]
 
@@ -280,10 +281,6 @@ def aggregate_to_category_states(metric_df, category_to_leaves):
         out[category] = metric_df[present_leaves].apply(merge_column_statuses, axis=1)
     return out
 
-
-# Load all required data
-with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
-    unitprocess_keywords = json.load(f)
 
 categories_to_plot = list(unitprocess_keywords.keys())
 print(f"Categories: {categories_to_plot}")

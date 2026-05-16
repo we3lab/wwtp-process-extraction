@@ -12,6 +12,9 @@ import requests
 import pandas as pd
 import uuid
 import tempfile
+import fitz
+import pdfplumber
+import unicodedata
 from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urljoin, urlunparse
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -21,8 +24,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException
-from helpers.npdes_detection import detect_npdes, length_of_pdf
-
+from helpers.utils import normalize_text
 # Modified using Claude 4.5
 
 # Link to Interactive Regulated Facilities Report
@@ -55,7 +57,7 @@ CIWQS_OVERLAY_WAIT = 180  # loading spinner / overlay after changing page size
 FACILITY_CIWS_COLUMNS = ["WDID", "Facility Name", "NPDES No."]
 XP_GRID = "//table[contains(@class,'ciwqsReportDataTable')]"
 
-DATE_FOLDER = '2026-4-26'  # set to e.g. '2026-4-26' to re-run steps 3/4 against an existing folder
+DATE_FOLDER = '2026-5-15'  # set to e.g. '2026-5-15' to re-run steps 3/4 against an existing folder
 OUT = "npdes_permits/output"
 full_path = os.path.join(OUT, DATE_FOLDER or f"{datetime.now().year}-{datetime.now().month}-{datetime.now().day}")
 pdfs_path = os.path.join(full_path, "pdfs")
@@ -64,7 +66,7 @@ os.makedirs(pdfs_path, exist_ok=True)
 
 # PDF filenames matching this regex are skipped on the order page.
 SEP = r"[ ._-]"  # - must be last to avoid range interpretation
-SKIP_BASE_KW = ["rpts|rowd|memo|nov|map|rwd"]  # match only with separators (e.g. "_memo_")
+SKIP_BASE_KW = ["rpts|rowd|memo|nov|map|rwd|gwmp"]  # match only with separators (e.g. "_memo_")
 SKIP_PHRASE = (
     "report|financial|response to|rate study|ratestudy|study|"
     "addendum|registration|adoption|"
@@ -278,7 +280,7 @@ def find_best_order(driver, fac_url, main_window):
                 candidates.append((TYPE_RANK[rm_type], -eff.value, href, rm_type, eff, gc("WDID")))
 
             if candidates:
-                rank, _, href, rm_type, eff, wdid = min(candidates)
+                rank, _, href, rm_type, eff, wdid = min(candidates, key=lambda c: (c[0], c[1], 0 if c[2] else 1))
                 print(f"  Best order: {rm_type}, rank={rank}, effective={eff.date()}, link={'yes' if href else 'no'}")
 
                 download_url = _resolve_download_url(href, soup) if href else None
@@ -630,7 +632,7 @@ def collect_facility_page_urls(program_urls):
 
     return facilities_by_place
 
-def download_facility_page_pdfs(facilities_by_place, max_workers=20):
+def download_facility_page_pdfs(facilities_by_place, max_workers=12):
     # UPDATE max_workers to be higher if running on server
     print("\n STEP 2: Visiting facility pages and downloading PDFs")
 
@@ -775,7 +777,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
                 executor.map(process_facility, [(i + 1, item) for i, item in enumerate(retry_items)])
     except KeyboardInterrupt:
         still_failing = [
-            {"Facility Name": entry.get("Facility Name", place_id), "place_id": place_id}
+            {"place_id": place_id}
             for place_id, entry in facilities_by_place.items()
             if _needs_retry(entry)
         ]
@@ -791,6 +793,180 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=20):
     print(f"Checkpoint saved: facilities.json (with order info)")
 
     return facilities_by_place
+
+
+RULES = {
+    "NPDES": {
+        "patterns": ["Table 1. Discharger Information"],
+        "detect_npdes_pattern": True,
+        "max_pages": 5,
+    },
+    "NOA": {
+        "patterns": ["notice of applicability"],
+        "patterns_case_sensitive": ["NOA"],
+        "max_pages": 5,
+    },
+    "WDR": {
+        "patterns": ["waste discharge requirements", "wdrs", "water recycling requirements", "information sheet"],
+        "detect_npdes_pattern": True,
+        "max_pages": 5,
+    },
+}
+
+
+def extract_pdf_text(pdf_path: str, max_pages=5, lowercase=True) -> str:
+    parts = []
+    doc = None
+    doc = fitz.open(pdf_path)
+    cat_xref = doc.pdf_catalog()
+    is_portfolio = doc.xref_get_key(cat_xref, "Collection")[0] != "null"
+    if is_portfolio:
+        for i in range(doc.embfile_count()):
+            info = doc.embfile_info(i)
+            if info.get("filename", "").lower().endswith(".pdf"):
+                buf = doc.embfile_get(i)
+                sub = fitz.open("pdf", buf)
+                for j in range(min(len(sub), max_pages)):
+                    parts.append(sub[j].get_text())
+                sub.close()
+    else:
+        with pdfplumber.open(pdf_path) as pdf:
+            for i, page in enumerate(pdf.pages[:max_pages]):
+                text = page.extract_text() or ""
+                if not text.strip():
+                    fpage = doc[i]
+                    tp = fpage.get_textpage_ocr()
+                    text = fpage.get_text(textpage=tp)
+                parts.append(text)
+    if doc:
+        doc.close()
+
+    raw = " ".join(parts)
+    raw = unicodedata.normalize("NFKC", raw)
+    raw = re.sub(r"[­​‌‍﻿]", "", raw)
+    raw = re.sub(r"[  ᠎ -   　]", "", raw)
+    return raw.lower() if lowercase else raw
+
+
+def detect_text_from_pdf(pdf_path: str, text_searched: str, max_pages=5):
+    """Detect if 'text_searched' is in the first 'max_pages' of the PDF at 'pdf_path'."""
+    # Use the combined normalized text from the first pages for more robust matching
+    combined = extract_pdf_text(pdf_path, max_pages)
+    if not combined:
+        return False
+    text_searched_normalized = normalize_text(text_searched)
+    if text_searched_normalized in combined:
+        return True
+    # try spaceless fallback
+    combined_nospace = re.sub(r"\s+", "", combined)
+    k_nospace = re.sub(r"\s+", "", text_searched_normalized)
+    if k_nospace and k_nospace in combined_nospace:
+        return True
+    return False
+
+
+def detect_npdes_pattern(pdf_path: str, max_pages=5) -> bool:
+    """Detect flexible NPDES-like sentences in a PDF.
+    Matches patterns like:
+      "the following <...> subject to <...> set forth in this <...> order"
+    """
+    txt = extract_pdf_text(pdf_path, max_pages)
+    if not txt:
+        return False
+
+    # tolerant regex: allow spaces, lines changes and some special chars between letters
+    inner_sep = r"(?:[\s­​\-])*"
+
+    def fuzzy(word: str) -> str:
+        """Return a regex that matches `word` even if the extractor inserted
+        whitespace, soft-hyphens, zero-width spaces or hyphens between letters.
+        """
+        parts = []
+        for ch in word:
+            # escape regex metacharacters
+            parts.append(re.escape(ch) + inner_sep)
+        return "".join(parts)
+    # fuzzy tokens for the fixed keywords
+    f_the = fuzzy("the")
+    f_following = fuzzy("following")
+    f_subject = fuzzy("subject")
+    f_to = fuzzy("to")
+    f_set = fuzzy("set")
+    f_forth = fuzzy("forth")
+    f_in = fuzzy("in")
+    f_this = fuzzy("this")
+    f_order = fuzzy("order")
+
+    # allow up to 600 chars in captures (non-greedy), DOTALL so dot matches newlines
+    pattern = re.compile(
+        rf"{f_the}{f_following}(.{{1,600}}?){f_subject}{f_to}(.{{1,600}}?){f_set}{f_forth}{f_in}{f_this}(.{{1,600}}?){f_order}",
+        flags=re.I | re.DOTALL,
+    )
+    return bool(pattern.search(txt))
+
+
+def length_of_pdf(pdf_path: str) -> int:
+    try:
+        doc = fitz.open(pdf_path)
+        cat_xref = doc.pdf_catalog()
+        is_portfolio = doc.xref_get_key(cat_xref, "Collection")[0] != "null"
+        if is_portfolio:
+            total = 0
+            for i in range(doc.embfile_count()):
+                info = doc.embfile_info(i)
+                if info.get("filename", "").lower().endswith(".pdf"):
+                    sub = fitz.open("pdf", doc.embfile_get(i))
+                    total += len(sub)
+                    sub.close()
+            doc.close()
+            return total
+        n = len(doc)
+        doc.close()
+        return n
+    except Exception:
+        return 0
+
+
+_CAG_PERMIT_RE = re.compile(r"\bca\s*g\d+", re.IGNORECASE)
+
+
+def _rule_matches(pdf_file, rule, max_pages_default):
+    mp = rule.get("max_pages", max_pages_default)
+    text = extract_pdf_text(pdf_file, mp)
+    text_nospace = re.sub(r"\s+", "", text)
+    pattern_hit = any(
+        (normalize_text(p) in text) or (re.sub(r"\s+", "", normalize_text(p)) in text_nospace)
+        for p in rule.get("patterns", [])
+    )
+    if not pattern_hit and rule.get("patterns_case_sensitive"):
+        raw = extract_pdf_text(pdf_file, mp, lowercase=False)
+        pattern_hit = any(p in raw for p in rule["patterns_case_sensitive"])
+    fuzzy_hit = bool(rule.get("detect_npdes_pattern")) and detect_npdes_pattern(pdf_file, mp)
+    return pattern_hit or fuzzy_hit
+
+
+def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> str | None:
+    """Return matched doc type ("NPDES", "NOA", "WDR") or None by applying RULES."""
+    if length_of_pdf(pdf_file) < min_length:
+        return None
+
+    # Check NOA first — needed to gate the CAG short-circuit
+    noa_text = extract_pdf_text(pdf_file, RULES["NOA"].get("max_pages", max_pages))
+    has_noa = _rule_matches(pdf_file, RULES["NOA"], max_pages)
+    has_cag = bool(_CAG_PERMIT_RE.search(noa_text))
+
+    # Generic CAG order (no NOA): not facility-specific, skip
+    if has_cag and not has_noa:
+        return None
+
+    if has_noa:
+        return "NOA"
+
+    for doc_type in ("NPDES", "WDR"):
+        if _rule_matches(pdf_file, RULES[doc_type], max_pages):
+            return doc_type
+
+    return None
 
 
 def detect_and_move_npdes_pdfs(facilities_by_place):
@@ -832,6 +1008,11 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
             assoc_types = {group_to_rm_type.get(g, "") for g in pdf_to_groups.get(filename, set())}
             if assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
                 matched_type = None  # general order for enrolled facilities, not facility-specific
+        elif matched_type == "NOA":
+            groups = pdf_to_groups.get(filename, set())
+            assoc_types = {group_to_rm_type.get(g, "") for g in groups}
+            if len(groups) > 1 and assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
+                matched_type = None  # shared general order contains NOA language but not facility-specific
         if matched_type:
             os.rename(src, os.path.join(npdes_path, filename))
             print(f"{matched_type} detected: {filename}")
@@ -912,14 +1093,14 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
     print(f"Wrote {len(rows)} rows to site_data.csv")
 
 if __name__ == "__main__":
-    # To restart from a checkpoint, replace the step(s) above with:
-    with open(os.path.join(full_path, "facilities.json")) as f:
-        facilities = json.load(f)
 
     # Sometimes it takes a few tries to get the facility results page to load / Excel to download
     # Try a few times or wait a couple of hours to let CIWQS stabilize if needed
     # program_urls = run_ciwqs_search()
     # facilities = collect_facility_page_urls(program_urls)
+    # To restart from a checkpoint, replace the step(s) above with:
+    with open(os.path.join(full_path, "facilities.json")) as f:
+        facilities = json.load(f)
     # facilities = download_facility_page_pdfs(facilities)
     npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs, pdf_signals)

@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional, List, Tuple
 
-import pandas as pd
 import requests
+import jsonschema
 
 BASE_URL = "https://aiapi-prod.stanford.edu/v1"
 
@@ -16,55 +16,6 @@ def get_headers():
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
-
-
-def build_txt_jobs(txt_folder: str, facilities_information: str):
-    txt_folder_path = Path(txt_folder)
-    facilities_path = Path(facilities_information)
-    facilities_df = pd.read_csv(facilities_path, dtype=str).fillna("")
-    required_columns = {"Facility Name", "PDF_File"}
-    missing_columns = required_columns.difference(set(facilities_df.columns))
-    if missing_columns:
-        raise ValueError(
-            "--facilities_information is missing required columns: "
-            + ", ".join(sorted(missing_columns))
-        )
-
-    jobs = []
-    for row_idx, row in facilities_df.iterrows():
-        facility_name = str(row["Facility Name"]).strip()
-        pdf_file_value = str(row["PDF_File"]).strip()
-
-        if not facility_name or facility_name.lower() == "nan":
-            continue
-        if not pdf_file_value or pdf_file_value.lower() == "nan":
-            continue
-
-        txt_path = Path(pdf_file_value)
-        if not txt_path.is_absolute():
-            txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
-
-        # if txt_path.suffix.lower() != ".txt":
-        #     raise ValueError(
-        #         f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
-        #     )
-        if not txt_path.exists() or not txt_path.is_file():
-            raise FileNotFoundError(
-                f"TXT not found for facility '{facility_name}': {txt_path}"
-            )
-
-        jobs.append((row_idx, txt_path, txt_path.name, facility_name))
-
-    return jobs
-
-
-def txt_file_value_to_txt_name(file_value: str) -> str:
-    path_value = Path(file_value)
-    return path_value.with_suffix(".txt").name
-
-
-def build_pdf_jobs(pdf_folder: str, facilities_information: str):
-    return build_txt_jobs(pdf_folder, facilities_information)
 
 
 def get_models():
@@ -387,11 +338,7 @@ def chat_completion_json(
 
         if schema is not None:
             try:
-                import jsonschema
-
                 jsonschema.validate(instance=parsed, schema=schema)
-            except ImportError:
-                print("Warning: jsonschema not installed; skipping schema validation.")
             except jsonschema.ValidationError as ve:
                 raise ValueError(f"JSON did not validate against schema: {ve}")
 

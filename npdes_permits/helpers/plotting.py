@@ -11,9 +11,9 @@ COLORS = {
 # Hatch patterns for status values
 HATCH_PATTERNS = {
     "PRESENT": "",  # Solid fill
-    "FUTURE": "///",  # Diagonal lines
-    "PAST": "xx",  # Double-cross
-    "OFFSITE": "..",  # Dots
+    "FUTURE": "////",  # Forward slashes
+    "PAST": "\\\\",  # Backslashes
+    "OFFSITE": "...",  # Dots
 }
 
 

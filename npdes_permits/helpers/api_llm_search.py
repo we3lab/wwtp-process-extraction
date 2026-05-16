@@ -20,15 +20,7 @@ def get_headers():
 
 def build_txt_jobs(txt_folder: str, facilities_information: str):
     txt_folder_path = Path(txt_folder)
-    if not txt_folder_path.exists() or not txt_folder_path.is_dir():
-        raise ValueError(f"--txt_folder must be an existing directory: {txt_folder_path}")
-
     facilities_path = Path(facilities_information)
-    if not facilities_path.exists() or not facilities_path.is_file():
-        raise ValueError(
-            f"--facilities_information must be an existing CSV file: {facilities_path}"
-        )
-
     facilities_df = pd.read_csv(facilities_path, dtype=str).fillna("")
     required_columns = {"Facility Name", "PDF_File"}
     missing_columns = required_columns.difference(set(facilities_df.columns))
@@ -52,10 +44,10 @@ def build_txt_jobs(txt_folder: str, facilities_information: str):
         if not txt_path.is_absolute():
             txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
 
-        if txt_path.suffix.lower() != ".txt":
-            raise ValueError(
-                f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
-            )
+        # if txt_path.suffix.lower() != ".txt":
+        #     raise ValueError(
+        #         f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
+        #     )
         if not txt_path.exists() or not txt_path.is_file():
             raise FileNotFoundError(
                 f"TXT not found for facility '{facility_name}': {txt_path}"

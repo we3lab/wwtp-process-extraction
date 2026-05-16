@@ -44,7 +44,7 @@ VOCAB_WINDOW = 5000
 LOOKBACK_PAGES = 2
 LOOKBACK_CHARS = 100
 
-NPDES_PHRASES = ["facility description", "facilities description"]
+NPDES_PHRASES = ["facility description", "facilities description", "description of wastewater"]
 NOA_WDR_PHRASES = NPDES_PHRASES + [
     "facility information",
     "project description",
@@ -247,7 +247,10 @@ def extract_from_pdf(pdf_path, mode):
     contexts = []
     if spec["context"] == "attachment":
         att_pos, attachment_page = find_attachment_f_page(raw)
-        if att_pos is None and ATTACHMENT_F_RE.search(raw):
+        first_att = ATTACHMENT_F_RE.search(raw)
+        if first_att and first_att.start() < 500:
+            att_pos, attachment_page = 0, 0  # document starts with Attachment F — whole file is the attachment
+        elif att_pos is None and first_att:
             att_pos, attachment_page = 0, 0  # standalone Attachment F file
         if att_pos is not None:
             raw_att = raw[att_pos:]

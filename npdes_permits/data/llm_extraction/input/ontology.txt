@@ -1,23 +1,24 @@
 EQUIPMENTS:
 Tank | A tank with at least one inlet and one outlet
 Reactor | A tank used for reaction or biological/chemical treatment processes | SubEquip: Tank
-SeparationTank | A tank that has at least two outlets (e.g. overflow and underflow) | SubEquip: Tank
+SeparationTank | A tank that has at least two outlets (e.g. overflow and underflow) | SubEquip: Tank | Process: Process-Separation
 SequencingBatchReactor | A type of activated sludge process for wastewater treatment | SubEquip: Reactor, SeparationTank | Process: Process-ActivatedSludge
 PlugFlowReactor | A type of reactor where the fluid flows in one direction through the tube | SubEquip: Reactor
 ContinuouslyStirredTankReactor | A reactor in which contents are well mixed and reactants are added continuously | SubEquip: Reactor
 StaticMixer | A device for mixing liquids without moving components | SubEquip: Reactor | Process: Process-Mixing
 AerationBasin | A tank where water is aerated to remove gases and volatile organic compounds | SubEquip: Reactor | Process: Process-Aeration
-MixingBasin | A tank where mixed liquor is stirred without aeration | SubEquip: Reactor | Process: Process-ActivatedSludge
+MixingBasin | A tank where mixed liquor is stirred without aeration | SubEquip: Reactor | Process: Process-Mixing
 MembraneAeratedBiofilmReaactor | A reactor that grows biofilm on membranes supplied with air | SubEquip: Reactor | Process: Process-Aeration
 CoagulationBasin | A basin where coagulation occurs to destabilize particles in water | SubEquip: Reactor | Process: Process-Coagulation
 FlocculationBasin | A tank where flocculation occurs to aggregate particles in water | SubEquip: Reactor | Process: Process-Flocculation
-Digester | A container to promote decomposition of organic waste | SubEquip: Tank | Process: Process-Digestion
+Digester | A container to promote decomposition of organic waste | SubEquip: Reactor | Process: Process-Digestion
 AnaerobicDigester | A container to promote decomposition of organic waste in anaerobic conditions | SubEquip: Digester | Process: Process-AnaerobicDigestion
 AerobicDigester | A container to promote decomposition of organic waste in aerobic conditions | SubEquip: Digester | Process: Process-AerobicDigestion
 DisinfectionUnit | A unit used to eliminate or reduce harmful microorganisms | SubEquip: Reactor | Process: Process-Disinfection
 ChlorinationUnit | A unit that uses chlorine or chlorine compounds for disinfection. | SubEquip: DisinfectionUnit | Process: Process-Chlorination
 UltravioletLightUnit | A unit using ultraviolet light for disinfection | SubEquip: DisinfectionUnit | Process: Process-UVDisinfection
 SedimentationTank | A tank used to remove solids from liquids through sedimentation | SubEquip: SeparationTank | Process: Process-Sedimentation
+SepticTank | A septic tank for on-site wastewater treatment | SubEquip: Tank | Process: Process-Sedimentation
 ImhoffTank | A sedimentation tank specifically designed for septic treatment | SubEquip: SedimentationTank | Process: Process-Sedimentation
 Screen | An equipment used for separation | Process: Process-Screening
 GritChamber | A chamber used to remove grit from wastewater | Process: Process-Sedimentation
@@ -42,13 +43,14 @@ RotaryDrumThickener | A thickener that uses a rotating drum to separate solids f
 Filter | An equipment used to remove impurities from liquids or gases | Process: Process-Filtration
 ReverseOsmosisMembrane | A membrane used for reverse osmosis | SubEquip: Filter | Process: Process-ReverseOsmosis
 RotatingBiologicalContactor | Fixed-film process using a slowly rotating discs partially submerged in a tank | SubEquip: Filter | Process: Process-Biofiltration
+MovingBedBioreactor | MBBR process using suspended growth media a tank | SubEquip: Filter | Process: Process-Biofiltration
 TricklingFilter | A filter system that treats wastewater by trickling it over a bed of rocks or plastic | SubEquip: Filter | Process: Process-TricklingFiltration
 OxidationDitch | Modified activated sludge process that uses a ring-shaped channel to biologically remove pollutants | SubEquip: Reactor | Process: Process-ActivatedSludge
 MembraneBioreactor | A filter system that combines a membrane process like microfiltration with a biological reactor | SubEquip: Filter, Reactor, SeparationTank | Process: Process-Biofiltration
 MicrofiltrationUnit | A filter system which removes contaminants from a liquid by passing it through a microporous membrane | SubEquip: Filter | Process: Process-Microfiltration
 UltrafiltrationUnit | A filter system that uses a pressure-driven barrier to separate particles and solutes in a fluid | SubEquip: Filter | Process: Process-Ultrafiltration
 NanofiltrationUnit | A filter system that uses a membrane to soften water and remove organic contaminants | SubEquip: Filter
-MediaFiltration | A filter system that uses a bed of material to filter out contaminants | SubEquip: Filter
+MediaFiltration | A filter system that uses a bed of material to filter out contaminants | SubEquip: Filter | Process: Process-MediaFiltration
 RapidSandFilter | A type of media filter that uses sand as the filter medium and operates at high filtration rates. | SubEquip: MediaFiltration | Process: Process-RapidSandFiltration
 CartridgeFiltrationUnit | A filter system using a cartridge to remove contaminants from fluids | SubEquip: Filter
 IonExchangeMembrane | A membrane that selectively allows ions to pass through while blocking other substances | Process: Process-IonExchange
@@ -107,7 +109,6 @@ FeedReversalReverseOsmosis | A dynamic and cyclic design to mitigate scaling and
 MembraneDistillation | A thermal membrane process, often subject to CFD modeling for optimization of heat and mass transfer. | SubProcess: MembraneProcess
 Electrodialysis | A process that uses ion-exchange membranes and an electric potential to separate ions from water. | SubProcess: ChemicalProcess, PhysicalProcess
 ElectroDialyticCrystallization | A novel integrated process combining electrodialysis and crystallization for energy-efficient Zero-Liquid Discharge (ZLD) by maintaining a saturated brine stream. | SubProcess: Electrodialysis, Crystallization
-ElectrodialysisReversal | Electrodialysis with periodic polarity reversal to reduce membrane fouling. | SubProcess: Electrodialysis
 Comminution | Process of reducing solid materials into smaller particles through mechanical forces such as crushing, grinding, impact, shear, or compression. | SubProcess: Physical
 BiosolidsDisposal | Generic process for unspecified disposal of biosolids (e.g., incineration, land application, landfilling, etc.). | SubProcess: Physical
 LandApplication | Beneficial reuse of biosolids by spreading on agricultural land. | SubProcess: BiosolidsDisposal
@@ -161,6 +162,7 @@ AerobicDigestion | A biological process that breaks down organic matter in the p
 ########################
 ROLES:
 Backwash
+Drain | SubRole: Discharge
 NutrientRemoval
 NitrogenRemoval | SubRole: NutrientRemoval
 PhosphorusRemoval | SubRole: NutrientRemoval
@@ -196,7 +198,7 @@ Coagulant-Alum | Aluminum sulfate (alum), a common coagulant | SubSubstanceOf: C
 Coagulant-FerricChloride | Ferric chloride, a coagulant for wastewater treatment | SubSubstanceOf: Coagulant
 Coagulant-PolyaluminumChloride | Polyaluminum chloride (PAC), a coagulant | SubSubstanceOf: Coagulant
 Flocculant | Class for flocculants used in wastewater treatment | SubSubstanceOf: WastewaterTreatmentChemical
-Flocculant-Polymer | Polymer-type flocculants | SubSubstanceOf: Flocculant
+Flocculant-Polymer | Flocculant that is a type of polymer | SubSubstanceOf: Flocculant
 Flocculant-Polyacrylamide | Polyacrylamide, a common flocculant | SubSubstanceOf: Flocculant-Polymer
 pHAdjuster | Class for pH adjusters used in wastewater treatment | SubSubstanceOf: WastewaterTreatmentChemical
 pHAdjuster-Lime | Calcium hydroxide (lime), used to increase pH | SubSubstanceOf: pHAdjuster

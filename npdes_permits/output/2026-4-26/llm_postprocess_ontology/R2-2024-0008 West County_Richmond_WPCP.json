@@ -11,8 +11,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
+      "Score": 0.98,
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal , primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +28,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
+      "Score": 0.98,
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal , primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,8 +45,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
+      "Score": 0.97,
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal , primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,21 +54,22 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
         "ActivatedSludge",
+        "Aeration",
         "Nitrification"
       ],
       "Role": [
+        "Secondary",
         "Aerobic",
-        "Secondary"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Score": 0.95,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... aeration basins ... The City of Richmond reported ammonia violations when the Richmond Plant\u2019s ability to convert ammonia to nitrate declined.",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal , primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
       "trigger_process": [
-        "Unspecified BNR"
+        "Nitrification"
       ]
     },
     {
@@ -82,8 +83,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
+      "Score": 0.95,
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal , primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -91,18 +92,20 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Disinfection"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
+      "Score": 0.96,
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal , primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -115,10 +118,12 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.99,
       "Sentence": "The dechlorination system for both plants is located at the Richmond Plant and is jointly owned by the Dischargers. The Dischargers upgraded the dechlorination system in 2023.",
       "trigger_process": [
         "Dechlorination"
@@ -132,10 +137,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.96,
       "Sentence": "At the Richmond Plant, secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge, anaerobically digested, and pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill.",
       "trigger_process": [
         "Flotation",
@@ -153,7 +160,7 @@
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 0.94,
       "Sentence": "During this Order term, the Richmond Municipal Sewer District plans to replace the dissolved air flotation thickener with a rotary drum thickener as a part of its Richmond Plant Critical Improvement Project.",
       "trigger_process": [
         "Thickening"
@@ -162,17 +169,20 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
         "Anaerobic",
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor",
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Score": 0.95,
       "Sentence": "At the Richmond Plant, secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge, anaerobically digested, and pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill.",
       "trigger_process": [
         "Anaerobic Digestion"
@@ -181,7 +191,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -189,24 +199,26 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Richmond Plant\u2019s dissolved air flotation thickener failed and, while a temporary system ran with a portable gravity belt thickener, the operator overfed a digester.",
+      "Score": 0.92,
+      "Sentence": "The third ammonia violation occurred in September 2020 when the Richmond Plant\u2019s dissolved air flotation thickener failed and, while a temporary system ran with a portable gravity belt thickener, the operator overfed a digester.",
       "trigger_process": [
         "Thickening"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Detention",
+        "Mixing"
+      ],
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "During wet weather, primary-treated wastewater flows above 20.0 MGD are bypassed around biological treatment when necessary and stored in equalization basins.",
+      "Score": 0.93,
+      "Sentence": "During wet weather, primary-treated wastewater flows above 20.0 MGD are bypassed around biological treatment when necessary and stored in equalization basins. Once the equalization basins are filled, if flows continue to exceed 20.0 MGD, they are bypassed around biological treatment and blended with biologically-treated wastewater prior to disinfection.",
       "trigger_process": [
         "Equalization"
       ]
@@ -214,18 +226,38 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "ActivatedSludge"
       ],
       "Role": [
+        "Secondary",
         "SolidsHandling"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.96,
+      "Sentence": "At the Richmond Plant, secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge, anaerobically digested, and pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill.",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Nitrification"
+      ],
+      "Role": [
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "At the Richmond Plant, secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge, anaerobically digested, and pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill.",
+      "Location": "on-site",
+      "Score": 0.92,
+      "Sentence": "Two of the ammonia violations occurred when the Richmond Plant\u2019s ability to convert ammonia to nitrate declined.",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Nitrification"
       ]
     }
   ]

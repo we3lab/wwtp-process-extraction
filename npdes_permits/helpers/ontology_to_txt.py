@@ -1,6 +1,4 @@
-import os
 from pathlib import Path
-from collections import Counter
 from rdflib import Graph, Namespace
 from rdflib import Graph, Namespace, RDF, RDFS
 
@@ -9,7 +7,7 @@ WATR = Namespace("urn:nawi-water-ontology#")
 # GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
-output_file = Path(__file__).resolve().parent.parent / "data" / "ontology.txt"
+output_file = Path(__file__).resolve().parent.parent / "data" / "llm_extraction" / "input" / "ontology.txt"
 
 #list of equipment to skip : 
 skip_equip = [

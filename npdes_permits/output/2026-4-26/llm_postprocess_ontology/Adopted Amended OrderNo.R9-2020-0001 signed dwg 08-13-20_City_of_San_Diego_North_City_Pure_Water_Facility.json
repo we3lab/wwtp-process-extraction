@@ -3,11 +3,10 @@
     {
       "Equipment": "OzonationUnit",
       "Process": [
-        "Ozonation"
+        "Process-Ozonation"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "planned",
@@ -21,16 +20,15 @@
     {
       "Equipment": "GranularActivatedCarbonAdsorber",
       "Process": [
-        "GranularActivatedCarbon"
+        "Process-GranularActivatedCarbon"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 0.98,
       "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ozone disinfection, biological activated carbon, membrane filtration using Toray ultrafiltration membranes, 3-stage reverse osmosis (RO) treatment, ultraviolet light/advanced oxidation (UV/AOP) using sodium hypochlorite as an oxidant, product-water conditioning using lime and carbon dioxide injection, and chlorination to maintain a free chlorine residual in the Miramar Reservoir conveyance pipeline.",
       "trigger_process": [
         "Activated Carbon"
@@ -39,7 +37,7 @@
     {
       "Equipment": "UltrafiltrationUnit",
       "Process": [
-        "Ultrafiltration"
+        "Process-Ultrafiltration"
       ],
       "Role": [
         "Tertiary"
@@ -47,7 +45,7 @@
       "Substance": null,
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.99,
+      "Score": 1.0,
       "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... membrane filtration using Toray ultrafiltration membranes ...",
       "trigger_process": [
         "Ultrafiltration"
@@ -56,7 +54,7 @@
     {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "ReverseOsmosis"
+        "Process-ReverseOsmosis"
       ],
       "Role": [
         "Tertiary"
@@ -73,8 +71,47 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "AdvancedOxidation"
+        "Process-UVDisinfection",
+        "Process-AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.86,
+      "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... ultraviolet light/advanced oxidation (UV/AOP) using sodium hypochlorite as an oxidant ...",
+      "trigger_process": [
+        "UV Disinfection",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "Conditioner",
+      "Process": [
+        "Process-pHAdjustment"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "planned",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... product-water conditioning using lime and carbon dioxide injection ...",
+      "trigger_process": [
+        "Lime Addition"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Process-Chlorination"
       ],
       "Role": [
         "Tertiary",
@@ -85,49 +122,8 @@
       ],
       "Implementation": "planned",
       "Location": "on-site",
-      "Score": 0.92,
-      "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... ultraviolet light/advanced oxidation (UV/AOP) using sodium hypochlorite as an oxidant ...",
-      "trigger_process": [
-        "UV Disinfection",
-        "UV-AOP"
-      ]
-    },
-    {
-      "Equipment": "Conditioner",
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": [
-        "pHAdjuster-Lime"
-      ],
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... product-water conditioning using lime and carbon dioxide injection ...",
-      "trigger_process": [
-        "Lime Addition"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... and chlorination to maintain a free chlorine residual in the Miramar Reservoir conveyance pipeline.",
+      "Score": 0.98,
+      "Sentence": "North City Pure Water Facility (NCPWF) Wastewater treatment unit operations and processes at the NCPWF will consist of ... chlorination to maintain a free chlorine residual in the Miramar Reservoir conveyance pipeline.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -135,47 +131,24 @@
     {
       "Equipment": null,
       "Process": [
-        "Dechlorination"
+        "Process-Dechlorination"
       ],
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "WastewaterTreatmentChemical"
-      ],
+      "Substance": null,
       "Implementation": "planned",
-      "Location": "on-site",
-      "Score": 0.82,
+      "Location": "off-site",
+      "Score": 0.92,
       "Sentence": "The North City Pure Water Dechlorination Facility will achieve dechlorination by injecting sodium bisulfite into the conveyance pipeline.",
       "trigger_process": [
-        "Alum Addition",
-        "Dechlorination",
-        "Ferric Chloride Addition",
-        "Lime Addition",
-        "Polymer Addition"
-      ]
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection, biological activated carbon, microfiltration, RO, ultraviolet disinfection/advanced oxidation processes.",
-      "trigger_process": [
-        "Microfiltration"
+        "Dechlorination"
       ]
     },
     {
       "Equipment": "OzonationUnit",
       "Process": [
-        "Ozonation"
+        "Process-Ozonation"
       ],
       "Role": [
         "Tertiary"
@@ -183,7 +156,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 0.97,
       "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection, biological activated carbon, microfiltration, RO, ultraviolet disinfection/advanced oxidation processes.",
       "trigger_process": [
         "Ozonation"
@@ -192,7 +165,7 @@
     {
       "Equipment": "GranularActivatedCarbonAdsorber",
       "Process": [
-        "GranularActivatedCarbon"
+        "Process-GranularActivatedCarbon"
       ],
       "Role": [
         "Tertiary"
@@ -200,16 +173,16 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 0.97,
       "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection, biological activated carbon, microfiltration, RO, ultraviolet disinfection/advanced oxidation processes.",
       "trigger_process": [
         "Activated Carbon"
       ]
     },
     {
-      "Equipment": "ReverseOsmosisMembrane",
+      "Equipment": "MicrofiltrationUnit",
       "Process": [
-        "ReverseOsmosis"
+        "Process-Microfiltration"
       ],
       "Role": [
         "Tertiary"
@@ -217,7 +190,24 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 1.0,
+      "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection, biological activated carbon, microfiltration, RO, ultraviolet disinfection/advanced oxidation processes.",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "Process-ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Score": 0.97,
       "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection, biological activated carbon, microfiltration, RO, ultraviolet disinfection/advanced oxidation processes.",
       "trigger_process": [
         "Reverse Osmosis"
@@ -226,8 +216,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "AdvancedOxidation"
+        "Process-UVDisinfection",
+        "Process-AdvancedOxidation"
       ],
       "Role": [
         "Tertiary"
@@ -235,7 +225,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.9,
+      "Score": 0.96,
       "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection, biological activated carbon, microfiltration, RO, ultraviolet disinfection/advanced oxidation processes.",
       "trigger_process": [
         "UV Disinfection",

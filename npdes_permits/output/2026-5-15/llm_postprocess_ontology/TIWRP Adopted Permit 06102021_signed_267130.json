@@ -1,0 +1,372 @@
+{
+  "items": [
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Preliminary Treatment at Headworks \u2013 Removes coarse solids (by bar screening), sand and silt (by grit removal system) from wastewater.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Preliminary Treatment at Headworks \u2013 Removes coarse solids (by bar screening), sand and silt (by grit removal system) from wastewater.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Primary Sedimentation \u2013 Removes solids from the wastewater by gravity. The heavier solids settle and are scraped out of the primary sedimentation basin.",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Activated Sludge Biological Treatment \u2013 Activated sludge consists of microorganisms that consume non-settleable and dissolved organic contaminants which form a settleable floc.",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Secondary Clarification \u2013 Removes biological floc from the wastewater which then mostly becomes part of the waste sludge.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Coagulant-Alum"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Chemicals such as aluminum sulfate (alum) may be added as part of the treatment process to encourage floc formation and enhance solids removal.",
+      "trigger_process": [
+        "Alum Addition",
+        "Coagulation",
+        "Flocculation",
+        "Primary Clarification",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltration",
+      "Process": [
+        "MediaFiltration",
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Tertiary Treatment \u2013 The filtration process is used to remove or reduce suspended or colloidal matter from a liquid stream by passing the water through a bed of graded granular material.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "Microfiltration Feedwater Wet Well \u2013 Tertiary treated wastewater is diverted to this wet well.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "The effluent to the microfiltration station is pretreated with sodium hypochlorite and aqua ammonia to prevent biofouling and then fed into automatic self-cleaning 500-micron strainers.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The wastewater flow from the wet well is then split into two parallel trains, containing eighteen (18) parallel Memcor microfiltration units in total.",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis",
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "pHAdjuster-SulfuricAcid"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Prior to entering the RO process train, the pH of the treated water from the microfiltration units may need to be adjusted with sulfuric acid to protect the RO filters from calcium carbonate precipitation.",
+      "trigger_process": [
+        "Neutralization",
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The AOP includes two (2) low-pressure ultraviolet (UV) irradiation trains and hypochlorous acid addition. The AOP is used to disinfect RO permeate and destroy some constituents of emerging concern (CECs) that pass through RO membranes...",
+      "trigger_process": [
+        "UV Disinfection",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The effluent to the microfiltration station is pretreated with sodium hypochlorite and aqua ammonia to prevent biofouling...",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "AWPF Pumping Station \u2013 The AOP effluent is stabilized and then distributed from the AWPF Pumping Station. Six product water pumps in the Product Water Tank transfer the finished product water into the distribution system.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.8,
+      "Sentence": "Sodium hydroxide and calcium chloride are added in the Stabilization Tank to increase the pH of the AOP effluent to protect the LADPW\u2019s distribution and injection system.",
+      "trigger_process": [
+        "Neutralization"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.8,
+      "Sentence": "Sludge may be thickened, anaerobically digested, dewatered, and hauled to either the City\u2019s Green Acres Farm located at Kern County for land application or to a contracted site in Arizona for composting and land application...",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "Anaerobic",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The Sludge Blending Tank blends primary sludge and thickened waste activated sludge before it goes to the anaerobic digesters.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Sludge may be thickened, anaerobically digested, dewatered, and hauled to either the City\u2019s Green Acres Farm located at Kern County for land application or to a contracted site in Arizona for composting and land application...",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "planned",
+      "Location": "off-site",
+      "Score": 0.6,
+      "Sentence": "Sludge may be thickened, anaerobically digested, dewatered, and hauled to either the City\u2019s Green Acres Farm located at Kern County for land application or to a contracted site in Arizona for composting and land application at various locations in Arizona and California. However, the land application option is currently unavailable.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "Containment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "TIRE is an innovative technology to convert biosolids into energy by deep well injection and geothermal biodegradation. ... Currently, the City is injecting on a daily basis approximately 248 tons of dry and dewatered biosolids at the TIRE injection facility.",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.85,
+      "Sentence": "The Sludge Blending Tank is currently in a temporary configuration due to a failure of the center mixing shaft\u2019s drive gearbox. The Discharger is temporarily using a pump for mixing in this tank until the gearbox is repaired or replaced.",
+      "trigger_process": []
+    }
+  ]
+}

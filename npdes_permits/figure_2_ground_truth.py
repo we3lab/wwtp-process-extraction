@@ -1,4 +1,3 @@
-import json
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,11 +12,12 @@ from helpers.utils import (
     get_leaf_names,
     cwns_mapping,
     build_cwns_facility_processes,
+    unitprocess_keywords
 )
 from helpers.plotting import COLORS
 from helpers.plotting import make_grouped_legend, save_and_close, set_thick_spines
 
-DATE_FOLDER = "2026-4-26"
+DATE_FOLDER = "2026-5-15"
 figures_dir = f"npdes_permits/output/{DATE_FOLDER}/final"
 os.makedirs(figures_dir, exist_ok=True)
 
@@ -88,9 +88,6 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities):
     return rows
 
 
-with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
-    unitprocess_keywords = json.load(f)
-
 CWNS_CA_CSV = "npdes_permits/output/cwns_processes_by_facility.csv"
 
 
@@ -140,19 +137,19 @@ def main():
     ]
 
     common_facilities = set(ground_truth_df["Place ID"]) & set(npdes_text_df["Place ID"]) & set(cwns_mapping["Place ID"])
-    print(f"Facilities in all 3 sources (Train): {len(common_facilities)}")
-
     ground_truth_common = ground_truth_df[ground_truth_df["Place ID"].isin(common_facilities)].copy()
     text_common = npdes_text_df[npdes_text_df["Place ID"].isin(common_facilities)].copy()
-
     cwns_common, merged_mapping_cwns = build_cwns_facility_processes(
         ca_cwns_data, target_facilities=common_facilities
     )
-    n_with_cwns = int((merged_mapping_cwns["_cwns_merge"] == "both").sum())
-    print(
-        f"CIWQS mapping rows with CA CWNS survey attach: {n_with_cwns} / {len(merged_mapping_cwns)}"
-    )
 
+    # print facilities from the ground truth dataNOT in common_facilities
+    gt_not_common = set(ground_truth_df["Place ID"]) - common_facilities
+    if gt_not_common:
+        print(f"\nFacilities in Ground Truth but not in common set (N={len(gt_not_common)}):")
+        for pid in gt_not_common:
+            name = ground_truth_df.loc[ground_truth_df["Place ID"] == pid, "Facility Name"].iloc[0]
+            print(f"  {pid}: {name}")
     gt_fac, npdes_fac, cwns_fac = build_category_facility_sets(
         all_sheet_process_cols,
         ground_truth_common,
@@ -162,13 +159,6 @@ def main():
     )
 
     gt_simple_rows = build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities)
-
-    gt_simple_df = (
-        pd.DataFrame(gt_simple_rows)
-        .sort_values("GroundTruth", ascending=False)
-        .reset_index(drop=True)
-    )
-    print(gt_simple_df.to_string(index=False))
 
     tick_fontsize = 12
     label_fontsize = 14
@@ -189,51 +179,22 @@ def main():
         denom = gt_plot_df[total_err_col].where(gt_plot_df[total_err_col] > 0, 1)
         gt_plot_df[f"{source}_Missed_Share"] = gt_plot_df[fn_col] / denom
         gt_plot_df[f"{source}_Extra_Share"] = gt_plot_df[fp_col] / denom
-    gt_plot_df = gt_plot_df.sort_values("NPDES_Error_Rate", ascending=True).reset_index(drop=True)
+    gt_plot_df = gt_plot_df.sort_values(
+        ["CWNS_Error_Rate", "NPDES_Error_Rate"], ascending=[True, True]
+    ).reset_index(drop=True)
 
     fig, ax = plt.subplots(figsize=(10, 5))
     w = 0.35
     for i, row in gt_plot_df.iterrows():
         npdes_x = i - w / 2
         cwns_x = i + w / 2
-        ax.bar(
-            npdes_x,
-            row["NPDES_Missed_Rate"] * 100,
-            w,
-            color=to_rgba(COLORS["npdes_kw"], 0.9),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
-        ax.bar(
-            npdes_x,
-            row["NPDES_Extra_Rate"] * 100,
-            w,
-            bottom=row["NPDES_Missed_Rate"] * 100,
-            color=to_rgba(COLORS["npdes_kw"], 0.45),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
-        ax.bar(
-            cwns_x,
-            row["CWNS_Missed_Rate"] * 100,
-            w,
-            color=to_rgba(COLORS["cwns"], 0.9),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
-        ax.bar(
-            cwns_x,
-            row["CWNS_Extra_Rate"] * 100,
-            w,
-            bottom=row["CWNS_Missed_Rate"] * 100,
-            color=to_rgba(COLORS["cwns"], 0.45),
-            edgecolor="black",
-            linewidth=1.2,
-            zorder=2,
-        )
+        for x, color_key, missed_col, extra_col in [
+            (npdes_x, "npdes_kw", "NPDES_Missed_Rate", "NPDES_Extra_Rate"),
+            (cwns_x,  "cwns",     "CWNS_Missed_Rate",  "CWNS_Extra_Rate"),
+        ]:
+            missed = row[missed_col] * 100
+            ax.bar(x, missed, w, color=to_rgba(COLORS[color_key], 0.9), edgecolor="black", linewidth=1.2, zorder=2)
+            ax.bar(x, row[extra_col] * 100, w, bottom=missed, color=to_rgba(COLORS[color_key], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
 
     npdes_avg = float(gt_plot_df["NPDES_Error_Rate"].mean() * 100)
     cwns_avg = float(gt_plot_df["CWNS_Error_Rate"].mean() * 100)
@@ -262,8 +223,8 @@ def main():
         {
             "header": "Error Composition",
             "items": [
-                ("  Extra (FP share)", {"facecolor": "gray", "alpha": 0.45}),
-                ("  Missed (FN share)", {"facecolor": "gray", "alpha": 0.9}),
+                ("  False Positive", {"facecolor": "gray", "alpha": 0.45}),
+                ("  False Negative", {"facecolor": "gray", "alpha": 0.9}),
             ],
         },
         {
@@ -285,9 +246,6 @@ def main():
     plt.subplots_adjust(bottom=0.35)
     save_path = f"{figures_dir}/figure_2_ground_truth_ground_truth_vs_npdes_text_vs_cwns.png"
     save_and_close(fig, save_path, dpi=300)
-    print(f"  Saved {os.path.basename(save_path)}")
-
-    print("FACILITY-LEVEL COMPARISON TO GROUND TRUTH (GroundTruth)")
 
     facility_rows = []
     for fac in sorted(common_facilities):
@@ -321,49 +279,32 @@ def main():
             and build_cwns_presence_mask(pd.Series([cwns_row.get(col, "")])).iloc[0]
         }
 
-        npdes_tp = len(gt_set & npdes_set)
-        npdes_fp = len(npdes_set - gt_set)
-        npdes_fn = len(gt_set - npdes_set)
-        npdes_precision = npdes_tp / (npdes_tp + npdes_fp) if (npdes_tp + npdes_fp) else 0
-        npdes_recall = npdes_tp / (npdes_tp + npdes_fn) if (npdes_tp + npdes_fn) else 0
-        npdes_f1 = (
-            2 * npdes_precision * npdes_recall / (npdes_precision + npdes_recall)
-            if (npdes_precision + npdes_recall)
-            else 0
-        )
+        src_metrics = {}
+        for prefix, pred_set in [("NPDES", npdes_set), ("CWNS", cwns_set)]:
+            tp = len(gt_set & pred_set)
+            fp = len(pred_set - gt_set)
+            fn = len(gt_set - pred_set)
+            p = tp / (tp + fp) if (tp + fp) else 0
+            r = tp / (tp + fn) if (tp + fn) else 0
+            src_metrics[prefix] = dict(
+                TP=tp, FP=fp, FN=fn, Precision=p, Recall=r,
+                F1=2 * p * r / (p + r) if (p + r) else 0,
+                Missed="|".join(sorted(gt_set - pred_set)),
+                Extra="|".join(sorted(pred_set - gt_set)),
+            )
 
-        cwns_tp = len(gt_set & cwns_set)
-        cwns_fp = len(cwns_set - gt_set)
-        cwns_fn = len(gt_set - cwns_set)
-        cwns_precision = cwns_tp / (cwns_tp + cwns_fp) if (cwns_tp + cwns_fp) else 0
-        cwns_recall = cwns_tp / (cwns_tp + cwns_fn) if (cwns_tp + cwns_fn) else 0
-        cwns_f1 = (
-            2 * cwns_precision * cwns_recall / (cwns_precision + cwns_recall)
-            if (cwns_precision + cwns_recall)
-            else 0
-        )
-
+        nm, cm = src_metrics["NPDES"], src_metrics["CWNS"]
         facility_rows.append(
             {
                 "NPDES No.": npdes,
                 "Facility Name": facility_name,
                 "GT_Count": len(gt_set),
-                "NPDES_TP": npdes_tp,
-                "NPDES_FP": npdes_fp,
-                "NPDES_FN": npdes_fn,
-                "NPDES_Precision": npdes_precision,
-                "NPDES_Recall": npdes_recall,
-                "NPDES_F1": npdes_f1,
-                "NPDES_Missed": "|".join(sorted(gt_set - npdes_set)),
-                "NPDES_Extra": "|".join(sorted(npdes_set - gt_set)),
-                "CWNS_TP": cwns_tp,
-                "CWNS_FP": cwns_fp,
-                "CWNS_FN": cwns_fn,
-                "CWNS_Precision": cwns_precision,
-                "CWNS_Recall": cwns_recall,
-                "CWNS_F1": cwns_f1,
-                "CWNS_Missed": "|".join(sorted(gt_set - cwns_set)),
-                "CWNS_Extra": "|".join(sorted(cwns_set - gt_set)),
+                "NPDES_TP": nm["TP"], "NPDES_FP": nm["FP"], "NPDES_FN": nm["FN"],
+                "NPDES_Precision": nm["Precision"], "NPDES_Recall": nm["Recall"], "NPDES_F1": nm["F1"],
+                "NPDES_Missed": nm["Missed"], "NPDES_Extra": nm["Extra"],
+                "CWNS_TP": cm["TP"], "CWNS_FP": cm["FP"], "CWNS_FN": cm["FN"],
+                "CWNS_Precision": cm["Precision"], "CWNS_Recall": cm["Recall"], "CWNS_F1": cm["F1"],
+                "CWNS_Missed": cm["Missed"], "CWNS_Extra": cm["Extra"],
             }
         )
 
@@ -372,25 +313,16 @@ def main():
         f"npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv"
     )
     gt_comparison_df.to_csv(gt_comparison_csv, index=False)
-    print(f"Saved facility-level comparison: {os.path.basename(gt_comparison_csv)}")
 
-    # Overall error vs ground truth — only for categories where GT > 0
     gt_rows_with_gt = [r for r in gt_simple_rows if r["GroundTruth"] > 0]
     if gt_rows_with_gt:
-        cwns_overall_error = sum(r["CWNS_FP"] + r["CWNS_FN"] for r in gt_rows_with_gt) / sum(
-            r["GroundTruth"] for r in gt_rows_with_gt
-        )
-        npdes_overall_error = sum(r["NPDES_FP"] + r["NPDES_FN"] for r in gt_rows_with_gt) / sum(
-            r["GroundTruth"] for r in gt_rows_with_gt
-        )
         gt_zero_cwns_fp = sum(r["CWNS_FP"] for r in gt_simple_rows if r["GroundTruth"] == 0)
         print(
-            f"\nOverall error vs Ground Truth (categories with GT>0): CWNS = {cwns_overall_error:.1%}, NPDES Text = {npdes_overall_error:.1%}"
+            f"\nAverage error vs Ground Truth (categories with GT>0): CWNS = {cwns_avg:.1f}%, NPDES Text = {npdes_avg:.1f}%"
         )
-        if gt_zero_cwns_fp:
-            print(
-                f"  (CWNS also has {gt_zero_cwns_fp} FP detections in categories with no ground truth annotations)"
-            )
+        for r in gt_simple_rows:
+            if r["GroundTruth"] == 0 and r["CWNS_FP"] > 0:
+                print(f"  CWNS FP in category '{r['Process_Category']}' with GT=0, FP={r['CWNS_FP']}")
 
 
 if __name__ == "__main__":

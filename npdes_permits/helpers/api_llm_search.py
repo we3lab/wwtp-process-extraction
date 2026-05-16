@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional, List, Tuple
 
-import pandas as pd
 import requests
+import jsonschema
 
 BASE_URL = "https://aiapi-prod.stanford.edu/v1"
 
@@ -16,63 +16,6 @@ def get_headers():
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
-
-
-def build_txt_jobs(txt_folder: str, facilities_information: str):
-    txt_folder_path = Path(txt_folder)
-    if not txt_folder_path.exists() or not txt_folder_path.is_dir():
-        raise ValueError(f"--txt_folder must be an existing directory: {txt_folder_path}")
-
-    facilities_path = Path(facilities_information)
-    if not facilities_path.exists() or not facilities_path.is_file():
-        raise ValueError(
-            f"--facilities_information must be an existing CSV file: {facilities_path}"
-        )
-
-    facilities_df = pd.read_csv(facilities_path, dtype=str).fillna("")
-    required_columns = {"Facility Name", "PDF_File"}
-    missing_columns = required_columns.difference(set(facilities_df.columns))
-    if missing_columns:
-        raise ValueError(
-            "--facilities_information is missing required columns: "
-            + ", ".join(sorted(missing_columns))
-        )
-
-    jobs = []
-    for row_idx, row in facilities_df.iterrows():
-        facility_name = str(row["Facility Name"]).strip()
-        pdf_file_value = str(row["PDF_File"]).strip()
-
-        if not facility_name or facility_name.lower() == "nan":
-            continue
-        if not pdf_file_value or pdf_file_value.lower() == "nan":
-            continue
-
-        txt_path = Path(pdf_file_value)
-        if not txt_path.is_absolute():
-            txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
-
-        if txt_path.suffix.lower() != ".txt":
-            raise ValueError(
-                f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
-            )
-        if not txt_path.exists() or not txt_path.is_file():
-            raise FileNotFoundError(
-                f"TXT not found for facility '{facility_name}': {txt_path}"
-            )
-
-        jobs.append((row_idx, txt_path, txt_path.name, facility_name))
-
-    return jobs
-
-
-def txt_file_value_to_txt_name(file_value: str) -> str:
-    path_value = Path(file_value)
-    return path_value.with_suffix(".txt").name
-
-
-def build_pdf_jobs(pdf_folder: str, facilities_information: str):
-    return build_txt_jobs(pdf_folder, facilities_information)
 
 
 def get_models():
@@ -160,8 +103,41 @@ def init_unit_process_list_from_json(keywords_json_path: str, output_txt_path: s
     return output_path
 
 
-def build_example_schema(method: str) -> Dict[str, Any]:
+_SOURCE_FIELD = {
+    "type": "string",
+    "enum": ["permit_text", "web_search", "both"],
+}
+
+_WEBSITE_FIELD = {
+    "type": ["string", "null"],
+    "description": "Website or URL source if Source includes web_search",
+}
+
+
+def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
     if method == "list-based":
+        props = {
+            "Process": {
+                "type": "array",
+                "items": {"type": "string"},
+                "minItems": 1,
+            },
+            "Implementation": {
+                "type": "string",
+                "enum": ["present", "planned", "past"],
+            },
+            "Location": {
+                "type": ["string", "null"],
+                "enum": ["on-site", "off-site", None],
+            },
+            "Score": {"type": "number", "minimum": 0, "maximum": 1},
+            "Sentence": {"type": "string"},
+        }
+        required = ["Process", "Implementation", "Location", "Score", "Sentence"]
+        if web:
+            props["Source"] = _SOURCE_FIELD
+            props["Website"] = _WEBSITE_FIELD
+            required.append("Source")
         return {
             "type": "object",
             "properties": {
@@ -169,30 +145,8 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "properties": {
-                            "Process": {
-                                "type": "array",
-                                "items": {"type": "string"},
-                                "minItems": 1,
-                            },
-                            "Implementation": {
-                                "type": "string",
-                                "enum": ["present", "planned", "past"],
-                            },
-                            "Location": {
-                                "type": ["string", "null"],
-                                "enum": ["on-site", "off-site", None],
-                            },
-                            "Score": {"type": "number", "minimum": 0, "maximum": 1},
-                            "Sentence": {"type": "string"},
-                        },
-                        "required": [
-                            "Process",
-                            "Implementation",
-                            "Location",
-                            "Score",
-                            "Sentence",
-                        ],
+                        "properties": props,
+                        "required": required,
                         "additionalProperties": False,
                     },
                 }
@@ -201,6 +155,55 @@ def build_example_schema(method: str) -> Dict[str, Any]:
             "additionalProperties": False,
         }
 
+    props = {
+        "Equipment": {"type": ["string", "null"]},
+        "Process": {
+            "anyOf": [
+                {"type": "null"},
+                {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 1,
+                },
+            ]
+        },
+        "Role": {
+            "anyOf": [
+                {"type": "null"},
+                {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            ]
+        },
+        "Substance": {
+            "anyOf": [
+                {"type": "null"},
+                {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            ]
+        },
+        "Implementation": {
+            "type": "string",
+            "enum": ["present", "planned", "past"],
+        },
+        "Location": {
+            "type": ["string", "null"],
+            "enum": ["on-site", "off-site", None],
+        },
+        "Score": {"type": "number", "minimum": 0, "maximum": 1},
+        "Sentence": {"type": "string"},
+    }
+    required = [
+        "Equipment", "Process", "Role", "Substance",
+        "Implementation", "Location", "Score", "Sentence",
+    ]
+    if web:
+        props["Source"] = _SOURCE_FIELD
+        props["Website"] = _WEBSITE_FIELD
+        required.append("Source")
     return {
         "type": "object",
         "properties": {
@@ -208,57 +211,8 @@ def build_example_schema(method: str) -> Dict[str, Any]:
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {
-                        "Equipment": {"type": ["string", "null"]},
-                        "Process": {
-                            "anyOf": [
-                                {"type": "null"},
-                                {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                    "minItems": 1,
-                                },
-                            ]
-                        },
-                        "Role": {
-                            "anyOf": [
-                                {"type": "null"},
-                                {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                },
-                            ]
-                        },
-                        "Substance": {
-                            "anyOf": [
-                                {"type": "null"},
-                                {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                },
-                            ]
-                        },
-                        "Implementation": {
-                            "type": "string",
-                            "enum": ["present", "planned", "past"],
-                        },
-                        "Location": {
-                            "type": ["string", "null"],
-                            "enum": ["on-site", "off-site", None],
-                        },
-                        "Score": {"type": "number", "minimum": 0, "maximum": 1},
-                        "Sentence": {"type": "string"},
-                    },
-                    "required": [
-                        "Equipment",
-                        "Process",
-                        "Role",
-                        "Substance",
-                        "Implementation",
-                        "Location",
-                        "Score",
-                        "Sentence",
-                    ],
+                    "properties": props,
+                    "required": required,
                     "not": {
                         "properties": {
                             "Equipment": {"type": "null"},
@@ -384,11 +338,7 @@ def chat_completion_json(
 
         if schema is not None:
             try:
-                import jsonschema
-
                 jsonschema.validate(instance=parsed, schema=schema)
-            except ImportError:
-                print("Warning: jsonschema not installed; skipping schema validation.")
             except jsonschema.ValidationError as ve:
                 raise ValueError(f"JSON did not validate against schema: {ve}")
 

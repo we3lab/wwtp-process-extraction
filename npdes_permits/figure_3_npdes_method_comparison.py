@@ -15,20 +15,19 @@ from helpers.utils import (
     is_present,
     PRESENT_STATUSES,
     get_leaf_names,
-    extract_leaves,
     merge_column_statuses,
-    collapse_facility_processes,
+    get_unspecified_leaf_names,
+    unitprocess_keywords
 )
 from helpers.plotting import (
     COLORS,
     HATCH_PATTERNS,
-    draw_above_below_zero_bar,
     make_grouped_legend,
     save_and_close,
     set_thick_spines,
 )
 
-DATE_FOLDER = "2026-4-26"
+DATE_FOLDER = "2026-5-15"
 
 MANUAL_STATUS_ORDER = ["PRESENT", "FUTURE", "PAST", "off_site"]
 
@@ -107,15 +106,30 @@ def create_method_deviation_plot(
             (-w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
             (+w, row["KW_FP"], row["KW_FN"], COLORS["npdes_kw"]),
         ]:
-            draw_above_below_zero_bar(
-                ax,
-                idx + x_off,
-                w * 2,
-                fp,
-                fn,
-                color,
-                below_hatch=HATCH_PATTERNS["FUTURE"],
-            )
+            x = idx + x_off
+            width = w * 2
+            if fp:
+                ax.bar(
+                    x,
+                    fp,
+                    width,
+                    bottom=0,
+                    color=color,
+                    edgecolor="black",
+                    linewidth=1.2,
+                )
+            if fn:
+                y = -fn
+                ax.bar(
+                    x,
+                    y,
+                    width,
+                    bottom=0,
+                    color=color,
+                    hatch=HATCH_PATTERNS["FUTURE"],
+                    edgecolor="black",
+                    linewidth=1.2,
+                )
 
     ax.axhline(0, color="black", linewidth=0.8)
     ax.set_xticks(range(len(df)))
@@ -268,10 +282,6 @@ def aggregate_to_category_states(metric_df, category_to_leaves):
     return out
 
 
-# Load all required data
-with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
-    unitprocess_keywords = json.load(f)
-
 categories_to_plot = list(unitprocess_keywords.keys())
 print(f"Categories: {categories_to_plot}")
 
@@ -279,11 +289,6 @@ print(f"Categories: {categories_to_plot}")
 unit_process_results = pd.read_csv(
     f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv", dtype=str
 ).fillna("")
-unit_process_results = collapse_facility_processes(
-    unit_process_results,
-    key_cols=["Place ID"],
-    meta_cols=["WDID", "FACILITY_NAME", "AGENCY_NAME", "PERMIT_NUMBER", "PDF_File", "Shared_PDF"],
-)
 print(f"NPDES keyword data: Loaded {len(unit_process_results)} unique facilities")
 
 unit_full = unit_process_results.copy()
@@ -338,11 +343,16 @@ print(
 figures_dir = f"npdes_permits/output/{DATE_FOLDER}/figures"
 os.makedirs(figures_dir, exist_ok=True)
 
+excluded_unspecified = get_unspecified_leaf_names(unitprocess_keywords)
+
 for category in categories_to_plot:
     print(f"\nProcessing category: {category}")
     safe_category = category.replace("/", "_").replace(os.sep, "_")
 
-    process_names = get_leaf_names(category, unitprocess_keywords[category])
+    process_names = [
+        p for p in get_leaf_names(category, unitprocess_keywords[category])
+        if p not in excluded_unspecified
+    ]
 
     # Method vs manual reading: deviation bars (FP above zero, FN below)
     create_method_deviation_plot(
@@ -360,13 +370,6 @@ for category in categories_to_plot:
 all_process_list = [
     p for cat in categories_to_plot for p in get_leaf_names(cat, unitprocess_keywords[cat])
 ]
-excluded_unspecified = {
-    name
-    for name, details, _ in extract_leaves(unitprocess_keywords, ignore_disposal=False)
-    if str(name).lower().startswith("unspecified")
-    and isinstance(details, dict)
-    and details.get("priority") == 1000
-}
 unit_process_list = [p for p in all_process_list if p not in excluded_unspecified]
 metrics_frames = []
 facility_metric_rows = []
@@ -454,6 +457,9 @@ violin_path = f"{final_dir}/figure_3_npdes_method_comparison_metrics_violin.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
 draw_split_violin(ax_top, unit_process_metrics_df, "A.")
 draw_split_violin(ax_bottom, category_metrics_df, "B.")
+# subplot titles
+ax_top.set_title("Unit Process-Level Metrics")
+ax_bottom.set_title("Category-Level Metrics")
 fig.tight_layout(h_pad=2.0)
 save_and_close(fig, violin_path, dpi=300)
 print(f"Saved {os.path.basename(violin_path)}")

@@ -1,0 +1,128 @@
+{
+  "items": [
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The wastewater treatment process consists of primary treatment (vertical fine screen), secondary treatment with a retention time of 20 hours...",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "secondary treatment with a retention time of 20 hours (two aeration tanks with nitrification and denitrification activated sludge, reducing ammonia and nitrate concentrations)",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "clarification with a retention time of 0.5 hour (two sedimentation tanks with coagulation and flocculation, reducing solids)",
+      "trigger_process": [
+        "Coagulation",
+        "Flocculation",
+        "Primary Clarification",
+        "Secondary Clarification",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.95,
+      "Sentence": "tertiary treatment (disc filters, reducing turbidity, and suspended solids greater than 85%)",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "disinfection (UV and chlorination with sodium hypochlorite)",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "disinfection (UV and chlorination with sodium hypochlorite)",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    }
+  ]
+}

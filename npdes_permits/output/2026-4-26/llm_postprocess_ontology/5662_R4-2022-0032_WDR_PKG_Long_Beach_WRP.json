@@ -27,15 +27,18 @@
       "Role": [
         "Secondary",
         "NutrientRemoval",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Anoxic",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 1,
       "Sentence": "Treatment at the Long Beach WRP consists of primary sedimentation, activated sludge biological treatment with nitrification and den itrification (NDN), coagulation, secondary sedimentation, inert media filtration, chloramination (reactions between sodium hypochlorite and ammonia) for disinfection, and dechlorination.",
       "trigger_process": [
-        "Unspecified BNR"
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
@@ -43,11 +46,13 @@
       "Process": [
         "Coagulation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Score": 1,
       "Sentence": "Treatment at the Long Beach WRP consists of primary sedimentation, activated sludge biological treatment with nitrification and den itrification (NDN), coagulation, secondary sedimentation, inert media filtration, chloramination (reactions between sodium hypochlorite and ammonia) for disinfection, and dechlorination.",
       "trigger_process": [
         "Coagulation",
@@ -95,16 +100,16 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Sodium hypochlorite and ammonia are used as disinfectants at the Long Beach WRP in a process known as sequential chlorination.",
+      "Score": 1,
+      "Sentence": "Sodium hypochlorite and ammonia are used as disinfectants at the Long Beach WRP in a process known as sequential chlorination. Sodium hypochlorite is added to the treated effluent prior to tertiary filtration to destroy bacteria, pathogens, and viruses, and to minimize algal growth in the filters. This is followed by an additional chloramination after filtration, to minimize the time that the effluent is subject to disinfection with free chlorine and thus control formation of trihalomethanes.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -121,29 +126,9 @@
       "Implementation": "present",
       "Location": "on-site",
       "Score": 1,
-      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine.  The Facility also has a backup sodium bisulfite dechlorination system.",
+      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine. The Facility also has a backup sodium bisulfite dechlorination system.",
       "trigger_process": [
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The Discharger has constructed a biological nutrient removal system with NDN in order to  achieve compliance with the ammonia Basin Plan objectives.  The system was completed and has been in operation since 2003.",
-      "trigger_process": [
-        "Unspecified BNR"
       ]
     },
     {
@@ -155,11 +140,11 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
+      "Score": 1,
       "Sentence": "Sewage solids separated from the wastewater are returned to the trunk sewer for conveyance to JWPCP for treatment and disposal, under Order No. R4 -2017 -0180 (NPDES No. CA0053813).",
       "trigger_process": [
         "Unspecified Disposal"

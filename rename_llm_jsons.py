@@ -11,8 +11,8 @@ from pathlib import Path
 import pandas as pd
 
 DATE_FOLDER = "2026-5-15"
-LLM_DIR = Path(f"npdes_permits/output/{DATE_FOLDER}/llm_extraction")
-SITE_CSV = Path(f"npdes_permits/output/{DATE_FOLDER}/site_data.csv")
+LLM_DIR = Path(f"wwtp_process_extraction/output/{DATE_FOLDER}/llm_extraction")
+SITE_CSV = Path(f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv")
 
 
 def _norm_pdf(s):

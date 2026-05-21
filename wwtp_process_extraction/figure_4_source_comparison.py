@@ -40,8 +40,8 @@ from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_a
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 DATE_FOLDER = "2026-5-15"
-DATA_DIR = f"npdes_permits/output/{DATE_FOLDER}"
-OUTPUT_DIR = f"npdes_permits/output/{DATE_FOLDER}/figures"
+DATA_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}"
+OUTPUT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/figures"
 MIN_COUNT = 20  # drop bar groups where both sources are below this threshold
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -254,7 +254,7 @@ def build_sorted_plot_items(json_cats, keywords, cwns_df, llm_df):
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 
-with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
+with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
     keywords = json.load(f)
 
 excluded_unspecified = get_unspecified_leaf_names(keywords)
@@ -275,7 +275,7 @@ kw_df = pd.read_csv(
     )
 
 ca_cwns = pd.read_csv(
-    "npdes_permits/output/cwns_processes_by_facility.csv",
+    "wwtp_process_extraction/output/cwns_processes_by_facility.csv",
     dtype=str,
 )
 ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].str.strip()
@@ -303,7 +303,7 @@ n_attach = int((merged_map["_cwns_merge"] == "both").sum())
 print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
 
 # Save facilities with no CWNS match
-site_data_path = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
+site_data_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
 pid_to_name = {}
 _site = pd.read_csv(site_data_path, dtype=str).fillna("")
 site_facs = set(_site["Place ID"]) - {""}
@@ -337,8 +337,8 @@ facility_names = unmatched_df['FACILITY_NAME'].tolist()
 print(', '.join(facility_names))
 
 # CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
-cwns_csv = Path("npdes_permits/output/cwns_processes_by_facility.csv")
-mapping_csv = Path("npdes_permits/data/ciwqs_to_cwns.csv")
+cwns_csv = Path("wwtp_process_extraction/output/cwns_processes_by_facility.csv")
+mapping_csv = Path("wwtp_process_extraction/data/ciwqs_to_cwns.csv")
 cwns_unmatched_df = pd.read_csv(cwns_csv, dtype=str).fillna("")
 mapping_df = pd.read_csv(mapping_csv, dtype=str, keep_default_na=False).fillna("")
 
@@ -491,7 +491,7 @@ for comparison_type in ["llm", "kw"]:
     ]
 
     n = len(cat_labels)
-    final_dir = f"npdes_permits/output/{DATE_FOLDER}/final"
+    final_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
     os.makedirs(final_dir, exist_ok=True)
     path = f"{final_dir}/figure_4_major_categories_{suffix}.png"
     fig, ax = plt.subplots(figsize=(max(14, n * (0.55 if not include_kw else 0.7)), 6))
@@ -510,15 +510,15 @@ for comparison_type in ["llm", "kw"]:
     print(f"    Saved {os.path.basename(path)}")
 
 
-SITE_DATA = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
-FACILITIES_JSON = f"npdes_permits/output/{DATE_FOLDER}/facilities.json"
-ALL_NPDES = f"npdes_permits/output/{DATE_FOLDER}/all_ca_npdes.csv"
-CWNS_TABLE = "npdes_permits/output/cwns_processes_by_facility.csv"
-CWNS_FACILITIES = "npdes_permits/data/cwns/2022/FACILITIES.csv"
-CWNS_FACILITIES_CONFIRMED = "npdes_permits/data/cwns/2022/FACILITIES_CONFIRMED.csv"
-CWNS_TYPES = "npdes_permits/data/cwns/2022/FACILITY_TYPES.csv"
-CWNS_PHYSICAL = "npdes_permits/data/cwns/2022/PHYSICAL_LOCATION.csv"
-CIWQS_MAP = "npdes_permits/data/ciwqs_to_cwns.csv"
+SITE_DATA = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+FACILITIES_JSON = f"wwtp_process_extraction/output/{DATE_FOLDER}/facilities.json"
+ALL_NPDES = f"wwtp_process_extraction/output/{DATE_FOLDER}/all_ca_npdes.csv"
+CWNS_TABLE = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
+CWNS_FACILITIES = "wwtp_process_extraction/data/cwns/2022/FACILITIES.csv"
+CWNS_FACILITIES_CONFIRMED = "wwtp_process_extraction/data/cwns/2022/FACILITIES_CONFIRMED.csv"
+CWNS_TYPES = "wwtp_process_extraction/data/cwns/2022/FACILITY_TYPES.csv"
+CWNS_PHYSICAL = "wwtp_process_extraction/data/cwns/2022/PHYSICAL_LOCATION.csv"
+CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
 
 ciwqs_cols = [
     "WDID", "Place ID", "Facility Name", "NPDES No.", "Region",

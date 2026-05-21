@@ -9,7 +9,7 @@ BASE_URL = "https://aiapi-prod.stanford.edu/v1"
 
 
 def get_headers():
-    api_key = Path("npdes_permits/API_key.txt").read_text(encoding="utf-8").strip()
+    api_key = Path("wwtp_process_extraction/API_key.txt").read_text(encoding="utf-8").strip()
     if not api_key:
         raise ValueError("API_key.txt is empty.")
     return {
@@ -232,18 +232,18 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
 def get_method_paths(method: str) -> Dict[str, str]:
     if method == "list-based":
         return {
-            "reference_path": "npdes_permits/data/llm_extraction/input/unit_process_list.txt",
-            "examples_dir": "npdes_permits/data/llm_extraction/icl_examples/list_based",
-            "prompt_path": "npdes_permits/data/llm_extraction/prompt/list_based_prompt.txt",
-            "output_dir": "npdes_permits/output/2026-2-18/llm_search_list",
+            "reference_path": "wwtp_process_extraction/data/llm_extraction/input/unit_process_list.txt",
+            "examples_dir": "wwtp_process_extraction/data/llm_extraction/icl_examples/list_based",
+            "prompt_path": "wwtp_process_extraction/data/llm_extraction/prompt/list_based_prompt.txt",
+            "output_dir": "wwtp_process_extraction/output/2026-2-18/llm_search_list",
             "reference_placeholder": "__UNIT_PROCESS_LIST__",
         }
 
     return {
-        "reference_path": "npdes_permits/data/llm_extraction/input/ontology.txt",
-        "examples_dir": "npdes_permits/data/llm_extraction/icl_examples/ontology_based",
-        "prompt_path": "npdes_permits/data/llm_extraction/prompt/ontology_based_prompt.txt",
-        "output_dir": "npdes_permits/output/2026-2-18/llm_search_ontology",
+        "reference_path": "wwtp_process_extraction/data/llm_extraction/input/ontology.txt",
+        "examples_dir": "wwtp_process_extraction/data/llm_extraction/icl_examples/ontology_based",
+        "prompt_path": "wwtp_process_extraction/data/llm_extraction/prompt/ontology_based_prompt.txt",
+        "output_dir": "wwtp_process_extraction/output/2026-2-18/llm_search_ontology",
         "reference_placeholder": "__ONTOLOGY__",
     }
 

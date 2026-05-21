@@ -58,7 +58,7 @@ FACILITY_CIWS_COLUMNS = ["WDID", "Facility Name", "NPDES No."]
 XP_GRID = "//table[contains(@class,'ciwqsReportDataTable')]"
 
 DATE_FOLDER = '2026-5-15'  # set to e.g. '2026-5-15' to re-run steps 3/4 against an existing folder
-OUT = "npdes_permits/output"
+OUT = "wwtp_process_extraction/output"
 full_path = os.path.join(OUT, DATE_FOLDER or f"{datetime.now().year}-{datetime.now().month}-{datetime.now().day}")
 pdfs_path = os.path.join(full_path, "pdfs")
 os.makedirs(full_path, exist_ok=True)

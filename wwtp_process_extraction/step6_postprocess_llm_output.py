@@ -19,17 +19,17 @@ from helpers.utils import parse_status, extract_leaves, collapse_facility_proces
 
 DATE_STR = "2026-5-15"
 
-input_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_extraction")
-output_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_pdf.csv")
-output_fac_csv = Path(f"npdes_permits/output/{DATE_STR}/llm_unit_processes_by_facility.csv")
-site_data_csv = Path(f"npdes_permits/output/{DATE_STR}/site_data.csv")
-output_json_dir = Path(f"npdes_permits/output/{DATE_STR}/llm_postprocess_ontology")
+input_dir = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_extraction")
+output_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_unit_processes_by_pdf.csv")
+output_fac_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_unit_processes_by_facility.csv")
+site_data_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/site_data.csv")
+output_json_dir = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_postprocess_ontology")
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
-MODEL_COMPARISON_DIR = Path("npdes_permits/output/llm_model_comparison")
+MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
 WORKBOOK_PATH = MODEL_COMPARISON_DIR / "model_perfomrance_5_test.xlsx"
 
-with open("npdes_permits/data/unitprocess_keywords.json") as f:
+with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
 
 leaves = []

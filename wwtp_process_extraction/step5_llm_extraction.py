@@ -19,11 +19,11 @@ from helpers.api_llm_search import (
 )
 
 DATE_FOLDER = "2026-5-15"
-TXT_DIR = f"npdes_permits/output/{DATE_FOLDER}/npdes/text"
+TXT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
-ONTOLOGY_PATH = "npdes_permits/data/llm_extraction/input/ontology.txt"
-FACILITIES_INFO_PATH = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
-UNITPROCESS_KEYWORDS_JSON = "npdes_permits/data/unitprocess_keywords.json"
+ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
+FACILITIES_INFO_PATH = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+UNITPROCESS_KEYWORDS_JSON = "wwtp_process_extraction/data/unitprocess_keywords.json"
 NUM_ICL_EXAMPLES = 1
 
 
@@ -89,7 +89,7 @@ def parse_args():
 def resolve_output_dir(method, model, web_search, txt_folder, facilities_information):
     if "model_comparison" in str(facilities_information):
         suffix = f"{method}_{model}" + ("-web" if web_search else "")
-        return Path("npdes_permits/output/llm_model_comparison") / suffix
+        return Path("wwtp_process_extraction/output/llm_model_comparison") / suffix
 
     # Derive date from txt_folder path (e.g. output/2026-5-15/npdes/text → 2026-5-15)
     date_segment = next(
@@ -97,9 +97,9 @@ def resolve_output_dir(method, model, web_search, txt_folder, facilities_informa
         None,
     )
     if date_segment:
-        return Path("npdes_permits/output") / date_segment / "llm_extraction"
+        return Path("wwtp_process_extraction/output") / date_segment / "llm_extraction"
 
-    return Path("npdes_permits/output/llm_extraction")
+    return Path("wwtp_process_extraction/output/llm_extraction")
 
 
 def render_system_message(
@@ -387,14 +387,14 @@ if __name__ == "__main__":
     manifest_df.to_csv(manifest_csv_path, index=False)
     print(f"Saved facility manifest CSV: {manifest_csv_path}")
 
-# python npdes_permits/step3_llm_extraction_new.py \
+# python wwtp_process_extraction/step3_llm_extraction_new.py \
 #   --method ontology-based \
 #   --model claude-sonnet-4-5 \
 #   --web_search \
-#   --facilities_information npdes_permits/data/model_comparison_facilities.csv
+#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 
-# python npdes_permits/step3_llm_extraction_new.py \
+# python wwtp_process_extraction/step3_llm_extraction_new.py \
 #   --method list-based \
 #   --model claude-sonnet-4-5 \
 #   --web_search \
-#   --facilities_information npdes_permits/data/model_comparison_facilities.csv
+#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv

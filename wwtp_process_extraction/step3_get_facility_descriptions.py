@@ -324,8 +324,8 @@ def _extract_one(args):
 
 
 def main():
-    rfr_data = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
-    directory = f"npdes_permits/output/{DATE_FOLDER}/npdes"
+    rfr_data = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+    directory = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes"
 
     site_df = pd.read_csv(rfr_data, dtype=str).fillna("")
     pdfs = site_df["PDF_File"].tolist()

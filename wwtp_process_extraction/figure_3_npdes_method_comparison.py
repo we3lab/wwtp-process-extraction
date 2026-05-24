@@ -287,14 +287,14 @@ print(f"Categories: {categories_to_plot}")
 
 # Load keyword-based NPDES results
 unit_process_results = pd.read_csv(
-    f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv", dtype=str
+    f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv", dtype=str
 ).fillna("")
 print(f"NPDES keyword data: Loaded {len(unit_process_results)} unique facilities")
 
 unit_full = unit_process_results.copy()
 
 # Load LLM results
-llm_results_path = f"npdes_permits/output/{DATE_FOLDER}/llm_unit_processes_by_facility.csv"
+llm_results_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/llm_unit_processes_by_facility.csv"
 llm_results = pd.read_csv(llm_results_path, dtype=str).fillna("") if os.path.exists(llm_results_path) else None
 if llm_results is not None:
     llm_results = llm_results[llm_results["Place ID"].ne("")].copy()
@@ -319,9 +319,9 @@ else:
     unit_full_both = unit_full
 
 # Load manual readings (train + test) as the deviation baseline
-train_manual = pd.read_csv("npdes_permits/data/train_set_npdes_manual.csv", dtype=str).fillna("")
+train_manual = pd.read_csv("wwtp_process_extraction/data/train_set_npdes_manual.csv", dtype=str).fillna("")
 train_manual["Place ID"] = train_manual["Place ID"].str.strip()
-test_manual = pd.read_csv("npdes_permits/data/test_set_npdes_manual.csv", dtype=str).fillna("")
+test_manual = pd.read_csv("wwtp_process_extraction/data/test_set_npdes_manual.csv", dtype=str).fillna("")
 test_manual["Place ID"] = test_manual["Place ID"].str.strip()
 manual_combined = (
     pd.concat([train_manual, test_manual]).drop_duplicates(subset="Place ID").reset_index(drop=True)
@@ -340,7 +340,7 @@ print(
     f"{len(manual_facilities & set(llm_results_both['Place ID'])) if llm_results_both is not None else 0} matched to LLM)"
 )
 
-figures_dir = f"npdes_permits/output/{DATE_FOLDER}/figures"
+figures_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/figures"
 os.makedirs(figures_dir, exist_ok=True)
 
 excluded_unspecified = get_unspecified_leaf_names(unitprocess_keywords)
@@ -398,7 +398,7 @@ if llm_results_both is not None:
     )
 
 unit_process_metrics_df = pd.DataFrame(facility_metric_rows)
-final_dir = f"npdes_permits/output/{DATE_FOLDER}/final"
+final_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
 os.makedirs(final_dir, exist_ok=True)
 
 # Build category-level facility metrics by collapsing leaf states to category states.
@@ -426,7 +426,7 @@ if llm_results_both is not None:
 category_metrics_df = pd.DataFrame(category_metric_rows)
 
 metrics_df = pd.concat(metrics_frames, ignore_index=True)
-metrics_path = f"npdes_permits/output/{DATE_FOLDER}/npdes_method_comparison_metrics.csv"
+metrics_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes_method_comparison_metrics.csv"
 metrics_df.to_csv(metrics_path, index=False)
 print(f"\nSaved npdes_method_comparison_metrics.csv")
 summary = metrics_df.groupby(["Level", "Source"])[

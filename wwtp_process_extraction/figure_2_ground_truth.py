@@ -18,7 +18,7 @@ from helpers.plotting import COLORS
 from helpers.plotting import make_grouped_legend, save_and_close, set_thick_spines
 
 DATE_FOLDER = "2026-5-15"
-figures_dir = f"npdes_permits/output/{DATE_FOLDER}/final"
+figures_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
 os.makedirs(figures_dir, exist_ok=True)
 
 
@@ -88,7 +88,7 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities):
     return rows
 
 
-CWNS_CA_CSV = "npdes_permits/output/cwns_processes_by_facility.csv"
+CWNS_CA_CSV = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
 
 
 def main():
@@ -103,9 +103,9 @@ def main():
     }
 
     # Load Google Sheets
-    ground_truth_df = pd.read_csv("npdes_permits/data/train_set_ground_truth.csv", dtype=str).fillna("")
+    ground_truth_df = pd.read_csv("wwtp_process_extraction/data/train_set_ground_truth.csv", dtype=str).fillna("")
     ground_truth_df["Place ID"] = ground_truth_df["Place ID"].str.strip()
-    npdes_text_df = pd.read_csv("npdes_permits/data/train_set_npdes_manual.csv", dtype=str).fillna("")
+    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/train_set_npdes_manual.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
     print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")
@@ -310,7 +310,7 @@ def main():
 
     gt_comparison_df = pd.DataFrame(facility_rows)
     gt_comparison_csv = (
-        f"npdes_permits/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv"
+        f"wwtp_process_extraction/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv"
     )
     gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 

@@ -12,7 +12,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Use local input data from el_abbadi/input_data directory
 EL_ABBADI_DATA_DIR = os.path.join("data", "el_abbadi")
-OUTPUT_DATA_DIR = os.path.join("output")  # Save to npdes_permits/output/ for compare_processes.py
+OUTPUT_DATA_DIR = os.path.join("output")  # Save to wwtp_process_extraction/output/ for compare_processes.py
 
 ALLOWED_FACILITY_TYPES = {"Treatment Plant", "Honey Bucket Lagoon"}
 
@@ -204,12 +204,12 @@ meta_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_P
 process_columns = [c for c in ca_consolidated.columns if c not in meta_cols]
 ids_in_export = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
 
-ca_npdes_permits = facility_permit[
+ca_permits = facility_permit[
     (facility_permit['STATE_CODE'].astype(str).str.strip() == 'CA')
     & (facility_permit['PERMIT_SOURCE'] == 'NPDES')
     & (~facility_permit['PERMIT_NUMBER'].astype(str).str.upper().str.startswith('CAS'))
 ]
-required_ids = set(ca_npdes_permits['CWNS_ID'].astype(str).str.strip())
+required_ids = set(ca_permits['CWNS_ID'].astype(str).str.strip())
 
 ciwqs_path = os.path.join('data', 'ciwqs_to_cwns.csv')
 ciwqs_mapping = (
@@ -227,7 +227,7 @@ if missing_ids:
     missing_ids = [cid for cid in missing_ids if cid in allowed_cwns_ids]
 
     permits_by_cwns = (
-        ca_npdes_permits.drop_duplicates('CWNS_ID', keep='first')
+        ca_permits.drop_duplicates('CWNS_ID', keep='first')
         .assign(cwns_key=lambda d: d['CWNS_ID'].astype(str).str.strip())
         .set_index('cwns_key')
     )

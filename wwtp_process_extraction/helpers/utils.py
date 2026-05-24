@@ -13,7 +13,7 @@ PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
 SEP = "\n\n===PLANNED CHANGES===\n\n"
 
 mapping_df = pd.read_csv(
-    "npdes_permits/data/ciwqs_to_cwns.csv", dtype=str, keep_default_na=False
+    "wwtp_process_extraction/data/ciwqs_to_cwns.csv", dtype=str, keep_default_na=False
 ).fillna("")
 
 for c in mapping_df.columns:
@@ -29,7 +29,7 @@ cwns_mapping = mapping_df[
 
 no_cwns_pids: set[str] = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq("NA"), "Place ID"])
 
-with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
+with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
     unitprocess_keywords = json.load(f)
 
 

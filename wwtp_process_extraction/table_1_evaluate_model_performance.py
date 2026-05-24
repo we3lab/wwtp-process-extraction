@@ -27,11 +27,11 @@ from typing import Any
 import pandas as pd
 
 
-DEFAULT_WORKBOOK = Path("npdes_permits/output/llm_model_comparison/model_comparison_all.csv")
-DEFAULT_KEYWORDS = Path("npdes_permits/data/unitprocess_keywords.json")
-DEFAULT_OUTPUT = Path("npdes_permits/output/llm_model_comparison/model_performance_metrics.csv")
-MODEL_COMPARISON_DIR = Path("npdes_permits/output/llm_model_comparison")
-MODEL_COSTS_CSV = Path("npdes_permits/data/model_costs.csv")
+DEFAULT_WORKBOOK = Path("wwtp_process_extraction/output/llm_model_comparison/model_comparison_all.csv")
+DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
+DEFAULT_OUTPUT = Path("wwtp_process_extraction/output/llm_model_comparison/model_performance_metrics.csv")
+MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
+MODEL_COSTS_CSV = Path("wwtp_process_extraction/data/model_costs.csv")
 
 # Maps dir-name model labels to rows in model_costs.csv
 MODEL_COST_MAP = {

@@ -43,11 +43,11 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
 
 def main():
-    rfr_data = f"npdes_permits/output/{DATE_FOLDER}/site_data.csv"
-    txt_folder = f"npdes_permits/output/{DATE_FOLDER}/npdes/text"
-    out_file = f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_pdf.csv"
+    rfr_data = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+    txt_folder = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
+    out_file = f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_pdf.csv"
 
-    with open("npdes_permits/data/unitprocess_keywords.json", "r") as f:
+    with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
         keywords = json.load(f)
 
     site_df = pd.read_csv(rfr_data, dtype=str).fillna("")
@@ -142,7 +142,7 @@ def main():
             )
             upi.writerow(row_meta + [row_status[key] for key in all_keys])
 
-    kw_by_fac_path = f"npdes_permits/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv"
+    kw_by_fac_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv"
     raw_df = pd.read_csv(out_file, dtype=str).fillna("")
     collapsed = collapse_facility_processes(
         raw_df,

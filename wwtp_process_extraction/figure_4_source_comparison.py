@@ -360,6 +360,38 @@ cwns_facilities_all = set(cwns_df["Place ID"])
 kw_df, llm_df = [df[df["Place ID"].isin(cwns_facilities_all)].copy() for df in [kw_df, llm_df]]
 llm_common_facilities, kw_common_facilities = [set(df["Place ID"]) for df in [llm_df, kw_df]]
 
+# ── Unit process counts for key processes ─────────────────────────────────────
+_cwns_common = cwns_df[cwns_df["Place ID"].isin(llm_common_facilities)].copy()
+_llm_common = llm_df[llm_df["Place ID"].isin(llm_common_facilities)].copy()
+_target_processes = [
+    ("Membrane Bioreactor", ["Membrane Bioreactor"]),
+    ("Denitrification", ["Denitrification"]),
+    ("Four Stage Bardenpho", ["Four Stage Bardenpho"]),
+    ("Five Stage Bardenpho", ["Five Stage Bardenpho"]),
+    ("MLE", ["MLE"]),
+    ("A2O", ["A2O"]),
+    ("AO", ["AO"]),
+]
+print("\nUnit process facility counts (CWNS vs NPDES/LLM, common facilities):")
+print(f"  {'Process':<40} {'CWNS Present':>14} {'LLM Present':>12}")
+print(f"  {'-'*40} {'-'*14} {'-'*12}")
+for label, cols in _target_processes:
+    cwns_c = get_facility_counts(_cwns_common, cols)
+    llm_c = get_facility_counts(_llm_common, cols)
+    print(f"  {label:<40} {cwns_c['PRESENT']:>14} {llm_c['PRESENT']:>12}")
+
+# TODO: denitrification filter — no dedicated leaf yet in unitprocess_keywords.json.
+# "Media Filtration" is too broad (catches sand/cloth/disc filters).
+# Proxy: facilities with BOTH Media Filtration PRESENT and Denitrification PRESENT.
+# Better fix: load llm_postprocess_ontology JSONs and find items where trigger_process
+# contains BOTH "Media Filtration" and "Denitrification" on the same extracted item
+# (same equipment row) — then add a "Denitrification Filter" leaf to keywords JSON.
+_mf_present = set(_llm_common.loc[_llm_common["Media Filtration"].isin(PRESENT_STATUSES), "Place ID"])
+_dn_present = set(_llm_common.loc[_llm_common["Denitrification"].isin(PRESENT_STATUSES), "Place ID"])
+_denif_filter_proxy = len(_mf_present & _dn_present)
+_cwns_dn_c = get_facility_counts(_cwns_common, ["Denitrification"])
+print(f"  {'Denitrif. Filter (proxy: MF+DN both present)':<40} {'n/a':>14} {_denif_filter_proxy:>12}")
+
 # ── Treatment-stage groupings for per-category plots ─────────────────────────
 # Each entry: plot_title → [list of top-level JSON category names to combine]
 # Leaf processes from all listed categories are shown together on one plot,
@@ -423,8 +455,8 @@ for group_title, json_cats in PLOT_GROUPS.items():
         positions=positions,
         source_counts=[cwns_counts_list, llm_counts_list],
         source_items=[("CWNS", "cwns"), ("NPDES - LLM extraction", "npdes_llm")],
-        stack_order=stack_order_with_not_present,
-        status_legend_items=status_legend_items_with_not_present,
+        stack_order=stack_order,
+        status_legend_items=status_legend_items,
         bar_width=bar_w,
     )
     cat_spans = {}

@@ -1089,8 +1089,25 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
                 }
             )
 
-    pd.DataFrame(rows).to_csv(os.path.join(full_path, "site_data.csv"), index=False)
+    df_out = pd.DataFrame(rows)
+    df_out.to_csv(os.path.join(full_path, "site_data.csv"), index=False)
     print(f"Wrote {len(rows)} rows to site_data.csv")
+
+    # Breakdown by Reg_Measure_Type (one row per unique Place ID)
+    df_fac = df_out.drop_duplicates(subset="Place ID")
+    print("\n  Reg_Measure_Type breakdown (all facilities):")
+    for rmt, count in df_fac["Reg_Measure_Type"].value_counts(dropna=False).items():
+        print(f"    {rmt}: {count}")
+
+    # Same breakdown but only facilities with at least one non-empty PDF
+    has_pdf = df_out[df_out["PDF_File"].notna() & (df_out["PDF_File"] != "")]["Place ID"].unique()
+    df_pdf = df_fac[df_fac["Place ID"].isin(has_pdf)]
+    print(f"\n  Reg_Measure_Type breakdown (facilities with ≥1 PDF, n={len(df_pdf)}):")
+    for rmt, count in df_pdf["Reg_Measure_Type"].value_counts(dropna=False).items():
+        print(f"    {rmt}: {count}")
+
+    total_pdfs = df_fac["Total_PDFs_Available"].apply(pd.to_numeric, errors="coerce").sum()
+    print(f"\n  Total_PDFs_Available (sum across facilities): {int(total_pdfs)}")
 
 if __name__ == "__main__":
 

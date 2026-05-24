@@ -205,21 +205,21 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
             {
                 "Method": method,
                 "Model": model,
-                "PDF_macro_F1": pd.Series(per_pdf_label_f1).mean(),
-                "PDF_macro_family_F1": pd.Series(per_pdf_family_f1).mean(),
-                "PDF_macro_state_acc": pd.Series(per_pdf_state_acc).mean(),
+                "Macro Unit Process F1": pd.Series(per_pdf_label_f1).mean(),
+                "Macro Category F1": pd.Series(per_pdf_family_f1).mean(),
+                "State Accuracy": pd.Series(per_pdf_state_acc).mean(),
             }
         )
 
-    return pd.DataFrame(results).sort_values(["Method", "PDF_macro_F1", "Model"], ascending=[True, False, True])
+    return pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
+DEFAULT_OUTPUT
 
-
-def load_cost_per_pdf() -> pd.DataFrame:
+def load_price_per_pdf() -> pd.DataFrame:
     """Read token_usage_summary.csv from each model comparison dir.
 
     For web runs (cost_usd column present): uses reported cost directly.
     For API Playground runs: computes cost from prompt/completion tokens using model_costs.csv.
-    Returns a DataFrame with columns Method, Model, cost_per_pdf.
+    Returns a DataFrame with columns Method, Model, Price per PDF.
     """
     costs_df = pd.read_csv(MODEL_COSTS_CSV, skiprows=1)
     costs_df.columns = ["model_name", "input_per_m", "output_per_m"]
@@ -257,7 +257,7 @@ def load_cost_per_pdf() -> pd.DataFrame:
                     + usage_df["completion_token"] / 1_000_000 * output_per_m
                 )
                 cost = per_row_cost.mean()
-        rows.append({"Method": method_label, "Model": model_label, "cost_per_pdf": cost})
+        rows.append({"Method": method_label, "Model": model_label, "Price per PDF": cost})
     return pd.DataFrame(rows)
 
 
@@ -284,7 +284,7 @@ def load_structured_output_rates() -> pd.DataFrame:
         rows.append({
             "Method": method_label,
             "Model": model_label,
-            "pct_structured_output": matched / len(json_files),
+            "Fraction Structured Output": matched / len(json_files),
         })
     return pd.DataFrame(rows)
 
@@ -293,18 +293,18 @@ def main() -> None:
     args = parse_args()
     metrics = evaluate_workbook(args.workbook, args.keywords)
 
-    cost_df = load_cost_per_pdf()
+    cost_df = load_price_per_pdf()
     structured_df = load_structured_output_rates()
     metrics = metrics.merge(cost_df, on=["Method", "Model"], how="left")
     metrics = metrics.merge(structured_df, on=["Method", "Model"], how="left")
-    metrics = metrics.round(4)
+    metrics = metrics.round(3)
 
     print(metrics.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
     print()
     print("Metric guide:")
-    print("- PDF_macro_F1: label-presence F1 averaged over the 5 PDFs so each PDF has equal weight.")
-    print("- PDF_macro_family_F1: same idea, but with labels collapsed to top-level ontology families for partial credit.")
-    print("- PDF_macro_state_acc: on cells that are true labels, how often the model chose the exact state (PRESENT / PLANNED / OFFSITE).")
+    print("- Macro Unit Process F1: label-presence F1 averaged over the 5 PDFs so each PDF has equal weight.")
+    print("- Macro Category F1: same idea, but with labels collapsed to top-level ontology families for partial credit.")
+    print("- State Accuracy: on cells that are true labels, how often the model chose the exact state (PRESENT / PLANNED / OFFSITE).")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(args.output, index=False)

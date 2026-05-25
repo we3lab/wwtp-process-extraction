@@ -71,7 +71,7 @@ SKIP_PHRASE = (
     "report|financial|response to|rate study|ratestudy|study|"
     "addendum|registration|adoption|"
     "letter|covltr|cover_l|cover l|volumetric|"
-    "form200|form 200|management zone|management_zone"
+    "form200|form 200|management zone|management_zone|management plan"
 )  # skip if anywhere in filename
 SKIP_RE = re.compile(rf"^(?:{'|'.join(SKIP_BASE_KW)}){SEP}|{SEP}(?:{'|'.join(SKIP_BASE_KW)}){SEP}|{SKIP_PHRASE}", re.IGNORECASE)
 

@@ -131,9 +131,9 @@ def main():
                 present_cols = [c for c in sibling_cols if row_status.get(c, "0") in PRESENT_STATUSES]
                 if len(present_cols) <= 1:
                     continue
-                winner = min(present_cols, key=lambda c: (column_priority.get(c, 1), c))
+                best_priority = min(column_priority.get(c, 1) for c in present_cols)
                 for col in present_cols:
-                    if col != winner:
+                    if column_priority.get(col, 1) > best_priority:
                         row_status[col] = "0"
 
             apply_secondary_category_backfill(

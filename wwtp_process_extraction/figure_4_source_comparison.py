@@ -360,25 +360,19 @@ cwns_facilities_all = set(cwns_df["Place ID"])
 kw_df, llm_df = [df[df["Place ID"].isin(cwns_facilities_all)].copy() for df in [kw_df, llm_df]]
 llm_common_facilities, kw_common_facilities = [set(df["Place ID"]) for df in [llm_df, kw_df]]
 
-# ── Unit process counts for key processes ─────────────────────────────────────
+# ── Unit process counts for all processes ─────────────────────────────────────
 _cwns_common = cwns_df[cwns_df["Place ID"].isin(llm_common_facilities)].copy()
 _llm_common = llm_df[llm_df["Place ID"].isin(llm_common_facilities)].copy()
-_target_processes = [
-    ("Membrane Bioreactor", ["Membrane Bioreactor"]),
-    ("Denitrification", ["Denitrification"]),
-    ("Four Stage Bardenpho", ["Four Stage Bardenpho"]),
-    ("Five Stage Bardenpho", ["Five Stage Bardenpho"]),
-    ("MLE", ["MLE"]),
-    ("A2O", ["A2O"]),
-    ("AO", ["AO"]),
-]
-print("\nUnit process facility counts (CWNS vs NPDES/LLM, common facilities):")
-print(f"  {'Process':<40} {'CWNS Present':>14} {'LLM Present':>12}")
-print(f"  {'-'*40} {'-'*14} {'-'*12}")
-for label, cols in _target_processes:
-    cwns_c = get_facility_counts(_cwns_common, cols)
-    llm_c = get_facility_counts(_llm_common, cols)
-    print(f"  {label:<40} {cwns_c['PRESENT']:>14} {llm_c['PRESENT']:>12}")
+_count_rows = []
+for proc in proc_cols:
+    if proc not in _cwns_common.columns and proc not in _llm_common.columns:
+        continue
+    cwns_c = get_facility_counts(_cwns_common, [proc]) if proc in _cwns_common.columns else {"PRESENT": 0, "PAST": 0, "FUTURE": 0, "OFFSITE": 0, "NOT_PRESENT": len(_cwns_common)}
+    llm_c = get_facility_counts(_llm_common, [proc]) if proc in _llm_common.columns else {"PRESENT": 0, "PAST": 0, "FUTURE": 0, "OFFSITE": 0, "NOT_PRESENT": len(_llm_common)}
+    _count_rows.append({"process": proc, **{f"cwns_{k.lower()}": v for k, v in cwns_c.items()}, **{f"llm_{k.lower()}": v for k, v in llm_c.items()}})
+process_counts_df = pd.DataFrame(_count_rows)
+process_counts_df.to_csv(f"{DATA_DIR}/process_counts_cwns_vs_llm.csv", index=False)
+print(f"\nSaved process counts: {f'{DATA_DIR}/process_counts_cwns_vs_llm.csv'} ({len(process_counts_df)} processes)")
 
 # TODO: denitrification filter — no dedicated leaf yet in unitprocess_keywords.json.
 # "Media Filtration" is too broad (catches sand/cloth/disc filters).
@@ -546,10 +540,6 @@ SITE_DATA = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
 FACILITIES_JSON = f"wwtp_process_extraction/output/{DATE_FOLDER}/facilities.json"
 ALL_NPDES = f"wwtp_process_extraction/output/{DATE_FOLDER}/all_ca_npdes.csv"
 CWNS_TABLE = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
-CWNS_FACILITIES = "wwtp_process_extraction/data/cwns/2022/FACILITIES.csv"
-CWNS_FACILITIES_CONFIRMED = "wwtp_process_extraction/data/cwns/2022/FACILITIES_CONFIRMED.csv"
-CWNS_TYPES = "wwtp_process_extraction/data/cwns/2022/FACILITY_TYPES.csv"
-CWNS_PHYSICAL = "wwtp_process_extraction/data/cwns/2022/PHYSICAL_LOCATION.csv"
 CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
 
 ciwqs_cols = [
@@ -574,28 +564,15 @@ ciwqs = pd.read_csv(CIWQS_MAP, dtype=str, keep_default_na=False).fillna("").rena
 all_npdes = pd.read_csv(ALL_NPDES, dtype=str).fillna("").rename(
     columns={"Latitude": "Latitude_CIWQS_from_npdes", "Longitude": "Longitude_CIWQS_from_npdes"}
 )
-cwns_fac = pd.concat([
-    pd.read_csv(CWNS_FACILITIES, dtype=str).fillna(""),
-    pd.read_csv(CWNS_FACILITIES_CONFIRMED, dtype=str).fillna(""),
-]).rename(columns={"FACILITY_NAME": "CWNS Facility Name"})
-cwns_phys = pd.read_csv(CWNS_PHYSICAL, dtype=str).fillna("").rename(
-    columns={"LATITUDE": "Latitude_CWNS_from_cwns", "LONGITUDE": "Longitude_CWNS_from_cwns"}
-)
-cwns_types = pd.read_csv(CWNS_TYPES, dtype=str).fillna("")
+cwns_fac_tp = ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME", "STATE_CODE", "LATITUDE", "LONGITUDE"]].rename(columns={"FACILITY_NAME": "CWNS Facility Name"}).copy()
+cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]] = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].apply(lambda c: c.str.strip())
 
-# Filter CWNS facilities to Treatment Plant type only — coordinates from other types are not meaningful
-tp_pairs = cwns_types[cwns_types["FACILITY_TYPE"] == "Treatment Plant"][["CWNS_ID", "FACILITY_ID"]].apply(lambda c: c.str.strip())
-cwns_fac[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]] = cwns_fac[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].apply(lambda c: c.str.strip())
-cwns_fac_tp = cwns_fac.merge(tp_pairs, on=["CWNS_ID", "FACILITY_ID"], how="inner")
-
-cwns_phys[["CWNS_ID", "FACILITY_ID"]] = cwns_phys[["CWNS_ID", "FACILITY_ID"]].apply(lambda c: c.str.strip())
-
-cwns_loc_map = (
-    cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]]
-    .drop_duplicates()
-    .merge(cwns_phys[["CWNS_ID", "FACILITY_ID", "Latitude_CWNS_from_cwns", "Longitude_CWNS_from_cwns"]].drop_duplicates(), on=["CWNS_ID", "FACILITY_ID"], how="left")
-    .drop_duplicates()
-)
+cwns_loc_map = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].drop_duplicates().merge(
+    cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "LATITUDE", "LONGITUDE"]].rename(
+        columns={"LATITUDE": "Latitude_CWNS_from_cwns", "LONGITUDE": "Longitude_CWNS_from_cwns"}
+    ).drop_duplicates(),
+    on=["CWNS_ID", "FACILITY_ID"], how="left"
+).drop_duplicates()
 
 # CWNS_ID → FACILITY_ID lookup for populating existing mapping rows
 cwns_id_to_fac_id = cwns_fac_tp.drop_duplicates("CWNS_ID").set_index("CWNS_ID")["FACILITY_ID"].to_dict()
@@ -701,8 +678,16 @@ else:
     combined = ciwqs_out
     print("\nNo new rows to add.")
 
-# Dedupe on Place ID + FACILITY_ID, sorting NPDES empties last (matching build_cwns_facility_processes logic)
-combined.sort_values(by="NPDES No.", key=lambda s: s.eq(""), ascending=True).drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first").to_csv(CIWQS_MAP, index=False)
+# Dedupe on Place ID + FACILITY_ID, preferring rows with NPDES filled, preserving original row order
+_save = combined.reset_index(drop=True).rename_axis("_orig_order").reset_index()
+_save["_npdes_empty"] = _save["NPDES No."].eq("")
+(
+    _save.sort_values(["_npdes_empty", "_orig_order"])
+    .drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first")
+    .sort_values("_orig_order")
+    [ciwqs_cols]
+    .to_csv(CIWQS_MAP, index=False)
+)
 
 coord_cols = ["Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS"]
 geo = combined[combined[coord_cols].replace("", pd.NA).notna().all(axis=1)].copy()

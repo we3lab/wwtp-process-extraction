@@ -8,7 +8,7 @@
   },
   "Clarification": {
     "Primary Clarification": {
-      "alt_names": ["primary clarif", "primary settling", "primary sedimentation"],
+      "alt_names": ["primary clarif", "primary settl", "primary sedimen"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Sedimentation, Primary"],
       "ontology_triggers": [["Role-Primary", "Process-Sedimentation"],["Role-Primary", "Process-Coagulation"], ["Role-Secondary", "Process-Flocculation"]],
@@ -24,7 +24,7 @@
       "priority": 2
     },
     "Chemical Precipitation": {
-      "alt_names": ["precipitation"],
+      "alt_names": ["precipitat"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Sedimentation, Chemical Precipitation"],
       "ontology_triggers": ["Process-ChemicalPrecipitation"],
@@ -43,7 +43,7 @@
   },
   "Headworks": {
     "Screening/Microstrainer": {
-      "alt_names": ["screening", "bar screen", "bar-screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack", "primary screen"],
+      "alt_names": ["screening", "bar screen", "bar-screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack", "primary screen", "gravity screen"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
       "ontology_triggers": ["Process-Screening"],
@@ -270,14 +270,14 @@
   },
   "Filtration": {
     "Secondary Filtration": {
-      "alt_names": ["secondary filtration", "secondary filter", "secondary microstrainer"],
+      "alt_names": ["secondary filt", "secondary microstrainer"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Microstrainer, Secondary"],
       "ontology_triggers": ["Role-Secondary", "Process-Filtration"],
-      "priority":10
+      "priority": 1000
     },
     "Media Filtration": {
-      "alt_names": ["cloth filter", "cloth media", "media filt", "moving bed filter", "sand filter", "disc filter", "disk filter", "denitrification filter"],
+      "alt_names": ["cloth filt", "cloth media", "media filt", "sand filt", "disc filt", "disk filt", "denitrification filt", "upflow filt", "bed filt", "fuzzy filt"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Filter (Gravity Sand Beds, single media)", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Filter, Rock", "Filter (Sand-Recirculating)", "Filter (Sand/Gravel-Pretreatment)", "Filter (Sand-Intermittent)", "Filter, Moving Bed"],
       "ontology_triggers": [["Process-MediaFiltration"],["Equipment-MediaFiltration"]]
@@ -302,12 +302,6 @@
           "cwns_processes": ["Package Plant, Rotating Biological Contactor (RBC)", "Rotating Biological Contactors"],
           "ontology_triggers": ["Equipment-RotatingBiologicalContactor"]
         },
-        "Anaerobic Filter": {
-          "alt_names": ["anaerobic filt"],
-          "alt_names_case_sensitive": [],
-          "cwns_processes": [],
-          "ontology_triggers": ["Process-Biofiltration", "Role-Anaerobic"]
-        },
         "Membrane Aerated Biofilm Reactor": {
           "alt_names": ["membrane aerated biofilm reactor"],
           "alt_names_case_sensitive": [" MABR "],
@@ -328,6 +322,22 @@
           "ontology_triggers": ["Process-Biofiltration"],
           "priority": 1000
         }
+      },
+      "Anaerobic Filter": {
+        "alt_names": ["anaerobic filt"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [],
+        "ontology_triggers": ["Process-Biofiltration", "Role-Anaerobic"]
+      },
+      "Denitrification Filter": {
+        "alt_names": ["denitrification filt", "denitrifying filt"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Denitrification Filter"],
+        "ontology_triggers": [
+          ["Process-Biofiltration", "Process-Denitrification"],
+          ["Process-MediaFiltration", "Process-Denitrification"],
+          ["Equipment-MediaFiltration", "Process-Denitrification"]
+        ]
       }
     },
     "Membrane Process": {
@@ -515,7 +525,7 @@
   "Solids Processing": {
     "Digestion": {
       "Anaerobic Digestion": {
-        "alt_names": ["anaerobic digest", "anaerobic sludge digest", "mesophilic", "thermophilic"],
+        "alt_names": ["anaerobic digest", "anaerobic sludge digest", "mesophilic", "thermophilic", "ferment"],
         "alt_names_case_sensitive": ["AD"],
         "cwns_processes": ["Biosolids Anaerobic Digestion, Mesophilic", "Biosolids Anaerobic Digestion, Thermophilic", "Biosolids Anaerobic Digestion, Other", "Imhoff Tank", "Biosolids Aerobic Digestion, Autothermal Thermophilic Oxygen"],
         "ontology_triggers": [["Process-AnaerobicDigestion"], ["Equipment-ImhoffTank"]],
@@ -572,11 +582,18 @@
     },
     "Thickening": {
       "Thickening": {
-        "alt_names": ["thickening"],
+        "alt_names": ["thicken"],
         "alt_names_case_sensitive": ["DAFT", "GBT"],
         "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other"],
         "ontology_triggers": ["Equipment-Thickener"]
       }
+    },
+    "Biosolids Lagoon": {
+      "alt_names": ["biosolids lagoon", "sludge lagoon"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": ["Biosolids Lagoon"],
+      "ontology_triggers": [["Equipment-Pond", "Role-SolidsHandling"], ["Equipment-Pond", "Process-BiosolidsDisposal"]],
+      "secondary_category": ["Lagoon"]
     },
     "Disposal": {
       "Land Application": {
@@ -584,12 +601,6 @@
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Land Application (Spreading)", "Land Treatment", "Biosolids Composting, Other", "Biosolids Composting, In-Vessel", "Biosolids Composting, Window", "Land Application, Slow Rate, W/O Underdrain", "Land Application, Slow Rate, With Underdrain"],
         "ontology_triggers": ["Process-LandApplication"]
-      },
-      "Biosolids Lagoon": {
-        "alt_names": ["biosolids lagoon", "sludge lagoon"],
-        "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Lagoon"],
-        "ontology_triggers": [["Equipment-Pond", "Role-SolidsHandling"], ["Equipment-Pond", "Process-BiosolidsDisposal"]]
       },
       "Biosolids Landfill": {
         "alt_names": ["landfill", "monofil", "trenching"],

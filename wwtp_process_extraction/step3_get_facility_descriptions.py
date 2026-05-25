@@ -13,13 +13,15 @@ DATE_FOLDER = "2026-5-15"
 
 
 def clean_excerpt(text):
-    text = re.compile(r"===PAGE \d+===\n?").sub("", text)
+    # keep page boundaries as [Page N] so source pages are traceable in excerpts
+    text = re.compile(r"===PAGE (\d+)===\n?").sub(r"[Page \1]\n", text)
     text = re.sub(r"[^\S\n]+", " ", text)
     text = "\n".join(line.rstrip() for line in text.split("\n"))
     return text.strip()
 
 DOT_RE = re.compile(r"\.{5,}")
 ATTACHMENT_F_RE = re.compile(r"ATTACHMENT\s+F\s*[-–—‐]\s*FACT\s+SHEET", re.IGNORECASE)
+PAGE_MARKER_RE = re.compile(r"\[Page (\d+)\]")
 WASTEWATER_VOCAB_RE = re.compile(
     "|".join(
         re.escape(term)
@@ -30,94 +32,41 @@ WASTEWATER_VOCAB_RE = re.compile(
     re.IGNORECASE,
 )
 DESC_PRIORITY_RE = re.compile(
-    r"treatment process|consists of|septic|leach\s*field|comprised of|upgraded",
+    r"treatment process|consists of|leach\s*field|comprised of|upgraded",
     re.IGNORECASE,
 )
-_VOCAB_COMBINED_RE = re.compile(
+# compliance/regulatory boilerplate signals — these don't appear in factual facility descriptions
+BOILERPLATE_RE = re.compile(r"pursuant to|shall comply|must be \w+|shall be \w+", re.IGNORECASE)
+VOCAB_COMBINED_RE = re.compile(
     WASTEWATER_VOCAB_RE.pattern + "|" + DESC_PRIORITY_RE.pattern,
     re.IGNORECASE,
 )
-# short header lines: start with cap/digit/letter-dot, not a page marker, ≤80 chars
-RAW_HEADER_RE = re.compile(r"(?:^|\n)((?!===)[A-Za-z\d][^\n]{2,79})(?=\n)", re.MULTILINE)
+# section headers: uppercase or digit start, ≤80 chars (lowercase starts match sentence wraps too often)
+RAW_HEADER_RE = re.compile(r"(?:^|\n)([A-Z\d][^\n]{2,79})(?=\n)", re.MULTILINE)
 LOOKBACK_PAGES = 2
 LOOKBACK_CHARS = 100
 
-EFF_TERMS = [
-    "historic eff",
-    "historical eff",
-    "effluent lim",
-    "effluent mon",
-    "influent mon",
-    "groundwater qual",
-    "groundwater mon",
-    "effluent water qual",
-    "parameter unit",
-    "constituent unit",
-    "effluent character",
-    "discharge points and",
-    "analytical method",
-    "regulatory considerations",
-]
-APPLICABLE_PLANS = [
-    "applicable plans",
-    "plans, policies and regulations"
-]
-PLANNED_HEADER = [". Planned Changes", ". Planned upgrades"]
-PLANNED_TEXT = ["planned changes", "planned upgrade"]
-OTHER_PLANNED_END = [
-    "receiving water",
-    "hydrogeology",
-    "site geology",
-    "or anticipated noncompliance",
-]
-
-NOA_WDR_SPEC = {
-    "context": "full",
-    "strip_toc": False,
-    "desc_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS + ["following table"],
-    "changes_start": PLANNED_TEXT,
-    "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS,
-}
+CHANGES_PHRASES = ["planned changes", "planned upgrade", "proposed upgrade"]
+CHANGES_RE = re.compile(r"planned\s+changes|planned\s+upgrade|proposed\s+upgrade", re.IGNORECASE)
 
 SPEC = {
-    "NPDES": {
-        "context": "attachment",
-        "strip_toc": True,
-        "desc_end": APPLICABLE_PLANS + OTHER_PLANNED_END + PLANNED_HEADER + ["Table F-2"] + EFF_TERMS,
-        "changes_start": PLANNED_TEXT,
-        "changes_end": APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS,
-    },
-    "NOA": NOA_WDR_SPEC,
-    "WDR": NOA_WDR_SPEC,
+    "NPDES": {"context": "attachment", "strip_toc": True},
+    "NOA":   {"context": "full",       "strip_toc": False},
 }
+SPEC["WDR"] = SPEC["NOA"]
 
-CLUSTER_GAP = 500      # max chars between two vocab hits to count as clustered
-LOOKBACK_HEADER = 600  # how far back from cluster start to look for a section header
-MIN_CHANGES_VOCAB = 2  # min vocab hits in 1000 chars after "planned changes" phrase
+CLUSTER_GAP = 500          # max chars between two vocab hits to count as clustered
+CLUSTER_TRAIL = 400        # chars after last cluster hit to capture trailing sentence/paragraph
+LOOKBACK_HEADER = 600      # boilerplate/desc-signal check window around each cluster
+SNAP_BACK_CHARS = 2000     # how far back from cluster start to look for a section header
+MIN_CHANGES_VOCAB = 2      # min vocab hits in 1000 chars after "planned changes" phrase
+MAX_CLUSTER_DISTANCE = 10000  # max chars from first cluster; cuts off distant general-order boilerplate
 
-
-def phrase_pattern(phrases):
-    return re.compile(
-        "|".join(
-            r"\s+".join(
-                r"\s*".join(re.escape(ch) for ch in word if not ch.isspace())
-                for word in phrase.split()
-            )
-            for phrase in phrases
-            if phrase.strip()
-        ),
-        re.IGNORECASE,
-    )
-
-
-def first_match_after(text, phrases, start=0):
-    candidates = [(text.lower().find(p.lower(), start), p) for p in phrases]
-    candidates = [(pos, p) for pos, p in candidates if pos != -1]
-    return min(candidates, key=lambda x: x[0]) if candidates else (-1, None)
 
 
 def find_attachment_f_page(raw):
-    """Find Attachment F page in delimited full text. Returns (lookback_char_pos, page_num+1) or (None, None)."""
+    """Find Attachment F page in delimited full text. Returns (lookback_char_pos, page_num+1) or (None, None).
+    Starts a few pages early (LOOKBACK_PAGES) to capture any preamble before the title page."""
     page_re = re.compile(r"===PAGE (\d+)===\n")
     pages = list(page_re.finditer(raw))
     for i, page_match in enumerate(pages):
@@ -132,15 +81,15 @@ def find_attachment_f_page(raw):
     return None, None
 
 
-def find_best_cluster_start(text):
-    """Find the start of the best vocab cluster for a facility description.
+def find_desc_clusters(text):
+    """Find all vocab clusters that have a description signal nearby.
 
-    Prefers the earliest cluster that has a description signal (DESC_PRIORITY_RE) in
-    the window leading up to and including the cluster. Falls back to densest cluster.
+    Returns a list of (start, end) char positions — one per qualifying cluster.
+    Falls back to position-discounted densest cluster if none pass the boilerplate filter.
     """
-    hits = list(_VOCAB_COMBINED_RE.finditer(text))
+    hits = list(VOCAB_COMBINED_RE.finditer(text))
     if len(hits) < 2:
-        return -1
+        return []
     clusters = []
     current = [hits[0]]
     for h in hits[1:]:
@@ -153,57 +102,119 @@ def find_best_cluster_start(text):
     if len(current) >= 2:
         clusters.append(current)
     if not clusters:
-        return -1
-    # prefer earliest cluster with a description signal nearby
-    desc_clusters = [
-        c for c in clusters
-        if DESC_PRIORITY_RE.search(text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end()])
-    ]
+        return []
+    # prefer clusters with a description signal; exclude clusters that look like
+    # O&M/compliance boilerplate (>=2 boilerplate markers in the window)
+    desc_clusters = []
+    for c in clusters:
+        window = text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end()]
+        if not DESC_PRIORITY_RE.search(window):
+            continue
+        # skip table-of-contents clusters (dot leaders like "......")
+        if len(DOT_RE.findall(window)) >= 3:
+            continue
+        # extend boilerplate check past the cluster — compliance phrases often
+        # follow the vocab hits in the same paragraph
+        bpl_window = text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end() + LOOKBACK_HEADER]
+        if BOILERPLATE_RE.search(bpl_window):
+            continue
+        desc_clusters.append(c)
     if desc_clusters:
-        return desc_clusters[0][0].start()
-    # fallback: densest cluster
-    return max(clusters, key=len)[0].start()
+        n = len(text)
+        # sort by unique-term diversity / position — deprioritizes single-category clusters
+        # (e.g. "chlorination × 5") and late general-order sections over rich early descriptions.
+        # extract_from_pdf processes best cluster first; its start_pos anchors MAX_CLUSTER_DISTANCE,
+        # so nearby multi-facility clusters are still included in order.
+        desc_clusters.sort(key=lambda c: -len(set(h.group().lower() for h in c)) / (1 + c[0].start() / n))
+        return [(c[0].start(), c[-1].end()) for c in desc_clusters]
+    # fallback: same score — unique-term diversity / position
+    n = len(text)
+    best = max(clusters, key=lambda c: len(set(h.group().lower() for h in c)) / (1 + c[0].start() / n))
+    return [(best[0].start(), best[-1].end())]
+
+
+SECTION_NUM_RE = re.compile(r"(?:^|\n)((?:\d+|[IVX]{2,5})\.\s+[A-Z])", re.MULTILINE)
 
 
 def snap_back_to_header(text, cluster_start):
-    """Slide cluster_start backward to the last section header within LOOKBACK_HEADER chars."""
-    offset = max(0, cluster_start - LOOKBACK_HEADER)
+    """Slide cluster_start backward to the nearest paragraph break or section header.
+
+    Priority: numbered section header (e.g. '8. Facility Description') > last blank-line
+    paragraph break > last uppercase/digit-starting line > cluster_start.
+    """
+    offset = max(0, cluster_start - SNAP_BACK_CHARS)
     region = text[offset:cluster_start]
+    # highest priority: a numbered section header like "8. Facility Description"
+    section_headers = list(SECTION_NUM_RE.finditer(region))
+    if section_headers:
+        return offset + section_headers[-1].start(1)
+    last_para = region.rfind("\n\n")
+    if last_para != -1:
+        return offset + last_para + 2
     headers = list(RAW_HEADER_RE.finditer(region))
     if not headers:
         return cluster_start
     return offset + headers[-1].start(1)
 
 
-def find_changes_start(text, search_start, search_end, changes_re):
-    """Find first 'planned changes' match with at least MIN_CHANGES_VOCAB hits nearby."""
-    for match in changes_re.finditer(text, search_start, search_end):
+def find_changes_start(text, search_start, search_end):
+    """Find first 'planned changes/upgrade' match with vocab hits nearby.
+    Requires phrase at a line/sentence boundary; skips negated 'no planned changes'."""
+    for match in CHANGES_RE.finditer(text, search_start, search_end):
+        pre = text[max(0, match.start() - 10):match.start()].lower()
+        if re.search(r'\bno\s+$', pre):
+            continue
+        # must start on a new line or after sentence punctuation, not mid-sentence
+        pre2 = text[max(0, match.start() - 2):match.start()]
+        if pre2 and not re.search(r'[\n.:( ]$', pre2):
+            continue
         window = text[match.start():match.start() + 1000]
-        if len(_VOCAB_COMBINED_RE.findall(window)) >= MIN_CHANGES_VOCAB:
+        if len(VOCAB_COMBINED_RE.findall(window)) >= MIN_CHANGES_VOCAB:
             return match.start(), match.group(0).strip()
     return -1, None
 
 
-def extract_section(text, start, attachment_page, spec, mode):
-    end_pos, desc_end_phrase = first_match_after(text, spec["desc_end"], start + LOOKBACK_CHARS)
-    end = end_pos if end_pos != -1 else len(text)
+def find_changes_cluster_end(text, changes_pos):
+    """Find end of planned changes section by extending to the vocab cluster end."""
+    hits = list(VOCAB_COMBINED_RE.finditer(text, changes_pos, changes_pos + 5000))
+    if not hits:
+        return min(changes_pos + CLUSTER_TRAIL, len(text))
+    cluster_end = hits[0].end()
+    for h in hits[1:]:
+        if h.start() - cluster_end <= CLUSTER_GAP:
+            cluster_end = h.end()
+        else:
+            break
+    trail_end = min(cluster_end + CLUSTER_TRAIL, len(text))
+    next_para = text.find("\n\n", cluster_end, trail_end)
+    return next_para + 2 if next_para != -1 else trail_end
 
-    changes_re = phrase_pattern(spec["changes_start"])
-    changes_pos, changes_start_text = find_changes_start(text, start + LOOKBACK_CHARS, len(text), changes_re)
+
+def extract_section(text, start, cluster_end, attachment_page, spec, mode):
+    # Extend to next paragraph break after cluster end, capped at CLUSTER_TRAIL chars
+    trail_end = min(cluster_end + CLUSTER_TRAIL, len(text))
+    next_para = text.find("\n\n", cluster_end, trail_end)
+    end = next_para + 2 if next_para != -1 else trail_end
+
+    changes_pos, changes_start_text = find_changes_start(text, start + LOOKBACK_CHARS, len(text))
     if changes_pos == -1:
         # planned changes may precede the description (e.g. WDR Findings section)
-        changes_pos, changes_start_text = find_changes_start(text, 0, start, changes_re)
+        changes_pos, changes_start_text = find_changes_start(text, 0, start)
 
-    changes_text, planned_pos, changes_end_phrase = "", None, None
+    changes_text = ""
     if changes_pos != -1:
-        planned_pos = changes_pos
-        changes_end_pos, changes_end_phrase = first_match_after(text, spec["changes_end"], changes_pos + LOOKBACK_CHARS)
-        changes_end = changes_end_pos if changes_end_pos != -1 else len(text)
+        changes_end = find_changes_cluster_end(text, changes_pos)
         changes_text = text[changes_pos:changes_end].strip()
         if start <= changes_pos < end:
             end = changes_pos
 
     description = text[start:end].strip()
+    # If the section starts mid-page, prepend the current [Page N] marker so the
+    # source page is always visible at the top of every excerpt.
+    if not description.startswith("[Page"):
+        prior_pages = PAGE_MARKER_RE.findall(text[:start])
+        if prior_pages:
+            description = f"[Page {prior_pages[-1]}]\n" + description
     return {
         "txt_section": description,
         "txt_changes": changes_text,
@@ -212,12 +223,11 @@ def extract_section(text, start, attachment_page, spec, mode):
             "mode": mode,
             "attachment_f_page": attachment_page,
             "start_pos": start,
-            "planned_changes_pos": planned_pos,
+            "end_pos": end,
+            "planned_changes_pos": changes_pos if changes_pos != -1 else None,
             "txt_section_length": len(description),
             **({"txt_changes_length": len(changes_text)} if changes_text else {}),
-            "desc_end_phrase": desc_end_phrase,
             "changes_start_phrase": changes_start_text,
-            "changes_end_phrase": changes_end_phrase,
         },
     }
 
@@ -227,12 +237,14 @@ def extract_from_pdf(pdf_path, mode):
         return None
     spec = SPEC[mode]
 
-    _reader = PdfReader(pdf_path)
-    _root = _reader.trailer['/Root'].get_object()
-    is_portfolio = '/Collection' in _root
+    # PDFs with no extractable text (scanned images, no text layer) will produce
+    # empty page strings throughout — extract_permit_sections flags these as "unreadable".
+    reader = PdfReader(pdf_path)
+    root = reader.trailer['/Root'].get_object()
+    is_portfolio = '/Collection' in root
     page_parts = []
     if is_portfolio:
-        for r in package_sub_readers(_reader):
+        for r in package_sub_readers(reader):
             for page_num, page in enumerate(r.pages):
                 page_parts.append(f"===PAGE {page_num}===")
                 page_parts.append(page.extract_text() or "")
@@ -264,13 +276,25 @@ def extract_from_pdf(pdf_path, mode):
         contexts.append((clean_excerpt(raw), None))
 
     for text, attachment_page in contexts:
-        cluster_start = find_best_cluster_start(text)
-        if cluster_start == -1:
+        clusters = find_desc_clusters(text)
+        if not clusters:
+            # no vocab clusters found — likely image-only or no treatment description text
             continue
-        start = snap_back_to_header(text, cluster_start)
-        result = extract_section(text, start, attachment_page, spec, mode)
-        if result:
-            return result
+        sections = []
+        prev_end = 0
+        for cs, ce in clusters:
+            if cs < prev_end:
+                continue
+            # stop before distant clusters — appended general orders, monitoring tables, etc.
+            if sections and cs - sections[0]["metadata"]["start_pos"] > MAX_CLUSTER_DISTANCE:
+                break
+            start = snap_back_to_header(text, cs)
+            result = extract_section(text, start, ce, attachment_page, spec, mode)
+            sections.append(result)
+            prev_end = result["metadata"]["end_pos"]
+        combined_txt = "\n\n".join(r["txt_section"] for r in sections if r["txt_section"])
+        changes = next((r["txt_changes"] for r in sections if r["txt_changes"]), "")
+        return {**sections[0], "txt_section": combined_txt, "txt_changes": changes}
 
     full_text = contexts[-1][0] if contexts else ""
     return {"txt_section": "", "txt_changes": "", "full_text": full_text, "metadata": {"mode": mode}}
@@ -282,6 +306,8 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
         (p / "site_data.csv" for p in [pdf_path.parent] + list(pdf_path.parents) if (p / "site_data.csv").exists()),
         pdf_path.parent.parent / "site_data.csv",
     )
+    # Mode controls which part of the PDF to search and where to stop extraction.
+    # NPDES: Attachment F fact sheet only. NOA/WDR: full document.
     mode_map = {
         "NPDES PERMIT": "NPDES",
         "CO-PERMITTEE": "NPDES",
@@ -317,8 +343,8 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     return out
 
 
-def _extract_one(args):
-    directory, pdf_file, j, total = args
+def extract_one(args):
+    directory, pdf_file = args
     path = os.path.join(directory, pdf_file)
     return pdf_file, extract_permit_sections(path, regenerate_text_excerpts=True)
 
@@ -327,54 +353,49 @@ def main():
     rfr_data = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
     directory = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes"
 
-    site_df = pd.read_csv(rfr_data, dtype=str).fillna("")
-    pdfs = site_df["PDF_File"].tolist()
+    site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
+    pdfs = site_data["PDF_File"].tolist()
 
     unique_pdfs = list(dict.fromkeys(p for p in pdfs if p))
-    total = len(unique_pdfs)
-    args = [(directory, pdf_file, j, total) for j, pdf_file in enumerate(unique_pdfs)]
+    args = [(directory, pdf_file) for pdf_file in unique_pdfs]
 
-    _page_marker_re = re.compile(r"===PAGE \d+===")
+    page_marker_re = re.compile(PAGE_MARKER_RE.pattern + r"\n?")
     flag_counts = {"unreadable": 0}
     phrase_counts = defaultdict(Counter)
 
-    def _flag(pdf_file, reason):
+    def flag(pdf_file, reason):
         cache = Path(directory) / "text" / f"{Path(pdf_file).stem}.txt"
         cache.parent.mkdir(parents=True, exist_ok=True)
         cache.write_text(SEP, encoding="utf-8")
         flag_counts[reason] += 1
 
     with ProcessPoolExecutor(max_workers=20) as executor:
-        for pdf_file, r in executor.map(_extract_one, args):
+        for pdf_file, r in executor.map(extract_one, args):
             print(f"Processed {pdf_file}")
             if r is None:
                 continue
             txt = r.get("txt_section", "")
             full_text = r.get("full_text", "")
-            if not txt and len(_page_marker_re.sub("", full_text).strip()) < 100:
-                _flag(pdf_file, "unreadable")
-            for key in ("desc_end_phrase", "changes_start_phrase", "changes_end_phrase"):
-                val = (r.get("metadata") or {}).get(key)
-                if val:
-                    phrase_counts[key][re.sub(r"\s+", " ", val.lower().strip())] += 1
+            # flag as unreadable if no description AND very little non-marker text
+            # (these are scanned image PDFs with no text layer — needs OCR)
+            if not txt and len(page_marker_re.sub("", full_text).strip()) < 100:
+                flag(pdf_file, "unreadable")
+            val = (r.get("metadata") or {}).get("changes_start_phrase")
+            if val:
+                phrase_counts["changes_start_phrase"][re.sub(r"\s+", " ", val.lower().strip())] += 1
 
-    _norm = lambda s: re.sub(r"\s+", " ", s.lower().strip())
-    all_desc_end = list(dict.fromkeys(
-        APPLICABLE_PLANS + OTHER_PLANNED_END + PLANNED_HEADER + ["Table F-2", "following table"] + EFF_TERMS
-    ))
+    norm = lambda s: re.sub(r"\s+", " ", s.lower().strip())
     ref_lists = {
-        "desc_end_phrase":      ("Description end",       all_desc_end),
-        "changes_start_phrase": ("Planned changes start", PLANNED_TEXT),
-        "changes_end_phrase":   ("Planned changes end",   list(dict.fromkeys(APPLICABLE_PLANS + OTHER_PLANNED_END + EFF_TERMS))),
+        "changes_start_phrase": ("Planned changes start", CHANGES_PHRASES),
     }
     print(f"Non-machine-readable PDFs: {flag_counts['unreadable']}")
     print()
     for key, (label, ref) in ref_lists.items():
-        counts = Counter({_norm(t): 0 for t in ref})
+        counts = Counter({norm(t): 0 for t in ref})
         counts.update(phrase_counts[key])
         print(f"{label}:")
-        for term in sorted(ref, key=lambda t: -counts[_norm(t)]):
-            print(f"  {counts[_norm(term)]:4d}  {term!r}")
+        for term in sorted(ref, key=lambda t: -counts[norm(t)]):
+            print(f"  {counts[norm(term)]:4d}  {term!r}")
         print()
 
     txt_dir = Path(directory) / "text"
@@ -386,7 +407,6 @@ def main():
         for f, size in sizes[:10]:
             print(f"  {f.name}: {size} bytes")
 
-    site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
     site_data["Total_PDFs_Available"] = pd.to_numeric(
         site_data["Total_PDFs_Available"], errors="coerce"
     )

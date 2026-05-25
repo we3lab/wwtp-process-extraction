@@ -193,7 +193,7 @@ def apply_secondary_category_backfill(
 
 
 def get_werf_codes_for_cwns_process(cwns_process_name):
-    """for future mapping back to El Abbadi codes. Not directly used in this codebase"""
+    """for future mapping back to El Abbadi codes."""
     el_abbadi_dir = os.path.join(os.path.dirname(__file__), "data", "el_abbadi", "input")
     werf_codes_df = pd.read_csv(
         os.path.join(el_abbadi_dir, "UNIT_PROCESS_EI_CODES_WERF_modified.csv"), dtype=str

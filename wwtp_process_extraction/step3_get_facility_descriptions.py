@@ -9,7 +9,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers
 
-DATE_FOLDER = "2026-5-15"
+DATE_FOLDER = "2026-5-25"
 
 
 def clean_excerpt(text):
@@ -25,7 +25,7 @@ PAGE_MARKER_RE = re.compile(r"\[Page (\d+)\]")
 WASTEWATER_VOCAB_RE = re.compile(
     "|".join(
         re.escape(term)
-        for _, details, _ in extract_leaves(unitprocess_keywords, ignore_disposal=False)
+        for _, details, _ in extract_leaves(unitprocess_keywords)
         for term in details.get("alt_names", [])
         if term.strip()
     ),

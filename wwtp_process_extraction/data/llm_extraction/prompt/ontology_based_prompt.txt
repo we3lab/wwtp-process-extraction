@@ -15,7 +15,7 @@ Think step by step:
 5. Structure the output as a JSON file as requested
 
 Output:
-Return only a JSON object with this exact shape:
+IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a flat dict or any other structure. ALWAYS use this exact shape:
 {
     "items": [
         {
@@ -24,7 +24,7 @@ Return only a JSON object with this exact shape:
             "Role": string[]|null,
             "Substance": string[]|null,
             "Implementation": "present"|"planned"|"past",
-            "Location": "on-site"|"off-site"|"off-site"|null,
+            "Location": "on-site"|"off-site"|null,
             "Score": number,
             "Sentence": string
         }
@@ -33,17 +33,17 @@ Return only a JSON object with this exact shape:
 Do not add any other top-level fields.
 
 Field meaning and allowed cardinality:
-- Equipment: equipment name from ontology. Exactly one string or null.
-- Process: process names from ontology. Null or an array of 1+ strings.
+- Equipment: equipment name from ontology. Exactly one string, or null only if no specific equipment is identifiable. Populate whenever a physical unit or vessel is mentioned or clearly implied.
+- Process: process names from ontology. Null or an array of 1+ strings. Populate whenever a treatment process is described, even if Equipment is also set.
 - Role: role names from ontology. Null or an array (can be empty).
 - Substance: substance names explicitly mentioned in text. Null or an array (can be empty).
-- Rule: at least one of Equipment or Process must be non-null.
+- Rule: at least one of Equipment or Process must be non-null. Both should be set when both are relevant.
 - Implementation: one of "present", "planned", "past".
-- Location: one of "on-site", "off-site", "off-site", or null if unspecified.
+- Location: one of "on-site", "off-site", or null if unspecified.
 - Score: confidence score between 0 and 1.
-- Sentence: direct supporting sentence/quote from permit extract.
+- Sentence: shortest direct quote from the permit extract that supports the extraction.
 
-All equipment, process, role and substance names must be exactly as in the ontology lists.
+All equipment, process, role and substance names must be exactly as listed in the ontology sections (EQUIPMENTS, PROCESSES, ROLES, SUBSTANCES). Use the most specific applicable term. Ontology children will inherit parent types they are "SubEquip" or "SubProcess" of.
 
 Do not include example processes listed in boilerplate language.
 
@@ -57,4 +57,4 @@ Examples of treatments mentioned in permit text and the corresponding JSON outpu
 ########################################################################
 __PROMPT_EXAMPLES__
 
-You shall use these examples to understand how to extract the relevant information from the permit text and structure it in the required JSON format. The examples are not exhaustive and you should adapt the extraction to the specific content of the permit extract provided for the __FACILITY_NAME__ facility. Always ensure that your output strictly follows the specified JSON structure and field requirements.
+You shall use these examples to understand how to extract the relevant information from the permit text and structure it in the required JSON format. The examples are not exhaustive and you should adapt the extraction to the specific content of the permit extract provided for the __FACILITY_NAME__ facility. Always ensure that your output strictly follows the specified JSON structure and field requirements. Your response must be ONLY the JSON object {"items": [...]} with no other text.

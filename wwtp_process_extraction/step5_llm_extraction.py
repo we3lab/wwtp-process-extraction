@@ -18,7 +18,7 @@ from helpers.api_llm_search import (
     get_method_paths,
 )
 
-DATE_FOLDER = "2026-5-15"
+DATE_FOLDER = "2026-5-25"
 TXT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
@@ -83,6 +83,11 @@ def parse_args():
         default=None,
         help="Limit number of facilities processed (useful for testing).",
     )
+    parser.add_argument(
+        "--all_models",
+        action="store_true",
+        help="Loop over all models and methods (model_comparison mode). Ignores --model and --method.",
+    )
     return parser.parse_args()
 
 
@@ -91,7 +96,7 @@ def resolve_output_dir(method, model, web_search, txt_folder, facilities_informa
         suffix = f"{method}_{model}" + ("-web" if web_search else "")
         return Path("wwtp_process_extraction/output/llm_model_comparison") / suffix
 
-    # Derive date from txt_folder path (e.g. output/2026-5-15/npdes/text → 2026-5-15)
+    # Derive date from txt_folder path (e.g. output/2026-5-25/npdes/text → 2026-5-25)
     date_segment = next(
         (p for p in Path(txt_folder).parts if re.match(r'\d{4}-\d{1,2}-\d{1,2}', p)),
         None,
@@ -199,8 +204,12 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
-if __name__ == "__main__":
-    args = parse_args()
+ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gemini-2.0-flash-001", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
+MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096}
+ALL_METHODS = ["ontology-based", "list-based"]
+
+
+def run_extraction(args):
     method_paths = get_method_paths(args.method)
     reference_path = Path(method_paths["reference_path"])
     prompt_path = Path(method_paths["prompt_path"])
@@ -319,13 +328,14 @@ if __name__ == "__main__":
                 print(json.dumps(parsed, indent=2, ensure_ascii=False))
                 print(f"Cost: ${cost_usd:.6f}")
             else:
+                model_max = MAX_TOKENS_BY_MODEL.get(args.model)
                 result = chat_completion_json(
                     model=args.model,
                     system_message=system_msg,
                     user_message=user_msg,
                     temperature=0.0,
-                    max_tokens=None if args.no_token_limit else 10000,
-                    max_completion_tokens=None if args.no_token_limit else 20000,
+                    max_tokens=None if args.no_token_limit else min(10000, model_max or 10000),
+                    max_completion_tokens=None if args.no_token_limit else min(20000, model_max or 20000),
                     schema=example_schema,
                 )
                 parsed, completion_token, prompt_token, total_token, reasoning_tokens = result
@@ -365,36 +375,59 @@ if __name__ == "__main__":
         except Exception as exc:
             print("Error:", exc)
 
-    token_usage_df = pd.DataFrame(
-        token_usage_rows,
-        columns=[
-            "facility_name",
-            "txt_file",
-            "extraction_file",
-            "completion_token",
-            "prompt_token",
-            "total_token",
-            "reasoning_token",
-            "cost_usd",
-        ],
-    )
+    token_usage_cols = [
+        "facility_name", "txt_file", "extraction_file",
+        "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
+    ]
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
-    token_usage_df.to_csv(token_usage_csv_path, index=False)
-    print(f"Saved token usage CSV: {token_usage_csv_path}")
+    if token_usage_rows:
+        new_token_df = pd.DataFrame(token_usage_rows, columns=token_usage_cols)
+        if token_usage_csv_path.exists():
+            existing = pd.read_csv(token_usage_csv_path, dtype=str)
+            new_token_df = pd.concat([existing, new_token_df], ignore_index=True)
+        new_token_df.to_csv(token_usage_csv_path, index=False)
+        print(f"Saved token usage CSV: {token_usage_csv_path}")
 
-    manifest_df = pd.DataFrame(manifest_rows)
     manifest_csv_path = output_dir / "facility_extraction_manifest.csv"
-    manifest_df.to_csv(manifest_csv_path, index=False)
-    print(f"Saved facility manifest CSV: {manifest_csv_path}")
+    if manifest_rows:
+        new_manifest_df = pd.DataFrame(manifest_rows)
+        if manifest_csv_path.exists():
+            existing_manifest = pd.read_csv(manifest_csv_path, dtype=str)
+            new_manifest_df = pd.concat([existing_manifest, new_manifest_df], ignore_index=True)
+        new_manifest_df.to_csv(manifest_csv_path, index=False)
+        print(f"Saved facility manifest CSV: {manifest_csv_path}")
 
-# python wwtp_process_extraction/step3_llm_extraction_new.py \
+
+if __name__ == "__main__":
+    args = parse_args()
+    if args.all_models:
+        for method in ALL_METHODS:
+            for model in ALL_MODELS:
+                print(f"\n{'='*80}")
+                print(f"Running method={method} model={model}")
+                print(f"{'='*80}\n")
+                args.method = method
+                args.model = model
+                run_extraction(args)
+    else:
+        run_extraction(args)
+
+# 5-FACILITY COMPARISON
+# python wwtp_process_extraction/step5_llm_extraction.py \
+#   --all_models \
+#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
+
+# python wwtp_process_extraction/step5_llm_extraction.py \
 #   --method ontology-based \
 #   --model claude-sonnet-4-5 \
 #   --web_search \
 #   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 
-# python wwtp_process_extraction/step3_llm_extraction_new.py \
+# python wwtp_process_extraction/step5_llm_extraction.py \
 #   --method list-based \
 #   --model claude-sonnet-4-5 \
 #   --web_search \
 #   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
+
+# ALL FACILITIES, ONTOLOGY-BASED, GPT-5-MINI
+# python wwtp_process_extraction/step5_llm_extraction.py

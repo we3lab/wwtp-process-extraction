@@ -39,7 +39,7 @@ from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_a
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-DATE_FOLDER = "2026-5-15"
+DATE_FOLDER = "2026-5-25"
 DATA_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}"
 OUTPUT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/figures"
 MIN_COUNT = 20  # drop bar groups where both sources are below this threshold

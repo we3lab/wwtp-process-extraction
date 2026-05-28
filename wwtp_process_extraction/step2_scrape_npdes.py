@@ -8,6 +8,7 @@ import shutil
 import threading
 import time
 import glob
+from xml.etree.ElementPath import find
 import requests
 import pandas as pd
 import uuid
@@ -57,7 +58,7 @@ CIWQS_OVERLAY_WAIT = 180  # loading spinner / overlay after changing page size
 FACILITY_CIWS_COLUMNS = ["WDID", "Facility Name", "NPDES No."]
 XP_GRID = "//table[contains(@class,'ciwqsReportDataTable')]"
 
-DATE_FOLDER = '2026-5-15'  # set to e.g. '2026-5-15' to re-run steps 3/4 against an existing folder
+DATE_FOLDER = ''  # set to e.g. '2026-5-25' to re-run steps 3/4 against an existing folder
 OUT = "wwtp_process_extraction/output"
 full_path = os.path.join(OUT, DATE_FOLDER or f"{datetime.now().year}-{datetime.now().month}-{datetime.now().day}")
 pdfs_path = os.path.join(full_path, "pdfs")
@@ -548,6 +549,7 @@ def collect_facility_page_urls(program_urls):
     print("\n STEP 1: Collecting facility page URLs for Active NPDES+WDR/WWTF rows")
 
     facilities_by_place = {}  # place_id -> {"facilities": [dict keyed by FACILITY_CIWS_COLUMNS, ...]}
+    name_to_place_id = {}  # facility name -> place_id, collected pre-filter for reconciliation
 
     def _cell(cells, i):
         return cells[i].get_text(strip=True) if i is not None and 0 <= i < len(cells) else ""
@@ -598,19 +600,21 @@ def collect_facility_page_urls(program_urls):
                     continue
 
                 status = _cell(cells, col.get("Regulatory Measure Status")).upper()
-                program_cell = _cell(cells, col.get("Program")).upper()
                 plc_type = _cell(cells, col.get("Place/Project Type")).upper()
 
                 if status and status != CIWQS_RELATED_PERMIT_STATUS.upper():
                     continue
                 if plc_type and CIWQS_FACILITY_TYPE.upper() not in plc_type:
                     continue
-                if program_cell and not any(p in program_cell for p in ACCEPTED_PROGRAMS):
-                    continue
 
+                # Collect facility name -> place_id unconditionally for reconciliation below
                 place_id = parse_qs(
                     urlparse(_cell_href(cells, col.get("Facility Name"))).query
                 ).get("placeID", [None])[0]
+                raw_name = _cell(cells, col.get("Facility Name"))
+                if place_id and raw_name:
+                    name_to_place_id[raw_name] = place_id
+
                 if not place_id:
                     continue
 
@@ -623,6 +627,36 @@ def collect_facility_page_urls(program_urls):
                 continue
 
         driver.quit()
+
+    # Reconcile against all_ca_npdes.csv to catch any facilities missed by per-program scrapes
+    all_ca_npdes_path = os.path.join(full_path, "all_ca_npdes.csv")
+    if os.path.exists(all_ca_npdes_path):
+        npdes_df = pd.read_csv(all_ca_npdes_path, dtype=str).fillna("")
+        scraped_names = {
+            f["Facility Name"]
+            for entry in facilities_by_place.values()
+            for f in entry.get("facilities", [])
+        }
+        added = 0
+        for _, row in npdes_df.iterrows():
+            fac_name = row.get("Facility Name", "").strip()
+            if not fac_name or fac_name in scraped_names:
+                continue
+            place_id = name_to_place_id.get(fac_name)
+            if place_id and place_id not in facilities_by_place:
+                facilities_by_place[place_id] = {
+                    "facilities": [{
+                        "WDID": row.get("WDID", "").strip(),
+                        "Facility Name": fac_name,
+                        "NPDES No.": row.get("NPDES No.", "").strip(),
+                    }]
+                }
+                print(f"  + Reconciled from all_ca_npdes.csv: {fac_name} (placeID={place_id})")
+                added += 1
+            elif not place_id:
+                print(f"  ! {fac_name} in all_ca_npdes.csv but not found in any CIWQS table")
+        if added:
+            print(f"  Reconciliation added {added} missing facilities")
 
     print(f"\n✓ Found {len(facilities_by_place)} unique facilities (placeIDs)")
 
@@ -1113,11 +1147,16 @@ if __name__ == "__main__":
 
     # Sometimes it takes a few tries to get the facility results page to load / Excel to download
     # Try a few times or wait a couple of hours to let CIWQS stabilize if needed
+
+    # sometimes helpful to clear chrome temp files
+    # find /tmp -maxdepth 1 -name "chrome_user_data_*" -user daly -print
+    # find /tmp -maxdepth 1 -name "chrome_user_data_*" -user daly -exec rm -rf {} +
+
     # program_urls = run_ciwqs_search()
     # facilities = collect_facility_page_urls(program_urls)
     # To restart from a checkpoint, replace the step(s) above with:
     with open(os.path.join(full_path, "facilities.json")) as f:
         facilities = json.load(f)
-    # facilities = download_facility_page_pdfs(facilities)
+    facilities = download_facility_page_pdfs(facilities)
     npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs, pdf_signals)

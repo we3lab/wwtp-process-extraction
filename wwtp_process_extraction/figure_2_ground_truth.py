@@ -17,7 +17,7 @@ from helpers.utils import (
 from helpers.plotting import COLORS
 from helpers.plotting import make_grouped_legend, save_and_close, set_thick_spines
 
-DATE_FOLDER = "2026-5-15"
+DATE_FOLDER = "2026-5-25"
 figures_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
 os.makedirs(figures_dir, exist_ok=True)
 
@@ -124,16 +124,9 @@ def main():
     ground_truth_process_cols = [c for c in ground_truth_df.columns if c not in meta_cols]
     npdes_text_process_cols = [c for c in npdes_text_df.columns if c not in meta_cols]
 
-    disposal_leaves = {
-        name
-        for name, _, _ in extract_leaves(
-            unitprocess_keywords["Solids Processing"]["Disposal"], ignore_disposal=False
-        )
-    }
     all_sheet_process_cols = [
         c
         for c in dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols)
-        if c not in disposal_leaves
     ]
 
     common_facilities = set(ground_truth_df["Place ID"]) & set(npdes_text_df["Place ID"]) & set(cwns_mapping["Place ID"])

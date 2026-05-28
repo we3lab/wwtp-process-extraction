@@ -293,6 +293,8 @@ def chat_completion_json(
 
     try:
         resp = requests.post(url, headers=get_headers(), json=payload, timeout=600)
+        if not resp.ok:
+            print(f"API error {resp.status_code}: {resp.text[:500]}")
         resp.raise_for_status()
         data = resp.json()
 

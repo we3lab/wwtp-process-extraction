@@ -12,7 +12,7 @@ from helpers.utils import (
     apply_secondary_category_backfill,
 )
 
-DATE_FOLDER = "2026-5-15"
+DATE_FOLDER = "2026-5-25"
 
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
@@ -52,7 +52,7 @@ def main():
 
     site_df = pd.read_csv(rfr_data, dtype=str).fillna("")
 
-    leaves = list(extract_leaves(keywords, ignore_disposal=True))
+    leaves = list(extract_leaves(keywords))
     all_keys = [name for name, _, _ in leaves]
     group_to_columns = {}
     column_priority = {}

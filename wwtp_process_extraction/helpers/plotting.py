@@ -4,6 +4,7 @@ from pathlib import Path
 
 COLORS = {
     "cwns": "#C1AC0C",  # Gold for CWNS
+    "cwns_manual": "#7A6C04", # Darker gold for CWNS + El Abbadi manual corrections
     "npdes_kw": "#5bada5ff",  # Dark blue for NPDES keyword / manual readings
     "npdes_llm": "#305993ff",  # Orange for LLM results
 }

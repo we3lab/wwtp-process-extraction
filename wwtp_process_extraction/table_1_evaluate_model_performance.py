@@ -173,16 +173,16 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
     df = pd.read_csv(workbook, dtype=str)
     df["PDF_File"] = df["PDF_File"].replace(BAD_TO_GOOD_PDF_NAMES)
 
-    truth_pdfs = set(df.loc[df["Method"].eq("Truth"), "PDF_File"].dropna())
+    truth_pdfs = set(df.loc[df["Method"].eq("Manual Read"), "PDF_File"].dropna())
     df = df[df["PDF_File"].isin(truth_pdfs)].copy()
 
     label_cols = [col for col in df.columns if col not in {"Method", "Model", "PDF_File"}]
     label_to_family = build_label_to_family_map(json.loads(keywords_path.read_text()))
 
-    truth = df[df["Method"].eq("Truth")].set_index("PDF_File")
+    truth = df[df["Method"].eq("Manual Read")].set_index("PDF_File")
     results: list[dict[str, Any]] = []
 
-    for (method, model), subset in df[df["Method"].ne("Truth")].groupby(["Method", "Model"], sort=True):
+    for (method, model), subset in df[df["Method"].ne("Manual Read")].groupby(["Method", "Model"], sort=True):
         subset = subset.set_index("PDF_File").reindex(truth.index)
 
         per_pdf_label_f1: list[float] = []

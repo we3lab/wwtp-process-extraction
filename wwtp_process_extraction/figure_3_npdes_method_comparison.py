@@ -27,7 +27,7 @@ from helpers.plotting import (
     set_thick_spines,
 )
 
-DATE_FOLDER = "2026-5-15"
+DATE_FOLDER = "2026-5-25"
 
 MANUAL_STATUS_ORDER = ["PRESENT", "FUTURE", "PAST", "off_site"]
 

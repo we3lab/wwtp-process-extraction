@@ -123,7 +123,7 @@ uplist_eicodes['2022_MIN_IND'] = uplist_eicodes['PRES_IND']
 
 # WE3LAB NEW ADDITIONS
 
-leaves = extract_leaves(unitprocess_keywords, ignore_disposal=False)
+leaves = extract_leaves(unitprocess_keywords)
 all_keys = [name for name, _, _ in leaves]
 column_priority = {name: details.get("priority", 1) for name, details, _ in leaves if isinstance(details, dict)}
 top_category_to_columns, column_secondary_categories, column_global_priority = \

@@ -14,13 +14,13 @@ Think step by step:
 4. Structure the output as a JSON file as requested
 
 Output:
-Return only a JSON object with this exact shape:
+IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a flat dict or any other structure. ALWAYS use this exact shape:
 {
     "items": [
         {
             "Process": string[],
             "Implementation": "present"|"planned"|"past",
-            "Location": "on-site"|"off-site"|"off-site"|null,
+            "Location": "on-site"|"off-site"|null,
             "Score": number,
             "Sentence": string
         }
@@ -31,9 +31,9 @@ Do not add any other top-level fields.
 Field meaning and allowed cardinality:
 - Process: process names from the list. Array of 1+ strings.
 - Implementation: one of "present", "planned", "past".
-- Location: one of "on-site", "off-site", "off-site", or null if unspecified.
+- Location: one of "on-site", "off-site", or null if unspecified.
 - Score: confidence score between 0 and 1.
-- Sentence: direct supporting sentence/quote from permit extract.
+- Sentence: shortest direct quote from the permit extract that supports the extraction.
 
 All process names must be exactly as in the given list.
 
@@ -48,3 +48,5 @@ __UNIT_PROCESS_LIST__
 Examples of treatments mentioned in permit text and the corresponding JSON output:
 ########################################################################
 __PROMPT_EXAMPLES__
+
+Your response must be ONLY the JSON object {"items": [...]} with no other text.

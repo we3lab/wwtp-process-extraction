@@ -17,7 +17,7 @@ GITHUB_BASE = (
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
 
-DATE_STR = "2026-5-15"
+DATE_STR = "2026-5-25"
 
 input_dir = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_extraction")
 output_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_unit_processes_by_pdf.csv")
@@ -27,14 +27,14 @@ output_json_dir = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_postproce
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
 MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
-WORKBOOK_PATH = MODEL_COMPARISON_DIR / "model_perfomrance_5_test.xlsx"
+GROUND_TRUTH_PATH = MODEL_COMPARISON_DIR / "ground_truth.csv"
 
 with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
 
 leaves = []
 for top_cat, cat_val in keywords.items():
-    for name, details, group_id in extract_leaves({top_cat: cat_val}, ignore_disposal=False):
+    for name, details, group_id in extract_leaves({top_cat: cat_val}):
         leaves.append((name, details, group_id, top_cat))
 columns = [name for name, _, _, _ in leaves]
 group_to_columns = {}
@@ -483,8 +483,8 @@ if unmatched_files:
 # Truth rows come from the Excel workbook (read-only); predictions are generated
 # fresh from all JSON dirs. Output is model_comparison_all.csv which table_1 loads.
 
-wb_df = pd.read_excel(WORKBOOK_PATH, dtype=str).fillna("")
-truth_rows = wb_df[wb_df["Method"] == "Truth"].copy()
+wb_df = pd.read_csv(GROUND_TRUTH_PATH, dtype=str).fillna("")
+truth_rows = wb_df[wb_df["Method"] == "Manual Read"].copy()
 up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
 truth_pdf_stems = set(
     pdf.replace(".pdf", "") for pdf in truth_rows["PDF_File"].dropna() if pdf

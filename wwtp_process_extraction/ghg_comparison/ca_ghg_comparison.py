@@ -3,7 +3,7 @@
 # Publication: https://eartharxiv.org/repository/view/7980/
 # Modified by WE3Lab: California-specific comparison across three treatment process data sources.
 #
-#   Common set = Place IDs present in BOTH cwns_processes_by_facility.csv AND llm output.
+#   Common set = Place IDs present in BOTH cwns_unit_processes_by_facility.csv AND llm output.
 #
 #   Source 1 - El Abbadi all-sources: tt_assignments_2022.csv for matched CA facilities.
 #   Source 2 - El Abbadi CWNS-only: Source 1 without non-CWNS supplemental data
@@ -435,11 +435,11 @@ def totals_from_df(df):
 
 def load_common_place_ids():
     """
-    Return the set of Place IDs present in both cwns_processes_by_facility.csv and the
+    Return the set of Place IDs present in both cwns_unit_processes_by_facility.csv and the
     LLM output — the same intersection used in figure_4_source_comparison.py.
     """
     cwns_out = pd.read_csv(
-        REPO_ROOT / 'wwtp_process_extraction/output/cwns_processes_by_facility.csv', dtype=str)
+        REPO_ROOT / 'wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv', dtype=str)
     ciwqs = pd.read_csv(
         REPO_ROOT / 'wwtp_process_extraction/data/ciwqs_to_cwns.csv', dtype=str)
     llm = pd.read_csv(
@@ -484,7 +484,7 @@ def load_cwns_source(common_pids, include_manual=True):
         manual lagoon corrections, and manual TT overrides for large plants.
 
     include_manual=False (Source 2): re-derives TT assignments from
-        cwns_processes_by_facility.csv using our pipeline (same as Source 3),
+        cwns_unit_processes_by_facility.csv using our pipeline (same as Source 3),
         with BIOGAS_EL=0. No manual corrections of any kind.
     """
     link = pid_to_cwns_flow(common_pids)
@@ -506,7 +506,7 @@ def load_cwns_source(common_pids, include_manual=True):
 
     # include_manual=False: re-derive from CWNS unit processes
     ca_cwns = pd.read_csv(
-        REPO_ROOT / 'wwtp_process_extraction/output/cwns_processes_by_facility.csv',
+        REPO_ROOT / 'wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv',
         dtype=str)
     cwns_by_pid, _ = build_cwns_facility_processes(ca_cwns, target_facilities=common_pids)
     cwns_by_pid = cwns_by_pid[cwns_by_pid['Place ID'].isin(common_pids)].copy()
@@ -705,13 +705,13 @@ def plot_comparison(results, output_dir):
     sources = ['source2', 'source1', 'source3']
 
     components = {
-        'CH₄ (Scope 1)':      ('CH4_MTyr',    '#e6194b'),
-        'N₂O (Scope 1)':      ('N2O_MTyr',    '#3cb44b'),
-        'Bio CO₂ (Scope 1)':   ('NC_CO2_MTyr', '#4363d8'),
-        'FNG combustion (Scope 1)': ('NG_comb_MTyr','#f58231'),
-        'Biosolids (Scope 1)':('solids_MTyr', '#911eb4'),
-        'Electricity (Scope 2)':('elec_MTyr', '#42d4f4'),
-        'NG upstream (Scope 3)':('NG_up_MTyr','#f032e6'),
+        'CH₄ (Scope 1)':            ('CH4_MTyr',     cb_palette[0]),
+        'N₂O (Scope 1)':            ('N2O_MTyr',     cb_palette[1]),
+        'Bio CO₂ (Scope 1)':        ('NC_CO2_MTyr',  cb_palette[2]),
+        'FNG combustion (Scope 1)': ('NG_comb_MTyr', cb_palette[3]),
+        'Biosolids (Scope 1)':      ('solids_MTyr',  cb_palette[4]),
+        'Electricity (Scope 2)':    ('elec_MTyr',    cb_palette[5]),
+        'NG upstream (Scope 3)':    ('NG_up_MTyr',   cb_palette[6]),
     }
 
     x = np.arange(len(sources))
@@ -754,7 +754,6 @@ TT_SECONDARY = {
     'LAGOON_UNCATEGORIZED': 'Lagoon',
 }
 
-# display order and hatch patterns (color = source bar color; hatch = treatment type)
 SECONDARY_ORDER = [
     _NO_NR,
     'AS + Nitrification',
@@ -763,20 +762,6 @@ SECONDARY_ORDER = [
     'BNR-MBR',
     'Lagoon',
 ]
-SECONDARY_HATCHES = {
-    _NO_NR:                   '',
-    'AS + Nitrification':     '///',
-    'AS + Nitrif./Denitrif.': '\\\\\\',
-    'AS + BNR':               'xxx',
-    'BNR-MBR':                '---',
-    'Lagoon':                 '+++',
-}
-
-SOURCE_COLORS = {
-    'source2': COLORS['cwns'],
-    'source1': COLORS['cwns_manual'],
-    'source3': COLORS['npdes_llm'],
-}
 
 
 def n2o_by_secondary(df, ef, label=''):
@@ -805,7 +790,7 @@ def n2o_by_secondary(df, ef, label=''):
 
 
 # colorblind-safe palette mapped to treatment categories
-cb_palette = ['#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2', '#CC79A7']
+cb_palette = ['#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2', '#CC79A7', '#D55E00']
 CATEGORY_COLORS = dict(zip(SECONDARY_ORDER, cb_palette))
 
 
@@ -827,10 +812,6 @@ def _grouped_legend(ax, header_items_pairs):
 
 
 def plot_n2o_breakdown(dfs, ef, output_dir):
-    """Two output files:
-    - ca_n2o_by_secondary_hatch.png: bar color = data source, hatch = treatment category
-    - ca_n2o_by_secondary_color.png: bar color = treatment category (cb_palette palette)
-    """
     from matplotlib.patches import Patch
     sources = ['source2', 'source1', 'source3']
 
@@ -854,43 +835,6 @@ def plot_n2o_breakdown(dfs, ef, output_dir):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    # version 1: source color + hatch pattern per treatment category
-    fig, ax = plt.subplots(figsize=(7, 3.5))
-    bottoms = np.zeros(len(sources))
-    for cat in present_cats:
-        vals = np.array([breakdowns[s].get(cat, 0) for s in sources])
-        hatch = SECONDARY_HATCHES.get(cat, '')
-        colors = [SOURCE_COLORS[s] for s in sources]
-        ax.bar(x, vals, width, bottom=bottoms, color=colors, edgecolor='black', linewidth=0.4)
-        if hatch:
-            hb = ax.bar(x, vals, width, bottom=bottoms, color='none',
-                        hatch=hatch, edgecolor='black', linewidth=0)
-            for p in hb:
-                p.set_hatch_linewidth(0.8)
-        bottoms += vals
-    _style_ax(ax)
-    src_handles = [
-        Patch(facecolor=SOURCE_COLORS['source2'], edgecolor='black', linewidth=0.5,
-              label='El Abbadi (CWNS-only)'),
-        Patch(facecolor=SOURCE_COLORS['source1'], edgecolor='black', linewidth=0.5,
-              label='El Abbadi (CWNS + Manual)'),
-        Patch(facecolor=SOURCE_COLORS['source3'], edgecolor='black', linewidth=0.5,
-              label='New Data (Permit Scraping)'),
-    ]
-    cat_handles = []
-    for cat in present_cats:
-        hatch = SECONDARY_HATCHES.get(cat, '')
-        p = Patch(facecolor='#aaaaaa', hatch=hatch,
-                  edgecolor='black', linewidth=0.5, label=cat)
-        if hatch:
-            p.set_hatch_linewidth(0.8)
-        cat_handles.append(p)
-    _grouped_legend(ax, [('Data Source', src_handles), ('Treatment Type', list(reversed(cat_handles)))])
-    fig.tight_layout()
-    fig.savefig(output_dir / 'ca_n2o_by_secondary_hatch.png', dpi=150, bbox_inches='tight')
-    plt.close(fig)
-
-    # version 2: colorblind palette per treatment category, source by position
     fig, ax = plt.subplots(figsize=(7, 3.5))
     bottoms = np.zeros(len(sources))
     for cat in present_cats:

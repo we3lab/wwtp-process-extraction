@@ -1,6 +1,6 @@
 """
 Grouped stacked bar-chart comparison of unit process detection across two data sources:
-  - CWNS (California facilities from output/cwns_processes_by_facility.csv)
+  - CWNS (California facilities from output/cwns_unit_processes_by_facility.csv)
   - LLM Search (output/date/llm_unit_processes_by_facility.csv)
 
 CWNS rows join ``ciwqs_to_cwns.csv`` to the CA step0 export (exact ``CWNS_ID``).
@@ -275,7 +275,7 @@ kw_df = pd.read_csv(
     )
 
 ca_cwns = pd.read_csv(
-    "wwtp_process_extraction/output/cwns_processes_by_facility.csv",
+    "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv",
     dtype=str,
 )
 ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].str.strip()
@@ -337,7 +337,7 @@ facility_names = unmatched_df['FACILITY_NAME'].tolist()
 print(', '.join(facility_names))
 
 # CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
-cwns_csv = Path("wwtp_process_extraction/output/cwns_processes_by_facility.csv")
+cwns_csv = Path("wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv")
 mapping_csv = Path("wwtp_process_extraction/data/ciwqs_to_cwns.csv")
 cwns_unmatched_df = pd.read_csv(cwns_csv, dtype=str).fillna("")
 mapping_df = pd.read_csv(mapping_csv, dtype=str, keep_default_na=False).fillna("")
@@ -539,7 +539,7 @@ for comparison_type in ["llm", "kw"]:
 SITE_DATA = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
 FACILITIES_JSON = f"wwtp_process_extraction/output/{DATE_FOLDER}/facilities.json"
 ALL_NPDES = f"wwtp_process_extraction/output/{DATE_FOLDER}/all_ca_npdes.csv"
-CWNS_TABLE = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
+CWNS_TABLE = "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv"
 CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
 
 ciwqs_cols = [

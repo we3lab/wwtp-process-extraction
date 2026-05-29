@@ -88,7 +88,7 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities):
     return rows
 
 
-CWNS_CA_CSV = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
+CWNS_CA_CSV = "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv"
 
 
 def main():

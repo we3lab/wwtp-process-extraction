@@ -39,9 +39,8 @@ from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_a
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-DATE_FOLDER = "2026-5-25"
-DATA_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}"
-OUTPUT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/figures"
+DATA_DIR = f"wwtp_process_extraction/output"
+OUTPUT_DIR = f"wwtp_process_extraction/output/figures"
 MIN_COUNT = 20  # drop bar groups where both sources are below this threshold
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -303,7 +302,7 @@ n_attach = int((merged_map["_cwns_merge"] == "both").sum())
 print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
 
 # Save facilities with no CWNS match
-site_data_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+site_data_path = f"wwtp_process_extraction/output/site_data.csv"
 pid_to_name = {}
 _site = pd.read_csv(site_data_path, dtype=str).fillna("")
 site_facs = set(_site["Place ID"]) - {""}
@@ -355,6 +354,37 @@ unmatched_cwns_no_kw = cwns_unmatched_df[
 
 unmatched_cwns_no_kw.to_csv(f"{DATA_DIR}/unmatched_cwns_no_kw.csv", index=False)
 
+
+# ── Final merged unit-process table (CWNS + CIWQS/LLM) ────────────────────────
+# One row per (facility, source). source ∈ {cwns, ciwqs}. Facilities present in
+# only one source get a single row. Built from the full llm_df, before the
+# overlap filtering below, so ciwqs-only facilities are kept.
+_meta = cwns_mapping.drop_duplicates("Place ID").set_index("Place ID")
+_llm_name = llm_df.drop_duplicates("Place ID").set_index("Place ID")["Facility Name"].to_dict()
+
+final_rows = []
+for source_name, src_df in [("cwns", cwns_df), ("ciwqs", llm_df)]:
+    proc_in_df = [c for c in proc_cols if c in src_df.columns]
+    for _, r in src_df.iterrows():
+        pid = r["Place ID"]
+        m = _meta.loc[pid] if pid in _meta.index else None
+        row = {
+            "source": source_name,
+            "CWNS FACILITY_ID": m["FACILITY_ID"] if m is not None else "",
+            "CWNS FACILITY_NAME": m["CWNS Facility Name"] if m is not None else "",
+            "CIWQS PLACE_ID": pid,
+            "CIWQS Facility Name": _llm_name.get(pid) or (m["Facility Name"] if m is not None else ""),
+        }
+        for c in proc_cols:
+            row[c] = r[c] if c in proc_in_df else ""
+        final_rows.append(row)
+
+final_cols = ["source", "CWNS FACILITY_ID", "CWNS FACILITY_NAME", "CIWQS PLACE_ID", "CIWQS Facility Name"] + proc_cols
+final_df = pd.DataFrame(final_rows, columns=final_cols)
+final_path = f"{DATA_DIR}/unit_processes_by_facility.csv"
+final_df.to_csv(final_path, index=False)
+print(f"\nSaved merged unit processes ({len(final_df)} rows, "
+      f"{(final_df['source'] == 'cwns').sum()} cwns + {(final_df['source'] == 'ciwqs').sum()} ciwqs): {final_path}")
 
 cwns_facilities_all = set(cwns_df["Place ID"])
 kw_df, llm_df = [df[df["Place ID"].isin(cwns_facilities_all)].copy() for df in [kw_df, llm_df]]
@@ -517,7 +547,13 @@ for comparison_type in ["llm", "kw"]:
     ]
 
     n = len(cat_labels)
-    final_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
+    source_counts = [all_cwns, all_llm] if not include_kw else [all_cwns, all_kw, all_llm]
+    # Drop the Offsite legend entry unless some bar actually has an offsite band
+    has_offsite = any(c.get("OFFSITE", 0) > 0 for counts in source_counts for c in counts)
+    legend_items = status_legend_items_with_not_present
+    if not has_offsite:
+        legend_items = [it for it in legend_items if it[0] != "Offsite"]
+    final_dir = f"wwtp_process_extraction/output/final"
     os.makedirs(final_dir, exist_ok=True)
     path = f"{final_dir}/figure_4_major_categories_{suffix}.png"
     fig, ax = plt.subplots(figsize=(max(14, n * (0.55 if not include_kw else 0.7)), 6))
@@ -527,8 +563,8 @@ for comparison_type in ["llm", "kw"]:
         positions=list(range(n)),
         source_items=source_items,
         stack_order=stack_order_with_not_present,
-        status_legend_items=status_legend_items_with_not_present,
-        source_counts=[all_cwns, all_llm] if not include_kw else [all_cwns, all_kw, all_llm],
+        status_legend_items=legend_items,
+        source_counts=source_counts,
         bar_width=bar_w if not include_kw else 0.24,
     )
     plt.tight_layout()
@@ -536,9 +572,9 @@ for comparison_type in ["llm", "kw"]:
     print(f"    Saved {os.path.basename(path)}")
 
 
-SITE_DATA = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
-FACILITIES_JSON = f"wwtp_process_extraction/output/{DATE_FOLDER}/facilities.json"
-ALL_NPDES = f"wwtp_process_extraction/output/{DATE_FOLDER}/all_ca_npdes.csv"
+SITE_DATA = f"wwtp_process_extraction/output/site_data.csv"
+FACILITIES_JSON = f"wwtp_process_extraction/output/facilities.json"
+ALL_NPDES = f"wwtp_process_extraction/output/all_ca_npdes.csv"
 CWNS_TABLE = "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv"
 CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
 

@@ -143,11 +143,18 @@ active_ups = (active_ups.sort_values('REPORT_YEAR')
               .drop_duplicates(subset=['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME'], keep='last'))
 active_ups = active_ups[active_ups['CWNS_NUM'].isin(set(wwtps['CWNS_NUM']))]
 
+def has_change(change_type):
+    # CHANGE_TYPE may be a comma-separated list; real change if any token isn't "No Change"
+    if not isinstance(change_type, str):
+        return False
+    return any(t.strip() and t.strip().lower() != 'no change' for t in change_type.split(','))
+
 def get_status(row):
     if row.get('CHANGE_TYPE') == 'Abandonment':
         return 'PAST'
     if row['PRES_IND'] == 1 and row['PROJ_IND'] == 1:
-        return 'PRESENT_AND_FUTURE'
+        # only flag a future change if an actual change is recorded; otherwise just present
+        return 'PRESENT_AND_FUTURE' if has_change(row.get('CHANGE_TYPE')) else 'PRESENT'
     return 'PRESENT' if row['PRES_IND'] == 1 else 'FUTURE'
 
 active_ups['STATUS'] = active_ups.apply(get_status, axis=1)

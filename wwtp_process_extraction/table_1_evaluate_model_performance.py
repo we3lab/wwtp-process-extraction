@@ -173,29 +173,32 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
     df = pd.read_csv(workbook, dtype=str)
     df["PDF_File"] = df["PDF_File"].replace(BAD_TO_GOOD_PDF_NAMES)
 
-    truth_pdfs = set(df.loc[df["Method"].eq("Manual Read"), "PDF_File"].dropna())
-    df = df[df["PDF_File"].isin(truth_pdfs)].copy()
+    # Match manual readings to predictions by Place ID (a single PDF can cover
+    # multiple facilities, so PDF_File is not a unique key).
+    manual_ids = set(df.loc[df["Method"].eq("Manual Read"), "Place ID"].dropna())
+    df = df[df["Place ID"].isin(manual_ids)].copy()
 
-    label_cols = [col for col in df.columns if col not in {"Method", "Model", "PDF_File"}]
+    meta_cols = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
+    label_cols = [col for col in df.columns if col not in meta_cols]
     label_to_family = build_label_to_family_map(json.loads(keywords_path.read_text()))
 
-    truth = df[df["Method"].eq("Manual Read")].set_index("PDF_File")
+    manual = df[df["Method"].eq("Manual Read")].drop_duplicates("Place ID").set_index("Place ID")
     results: list[dict[str, Any]] = []
 
     for (method, model), subset in df[df["Method"].ne("Manual Read")].groupby(["Method", "Model"], sort=True):
-        subset = subset.set_index("PDF_File").reindex(truth.index)
+        subset = subset.drop_duplicates("Place ID").set_index("Place ID").reindex(manual.index)
 
         per_pdf_label_f1: list[float] = []
         per_pdf_family_f1: list[float] = []
         per_pdf_state_acc: list[float] = []
 
-        for pdf in truth.index:
-            truth_row = truth.loc[pdf, label_cols]
-            pred_row = subset.loc[pdf, label_cols]
+        for place_id in manual.index:
+            manual_row = manual.loc[place_id, label_cols]
+            pred_row = subset.loc[place_id, label_cols]
 
-            _, _, label_f1, _ = label_presence_f1(truth_row, pred_row, label_cols)
-            _, _, family_f1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
-            state_acc = exact_state_accuracy(truth_row, pred_row, label_cols)
+            _, _, label_f1, _ = label_presence_f1(manual_row, pred_row, label_cols)
+            _, _, family_f1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
+            state_acc = exact_state_accuracy(manual_row, pred_row, label_cols)
 
             per_pdf_label_f1.append(label_f1)
             per_pdf_family_f1.append(family_f1)
@@ -262,7 +265,12 @@ def load_price_per_pdf() -> pd.DataFrame:
 
 
 def load_structured_output_rates() -> pd.DataFrame:
-    """Check what fraction of JSON outputs match the expected {"items": [...]} schema."""
+    """Fraction of raw model outputs that matched the schema before any coercion.
+
+    The saved JSON is coerced to the {"items": [...]} shape before writing, so it
+    can't be re-checked here. step5 records the raw-output conformance per
+    extraction in the manifest's "structured_output" column; average that.
+    """
     rows = []
     for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
         if not dir_path.is_dir():
@@ -274,17 +282,20 @@ def load_structured_output_rates() -> pd.DataFrame:
             method_label, model_label = "List", dir_name[len("list-based_"):]
         else:
             continue
-        json_files = list(dir_path.glob("*.json"))
-        if not json_files:
+        manifest_path = dir_path / "facility_extraction_manifest.csv"
+        if not manifest_path.exists():
             continue
-        matched = sum(
-            1 for f in json_files
-            if isinstance((d := json.loads(f.read_text())).get("items"), list)
-        )
+        man = pd.read_csv(manifest_path, dtype=str).fillna("")
+        if "structured_output" not in man.columns:
+            continue
+        flags = man["structured_output"].str.strip().str.lower()
+        flags = flags[flags.isin(["true", "false"])]
+        if flags.empty:
+            continue
         rows.append({
             "Method": method_label,
             "Model": model_label,
-            "Fraction Structured Output": matched / len(json_files),
+            "Fraction Structured Output": flags.eq("true").mean(),
         })
     return pd.DataFrame(rows)
 

@@ -27,8 +27,6 @@ from helpers.plotting import (
     set_thick_spines,
 )
 
-DATE_FOLDER = "2026-5-25"
-
 MANUAL_STATUS_ORDER = ["PRESENT", "FUTURE", "PAST", "off_site"]
 
 # Subset of METRIC_SCORE_COLUMNS for the facility violin (CSV / tables still use full set).
@@ -250,6 +248,9 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         palette=_PALETTE_METRIC,
         inner=None,
         cut=0,
+        density_norm="width",
+        common_norm=False,
+        width=0.6,
         linewidth=1.2,
         ax=ax,
     )
@@ -287,14 +288,14 @@ print(f"Categories: {categories_to_plot}")
 
 # Load keyword-based NPDES results
 unit_process_results = pd.read_csv(
-    f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv", dtype=str
+    f"wwtp_process_extraction/output/kw_unit_processes_by_facility.csv", dtype=str
 ).fillna("")
 print(f"NPDES keyword data: Loaded {len(unit_process_results)} unique facilities")
 
 unit_full = unit_process_results.copy()
 
 # Load LLM results
-llm_results_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/llm_unit_processes_by_facility.csv"
+llm_results_path = f"wwtp_process_extraction/output/llm_unit_processes_by_facility.csv"
 llm_results = pd.read_csv(llm_results_path, dtype=str).fillna("") if os.path.exists(llm_results_path) else None
 if llm_results is not None:
     llm_results = llm_results[llm_results["Place ID"].ne("")].copy()
@@ -340,7 +341,7 @@ print(
     f"{len(manual_facilities & set(llm_results_both['Place ID'])) if llm_results_both is not None else 0} matched to LLM)"
 )
 
-figures_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/figures"
+figures_dir = f"wwtp_process_extraction/output/figures"
 os.makedirs(figures_dir, exist_ok=True)
 
 excluded_unspecified = get_unspecified_leaf_names(unitprocess_keywords)
@@ -398,7 +399,7 @@ if llm_results_both is not None:
     )
 
 unit_process_metrics_df = pd.DataFrame(facility_metric_rows)
-final_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
+final_dir = f"wwtp_process_extraction/output/final"
 os.makedirs(final_dir, exist_ok=True)
 
 # Build category-level facility metrics by collapsing leaf states to category states.
@@ -426,7 +427,7 @@ if llm_results_both is not None:
 category_metrics_df = pd.DataFrame(category_metric_rows)
 
 metrics_df = pd.concat(metrics_frames, ignore_index=True)
-metrics_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes_method_comparison_metrics.csv"
+metrics_path = f"wwtp_process_extraction/output/npdes_method_comparison_metrics.csv"
 metrics_df.to_csv(metrics_path, index=False)
 print(f"\nSaved npdes_method_comparison_metrics.csv")
 summary = metrics_df.groupby(["Level", "Source"])[

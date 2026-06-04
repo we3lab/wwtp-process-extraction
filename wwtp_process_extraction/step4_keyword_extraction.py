@@ -12,8 +12,6 @@ from helpers.utils import (
     apply_secondary_category_backfill,
 )
 
-DATE_FOLDER = "2026-5-25"
-
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
     sub_category_found = False
@@ -43,9 +41,9 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
 
 def main():
-    rfr_data = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
-    txt_folder = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
-    out_file = f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_pdf.csv"
+    rfr_data = f"wwtp_process_extraction/output/site_data.csv"
+    txt_folder = f"wwtp_process_extraction/output/npdes/text"
+    out_file = f"wwtp_process_extraction/output/kw_unit_processes_by_pdf.csv"
 
     with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
         keywords = json.load(f)
@@ -142,7 +140,7 @@ def main():
             )
             upi.writerow(row_meta + [row_status[key] for key in all_keys])
 
-    kw_by_fac_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv"
+    kw_by_fac_path = f"wwtp_process_extraction/output/kw_unit_processes_by_facility.csv"
     raw_df = pd.read_csv(out_file, dtype=str).fillna("")
     collapsed = collapse_facility_processes(
         raw_df,

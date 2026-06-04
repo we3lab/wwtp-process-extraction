@@ -9,8 +9,6 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers
 
-DATE_FOLDER = "2026-5-25"
-
 
 def clean_excerpt(text):
     # keep page boundaries as [Page N] so source pages are traceable in excerpts
@@ -350,11 +348,19 @@ def extract_one(args):
 
 
 def main():
-    rfr_data = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
-    directory = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes"
+    rfr_data = f"wwtp_process_extraction/output/site_data.csv"
+    directory = f"wwtp_process_extraction/output/npdes"
 
     site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
     pdfs = site_data["PDF_File"].tolist()
+
+    # Breakdown by Reg_Measure_Type (NPDES vs WDR) over facilities with ≥1 PDF
+    has_pdf = site_data[site_data["PDF_File"] != ""]["Place ID"].unique()
+    df_pdf = site_data.drop_duplicates(subset="Place ID")
+    df_pdf = df_pdf[df_pdf["Place ID"].isin(has_pdf)]
+    print(f"\n  Reg_Measure_Type breakdown (facilities with ≥1 PDF, n={len(df_pdf)}):")
+    for rmt, count in df_pdf["Reg_Measure_Type"].value_counts(dropna=False).items():
+        print(f"    {rmt}: {count} ({count / len(df_pdf):.1%})")
 
     unique_pdfs = list(dict.fromkeys(p for p in pdfs if p))
     args = [(directory, pdf_file) for pdf_file in unique_pdfs]

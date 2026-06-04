@@ -17,8 +17,7 @@ from helpers.utils import (
 from helpers.plotting import COLORS
 from helpers.plotting import make_grouped_legend, save_and_close, set_thick_spines
 
-DATE_FOLDER = "2026-5-25"
-figures_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
+figures_dir = f"wwtp_process_extraction/output/final"
 os.makedirs(figures_dir, exist_ok=True)
 
 
@@ -303,7 +302,7 @@ def main():
 
     gt_comparison_df = pd.DataFrame(facility_rows)
     gt_comparison_csv = (
-        f"wwtp_process_extraction/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv"
+        f"wwtp_process_extraction/output/ground_truth_comparison_by_facility.csv"
     )
     gt_comparison_df.to_csv(gt_comparison_csv, index=False)
 

@@ -18,11 +18,10 @@ from helpers.api_llm_search import (
     get_method_paths,
 )
 
-DATE_FOLDER = "2026-5-25"
-TXT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
-MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
+TXT_DIR = f"wwtp_process_extraction/output/npdes/text"
+MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
-FACILITIES_INFO_PATH = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+FACILITIES_INFO_PATH = f"wwtp_process_extraction/output/site_data.csv"
 UNITPROCESS_KEYWORDS_JSON = "wwtp_process_extraction/data/unitprocess_keywords.json"
 NUM_ICL_EXAMPLES = 1
 
@@ -40,7 +39,7 @@ def parse_args():
     parser.add_argument(
         "--model",
         default=MODEL,
-        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
+        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
     )
     parser.add_argument(
         "--txt_folder",
@@ -195,7 +194,8 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
     else:
         # Extract JSON from markdown wrapper or empty result
         if not raw or not raw.strip():
-            raise RuntimeError("Model returned empty result (possibly hit timeout during web search)")
+            diag = {k: output.get(k) for k in ("subtype", "num_turns", "duration_ms", "total_cost_usd", "stop_reason")}
+            raise RuntimeError(f"Model returned empty result (no final JSON emitted). CLI result meta: {diag}")
         import re
         match = re.search(r'\{.*\}', str(raw), re.DOTALL)
         if not match:
@@ -204,8 +204,13 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
-ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gemini-2.0-flash-001", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
-MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096}
+ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
+DEFAULT_MAX_TOKENS = 10000
+DEFAULT_MAX_COMPLETION_TOKENS = 20000
+# Per-model completion-token limit. Reasoning models (gpt-5, etc.) spend most of
+# their completion budget on hidden reasoning before emitting JSON, so they need a
+# higher ceiling than chat models; claude-3-haiku has a hard 4096 output cap.
+MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096, "gpt-5": 32000, "gpt-5-mini": 32000}
 ALL_METHODS = ["ontology-based", "list-based"]
 
 
@@ -236,8 +241,6 @@ def run_extraction(args):
         print(f"Initialized unit process list file: {generated_list_path}")
 
     os.makedirs(output_dir, exist_ok=True)
-    token_usage_rows = []
-    manifest_rows = []
     jobs = build_txt_jobs(args.txt_folder, args.facilities_information)
 
     if not jobs:
@@ -256,6 +259,21 @@ def run_extraction(args):
     example_schema = None if args.skip_schema_validation else build_example_schema(args.method, web=args.web_search)
 
     facilities_source_df = pd.read_csv(args.facilities_information, dtype=str).fillna('')
+
+    # Write token usage and manifest one row at a time so interrupting mid-model
+    # doesn't lose progress for facilities already completed in this run.
+    token_usage_csv_path = output_dir / "token_usage_summary.csv"
+    manifest_csv_path = output_dir / "facility_extraction_manifest.csv"
+    token_usage_cols = [
+        "facility_name", "txt_file", "extraction_file",
+        "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
+    ]
+    manifest_cols = list(facilities_source_df.columns) + ["txt_file", "extraction_file", "structured_output"]
+
+    def append_row_csv(path, row, columns):
+        pd.DataFrame([row], columns=columns).to_csv(
+            path, mode="a", header=not path.exists(), index=False
+        )
 
     if args.max_facilities is not None:
         jobs = jobs[:args.max_facilities]
@@ -324,6 +342,7 @@ def run_extraction(args):
                     schema=example_schema,
                 )
                 completion_token = prompt_token = total_token = reasoning_tokens = 0
+                structured_output = None
                 print("Parsed JSON result:")
                 print(json.dumps(parsed, indent=2, ensure_ascii=False))
                 print(f"Cost: ${cost_usd:.6f}")
@@ -334,11 +353,11 @@ def run_extraction(args):
                     system_message=system_msg,
                     user_message=user_msg,
                     temperature=0.0,
-                    max_tokens=None if args.no_token_limit else min(10000, model_max or 10000),
-                    max_completion_tokens=None if args.no_token_limit else min(20000, model_max or 20000),
+                    max_tokens=None if args.no_token_limit else (model_max or DEFAULT_MAX_TOKENS),
+                    max_completion_tokens=None if args.no_token_limit else (model_max or DEFAULT_MAX_COMPLETION_TOKENS),
                     schema=example_schema,
                 )
-                parsed, completion_token, prompt_token, total_token, reasoning_tokens = result
+                parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output = result
                 cost_usd = None
                 print("Parsed JSON result:")
                 print(json.dumps(parsed, indent=2, ensure_ascii=False))
@@ -352,7 +371,8 @@ def run_extraction(args):
 
             print(f"Saved {output_json_path}")
 
-            token_usage_rows.append(
+            append_row_csv(
+                token_usage_csv_path,
                 {
                     "facility_name": facility_name,
                     "txt_file": txt_file,
@@ -362,40 +382,23 @@ def run_extraction(args):
                     "total_token": total_token,
                     "reasoning_token": reasoning_tokens,
                     "cost_usd": cost_usd,
-                }
+                },
+                token_usage_cols,
             )
 
             if 0 <= row_idx < len(facilities_source_df):
                 facility_row = facilities_source_df.iloc[row_idx].to_dict()
-            else:
-                facility_row = {}
-            facility_row["txt_file"] = txt_file
-            facility_row["extraction_file"] = extraction_file_name
-            manifest_rows.append(facility_row)
+                facility_row["txt_file"] = txt_file
+                facility_row["extraction_file"] = extraction_file_name
+                facility_row["structured_output"] = structured_output
+                append_row_csv(manifest_csv_path, facility_row, manifest_cols)
         except Exception as exc:
             print("Error:", exc)
 
-    token_usage_cols = [
-        "facility_name", "txt_file", "extraction_file",
-        "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
-    ]
-    token_usage_csv_path = output_dir / "token_usage_summary.csv"
-    if token_usage_rows:
-        new_token_df = pd.DataFrame(token_usage_rows, columns=token_usage_cols)
-        if token_usage_csv_path.exists():
-            existing = pd.read_csv(token_usage_csv_path, dtype=str)
-            new_token_df = pd.concat([existing, new_token_df], ignore_index=True)
-        new_token_df.to_csv(token_usage_csv_path, index=False)
-        print(f"Saved token usage CSV: {token_usage_csv_path}")
-
-    manifest_csv_path = output_dir / "facility_extraction_manifest.csv"
-    if manifest_rows:
-        new_manifest_df = pd.DataFrame(manifest_rows)
-        if manifest_csv_path.exists():
-            existing_manifest = pd.read_csv(manifest_csv_path, dtype=str)
-            new_manifest_df = pd.concat([existing_manifest, new_manifest_df], ignore_index=True)
-        new_manifest_df.to_csv(manifest_csv_path, index=False)
-        print(f"Saved facility manifest CSV: {manifest_csv_path}")
+    if token_usage_csv_path.exists():
+        print(f"Token usage CSV: {token_usage_csv_path}")
+    if manifest_csv_path.exists():
+        print(f"Facility manifest CSV: {manifest_csv_path}")
 
 
 if __name__ == "__main__":
@@ -412,6 +415,8 @@ if __name__ == "__main__":
     else:
         run_extraction(args)
 
+# Terminal commands to run (uncommented)
+
 # 5-FACILITY COMPARISON
 # python wwtp_process_extraction/step5_llm_extraction.py \
 #   --all_models \
@@ -419,13 +424,13 @@ if __name__ == "__main__":
 
 # python wwtp_process_extraction/step5_llm_extraction.py \
 #   --method ontology-based \
-#   --model claude-sonnet-4-5 \
+#   --model claude-sonnet-4-6 \
 #   --web_search \
 #   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 
 # python wwtp_process_extraction/step5_llm_extraction.py \
 #   --method list-based \
-#   --model claude-sonnet-4-5 \
+#   --model claude-sonnet-4-6 \
 #   --web_search \
 #   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 

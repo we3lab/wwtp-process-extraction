@@ -21,7 +21,6 @@ IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a fl
             "Process": string[],
             "Implementation": "present"|"planned"|"past",
             "Location": "on-site"|"off-site"|null,
-            "Score": number,
             "Sentence": string
         }
     ]
@@ -30,9 +29,8 @@ Do not add any other top-level fields.
 
 Field meaning and allowed cardinality:
 - Process: process names from the list. Array of 1+ strings.
-- Implementation: one of "present", "planned", "past".
-- Location: one of "on-site", "off-site", or null if unspecified.
-- Score: confidence score between 0 and 1.
+- Implementation: a single string, one of "present", "planned", "past".
+- Location: a single string, one of "on-site" or "off-site"
 - Sentence: shortest direct quote from the permit extract that supports the extraction.
 
 All process names must be exactly as in the given list.

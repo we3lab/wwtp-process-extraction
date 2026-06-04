@@ -17,17 +17,15 @@ GITHUB_BASE = (
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
 
-DATE_STR = "2026-5-25"
-
-input_dir = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_extraction")
-output_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_unit_processes_by_pdf.csv")
-output_fac_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_unit_processes_by_facility.csv")
-site_data_csv = Path(f"wwtp_process_extraction/output/{DATE_STR}/site_data.csv")
-output_json_dir = Path(f"wwtp_process_extraction/output/{DATE_STR}/llm_postprocess_ontology")
+input_dir = Path(f"wwtp_process_extraction/output/llm_extraction")
+output_csv = Path(f"wwtp_process_extraction/output/llm_unit_processes_by_pdf.csv")
+output_fac_csv = Path(f"wwtp_process_extraction/output/llm_unit_processes_by_facility.csv")
+site_data_csv = Path(f"wwtp_process_extraction/output/site_data.csv")
+output_json_dir = Path(f"wwtp_process_extraction/output/llm_postprocess_ontology")
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
 MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
-GROUND_TRUTH_PATH = MODEL_COMPARISON_DIR / "ground_truth.csv"
+MANUAL_PATH = Path("wwtp_process_extraction/data") / "test_set_npdes_manual.csv"
 
 with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
@@ -158,12 +156,11 @@ def normalize_values(value):
 
 def apply_implementation(existing, impl_value, location=None):
     text = str(impl_value or "").strip().lower().replace("-", "_")
-    is_offsite = False
+    loc = str(location or "").strip().lower().replace("-", "_")
+    # off-site is signaled only by the Location field, never by Implementation
+    is_offsite = loc in {"off_site", "third_party", "offsite"}
 
-    if text in {"off_site", "third_party"}:
-        new = "OFFSITE"
-        is_offsite = True
-    elif text == "present":
+    if text == "present":
         new = "OFFSITE" if is_offsite else "PRESENT"
     elif text == "planned":
         new = "" if is_offsite else "FUTURE"
@@ -480,23 +477,17 @@ if unmatched_files:
 
 
 # ── Model comparison CSV ──────────────────────────────────────────────────────
-# Truth rows come from the Excel workbook (read-only); predictions are generated
-# fresh from all JSON dirs. Output is model_comparison_all.csv which table_1 loads.
+# Manual rows come from the manual-read workbook;
+# predictions are generated fresh from all JSON dirs.
+# Output is model_comparison_all.csv which table_1 loads.
 
-wb_df = pd.read_csv(GROUND_TRUTH_PATH, dtype=str).fillna("")
-truth_rows = wb_df[wb_df["Method"] == "Manual Read"].copy()
+wb_df = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
+manual_rows = wb_df.copy()
+manual_rows["Method"] = "Manual Read"
 up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
-truth_pdf_stems = set(
-    pdf.replace(".pdf", "") for pdf in truth_rows["PDF_File"].dropna() if pdf
-)
-
-
-def resolve_pdf_file(json_stem, known_stems):
-    for known in sorted(known_stems, key=len, reverse=True):
-        if json_stem == known or json_stem.startswith(known + "_"):
-            return known + ".pdf"
-    return None
-
+# Descriptive facility columns vs unit-process status columns
+meta_cols = [c for c in ["Agency", "Facility Name", "Place ID", "NPDES No."] if c in up_columns]
+proc_columns = [c for c in up_columns if c not in meta_cols]
 
 prediction_rows = []
 for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
@@ -512,11 +503,19 @@ for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
     else:
         continue
 
+    # Identity comes from the LLM output's Place ID via the per-model manifest, not the
+    # PDF file (a single PDF can cover multiple facilities).
+    manifest_path = dir_path / "facility_extraction_manifest.csv"
+    json_to_place_id = {}
+    if manifest_path.exists():
+        man = pd.read_csv(manifest_path, dtype=str).fillna("")
+        json_to_place_id = dict(zip(man["extraction_file"], man["Place ID"]))
+
     print(f"\nProcessing {dir_name} ({method_label} / {model_label})...")
     for json_file in sorted(dir_path.glob("*.json")):
-        pdf_file = resolve_pdf_file(json_file.stem, truth_pdf_stems)
-        if not pdf_file:
-            print(f"  Could not match {json_file.name} to a known PDF stem, skipping")
+        place_id = json_to_place_id.get(json_file.name, "").strip()
+        if not place_id:
+            print(f"  No Place ID for {json_file.name} in manifest, skipping")
             continue
 
         with open(json_file) as f:
@@ -526,15 +525,23 @@ for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
             unit_process_result = process_json_to_unit_process_dict(json_data)
         else:
             unit_process_result = process_list_based_json(json_data)
-        row = {"Method": method_label, "Model": model_label, "PDF_File": pdf_file}
-        for col in up_columns:
+        row = {"Method": method_label, "Model": model_label, "Place ID": place_id}
+        for col in proc_columns:
             val = unit_process_result.get(col, "")
             row[col] = val if val else None
         prediction_rows.append(row)
-        print(f"  Processed {json_file.name} → {pdf_file}")
+        print(f"  Processed {json_file.name} → Place ID {place_id}")
 
-pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model", "PDF_File"] + up_columns)
-combined_df = pd.concat([truth_rows, pred_df], ignore_index=True)
+pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model"] + up_columns + ["PDF_File"])
+
+# Backfill the remaining facility metadata (and PDF_File) from manual rows by Place ID
+backfill_cols = [c for c in meta_cols if c != "Place ID"]
+if "PDF_File" in manual_rows.columns:
+    backfill_cols.append("PDF_File")
+meta_by_pid = manual_rows.drop_duplicates("Place ID").set_index("Place ID")[backfill_cols]
+pred_df[backfill_cols] = meta_by_pid.reindex(pred_df["Place ID"]).values
+
+combined_df = pd.concat([manual_rows, pred_df], ignore_index=True)
 model_comparison_csv = MODEL_COMPARISON_DIR / "model_comparison_all.csv"
 combined_df.to_csv(model_comparison_csv, index=False)
 print(f"\nSaved {model_comparison_csv}")

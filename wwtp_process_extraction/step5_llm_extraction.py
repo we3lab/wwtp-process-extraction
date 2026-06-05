@@ -21,7 +21,7 @@ from helpers.api_llm_search import (
 TXT_DIR = f"wwtp_process_extraction/output/npdes/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
-FACILITIES_INFO_PATH = f"wwtp_process_extraction/output/site_data.csv"
+FACILITIES_INFO_PATH = f"wwtp_process_extraction/output/site_data_relevant.csv"
 UNITPROCESS_KEYWORDS_JSON = "wwtp_process_extraction/data/unitprocess_keywords.json"
 NUM_ICL_EXAMPLES = 1
 
@@ -45,15 +45,6 @@ def parse_args():
         "--txt_folder",
         default=TXT_DIR,
         help=f"Path to folder containing permit TXT files (default: {TXT_DIR}).",
-    )
-    parser.add_argument(
-        "--facilities_information",
-        "--facilities_info_path",
-        default=FACILITIES_INFO_PATH,
-        help=(
-            "Path to CSV with columns Facility Name and PDF_File. "
-            f"Each row is processed and saved separately, even when multiple facilities share the same PDF (default: {FACILITIES_INFO_PATH})."
-        ),
     )
     parser.add_argument(
         "--skip_schema_validation",
@@ -90,8 +81,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def resolve_output_dir(method, model, web_search, txt_folder, facilities_information):
-    if "model_comparison" in str(facilities_information):
+def resolve_output_dir(method, model, web_search, txt_folder):
+    if "model_comparison" in str(FACILITIES_INFO_PATH):
         suffix = f"{method}_{model}" + ("-web" if web_search else "")
         return Path("wwtp_process_extraction/output/llm_model_comparison") / suffix
 
@@ -220,7 +211,7 @@ def run_extraction(args):
     prompt_path = Path(method_paths["prompt_path"])
     examples_dir = Path(method_paths["examples_dir"])
     output_dir = resolve_output_dir(
-        args.method, args.model, args.web_search, args.txt_folder, args.facilities_information
+        args.method, args.model, args.web_search, args.txt_folder
     )
 
     if args.method == "ontology-based":
@@ -241,12 +232,12 @@ def run_extraction(args):
         print(f"Initialized unit process list file: {generated_list_path}")
 
     os.makedirs(output_dir, exist_ok=True)
-    jobs = build_txt_jobs(args.txt_folder, args.facilities_information)
+    jobs = build_txt_jobs(args.txt_folder, FACILITIES_INFO_PATH)
 
     if not jobs:
         print(
             "No facilities were processed. "
-            f"Check --facilities_information ({args.facilities_information}) and --txt_folder ({args.txt_folder})."
+            f"Check --facilities_information ({FACILITIES_INFO_PATH}) and --txt_folder ({args.txt_folder})."
         )
         raise SystemExit(0)
 
@@ -258,7 +249,7 @@ def run_extraction(args):
     system_prompt_template = prompt_path.read_text(encoding="utf-8")
     example_schema = None if args.skip_schema_validation else build_example_schema(args.method, web=args.web_search)
 
-    facilities_source_df = pd.read_csv(args.facilities_information, dtype=str).fillna('')
+    facilities_source_df = pd.read_csv(FACILITIES_INFO_PATH, dtype=str).fillna('')
 
     # Write token usage and manifest one row at a time so interrupting mid-model
     # doesn't lose progress for facilities already completed in this run.
@@ -420,19 +411,16 @@ if __name__ == "__main__":
 # 5-FACILITY COMPARISON
 # python wwtp_process_extraction/step5_llm_extraction.py \
 #   --all_models \
-#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 
 # python wwtp_process_extraction/step5_llm_extraction.py \
 #   --method ontology-based \
 #   --model claude-sonnet-4-6 \
 #   --web_search \
-#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 
 # python wwtp_process_extraction/step5_llm_extraction.py \
 #   --method list-based \
 #   --model claude-sonnet-4-6 \
 #   --web_search \
-#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
 
 # ALL FACILITIES, ONTOLOGY-BASED, GPT-5-MINI
 # python wwtp_process_extraction/step5_llm_extraction.py

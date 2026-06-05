@@ -5,12 +5,12 @@ A wastewater treatment plant permit extract
 unit process lists: list of all the potential unit processes you can find in the text
 
 Task: 
-Using only the wastewater treatment plant's permit extract, find all the planned, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by one or more unit processes from the given unit process list.
+Using only the wastewater treatment plant's permit extract, find all the future, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by one or more unit processes from the given unit process list.
 You may ignore irrelevant context.
 Think step by step:
 1. Extract explicitly from the permit text the treatments mentioned for the specific __FACILITY_NAME__ facility (if it is used in another facility or off-site it should be mentionned in the "location" field of the output JSON)
 2. Match each treatment find with the corresponding unit process or processes from the list.
-3. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("planned") or has been shut or removed ("past")
+3. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("future") or has been shut or removed ("past")
 4. Structure the output as a JSON file as requested
 
 Output:
@@ -19,7 +19,7 @@ IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a fl
     "items": [
         {
             "Process": string[],
-            "Implementation": "present"|"planned"|"past",
+            "Implementation": "present"|"future"|"past",
             "Location": "on-site"|"off-site"|null,
             "Sentence": string
         }
@@ -29,7 +29,7 @@ Do not add any other top-level fields.
 
 Field meaning and allowed cardinality:
 - Process: process names from the list. Array of 1+ strings.
-- Implementation: a single string, one of "present", "planned", "past".
+- Implementation: a single string, one of "present", "future", "past".
 - Location: a single string, one of "on-site" or "off-site"
 - Sentence: shortest direct quote from the permit extract that supports the extraction.
 

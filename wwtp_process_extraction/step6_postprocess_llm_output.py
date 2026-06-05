@@ -18,14 +18,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
 
 input_dir = Path(f"wwtp_process_extraction/output/llm_extraction")
-output_csv = Path(f"wwtp_process_extraction/output/llm_unit_processes_by_pdf.csv")
-output_fac_csv = Path(f"wwtp_process_extraction/output/llm_unit_processes_by_facility.csv")
-site_data_csv = Path(f"wwtp_process_extraction/output/site_data.csv")
+output_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_pdf_llm.csv")
+output_fac_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_facility_llm.csv")
+site_data_csv = Path(f"wwtp_process_extraction/output/site_data_relevant.csv")
 output_json_dir = Path(f"wwtp_process_extraction/output/llm_postprocess_ontology")
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
 MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
-MANUAL_PATH = Path("wwtp_process_extraction/data") / "test_set_npdes_manual.csv"
+MANUAL_PATH = Path("wwtp_process_extraction/data") / "manual_unit_processes_by_facility.csv"
 
 with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
@@ -162,7 +162,7 @@ def apply_implementation(existing, impl_value, location=None):
 
     if text == "present":
         new = "OFFSITE" if is_offsite else "PRESENT"
-    elif text == "planned":
+    elif text == "future":
         new = "" if is_offsite else "FUTURE"
     elif text == "past":
         new = "" if is_offsite else "PAST"
@@ -469,9 +469,9 @@ collapsed = collapse_facility_processes(
     meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
 )
 collapsed.to_csv(output_fac_csv, index=False)
-print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → llm_unit_processes_by_facility.csv")
+print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
 if unmatched_files:
-    print(f"\nNo facility match found in site_data.csv for {len(unmatched_files)} file(s):")
+    print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")
     for f in sorted(unmatched_files):
         print(f"  {f}")
 

@@ -1,7 +1,7 @@
 """
 Grouped stacked bar-chart comparison of unit process detection across two data sources:
-  - CWNS (California facilities from output/cwns_unit_processes_by_facility.csv)
-  - LLM Search (output/date/llm_unit_processes_by_facility.csv)
+  - CWNS (California facilities from output/unit_processes_by_facility_cwns.csv)
+  - LLM Search (output/date/unit_processes_by_facility_llm.csv)
 
 CWNS rows join ``ciwqs_to_cwns.csv`` to the CA step0 export (exact ``CWNS_ID``).
 The export includes placeholder rows for CA ``CWNS_ID`` values missing from CWNS
@@ -266,15 +266,15 @@ all_leaf_processes = {
 proc_cols = sorted(all_leaf_processes)
 
 llm_df = pd.read_csv(
-    f"{DATA_DIR}/llm_unit_processes_by_facility.csv", dtype=str
+    f"{DATA_DIR}/unit_processes_by_facility_llm.csv", dtype=str
     )
 
 kw_df = pd.read_csv(
-    f"{DATA_DIR}/kw_unit_processes_by_facility.csv", dtype=str
+    f"{DATA_DIR}/unit_processes_by_facility_kw.csv", dtype=str
     )
 
 ca_cwns = pd.read_csv(
-    "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv",
+    "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv",
     dtype=str,
 )
 ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].str.strip()
@@ -302,7 +302,7 @@ n_attach = int((merged_map["_cwns_merge"] == "both").sum())
 print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
 
 # Save facilities with no CWNS match
-site_data_path = f"wwtp_process_extraction/output/site_data.csv"
+site_data_path = f"wwtp_process_extraction/output/site_data_relevant.csv"
 pid_to_name = {}
 _site = pd.read_csv(site_data_path, dtype=str).fillna("")
 site_facs = set(_site["Place ID"]) - {""}
@@ -336,7 +336,7 @@ facility_names = unmatched_df['FACILITY_NAME'].tolist()
 print(', '.join(facility_names))
 
 # CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
-cwns_csv = Path("wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv")
+cwns_csv = Path("wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv")
 mapping_csv = Path("wwtp_process_extraction/data/ciwqs_to_cwns.csv")
 cwns_unmatched_df = pd.read_csv(cwns_csv, dtype=str).fillna("")
 mapping_df = pd.read_csv(mapping_csv, dtype=str, keep_default_na=False).fillna("")
@@ -572,10 +572,10 @@ for comparison_type in ["llm", "kw"]:
     print(f"    Saved {os.path.basename(path)}")
 
 
-SITE_DATA = f"wwtp_process_extraction/output/site_data.csv"
+SITE_DATA = f"wwtp_process_extraction/output/site_data_relevant.csv"
 FACILITIES_JSON = f"wwtp_process_extraction/output/facilities.json"
-ALL_NPDES = f"wwtp_process_extraction/output/all_ca_npdes.csv"
-CWNS_TABLE = "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv"
+ALL_NPDES = f"wwtp_process_extraction/output/site_data_all.csv"
+CWNS_TABLE = "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv"
 CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
 
 ciwqs_cols = [

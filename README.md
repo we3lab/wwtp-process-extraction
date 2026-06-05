@@ -6,10 +6,10 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 
 
 1. Build CWNS process tables
-    - [wwtp_process_extraction/step1_build_cwns_table.py](wwtp_process_extraction/step1_build_cwns_table.py): creates cwns_unit_processes_by_facility.csv from CWNS 2004/2008/2012 data. 2022 doesn't include CA
+    - [wwtp_process_extraction/step1_build_cwns_table.py](wwtp_process_extraction/step1_build_cwns_table.py): creates unit_processes_by_facility_cwns.csv from CWNS 2004/2008/2012 data. 2022 doesn't include CA
 
 2. Scrape permits and site metadata
-    - [wwtp_process_extraction/step2_scrape_npdes.py](wwtp_process_extraction/step2_scrape_npdes.py): downloads NPDES permit PDFs and writes site_data.csv and matched_cwns_npdes_ca.csv
+    - [wwtp_process_extraction/step2_scrape_npdes.py](wwtp_process_extraction/step2_scrape_npdes.py): downloads NPDES permit PDFs and writes site_data_relevant and matched_cwns_npdes_ca.csv
 
 3. Extract permit text
     - [wwtp_process_extraction/step3_get_facility_descriptions.py](wwtp_process_extraction/step3_get_facility_descriptions.py): extracts relevant text sections from permit PDFs into per-facility text files
@@ -24,7 +24,7 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
         - results saved as JSON under output/date/llm_search_ontology or llm_search_list
 
 6. Post-process LLM output back to CWNS format
-    - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): post-processes LLM outputs and writes llm_unit_processes_by_facility.csv with present/planned/past status
+    - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): post-processes LLM outputs and writes unit_processes_by_facility_llm.csv with present/future/past status
 
 **Figures and tables**
 - [wwtp_process_extraction/figure_2_ground_truth.py](wwtp_process_extraction/figure_2_ground_truth.py): ground-truth comparison of extraction methods

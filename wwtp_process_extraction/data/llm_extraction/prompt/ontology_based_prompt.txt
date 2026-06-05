@@ -5,13 +5,13 @@ A wastewater treatment plant permit extract
 Ontology lists: equipments, processes and roles (with mandatory relationships)
 
 Task:
-Using only the wastewater treatment plant's permit extract, find all the planned, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by at least an equipment or a process from the given ontology lists.
+Using only the wastewater treatment plant's permit extract, find all the future, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by at least an equipment or a process from the given ontology lists.
 You may ignore irrelevant context.
 Think step by step:
 1. Extract explicitly from the permit text the treatments mentioned for the specific __FACILITY_NAME__ facility (if it is used in another facility or off-site it should be mentionned in the "location" field of the output JSON)
 2. Match each treatment find with an equipment and/or one or many processes from the ontology lists
 3. Complete with specification of the treatment with roles and substances if explicitly mentioned in the text
-4. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("planned") or has been shut or removed ("past")
+4. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("future") or has been shut or removed ("past")
 5. Structure the output as a JSON file as requested
 
 Output:
@@ -23,7 +23,7 @@ IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a fl
             "Process": string[]|null,
             "Role": string[]|null,
             "Substance": string[]|null,
-            "Implementation": "present"|"planned"|"past",
+            "Implementation": "present"|"future"|"past",
             "Location": "on-site"|"off-site"|null,
             "Sentence": string
         }
@@ -37,7 +37,7 @@ Field meaning and allowed cardinality:
 - Role: role names from ontology. Null or an array (can be empty).
 - Substance: substance names explicitly mentioned in text. Null or an array (can be empty).
 - Rule: at least one of Equipment or Process must be non-null. Both should be set when both are relevant.
-- Implementation: a single string, one of "present", "planned", "past".
+- Implementation: a single string, one of "present", "future", "past".
 - Location: a single string, one of "on-site" or "off-site"
 - Sentence: shortest direct quote from the permit extract that supports the extraction.
 

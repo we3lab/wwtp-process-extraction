@@ -288,14 +288,14 @@ print(f"Categories: {categories_to_plot}")
 
 # Load keyword-based NPDES results
 unit_process_results = pd.read_csv(
-    f"wwtp_process_extraction/output/kw_unit_processes_by_facility.csv", dtype=str
+    f"wwtp_process_extraction/output/unit_processes_by_facility_kw.csv", dtype=str
 ).fillna("")
 print(f"NPDES keyword data: Loaded {len(unit_process_results)} unique facilities")
 
 unit_full = unit_process_results.copy()
 
 # Load LLM results
-llm_results_path = f"wwtp_process_extraction/output/llm_unit_processes_by_facility.csv"
+llm_results_path = f"wwtp_process_extraction/output/unit_processes_by_facility_llm.csv"
 llm_results = pd.read_csv(llm_results_path, dtype=str).fillna("") if os.path.exists(llm_results_path) else None
 if llm_results is not None:
     llm_results = llm_results[llm_results["Place ID"].ne("")].copy()
@@ -320,15 +320,10 @@ else:
     unit_full_both = unit_full
 
 # Load manual readings (train + test) as the deviation baseline
-train_manual = pd.read_csv("wwtp_process_extraction/data/train_set_npdes_manual.csv", dtype=str).fillna("")
-train_manual["Place ID"] = train_manual["Place ID"].str.strip()
-test_manual = pd.read_csv("wwtp_process_extraction/data/test_set_npdes_manual.csv", dtype=str).fillna("")
-test_manual["Place ID"] = test_manual["Place ID"].str.strip()
-manual_combined = (
-    pd.concat([train_manual, test_manual]).drop_duplicates(subset="Place ID").reset_index(drop=True)
-)
-manual_combined = manual_combined[manual_combined["Place ID"].ne("")].copy()
-manual_facilities = set(manual_combined["Place ID"])
+manual = pd.read_csv("wwtp_process_extraction/data/manual_unit_processes_by_facility.csv", dtype=str).fillna("")
+manual["Place ID"] = manual["Place ID"].str.strip()
+manual = manual[manual["Place ID"].ne("")].copy()
+manual_facilities = set(manual["Place ID"])
 llm_results_manual = (
     llm_results_both[llm_results_both["Place ID"].isin(manual_facilities)].copy()
     if llm_results_both is not None
@@ -336,7 +331,7 @@ llm_results_manual = (
 )
 unit_full_manual = unit_full_both[unit_full_both["Place ID"].isin(manual_facilities)].copy()
 print(
-    f"Manual baseline: {len(manual_combined)} facilities "
+    f"Manual baseline: {len(manual)} facilities "
     f"({len(manual_facilities & set(unit_full_both['Place ID']))} matched to keyword, "
     f"{len(manual_facilities & set(llm_results_both['Place ID'])) if llm_results_both is not None else 0} matched to LLM)"
 )
@@ -358,7 +353,7 @@ for category in categories_to_plot:
     # Method vs manual reading: deviation bars (FP above zero, FN below)
     create_method_deviation_plot(
         process_names,
-        manual_combined,
+        manual,
         llm_results_manual,
         unit_full_manual,
         category,
@@ -376,7 +371,7 @@ metrics_frames = []
 facility_metric_rows = []
 
 manual_metric_kw, pred_metric_kw, _ = build_method_metric_inputs(
-    all_process_list, manual_combined, unit_full_both, "Place ID"
+    all_process_list, manual, unit_full_both, "Place ID"
 )
 kw_metrics = compute_metrics(manual_metric_kw, pred_metric_kw, unit_process_list, "Keyword")
 metrics_frames.append(
@@ -388,7 +383,7 @@ facility_metric_rows.extend(
 
 if llm_results_both is not None:
     manual_metric_llm, pred_metric_llm, _ = build_method_metric_inputs(
-        all_process_list, manual_combined, llm_results_both, "Place ID"
+        all_process_list, manual, llm_results_both, "Place ID"
     )
     llm_metrics = compute_metrics(manual_metric_llm, pred_metric_llm, unit_process_list, "LLM")
     metrics_frames.append(

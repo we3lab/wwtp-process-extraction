@@ -3,11 +3,11 @@
 # Publication: https://eartharxiv.org/repository/view/7980/
 # Modified by WE3Lab: California-specific comparison across three treatment process data sources.
 #
-#   Common set = Place IDs present in BOTH cwns_unit_processes_by_facility.csv AND llm output.
+#   Common set = Place IDs present in BOTH unit_processes_by_facility_cwns.csv AND llm output.
 #
 #   Source 1 - El Abbadi all-sources: tt_assignments_2022.csv for matched CA facilities.
 #   Source 2 - El Abbadi CWNS-only: Source 1 without non-CWNS supplemental data
-#   Source 3 - unit processes from llm_unit_processes_by_facility.csv,
+#   Source 3 - unit processes from unit_processes_by_facility_llm.csv,
 #
 # NOTES:
 #   - Biosolids emissions use per-TT 50th-percentile from MC distributions (not
@@ -435,15 +435,15 @@ def totals_from_df(df):
 
 def load_common_place_ids():
     """
-    Return the set of Place IDs present in both cwns_unit_processes_by_facility.csv and the
+    Return the set of Place IDs present in both unit_processes_by_facility_cwns.csv and the
     LLM output — the same intersection used in figure_4_source_comparison.py.
     """
     cwns_out = pd.read_csv(
-        REPO_ROOT / 'wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv', dtype=str)
+        REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv', dtype=str)
     ciwqs = pd.read_csv(
         REPO_ROOT / 'wwtp_process_extraction/data/ciwqs_to_cwns.csv', dtype=str)
     llm = pd.read_csv(
-        REPO_ROOT / 'wwtp_process_extraction/output/2026-5-25/llm_unit_processes_by_facility.csv',
+        REPO_ROOT / 'wwtp_process_extraction/output/2026-5-25/unit_processes_by_facility_llm.csv',
         dtype=str)
 
     cwns_pids = set(ciwqs[ciwqs['CWNS_ID'].isin(cwns_out['CWNS_ID'])]['Place ID'].dropna())
@@ -484,7 +484,7 @@ def load_cwns_source(common_pids, include_manual=True):
         manual lagoon corrections, and manual TT overrides for large plants.
 
     include_manual=False (Source 2): re-derives TT assignments from
-        cwns_unit_processes_by_facility.csv using our pipeline (same as Source 3),
+        unit_processes_by_facility_cwns.csv using our pipeline (same as Source 3),
         with BIOGAS_EL=0. No manual corrections of any kind.
     """
     link = pid_to_cwns_flow(common_pids)
@@ -506,7 +506,7 @@ def load_cwns_source(common_pids, include_manual=True):
 
     # include_manual=False: re-derive from CWNS unit processes
     ca_cwns = pd.read_csv(
-        REPO_ROOT / 'wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv',
+        REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv',
         dtype=str)
     cwns_by_pid, _ = build_cwns_facility_processes(ca_cwns, target_facilities=common_pids)
     cwns_by_pid = cwns_by_pid[cwns_by_pid['Place ID'].isin(common_pids)].copy()

@@ -291,7 +291,7 @@ ca_consolidated = ca_consolidated.merge(
     cwns_phys[['CWNS_ID', 'FACILITY_ID', 'LATITUDE', 'LONGITUDE']].drop_duplicates(),
     on=['CWNS_ID', 'FACILITY_ID'], how='left'
 )
-ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "cwns_unit_processes_by_facility.csv"), index=False)
+ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility_cwns.csv"), index=False)
 print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")
 
 # Track CA facilities and unit process changes across CWNS survey years

@@ -9,9 +9,9 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Influent to the tertiary WWTF will be screened with duplex mechanical fine screens to remove solids, than stored in an enclosed aerated flow equalization tank.",
+      "Sentence": "Influent to the tertiary WWTF will be screened with duplex mechanical fine screens to remove solids,",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -22,14 +22,12 @@
         "Aeration"
       ],
       "Role": [
-        "Equalization",
-        "Storage",
-        "Aerobic"
+        "Equalization"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Influent to the tertiary WWTF will be screened with duplex mechanical fine screens to remove solids, than stored in an enclosed aerated flow equalization tank.",
+      "Sentence": "than stored in an enclosed aerated flow equalization tank.",
       "trigger_process": [
         "Equalization"
       ]
@@ -41,11 +39,10 @@
         "Biofiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The new secondary treatment system will consist of four trickling filters operated in series.",
       "trigger_process": [
@@ -53,43 +50,88 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": [
-        "Coagulant-PolyaluminumChloride",
-        "Coagulant"
+        "Coagulant-PolyaluminumChloride"
       ],
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Prior to final clarification, a coagulant (polyaluminum hydroxychloride or aluminum chlorohydrate) will be added to the effluent to agglomerate fine particulates into larger particles to be removed during filtering.",
       "trigger_process": [
-        "Alum Addition",
         "Coagulation",
-        "Ferric Chloride Addition"
+        "Secondary Clarification",
+        "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "MediaFiltration",
-        "Backwashing"
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The clarified effluent will be filtered using duplex sand filters to remove fine suspended solids remaining in the wastewater after clarification.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "RapidSandFiltration",
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "planned",
+      "Substance": null,
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The clarified effluent will be filtered using duplex sand filters to remove fine suspended solids remaining in the wastewater after clarification.",
       "trigger_process": [
         "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The filters will be backwashed to flush out solids collected on the filter media.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The backwash water will be returned to the treatment system at the flow equalization tank.",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -105,11 +147,27 @@
       "Substance": [
         "Disinfectant-Chlorine"
       ],
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Following filtration, the treated effluent will be disinfected using a duplex feed system to pump a 12.5% solution of liquid sodium hypochlorite into the filtered effluent prior to discharge to the chlorine contact chamber.",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The system will provide for sufficient detention time to ensure a modal contact time of 90 minutes as required by Title 22.",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     },
     {
@@ -119,7 +177,7 @@
         "Storage"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Following treatment and disinfection the tertiary treated effluent will be discharged into lined effluent storage ponds with a permeability less than 10-7 cm/sec, prior to irrigation of the landscaped Use Areas.",
       "trigger_process": [
@@ -128,9 +186,7 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Evaporation"
-      ],
+      "Process": null,
       "Role": [
         "Storage"
       ],
@@ -139,20 +195,33 @@
       "Location": "on-site",
       "Sentence": "The WWTF currently has three ponds for effluent storage; a lined emergency storage pond (Pond 1), and two evaporation ponds (Ponds 2 and 3).",
       "trigger_process": [
-        "Evaporation Pond"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The WWTF currently has three ponds for effluent storage; a lined emergency storage pond (Pond 1), and two evaporation ponds (Ponds 2 and 3).",
+      "Sentence": "Pond 2 was recently enlarged and reconditioned with a new high-density polyethylene liner with a permeability less than 10-7 cm/sec to provide for sufficient storage capacity for Phase 1 of the tertiary WWTF.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "According to the Discharger, Pond 3 will be abandoned and backfilled when the recycling operation begins.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -165,7 +234,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The Discharger currently disposes of sludge at the Fresno County landfill and will continue to do so until the WWTF reaches 0.056 mgd.",
@@ -182,8 +253,10 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
-      "Implementation": "planned",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Once the new tertiary WWTF goes online, wasted sludge will be pumped to an aerated sludge storage tank for digestion and initial thickening and trucked off-site for disposal at an approved receiving facility.",
       "trigger_process": [
@@ -191,21 +264,18 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "Recirculation"
       ],
       "Role": [
-        "Feed",
-        "Equalization"
+        "Feed"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The filters will be backwashed to flush out solids collected on the filter media. The backwash water will be returned to the treatment system at the flow equalization tank.",
-      "trigger_process": [
-        "Equalization"
-      ]
+      "Sentence": "Decant water from the sludge storage tanks will be returned to the treatment system at the headworks.",
+      "trigger_process": []
     },
     {
       "Equipment": "DewateringUnit",
@@ -216,7 +286,7 @@
         "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "planned",
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The RWD indicates that in the future, a sludge dewatering unit, such as a centrifuge, screw, or belt press, will be added when the volume of sludge increases sufficiently to justify the capital cost and additional labor.",
       "trigger_process": [

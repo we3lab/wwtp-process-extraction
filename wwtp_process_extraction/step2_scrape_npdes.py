@@ -537,8 +537,8 @@ def run_ciwqs_search():
         print("Duplicates removed (Facility Name, WDID, NPDES No.):")
         print(duplicates_removed[cols].to_string(index=False))
 
-    df_deduplicated.to_csv(os.path.join(OUT, "all_ca_npdes.csv"), index=False)
-    print(f"Saved {len(df_deduplicated)} rows to all_ca_npdes.csv")
+    df_deduplicated.to_csv(os.path.join(OUT, "site_data_all.csv"), index=False)
+    print(f"Saved {len(df_deduplicated)} rows to site_data_all.csv")
 
     driver.quit()
     return program_urls
@@ -627,10 +627,10 @@ def collect_facility_page_urls(program_urls):
 
         driver.quit()
 
-    # Reconcile against all_ca_npdes.csv to catch any facilities missed by per-program scrapes
-    all_ca_npdes_path = os.path.join(OUT, "all_ca_npdes.csv")
-    if os.path.exists(all_ca_npdes_path):
-        npdes_df = pd.read_csv(all_ca_npdes_path, dtype=str).fillna("")
+    # Reconcile against site_data_all.csv to catch any facilities missed by per-program scrapes
+    site_data_all_path = os.path.join(OUT, "site_data_all.csv")
+    if os.path.exists(site_data_all_path):
+        npdes_df = pd.read_csv(site_data_all_path, dtype=str).fillna("")
         scraped_names = {
             f["Facility Name"]
             for entry in facilities_by_place.values()
@@ -650,10 +650,10 @@ def collect_facility_page_urls(program_urls):
                         "NPDES No.": row.get("NPDES No.", "").strip(),
                     }]
                 }
-                print(f"  + Reconciled from all_ca_npdes.csv: {fac_name} (placeID={place_id})")
+                print(f"  + Reconciled from site_data_all.csv: {fac_name} (placeID={place_id})")
                 added += 1
             elif not place_id:
-                print(f"  ! {fac_name} in all_ca_npdes.csv but not found in any CIWQS table")
+                print(f"  ! {fac_name} in site_data_all.csv but not found in any CIWQS table")
         if added:
             print(f"  Reconciliation added {added} missing facilities")
 
@@ -710,7 +710,8 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                 print(f"  Skipping PDFs ({reason}): {rm_type}, eff={eff.date() if eff else 'unknown'}")
                 entry.update({"Facility Name": fac_name, "WDID": wdid, "pdfs": [],
                               "total_pdfs": 0, "reg_measure_id": reg_id,
-                              "reg_measure_type": rm_type, "order_no": order_no})
+                              "reg_measure_type": rm_type, "order_no": order_no,
+                              "pdf_skip_reason": reason})
                 entry.pop("facilities", None)
                 return
 
@@ -786,8 +787,11 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
         # Unprocessed (exception during process_facility left "facilities" key intact)
         if "facilities" in entry:
             return True
-        # Download was attempted (missed_pdfs key present), page found zero PDFs — likely didn't load
-        if "missed_pdfs" in entry and not entry.get("pdfs") and not entry.get("total_pdfs"):
+        # Deliberately skipped (no link or pre-2004) — not a failure, never retry
+        if entry.get("pdf_skip_reason"):
+            return False
+        # A reg measure was clicked and 0 PDFs came back — should be impossible; retry
+        if entry.get("reg_measure_type") and not entry.get("pdfs") and not entry.get("total_pdfs"):
             return True
         return False
 
@@ -1066,13 +1070,13 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
 
 
 def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
-    print("\n STEP 4: Creating site_data.csv with relevant NPDES/WDR/NOA documents only")
+    print("\n STEP 4: Creating site_data_relevant with relevant NPDES/WDR/NOA documents only")
 
-    # Build (WDID, Facility Name) → {Agency, Region, Major/Minor, Order_No} from
-    # all_ca_npdes.csv (same key as excel dedupe; consistent with WDID+FACILITY in step2).
-    csv_path = os.path.join(OUT, "all_ca_npdes.csv")
+    # Build (WDID, Facility Name) → {Agency, Region, Major/Minor, Order_No, NPDES No.} from
+    # site_data_all.csv. Order_No is overridden with the scraped regulatory measure value when available.
+    csv_path = os.path.join(OUT, "site_data_all.csv")
     xls_path = os.path.join(OUT, "pdfs", "Regualted_Facility_Report_Detail.xls")
-    meta_keys = ("Agency", "Region", "Major/Minor", "NPDES No.")
+    meta_keys = ("Agency", "Region", "Major/Minor", "Order_No", "NPDES No.")
     enrich = {}
     for enrich_path, sep in [(csv_path, ","), (xls_path, "\t")]:
         if not os.path.exists(enrich_path):
@@ -1084,10 +1088,11 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
             key = (str(row["WDID"]).strip(), str(row["Facility Name"]).strip())
             if key not in enrich:
                 cell = {col: row.get(col, "") for col in ("Agency", "Region", "Major/Minor")}
+                cell["Order_No"] = row.get("Order No.", "")
                 cell["NPDES No."] = row.get("NPDES No.", "")
                 enrich[key] = cell
         break
-    print(f"  Enrichment lookup: {len(enrich)} entries from all_ca_npdes.csv")
+    print(f"  Enrichment lookup: {len(enrich)} entries from site_data_all.csv")
 
     # Count distinct place_ids mapping to each NPDES PDF (for Shared_PDF flag)
     pdf_to_n_facilities = {}
@@ -1105,7 +1110,8 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
         meta = enrich.get((wdid, fac_name), {})
         facility_npdes_pdfs = [p for p in entry.get("pdfs", []) if p in npdes_pdfs]
         meta_dict = {key: meta.get(key, "") for key in meta_keys}
-        meta_dict["Order_No"] = entry.get("order_no", "")
+        if entry.get("order_no"):
+            meta_dict["Order_No"] = entry["order_no"]
         for pdf in (facility_npdes_pdfs or [""]):
             rows.append(
                 {
@@ -1125,8 +1131,8 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
             )
 
     df_out = pd.DataFrame(rows)
-    df_out.to_csv(os.path.join(OUT, "site_data.csv"), index=False)
-    print(f"Wrote {len(rows)} rows to site_data.csv")
+    df_out.to_csv(os.path.join(OUT, "site_data_relevant.csv"), index=False)
+    print(f"Wrote {len(rows)} rows to site_data_relevant.csv")
 
     # Breakdown by Reg_Measure_Type (one row per unique Place ID)
     df_fac = df_out.drop_duplicates(subset="Place ID")
@@ -1158,6 +1164,6 @@ if __name__ == "__main__":
     # To restart from a checkpoint, replace the step(s) above with:
     with open(os.path.join(OUT, "facilities.json")) as f:
         facilities = json.load(f)
-    facilities = download_facility_page_pdfs(facilities)
+    # facilities = download_facility_page_pdfs(facilities)
     npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs, pdf_signals)

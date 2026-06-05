@@ -41,9 +41,9 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
 
 def main():
-    rfr_data = f"wwtp_process_extraction/output/site_data.csv"
+    rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
     txt_folder = f"wwtp_process_extraction/output/npdes/text"
-    out_file = f"wwtp_process_extraction/output/kw_unit_processes_by_pdf.csv"
+    out_file = f"wwtp_process_extraction/output/unit_processes_by_pdf_kw.csv"
 
     with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
         keywords = json.load(f)
@@ -140,7 +140,7 @@ def main():
             )
             upi.writerow(row_meta + [row_status[key] for key in all_keys])
 
-    kw_by_fac_path = f"wwtp_process_extraction/output/kw_unit_processes_by_facility.csv"
+    kw_by_fac_path = f"wwtp_process_extraction/output/unit_processes_by_facility_kw.csv"
     raw_df = pd.read_csv(out_file, dtype=str).fillna("")
     collapsed = collapse_facility_processes(
         raw_df,
@@ -148,7 +148,7 @@ def main():
         meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"],
     )
     collapsed.to_csv(kw_by_fac_path, index=False)
-    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → kw_unit_processes_by_facility.csv")
+    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
 
 
 if __name__ == "__main__":

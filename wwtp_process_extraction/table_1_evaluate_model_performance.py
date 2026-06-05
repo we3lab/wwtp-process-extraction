@@ -11,7 +11,7 @@ It reports three useful families of metrics for this sparse multi-label setup:
   top-level ontology family from unitprocess_keywords.json. This gives partial
   credit when the model predicts a close subtype rather than the exact leaf.
 - Exact-state accuracy: among truth-positive cells only, the fraction where the
-  model predicts the correct state (PRESENT, PLANNED, OFFSITE).
+  model predicts the correct state (PRESENT, FUTURE, PAST, OFFSITE).
 
 The workbook includes one malformed Healdsburg PDF name in one row; that is
 normalized here so the full 5-PDF evaluation set is used.
@@ -68,8 +68,8 @@ def normalize_status(value: Any) -> str | None:
     text = str(value).strip().upper()
     if text.startswith("PRESENT"):
         return "PRESENT"
-    if text.startswith("PLANNED"):
-        return "PLANNED"
+    if text.startswith("FUTURE"):
+        return "FUTURE"
     if "OFFSITE" in text or text == "OFFSITE":
         return "OFFSITE"
     return text
@@ -315,7 +315,7 @@ def main() -> None:
     print("Metric guide:")
     print("- Macro Unit Process F1: label-presence F1 averaged over the 5 PDFs so each PDF has equal weight.")
     print("- Macro Category F1: same idea, but with labels collapsed to top-level ontology families for partial credit.")
-    print("- State Accuracy: on cells that are true labels, how often the model chose the exact state (PRESENT / PLANNED / OFFSITE).")
+    print("- State Accuracy: on cells that are true labels, how often the model chose the exact state (PRESENT / FUTURE / PAST / OFFSITE).")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(args.output, index=False)

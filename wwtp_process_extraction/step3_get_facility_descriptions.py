@@ -301,8 +301,8 @@ def extract_from_pdf(pdf_path, mode):
 def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     pdf_path = Path(pdf_path)
     site_data = next(
-        (p / "site_data.csv" for p in [pdf_path.parent] + list(pdf_path.parents) if (p / "site_data.csv").exists()),
-        pdf_path.parent.parent / "site_data.csv",
+        (p / "site_data_relevant.csv" for p in [pdf_path.parent] + list(pdf_path.parents) if (p / "site_data_relevant.csv").exists()),
+        pdf_path.parent.parent / "site_data_relevant.csv",
     )
     # Mode controls which part of the PDF to search and where to stop extraction.
     # NPDES: Attachment F fact sheet only. NOA/WDR: full document.
@@ -348,7 +348,7 @@ def extract_one(args):
 
 
 def main():
-    rfr_data = f"wwtp_process_extraction/output/site_data.csv"
+    rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
     directory = f"wwtp_process_extraction/output/npdes"
 
     site_data = pd.read_csv(rfr_data, dtype=str).fillna("")

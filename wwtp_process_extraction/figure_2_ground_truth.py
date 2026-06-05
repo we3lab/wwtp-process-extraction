@@ -87,7 +87,7 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities):
     return rows
 
 
-CWNS_CA_CSV = "wwtp_process_extraction/output/cwns_unit_processes_by_facility.csv"
+CWNS_CA_CSV = "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv"
 
 
 def main():
@@ -102,9 +102,9 @@ def main():
     }
 
     # Load Google Sheets
-    ground_truth_df = pd.read_csv("wwtp_process_extraction/data/train_set_ground_truth.csv", dtype=str).fillna("")
+    ground_truth_df = pd.read_csv("wwtp_process_extraction/data/supplemental_data_unit_processes_by_facility.csv", dtype=str).fillna("")
     ground_truth_df["Place ID"] = ground_truth_df["Place ID"].str.strip()
-    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/train_set_npdes_manual.csv", dtype=str).fillna("")
+    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/manual_unit_processes_by_facility.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
     print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")

@@ -124,7 +124,7 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
             },
             "Implementation": {
                 "type": "string",
-                "enum": ["present", "planned", "past"],
+                "enum": ["present", "future", "past"],
             },
             "Location": {
                 "type": ["string", "null"],
@@ -186,7 +186,7 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
         },
         "Implementation": {
             "type": "string",
-            "enum": ["present", "planned", "past"],
+            "enum": ["present", "future", "past"],
         },
         "Location": {
             "type": ["string", "null"],
@@ -337,6 +337,7 @@ def chat_completion_json(
     if stop is not None:
         payload["stop"] = stop
 
+    content = None
     try:
         resp = requests.post(url, headers=get_headers(), json=payload, timeout=600)
         if not resp.ok:
@@ -396,4 +397,7 @@ def chat_completion_json(
         return parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output
 
     except (requests.RequestException, ValueError, json.JSONDecodeError) as e:
-        raise RuntimeError(f"Failed to get valid JSON. Last error: {e}")
+        err = RuntimeError(f"Failed to get valid JSON. Last error: {e}")
+        if content:
+            err.raw_output = content
+        raise err

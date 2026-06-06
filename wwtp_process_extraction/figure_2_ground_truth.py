@@ -104,7 +104,7 @@ def main():
     # Load Google Sheets
     ground_truth_df = pd.read_csv("wwtp_process_extraction/data/supplemental_data_unit_processes_by_facility.csv", dtype=str).fillna("")
     ground_truth_df["Place ID"] = ground_truth_df["Place ID"].str.strip()
-    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/manual_unit_processes_by_facility.csv", dtype=str).fillna("")
+    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
     print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")

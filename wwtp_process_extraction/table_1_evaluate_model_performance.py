@@ -14,7 +14,7 @@ It reports three useful families of metrics for this sparse multi-label setup:
   model predicts the correct state (PRESENT, FUTURE, PAST, OFFSITE).
 
 The workbook includes one malformed Healdsburg PDF name in one row; that is
-normalized here so the full 5-PDF evaluation set is used.
+normalized here so the full evaluation set is used.
 """
 
 from __future__ import annotations
@@ -23,15 +23,28 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any
-
+import json
+import os
+import re
+import sys
+import numpy as np
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from step6_postprocess_llm_output import process_json_to_unit_process_dict
 
-DEFAULT_WORKBOOK = Path("wwtp_process_extraction/output/llm_model_comparison/model_comparison_all.csv")
+
+DEFAULT_WORKBOOK = Path("wwtp_process_extraction/output/llm_extraction/model_comparison_all.csv")
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
-DEFAULT_OUTPUT = Path("wwtp_process_extraction/output/llm_model_comparison/model_performance_metrics.csv")
-MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
+DEFAULT_OUTPUT = Path("wwtp_process_extraction/output/llm_extraction/model_performance_metrics.csv")
+MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 MODEL_COSTS_CSV = Path("wwtp_process_extraction/data/model_costs.csv")
+MAIN_DIR = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gpt-5-mini")
+ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
+MANUAL_PATH = Path("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv")
+KEYWORDS_PATH = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
+OUTPUT_CSV = ADDITIONAL_DIR / "f1_variance.csv"
+METRIC_COLS = ["Macro Unit Process F1", "Macro Category F1", "State Accuracy"]
 
 # Maps dir-name model labels to rows in model_costs.csv
 MODEL_COST_MAP = {
@@ -215,7 +228,7 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
         )
 
     return pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
-DEFAULT_OUTPUT
+
 
 def load_price_per_pdf() -> pd.DataFrame:
     """Read token_usage_summary.csv from each model comparison dir.
@@ -269,7 +282,7 @@ def load_structured_output_rates() -> pd.DataFrame:
 
     The saved JSON is coerced to the {"items": [...]} shape before writing, so it
     can't be re-checked here. step5 records the raw-output conformance per
-    extraction in the manifest's "structured_output" column; average that.
+    extraction in token_usage_summary.csv's "structured_output" column; average that.
     """
     rows = []
     for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
@@ -282,13 +295,13 @@ def load_structured_output_rates() -> pd.DataFrame:
             method_label, model_label = "List", dir_name[len("list-based_"):]
         else:
             continue
-        manifest_path = dir_path / "facility_extraction_manifest.csv"
-        if not manifest_path.exists():
+        usage_path = dir_path / "token_usage_summary.csv"
+        if not usage_path.exists():
             continue
-        man = pd.read_csv(manifest_path, dtype=str).fillna("")
-        if "structured_output" not in man.columns:
+        usage = pd.read_csv(usage_path, dtype=str).fillna("")
+        if "structured_output" not in usage.columns:
             continue
-        flags = man["structured_output"].str.strip().str.lower()
+        flags = usage["structured_output"].str.strip().str.lower()
         flags = flags[flags.isin(["true", "false"])]
         if flags.empty:
             continue
@@ -299,6 +312,38 @@ def load_structured_output_rates() -> pd.DataFrame:
         })
     return pd.DataFrame(rows)
 
+
+def predictions_for_run(run_dir, label_cols):
+    """Postprocess every JSON in run_dir into a {place_id -> {col: status}} frame over label_cols."""
+    rows = {}
+    for jf in sorted(run_dir.glob("*.json")):
+        m = re.search(r"_(\d+)\.json$", jf.name)
+        if not m:
+            continue
+        with open(jf) as f:
+            data = json.load(f)
+        result = process_json_to_unit_process_dict(data)
+        rows[m.group(1)] = {c: (result.get(c) or np.nan) for c in label_cols}
+    return pd.DataFrame.from_dict(rows, orient="index").reindex(columns=label_cols)
+
+
+def run_metrics(pred_df, manual, label_cols, label_to_family):
+    """Macro-average the three table_1 metrics over the manual facilities for one run."""
+    pred = pred_df.reindex(manual.index)  # missing facilities -> all-NaN (counts as no prediction)
+    label_f1, family_f1, state_acc = [], [], []
+    for place_id in manual.index:
+        truth_row = manual.loc[place_id, label_cols]
+        pred_row = pred.loc[place_id, label_cols]
+        _, _, f1, _ = label_presence_f1(truth_row, pred_row, label_cols)
+        _, _, ff1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
+        label_f1.append(f1)
+        family_f1.append(ff1)
+        state_acc.append(exact_state_accuracy(truth_row, pred_row, label_cols))
+    return {
+        "Macro Unit Process F1": pd.Series(label_f1).mean(),
+        "Macro Category F1": pd.Series(family_f1).mean(),
+        "State Accuracy": pd.Series(state_acc).mean(),
+    }
 
 def main() -> None:
     args = parse_args()
@@ -313,7 +358,7 @@ def main() -> None:
     print(metrics.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
     print()
     print("Metric guide:")
-    print("- Macro Unit Process F1: label-presence F1 averaged over the 5 PDFs so each PDF has equal weight.")
+    print("- Macro Unit Process F1: label-presence F1 averaged over the facilities so each facility has equal weight.")
     print("- Macro Category F1: same idea, but with labels collapsed to top-level ontology families for partial credit.")
     print("- State Accuracy: on cells that are true labels, how often the model chose the exact state (PRESENT / FUTURE / PAST / OFFSITE).")
 
@@ -321,6 +366,43 @@ def main() -> None:
     metrics.to_csv(args.output, index=False)
     print(f"\nSaved metrics to {args.output}")
 
+
+    # ADDITIONAL RUNS VARIANCE
+    manual_full = pd.read_csv(MANUAL_PATH, dtype=str)  # empty cells -> NaN, like table_1
+    manual_full["Place ID"] = manual_full["Place ID"].str.strip()
+    meta = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
+    label_cols = [c for c in manual_full.columns if c not in meta]
+    manual = manual_full.drop_duplicates("Place ID").set_index("Place ID")
+    label_to_family = build_label_to_family_map(json.loads(KEYWORDS_PATH.read_text()))
+
+    run_dirs = [("main", MAIN_DIR)] + [
+        (rd.name, rd) for rd in sorted(ADDITIONAL_DIR.glob("run_*")) if rd.is_dir()
+    ]
+
+    rows = []
+    for label, run_dir in run_dirs:
+        n = len(list(run_dir.glob("*.json")))
+        print(f"Scoring {label} ({run_dir}) — {n} json")
+        metrics = run_metrics(predictions_for_run(run_dir, label_cols), manual, label_cols, label_to_family)
+        rows.append({"run": label, "n_facilities": n, **metrics})
+
+    df = pd.DataFrame(rows)
+    desc = df[METRIC_COLS]
+    summary = pd.DataFrame([
+        {"run": "mean", **desc.mean().to_dict()},
+        {"run": "std", **desc.std(ddof=1).to_dict()},
+        {"run": "variance", **desc.var(ddof=1).to_dict()},
+    ])
+    out = pd.concat([df, summary], ignore_index=True)
+    out[METRIC_COLS] = out[METRIC_COLS].round(4)
+
+    OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(OUTPUT_CSV, index=False)
+    print()
+    print(out.to_string(index=False))
+    print(f"\nSaved {OUTPUT_CSV}")
+    if len(run_dirs) < 2:
+        print("\nNote: only the main run was found — run step5 --repeat_runs N for variance.")
 
 if __name__ == "__main__":
     main()

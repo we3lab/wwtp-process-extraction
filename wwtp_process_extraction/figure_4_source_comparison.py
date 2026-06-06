@@ -407,7 +407,7 @@ print(f"\nSaved process counts: {f'{DATA_DIR}/process_counts_cwns_vs_llm.csv'} (
 # TODO: denitrification filter — no dedicated leaf yet in unitprocess_keywords.json.
 # "Media Filtration" is too broad (catches sand/cloth/disc filters).
 # Proxy: facilities with BOTH Media Filtration PRESENT and Denitrification PRESENT.
-# Better fix: load llm_postprocess_ontology JSONs and find items where trigger_process
+# Better fix: load llm_extraction/ontology-based_gpt-5-mini/ontology_postprocess JSONs and find items where trigger_process
 # contains BOTH "Media Filtration" and "Denitrification" on the same extracted item
 # (same equipment row) — then add a "Denitrification Filter" leaf to keywords JSON.
 _mf_present = set(_llm_common.loc[_llm_common["Media Filtration"].isin(PRESENT_STATUSES), "Place ID"])

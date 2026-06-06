@@ -17,15 +17,20 @@ GITHUB_BASE = (
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
 
-input_dir = Path(f"wwtp_process_extraction/output/llm_extraction")
+LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
+# Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
+# facility. The benchmark facilities are a subset of it. Each model folder keeps its postprocessed
+# JSONs in a nested ontology_postprocess/ subfolder.
+input_dir = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini"
 output_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_pdf_llm.csv")
 output_fac_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_facility_llm.csv")
 site_data_csv = Path(f"wwtp_process_extraction/output/site_data_relevant.csv")
-output_json_dir = Path(f"wwtp_process_extraction/output/llm_postprocess_ontology")
+output_json_dir = input_dir / "ontology_postprocess"
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
-MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_model_comparison")
-MANUAL_PATH = Path("wwtp_process_extraction/data") / "manual_unit_processes_by_facility.csv"
+# Model comparison iterates the per-model subfolders of llm_extraction.
+MODEL_COMPARISON_DIR = LLM_EXTRACTION_DIR
+MANUAL_PATH = Path("wwtp_process_extraction/data") / "unit_processes_by_facility_manual.csv"
 
 with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
@@ -94,9 +99,6 @@ for filename in [
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
 
-site_df = pd.read_csv(site_data_csv, dtype=str).fillna("")
-
-
 def _norm_pdf(s):
     return s.lower().replace(" ", "_")
 
@@ -110,14 +112,6 @@ def _row_info(row):
         "Agency": row["Agency"],
         "Facility Name": row["Facility Name"],
     }
-
-
-pdf_map = {}
-for _, row in site_df.iterrows():
-    # Use Path.stem so double-extension files (*.pdf.pdf) map to the same stem
-    # the LLM JSON generator uses when naming output files.
-    key = _norm_pdf(Path(row["PDF_File"]).stem)
-    pdf_map.setdefault(key, []).append(_row_info(row))
 
 
 def normalize_records(json_data):
@@ -422,126 +416,139 @@ def process_list_based_json(json_data):
     return result
 
 
-# ── full dataset ────────────────────────────────────────────────────
+def main():
+    site_df = pd.read_csv(site_data_csv, dtype=str).fillna("")
+    pdf_map = {}
+    for _, row in site_df.iterrows():
+        # Use Path.stem so double-extension files (*.pdf.pdf) map to the same stem
+        # the LLM JSON generator uses when naming output files.
+        key = _norm_pdf(Path(row["PDF_File"]).stem)
+        pdf_map.setdefault(key, []).append(_row_info(row))
 
-results = []
-unmatched_files = []
+    # ── full dataset ────────────────────────────────────────────────────
+    results = []
+    unmatched_files = []
 
-for filename in os.listdir(input_dir):
-    if not filename.endswith(".json"):
-        continue
-    with open(input_dir / filename) as f:
-        json_data = json.load(f)
-
-    result = process_json_to_unit_process_dict(json_data, output_json_path=output_json_dir / filename)
-
-    identity = {}
-    norm_stem = _norm_pdf(Path(filename).stem)
-    for pdf_stem in sorted(pdf_map, key=len, reverse=True):
-        if norm_stem == pdf_stem or norm_stem.startswith(pdf_stem + "_"):
-            rows = pdf_map[pdf_stem]
-            if len(rows) == 1:
-                identity = rows[0]
-            else:
-                # multi-facility PDF: suffix is the Place ID
-                place_id_suffix = norm_stem[len(pdf_stem) + 1:]
-                matching = [r for r in rows if r["Place ID"] == place_id_suffix]
-                identity = matching[0] if matching else rows[0]
-            break
-    if not identity:
-        unmatched_files.append(filename)
-    result.update(identity)
-    results.append(result)
-
-df = pd.DataFrame(results)
-id_cols = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"]
-cols = id_cols + [c for c in columns if c in df.columns]
-for c in cols:
-    if c not in id_cols:
-        df[c] = df[c].map(parse_status)
-df[cols].to_csv(output_csv, index=False)
-print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
-
-raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
-collapsed = collapse_facility_processes(
-    raw_df,
-    key_cols=["Place ID"],
-    meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
-)
-collapsed.to_csv(output_fac_csv, index=False)
-print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
-if unmatched_files:
-    print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")
-    for f in sorted(unmatched_files):
-        print(f"  {f}")
-
-
-# ── Model comparison CSV ──────────────────────────────────────────────────────
-# Manual rows come from the manual-read workbook;
-# predictions are generated fresh from all JSON dirs.
-# Output is model_comparison_all.csv which table_1 loads.
-
-wb_df = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
-manual_rows = wb_df.copy()
-manual_rows["Method"] = "Manual Read"
-up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
-# Descriptive facility columns vs unit-process status columns
-meta_cols = [c for c in ["Agency", "Facility Name", "Place ID", "NPDES No."] if c in up_columns]
-proc_columns = [c for c in up_columns if c not in meta_cols]
-
-prediction_rows = []
-for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
-    if not dir_path.is_dir():
-        continue
-    dir_name = dir_path.name
-    if dir_name.startswith("ontology-based_"):
-        method_label = "Ontology"
-        model_label = dir_name[len("ontology-based_"):]
-    elif dir_name.startswith("list-based_"):
-        method_label = "List"
-        model_label = dir_name[len("list-based_"):]
-    else:
-        continue
-
-    # Identity comes from the LLM output's Place ID via the per-model manifest, not the
-    # PDF file (a single PDF can cover multiple facilities).
-    manifest_path = dir_path / "facility_extraction_manifest.csv"
-    json_to_place_id = {}
-    if manifest_path.exists():
-        man = pd.read_csv(manifest_path, dtype=str).fillna("")
-        json_to_place_id = dict(zip(man["extraction_file"], man["Place ID"]))
-
-    print(f"\nProcessing {dir_name} ({method_label} / {model_label})...")
-    for json_file in sorted(dir_path.glob("*.json")):
-        place_id = json_to_place_id.get(json_file.name, "").strip()
-        if not place_id:
-            print(f"  No Place ID for {json_file.name} in manifest, skipping")
+    for filename in os.listdir(input_dir):
+        if not filename.endswith(".json"):
             continue
-
-        with open(json_file) as f:
+        with open(input_dir / filename) as f:
             json_data = json.load(f)
 
-        if method_label == "Ontology":
-            unit_process_result = process_json_to_unit_process_dict(json_data)
+        result = process_json_to_unit_process_dict(json_data, output_json_path=output_json_dir / filename)
+
+        identity = {}
+        norm_stem = _norm_pdf(Path(filename).stem)
+        for pdf_stem in sorted(pdf_map, key=len, reverse=True):
+            if norm_stem == pdf_stem or norm_stem.startswith(pdf_stem + "_"):
+                rows = pdf_map[pdf_stem]
+                if len(rows) == 1:
+                    identity = rows[0]
+                else:
+                    # multi-facility PDF: suffix is the Place ID
+                    place_id_suffix = norm_stem[len(pdf_stem) + 1:]
+                    matching = [r for r in rows if r["Place ID"] == place_id_suffix]
+                    identity = matching[0] if matching else rows[0]
+                break
+        if not identity:
+            unmatched_files.append(filename)
+        result.update(identity)
+        results.append(result)
+
+    df = pd.DataFrame(results)
+    id_cols = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"]
+    cols = id_cols + [c for c in columns if c in df.columns]
+    for c in cols:
+        if c not in id_cols:
+            df[c] = df[c].map(parse_status)
+    df[cols].to_csv(output_csv, index=False)
+    print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
+
+    raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
+    collapsed = collapse_facility_processes(
+        raw_df,
+        key_cols=["Place ID"],
+        meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
+    )
+    collapsed.to_csv(output_fac_csv, index=False)
+    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
+    if unmatched_files:
+        print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")
+        for f in sorted(unmatched_files):
+            print(f"  {f}")
+
+    # ── Model comparison CSV ──────────────────────────────────────────────────────
+    # Manual rows come from the manual-read workbook;
+    # predictions are generated fresh from all JSON dirs.
+    # Output is model_comparison_all.csv which table_1 loads.
+
+    wb_df = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
+    manual_rows = wb_df.copy()
+    manual_rows["Method"] = "Manual Read"
+    up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
+    # Descriptive facility columns vs unit-process status columns
+    meta_cols = [c for c in ["Agency", "Facility Name", "Place ID", "NPDES No."] if c in up_columns]
+    proc_columns = [c for c in up_columns if c not in meta_cols]
+    # The comparison only covers the benchmark (manually-read) facilities. The default
+    # ontology-based_gpt-5-mini folder also holds the full CA set, so filter each model to these.
+    benchmark_pids = set(manual_rows["Place ID"].astype(str).str.strip())
+
+    prediction_rows = []
+    for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
+        if not dir_path.is_dir():
+            continue
+        dir_name = dir_path.name
+        if dir_name.startswith("ontology-based_"):
+            method_label = "Ontology"
+            model_label = dir_name[len("ontology-based_"):]
+        elif dir_name.startswith("list-based_"):
+            method_label = "List"
+            model_label = dir_name[len("list-based_"):]
         else:
-            unit_process_result = process_list_based_json(json_data)
-        row = {"Method": method_label, "Model": model_label, "Place ID": place_id}
-        for col in proc_columns:
-            val = unit_process_result.get(col, "")
-            row[col] = val if val else None
-        prediction_rows.append(row)
-        print(f"  Processed {json_file.name} → Place ID {place_id}")
+            continue
 
-pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model"] + up_columns + ["PDF_File"])
+        # Identity is the Place ID, which step5 encodes in each output filename as
+        # {txt_stem}_{place_id}.json (a single PDF can cover multiple facilities, so the
+        # PDF name alone isn't enough). Parse the trailing _<id> off the filename.
+        postprocess_dir = dir_path / "ontology_postprocess"
+        print(f"\nProcessing {dir_name} ({method_label} / {model_label})...")
+        for json_file in sorted(dir_path.glob("*.json")):
+            m = re.search(r"_(\d+)\.json$", json_file.name)
+            place_id = m.group(1) if m else ""
+            if not place_id or place_id not in benchmark_pids:
+                continue
 
-# Backfill the remaining facility metadata (and PDF_File) from manual rows by Place ID
-backfill_cols = [c for c in meta_cols if c != "Place ID"]
-if "PDF_File" in manual_rows.columns:
-    backfill_cols.append("PDF_File")
-meta_by_pid = manual_rows.drop_duplicates("Place ID").set_index("Place ID")[backfill_cols]
-pred_df[backfill_cols] = meta_by_pid.reindex(pred_df["Place ID"]).values
+            with open(json_file) as f:
+                json_data = json.load(f)
 
-combined_df = pd.concat([manual_rows, pred_df], ignore_index=True)
-model_comparison_csv = MODEL_COMPARISON_DIR / "model_comparison_all.csv"
-combined_df.to_csv(model_comparison_csv, index=False)
-print(f"\nSaved {model_comparison_csv}")
+            if method_label == "Ontology":
+                postprocess_dir.mkdir(exist_ok=True)
+                unit_process_result = process_json_to_unit_process_dict(
+                    json_data, output_json_path=postprocess_dir / json_file.name
+                )
+            else:
+                unit_process_result = process_list_based_json(json_data)
+            row = {"Method": method_label, "Model": model_label, "Place ID": place_id}
+            for col in proc_columns:
+                val = unit_process_result.get(col, "")
+                row[col] = val if val else None
+            prediction_rows.append(row)
+            print(f"  Processed {json_file.name} → Place ID {place_id}")
+
+    pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model"] + up_columns + ["PDF_File"])
+
+    # Backfill the remaining facility metadata (and PDF_File) from manual rows by Place ID
+    backfill_cols = [c for c in meta_cols if c != "Place ID"]
+    if "PDF_File" in manual_rows.columns:
+        backfill_cols.append("PDF_File")
+    meta_by_pid = manual_rows.drop_duplicates("Place ID").set_index("Place ID")[backfill_cols]
+    pred_df[backfill_cols] = meta_by_pid.reindex(pred_df["Place ID"]).values
+
+    combined_df = pd.concat([manual_rows, pred_df], ignore_index=True)
+    model_comparison_csv = MODEL_COMPARISON_DIR / "model_comparison_all.csv"
+    combined_df.to_csv(model_comparison_csv, index=False)
+    print(f"\nSaved {model_comparison_csv}")
+
+
+if __name__ == "__main__":
+    main()

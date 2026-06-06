@@ -15,7 +15,7 @@ Think step by step:
 5. Structure the output as a JSON file as requested
 
 Output:
-IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a flat dict or any other structure. ALWAYS use this exact shape:
+Your entire response must be a single JSON object: an "items" array with one object per treatment unit, using this structure:
 {
     "items": [
         {
@@ -29,7 +29,7 @@ IMPORTANT: Your ENTIRE response must be a single JSON object. Do NOT return a fl
         }
     ]
 }
-Do not add any other top-level fields.
+Emit one object per distinct treatment step. A municipal plant typically yields ~8-20 steps. Each object must include exactly one Equipment (or one Process if no equipment is named), plus only the processes that occur in that unit. Processes in different units belong in different objects.
 
 Field meaning and allowed cardinality:
 - Equipment: equipment name from ontology. Exactly one string, or null only if no specific equipment is identifiable. Populate whenever a physical unit or vessel is mentioned or clearly implied.
@@ -39,9 +39,9 @@ Field meaning and allowed cardinality:
 - Rule: at least one of Equipment or Process must be non-null. Both should be set when both are relevant.
 - Implementation: a single string, one of "present", "future", "past".
 - Location: a single string, one of "on-site" or "off-site"
-- Sentence: shortest direct quote from the permit extract that supports the extraction.
+- Sentence: shortest excerpt supporting the extraction from the permit — a phrase, not necessarily a full sentence.
 
-All equipment, process, role and substance names must be exactly as listed in the ontology sections (EQUIPMENTS, PROCESSES, ROLES, SUBSTANCES). Use the most specific applicable term. Ontology children will inherit parent types they are "SubEquip" or "SubProcess" of.
+All equipment, process, role and substance names must be exactly as listed in the ontology sections (EQUIPMENTS, PROCESSES, ROLES, SUBSTANCES). Use only the most specific applicable term; its parents are inferred, so do not also list them (e.g. "CentrifugalThickener", not "CentrifugalThickener" and "Thickener").
 
 Do not include example processes listed in boilerplate language.
 

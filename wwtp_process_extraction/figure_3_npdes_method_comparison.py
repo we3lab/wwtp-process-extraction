@@ -320,7 +320,7 @@ else:
     unit_full_both = unit_full
 
 # Load manual readings (train + test) as the deviation baseline
-manual = pd.read_csv("wwtp_process_extraction/data/manual_unit_processes_by_facility.csv", dtype=str).fillna("")
+manual = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str).fillna("")
 manual["Place ID"] = manual["Place ID"].str.strip()
 manual = manual[manual["Place ID"].ne("")].copy()
 manual_facilities = set(manual["Place ID"])

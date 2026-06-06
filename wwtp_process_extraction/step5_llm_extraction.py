@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from helpers.ontology_to_txt import ontology_to_txt, output_file as ONTOLOGY_GENERATED_PATH
+from helpers.ontology_to_txt import ontology_to_txt, ontology_txt_file
 from helpers.utils import build_txt_jobs, SEP
 from helpers.api_llm_search import (
     chat_completion_json,
@@ -245,7 +245,7 @@ def run_extraction(args, output_dir_override=None):
     if args.method == "ontology-based":
         print("Initializing ontology from source repository...")
         ontology_to_txt()
-        generated_path = Path(ONTOLOGY_GENERATED_PATH)
+        generated_path = Path(ontology_txt_file)
         ontology_target = Path(ONTOLOGY_PATH)
         if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
             ontology_target.parent.mkdir(parents=True, exist_ok=True)
@@ -360,7 +360,7 @@ def run_extraction(args, output_dir_override=None):
                     schema=example_schema,
                 )
                 completion_token = prompt_token = total_token = reasoning_tokens = 0
-                structured_output = None
+                structured_output = True
                 print(f"Cost: ${cost_usd:.6f}")
             else:
                 model_max = MAX_TOKENS_BY_MODEL.get(args.model)
@@ -468,6 +468,5 @@ if __name__ == "__main__":
 # FULL CA (all relevant facilities), ONTOLOGY-BASED, GPT-5-MINI
 # python wwtp_process_extraction/step5_llm_extraction.py --all_facilities
 
-# F1 VARIANCE: 4 extra benchmark runs (default model/method) -> additional_runs/run_1..4,
-# then: python wwtp_process_extraction/additional_runs_variance.py
-# python wwtp_process_extraction/step5_llm_extraction.py --repeat_runs 4
+# F1 VARIANCE: 2 extra benchmark runs (default model/method) -> additional_runs/run_1..4,
+# python wwtp_process_extraction/step5_llm_extraction.py --repeat_runs 2

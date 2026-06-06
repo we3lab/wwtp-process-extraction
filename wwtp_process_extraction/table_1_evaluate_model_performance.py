@@ -48,11 +48,18 @@ METRIC_COLS = ["Macro Unit Process F1", "Macro Category F1", "State Accuracy"]
 
 # Maps dir-name model labels to rows in model_costs.csv
 MODEL_COST_MAP = {
+    # mappings from run-dir model labels to the Language Model names used in model_costs.csv
+    "gpt-5": "GPT 5",
+    "gpt-5-mini": "GPT 5 mini",
     "gpt-pro": "GPT 5",
     "gpt-mini": "GPT 5 mini",
+    "gemini-2.5-pro": "Gemini 2.5 Pro",
     "gemini-pro": "Gemini 2.5 Pro",
     "gemini-flash": "Gemini 2.0 Flash",
+    "claude-4-5-sonnet": "Claude 4.5 Sonnet",
+    "claude-sonnet-4-6-web": "Claude 4.6 Sonnet",
     "claude-sonnet": "Claude 4.5 Sonnet",
+    "claude-3-haiku": "Claude 3 Haiku",
     "claude-haiku": "Claude 3 Haiku",
 }
 
@@ -256,8 +263,10 @@ def load_price_per_pdf() -> pd.DataFrame:
         if not usage_path.exists():
             continue
         usage_df = pd.read_csv(usage_path)
-        if "cost_usd" in usage_df.columns:
-            cost = usage_df["cost_usd"].mean()
+        # If a precomputed cost column exists and has values, use it. Otherwise
+        # compute cost from token counts using MODEL_COSTS_CSV.
+        if "cost_usd" in usage_df.columns and usage_df["cost_usd"].notna().any():
+            cost = usage_df["cost_usd"].astype(float).mean()
         else:
             cost_name = MODEL_COST_MAP.get(model_label)
             cost_row = costs_df[costs_df["model_name"] == cost_name]
@@ -268,10 +277,10 @@ def load_price_per_pdf() -> pd.DataFrame:
                 output_per_m = cost_row["output_per_m"].iloc[0]
                 # column is "prompt_toke" (typo in source files)
                 prompt_col = "prompt_toke" if "prompt_toke" in usage_df.columns else "prompt_token"
-                per_row_cost = (
-                    usage_df[prompt_col] / 1_000_000 * input_per_m
-                    + usage_df["completion_token"] / 1_000_000 * output_per_m
-                )
+                # Ensure numeric conversion; missing values will become NaN
+                prompt_vals = pd.to_numeric(usage_df.get(prompt_col, pd.Series(dtype=float)), errors="coerce")
+                comp_vals = pd.to_numeric(usage_df.get("completion_token", pd.Series(dtype=float)), errors="coerce")
+                per_row_cost = (prompt_vals / 1_000_000 * input_per_m) + (comp_vals / 1_000_000 * output_per_m)
                 cost = per_row_cost.mean()
         rows.append({"Method": method_label, "Model": model_label, "Price per PDF": cost})
     return pd.DataFrame(rows)
@@ -349,11 +358,79 @@ def main() -> None:
     args = parse_args()
     metrics = evaluate_workbook(args.workbook, args.keywords)
 
+    # Add keyword-search baseline metrics (NPDES keyword method) computed on the
+    # same manual facilities used by the workbook (same n=50 baseline).
+    wb = pd.read_csv(args.workbook, dtype=str)
+    manual_ids = set(wb.loc[wb["Method"].eq("Manual Read"), "Place ID"].dropna())
+    manual_full = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
+    manual_full["Place ID"] = manual_full["Place ID"].str.strip()
+    meta = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
+    label_cols = [c for c in manual_full.columns if c not in meta]
+    manual = (
+        manual_full[manual_full["Place ID"].isin(manual_ids)]
+        .drop_duplicates("Place ID")
+        .set_index("Place ID")
+    )
+
+    # Load keyword predictions and align
+    kw_path = Path("wwtp_process_extraction/output/unit_processes_by_facility_kw.csv")
+    kw_df = pd.read_csv(kw_path, dtype=str).fillna("")
+    kw_df["Place ID"] = kw_df["Place ID"].str.strip()
+    kw_df = kw_df.set_index("Place ID").reindex(manual.index)
+    # empty strings -> NaN so absence counts as no prediction
+    kw_df = kw_df.replace("", np.nan)
+
+    label_to_family = build_label_to_family_map(json.loads(args.keywords.read_text()))
+    kw_metrics = run_metrics(kw_df[label_cols], manual, label_cols, label_to_family)
+    kw_row = {
+        "Method": "Keyword",
+        "Model": "NPDES Keyword",
+        **kw_metrics,
+    }
+    metrics = pd.concat([metrics, pd.DataFrame([kw_row])], ignore_index=True, sort=False)
+
     cost_df = load_price_per_pdf()
     structured_df = load_structured_output_rates()
     metrics = metrics.merge(cost_df, on=["Method", "Model"], how="left")
     metrics = metrics.merge(structured_df, on=["Method", "Model"], how="left")
     metrics = metrics.round(3)
+
+    # Reorder rows to the user's requested display order and add placeholders.
+    desired_order = [
+        ("Keyword", "NPDES Keyword"),
+        ("Ontology", "gpt-5-mini"),
+        ("Ontology", "gpt-5"),
+        ("Ontology", "gemini-2.5-pro"),
+        ("Ontology", "claude-3-haiku"),
+        ("Ontology", "claude-4-5-sonnet"),
+        ("Ontology", "claude-sonnet-4-6-web"),
+        ("List", "gpt-5-mini"),
+        ("List", "gpt-5"),
+        ("List", "gemini-2.5-pro"),
+        ("List", "claude-3-haiku"),
+        ("List", "claude-4-5-sonnet"),
+        # final placeholder row as requested
+        ("Ontology", "claude-sonnet-4-6-web"),
+    ]
+
+    ordered_rows = []
+    cols = list(metrics.columns)
+    seen = set()
+    for method, model in desired_order:
+        key = (method, model)
+        match = metrics[(metrics["Method"] == method) & (metrics["Model"] == model)]
+        if key not in seen and not match.empty:
+            # use real row only once
+            ordered_rows.append(match.iloc[0].to_dict())
+            seen.add(key)
+        else:
+            # create a blank placeholder row for duplicates or missing runs
+            row = {c: "" for c in cols}
+            row["Method"] = method
+            row["Model"] = model
+            ordered_rows.append(row)
+
+    metrics = pd.DataFrame(ordered_rows)[cols]
 
     print(metrics.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
     print()

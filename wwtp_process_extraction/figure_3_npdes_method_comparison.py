@@ -101,8 +101,8 @@ def create_method_deviation_plot(
 
     for idx, row in df.iterrows():
         for x_off, fp, fn, color in [
-            (-w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
-            (+w, row["KW_FP"], row["KW_FN"], COLORS["npdes_kw"]),
+            (-w, row["KW_FP"], row["KW_FN"], COLORS["npdes_kw"]),
+            (+w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
         ]:
             x = idx + x_off
             width = w * 2
@@ -141,8 +141,8 @@ def create_method_deviation_plot(
             {
                 "header": "Method",
                 "items": [
-                    ("  NPDES - LLM Extraction", {"facecolor": COLORS["npdes_llm"]}),
                     ("  NPDES Keyword", {"facecolor": COLORS["npdes_kw"]}),
+                    ("  NPDES - LLM Extraction", {"facecolor": COLORS["npdes_llm"]}),
                 ],
             },
             {
@@ -243,7 +243,7 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         y="Value",
         hue="Source",
         order=score_cols,
-        hue_order=["LLM", "Keyword"],
+        hue_order=["Keyword", "LLM"],
         split=True,
         palette=_PALETTE_METRIC,
         inner=None,

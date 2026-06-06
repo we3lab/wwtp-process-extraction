@@ -46,11 +46,11 @@ RotatingBiologicalContactor | Fixed-film process using a slowly rotating discs p
 MovingBedBioreactor | MBBR process using suspended growth media a tank | SubEquip: Filter | Process: Process-Biofiltration
 TricklingFilter | A filter system that treats wastewater by trickling it over a bed of rocks or plastic | SubEquip: Filter | Process: Process-TricklingFiltration
 OxidationDitch | Modified activated sludge process that uses a ring-shaped channel to biologically remove pollutants | SubEquip: Reactor | Process: Process-ActivatedSludge
-MembraneBioreactor | A filter system that combines a membrane process like microfiltration with a biological reactor | SubEquip: Filter, Reactor, SeparationTank | Process: Process-Biofiltration
+MembraneBioreactor | A filter system that combines a membrane process like microfiltration with a biological reactor | SubEquip: Filter, Reactor, SeparationTank
 MicrofiltrationUnit | A filter system which removes contaminants from a liquid by passing it through a microporous membrane | SubEquip: Filter | Process: Process-Microfiltration
 UltrafiltrationUnit | A filter system that uses a pressure-driven barrier to separate particles and solutes in a fluid | SubEquip: Filter | Process: Process-Ultrafiltration
 NanofiltrationUnit | A filter system that uses a membrane to soften water and remove organic contaminants | SubEquip: Filter
-MediaFiltration | A filter system that uses a bed of material to filter out contaminants | SubEquip: Filter | Process: Process-MediaFiltration
+MediaFiltrationUnit | A filter system that uses a bed of material to filter out contaminants | SubEquip: Filter | Process: Process-MediaFiltration
 RapidSandFilter | A type of media filter that uses sand as the filter medium and operates at high filtration rates. | SubEquip: MediaFiltration | Process: Process-RapidSandFiltration
 CartridgeFiltrationUnit | A filter system using a cartridge to remove contaminants from fluids | SubEquip: Filter
 IonExchangeMembrane | A membrane that selectively allows ions to pass through while blocking other substances | Process: Process-IonExchange
@@ -92,6 +92,7 @@ Flotation | A unit process that uses buoyancy to separate solids from water, oft
 GasTransfer | A unit process that transfers gases, such as oxygen or carbon dioxide, into or out of water. | SubProcess: PhysicalProcess
 Aeration | A unit process that aerates (i.e., transfers oxygen into water). | SubProcess: GasTransfer
 Mixing | A unit process that mixes water with chemicals or other substances to achieve a desired effect. | SubProcess: PhysicalProcess
+Recirculation | A process that returns a portion of a treated or intermediate flow back upstream to maintain hydraulic, solids, or biological performance. | SubProcess: PhysicalProcess
 Dewatering | A process to remove or separate water from another material, typically solids. | SubProcess: PhysicalProcess
 Drying | Drying of biosolids to reduce moisture content. | SubProcess: Dewatering, Evaporation
 Centrifugation | A process that uses centrifugal force to separate substances of different densities. | SubProcess: PhysicalProcess
@@ -155,7 +156,11 @@ TricklingFiltration | Trickling filter using any media (e.g., plastic, sand, gra
 BiologicallyActiveFiltration | A biologically activated filtration column. | SubProcess: Biofiltration
 Microfiltration | 0.1 to 1 micron-scale filtration | SubProcess: Filtration
 Ultrafiltration | 0.01 to 0.1 micron-scale filtration | SubProcess: Filtration
+Backwashing | A cleaning process in which water, and sometimes air, is driven backward through a filter or membrane system to remove accumulated solids. | SubProcess: Cleaning
+AirScouring | A cleaning process that uses injected air to dislodge accumulated foulants or solids from filter media or membrane surfaces. | SubProcess: Cleaning
+Purging | A process that flushes retained liquid, solids, or gas from equipment or piping to restore operating conditions or prepare for another cycle. | SubProcess: Cleaning
 Digestion | A biological process that breaks down organic matter over a long duration in a tank. | SubProcess: BiologicalProcess
+Cleaning | A maintenance-oriented process that removes accumulated solids, foulants, or residual materials from water treatment equipment. | SubProcess: PhysicalProcess
 AnaerobicDigestion | A biological process that breaks down organic matter in the absence of oxygen. | SubProcess: Digestion
 AerobicDigestion | A biological process that breaks down organic matter in the presence of oxygen. | SubProcess: Digestion
 
@@ -190,6 +195,9 @@ Posttreatment
 ########################
 SUBSTANCES:
 Constituent-Metals | Constituent-Metals | SubSubstanceOf: Medium-Constituent
+Water-Seawater | Water-Seawater | SubSubstanceOf: Fluid-Water
+Water-Freshwater | Water-Freshwater | SubSubstanceOf: Fluid-Water
+Water-Brackish | Water-Brackish | SubSubstanceOf: Fluid-Water
 Fluid-Sludge | A semi-solid slurry composed of water and solids. | SubSubstanceOf: Mix-Fluid
 WastewaterTreatmentChemical | Base class for all chemicals used in wastewater treatment | SubSubstanceOf: Medium-Constituent
 Coagulant | Class for coagulants used in wastewater treatment | SubSubstanceOf: WastewaterTreatmentChemical
@@ -206,13 +214,24 @@ pHAdjuster-SulfuricAcid | Sulfuric acid, used to decrease pH | SubSubstanceOf: p
 Disinfectant | Class for disinfectants used in wastewater treatment | SubSubstanceOf: WastewaterTreatmentChemical
 Disinfectant-Chlorine | Chlorine, a common disinfectant | SubSubstanceOf: Disinfectant
 Disinfectant-Ozone | Ozone, an advanced disinfectant | SubSubstanceOf: Disinfectant
+OxidizingAgent | Class for oxidizing agents used in water treatment | SubSubstanceOf: WastewaterTreatmentChemical
+OxidizingAgent-HydrogenPeroxide | Hydrogen peroxide, an oxidizing agent commonly used in advanced oxidation processes | SubSubstanceOf: OxidizingAgent
 OdorControlAgent | Class for chemicals used for odor control | SubSubstanceOf: WastewaterTreatmentChemical
 OdorControlAgent-ActivatedCarbon | Activated carbon, used to absorb odors | SubSubstanceOf: OdorControlAgent
 HeavyMetalRemovalAgent | Class for chemicals used to remove heavy metals | SubSubstanceOf: WastewaterTreatmentChemical
 HeavyMetalRemovalAgent-SodiumSulfide | Sodium sulfide, used to precipitate heavy metals | SubSubstanceOf: HeavyMetalRemovalAgent
-Constituent-Organics | Constituent-Organics | SubSubstanceOf: Medium-Constituent
-Constituent-Solids | Constituent-Solids | SubSubstanceOf: Medium-Constituent
-Constituent-SuspendedSolids | Suspended solids are particulate matter that is not dissolved in water and can be removed by filtration including organic and inorganic particles. | SubSubstanceOf: Constituent-Solids
+Constituent-Organics | Organic chemical matter present as a constituent of a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-Inorganics | Inorganic chemical matter present as a constituent of a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-Particles | Particulate matter present as a constituent of a medium. | SubSubstanceOf: Medium-Constituent
+Constituent-Solids | Solid material present as a constituent of a treatment medium. | SubSubstanceOf: Constituent-Particles
+Constituent-SuspendedSolids | Solid particulate matter suspended in water rather than dissolved, including organic and inorganic material carried in the fluid. | SubSubstanceOf: Constituent-Solids
+Constituent-OrganicCarbon | Organic carbon present as a constituent of a treatment medium. | SubSubstanceOf: Constituent-Organics
+Constituent-InorganicCarbon | Inorganic carbon species present as constituents of a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-DissolvedOxygen | Molecular oxygen dissolved in a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-Ammonia | Ammonia present as a dissolved nitrogen-bearing constituent of a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-Nitrite | Nitrite present as an intermediate nitrogen-bearing constituent of a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-Nitrate | Nitrate present as an oxidized nitrogen-bearing constituent of a treatment medium. | SubSubstanceOf: Medium-Constituent
+Constituent-NitrogenOxides | Nitrogen oxide species present as constituents of a treatment medium, including gaseous or dissolved forms. | SubSubstanceOf: Medium-Constituent
 Constituent-Cyanide | Cyanide: A highly toxic chemical compound that can be harmful to aquatic life | SubSubstanceOf: Medium-Constituent
 Constituent-Bacteria | Bacteria: Microscopic single-celled organisms that can be found in water | SubSubstanceOf: Medium-Constituent
 Sludge-MixedLiquor | Mixed liquor is the mixture of wastewater and activated sludge in the aeration basin of a wastewater treatment plant. It contains suspended solids and water. | SubSubstanceOf: Fluid-Sludge

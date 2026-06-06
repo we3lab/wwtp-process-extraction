@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from collections import defaultdict
 from matplotlib.lines import Line2D
 from matplotlib.colors import to_rgba
@@ -17,8 +18,7 @@ from helpers.utils import (
 from helpers.plotting import COLORS
 from helpers.plotting import make_grouped_legend, save_and_close, set_thick_spines
 
-DATE_FOLDER = "2026-5-15"
-figures_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
+figures_dir = f"wwtp_process_extraction/output/final"
 os.makedirs(figures_dir, exist_ok=True)
 
 
@@ -88,7 +88,7 @@ def build_gt_rows(gt_fac, npdes_fac, cwns_fac, common_facilities):
     return rows
 
 
-CWNS_CA_CSV = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
+CWNS_CA_CSV = "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv"
 
 
 def main():
@@ -103,9 +103,9 @@ def main():
     }
 
     # Load Google Sheets
-    ground_truth_df = pd.read_csv("wwtp_process_extraction/data/train_set_ground_truth.csv", dtype=str).fillna("")
+    ground_truth_df = pd.read_csv("wwtp_process_extraction/data/supplemental_data_unit_processes_by_facility.csv", dtype=str).fillna("")
     ground_truth_df["Place ID"] = ground_truth_df["Place ID"].str.strip()
-    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/train_set_npdes_manual.csv", dtype=str).fillna("")
+    npdes_text_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
     print(f"GroundTruth sheet: {len(ground_truth_df)} facilities")
@@ -124,16 +124,9 @@ def main():
     ground_truth_process_cols = [c for c in ground_truth_df.columns if c not in meta_cols]
     npdes_text_process_cols = [c for c in npdes_text_df.columns if c not in meta_cols]
 
-    disposal_leaves = {
-        name
-        for name, _, _ in extract_leaves(
-            unitprocess_keywords["Solids Processing"]["Disposal"], ignore_disposal=False
-        )
-    }
     all_sheet_process_cols = [
         c
         for c in dict.fromkeys(ground_truth_process_cols + npdes_text_process_cols)
-        if c not in disposal_leaves
     ]
 
     common_facilities = set(ground_truth_df["Place ID"]) & set(npdes_text_df["Place ID"]) & set(cwns_mapping["Place ID"])
@@ -175,78 +168,32 @@ def main():
         gt_plot_df[f"{source}_Error_Rate"] = gt_plot_df[total_err_col] / n_facilities
         gt_plot_df[f"{source}_Missed_Rate"] = gt_plot_df[fn_col] / n_facilities
         gt_plot_df[f"{source}_Extra_Rate"] = gt_plot_df[fp_col] / n_facilities
+        # Error rates normalized by total GT occurrences in the category (per-GT)
+        gt_plot_df[f"{source}_Error_Rate_perGT"] = gt_plot_df.apply(
+            lambda r: (r[fp_col] + r[fn_col]) / r["GroundTruth"] if r["GroundTruth"] else 0,
+            axis=1,
+        )
+        gt_plot_df[f"{source}_Missed_Rate_perGT"] = gt_plot_df.apply(
+            lambda r: r[fn_col] / r["GroundTruth"] if r["GroundTruth"] else 0,
+            axis=1,
+        )
+        gt_plot_df[f"{source}_Extra_Rate_perGT"] = gt_plot_df.apply(
+            lambda r: r[fp_col] / r["GroundTruth"] if r["GroundTruth"] else 0,
+            axis=1,
+        )
         gt_plot_df[f"{source}_Accuracy_Like"] = 1 - gt_plot_df[f"{source}_Error_Rate"]
         denom = gt_plot_df[total_err_col].where(gt_plot_df[total_err_col] > 0, 1)
         gt_plot_df[f"{source}_Missed_Share"] = gt_plot_df[fn_col] / denom
         gt_plot_df[f"{source}_Extra_Share"] = gt_plot_df[fp_col] / denom
     gt_plot_df = gt_plot_df.sort_values(
-        ["CWNS_Error_Rate", "NPDES_Error_Rate"], ascending=[True, True]
+        ["CWNS_Error_Rate_perGT", "NPDES_Error_Rate_perGT"], ascending=[True, True]
     ).reset_index(drop=True)
 
-    fig, ax = plt.subplots(figsize=(10, 5))
-    w = 0.35
-    for i, row in gt_plot_df.iterrows():
-        npdes_x = i - w / 2
-        cwns_x = i + w / 2
-        for x, color_key, missed_col, extra_col in [
-            (npdes_x, "npdes_kw", "NPDES_Missed_Rate", "NPDES_Extra_Rate"),
-            (cwns_x,  "cwns",     "CWNS_Missed_Rate",  "CWNS_Extra_Rate"),
-        ]:
-            missed = row[missed_col] * 100
-            ax.bar(x, missed, w, color=to_rgba(COLORS[color_key], 0.9), edgecolor="black", linewidth=1.2, zorder=2)
-            ax.bar(x, row[extra_col] * 100, w, bottom=missed, color=to_rgba(COLORS[color_key], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
+    # Average error rates (percent) using per-GT normalization (errors per ground-truth occurrence)
+    npdes_avg = float(gt_plot_df["NPDES_Error_Rate_perGT"].mean() * 100) if not gt_plot_df.empty else 0.0
+    cwns_avg = float(gt_plot_df["CWNS_Error_Rate_perGT"].mean() * 100) if not gt_plot_df.empty else 0.0
 
-    npdes_avg = float(gt_plot_df["NPDES_Error_Rate"].mean() * 100)
-    cwns_avg = float(gt_plot_df["CWNS_Error_Rate"].mean() * 100)
-    ax.axhline(npdes_avg, color=COLORS["npdes_kw"], linewidth=1.6, linestyle="-", zorder=1)
-    ax.axhline(cwns_avg, color=COLORS["cwns"], linewidth=1.6, linestyle="-", zorder=1)
-
-    ax.set_xticks(range(len(gt_plot_df)))
-    ax.set_xticklabels(gt_plot_df["Process_Category"], rotation=45, ha="right", fontsize=tick_fontsize)
-    ax.set_ylabel(f"Error Rate (%)\n(N={n_facilities})", fontsize=label_fontsize)
-    ax.tick_params(axis="both", which="major", labelsize=tick_fontsize)
-    set_thick_spines(ax, linewidth=1.6)
-
-    ax.set_ylim(0, 100)
-    pct_ticks = [i * 20 for i in range(6)]
-    ax.set_yticks(pct_ticks)
-    ax.set_yticklabels([f"{p}%" for p in pct_ticks], fontsize=tick_fontsize)
-
-    legend_groups = [
-        {
-            "header": "Data Source",
-            "items": [
-                ("  NPDES Text", {"facecolor": COLORS["npdes_kw"]}),
-                ("  CWNS", {"facecolor": COLORS["cwns"]}),
-            ],
-        },
-        {
-            "header": "Error Composition",
-            "items": [
-                ("  False Positive", {"facecolor": "gray", "alpha": 0.45}),
-                ("  False Negative", {"facecolor": "gray", "alpha": 0.9}),
-            ],
-        },
-        {
-            "header": "Average Error",
-            "items": [
-                Line2D(
-                    [],
-                    [],
-                    color="black",
-                    linewidth=1.6,
-                    linestyle="-",
-                    label="  Average Aross\n  Categories",
-                ),
-            ],
-        },
-    ]
-    make_grouped_legend(ax, legend_groups, loc="upper left", bbox_to_anchor=(1.05, 1), fontsize=11)
-
-    plt.subplots_adjust(bottom=0.35)
-    save_path = f"{figures_dir}/figure_2_ground_truth_ground_truth_vs_npdes_text_vs_cwns.png"
-    save_and_close(fig, save_path, dpi=300)
-
+    # Build facility-level comparison rows (used for violin panel)
     facility_rows = []
     for fac in sorted(common_facilities):
         gt_rows_match = ground_truth_common[ground_truth_common["Place ID"] == fac]
@@ -310,9 +257,174 @@ def main():
 
     gt_comparison_df = pd.DataFrame(facility_rows)
     gt_comparison_csv = (
-        f"wwtp_process_extraction/output/{DATE_FOLDER}/ground_truth_comparison_by_facility.csv"
+        f"wwtp_process_extraction/output/ground_truth_comparison_by_facility.csv"
     )
     gt_comparison_df.to_csv(gt_comparison_csv, index=False)
+
+    # Build per-facility error-rate metrics for violin (panel A)
+    facility_metrics = []
+    for _, frow in gt_comparison_df.iterrows():
+        if frow["GT_Count"] == 0:
+            continue
+        key = frow.get("NPDES No.", frow.get("Facility Name", ""))
+        for src in ("NPDES", "CWNS"):
+            fp = frow.get(f"{src}_FP", 0)
+            fn = frow.get(f"{src}_FN", 0)
+            gt_count = frow.get("GT_Count", 0)
+            try:
+                fp = int(fp)
+                fn = int(fn)
+                gt_count = int(gt_count)
+            except Exception:
+                continue
+            facility_metrics.append(
+                {
+                    "Source": src,
+                    "key": key,
+                    "False_Positive_Rate": fp / gt_count if gt_count else None,
+                    "False_Negative_Rate": fn / gt_count if gt_count else None,
+                    "Error_Rate": (fp + fn) / gt_count if gt_count else None,
+                }
+            )
+
+    fac_metrics_df = pd.DataFrame(facility_metrics).dropna()
+
+    # Create two-panel figure: A=split violin per facility, B=category-level stacked FP/FN counts
+    fig, (axA, axB) = plt.subplots(2, 1, figsize=(12, 10), gridspec_kw={"height_ratios": [1, 1]})
+
+    # Panel A: split violin similar to figure_3 comparing NPDES vs CWNS
+    violin_cols = ["False_Positive_Rate", "False_Negative_Rate", "Error_Rate"]
+    plot_df = (
+        fac_metrics_df.melt(id_vars=["Source", "key"], value_vars=violin_cols, var_name="Metric", value_name="Value")
+    )
+    palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["cwns"]}
+    sns.boxplot(
+        data=plot_df,
+        x="Metric",
+        y="Value",
+        hue="Source",
+        palette=palette,
+        dodge=True,
+        width=0.6,
+        linewidth=1.0,
+        showfliers=False,
+        ax=axA,
+    )
+    # Style boxplot elements with black edges and consistent linewidth
+    for artist in axA.artists:
+        try:
+            artist.set_edgecolor("black")
+            artist.set_linewidth(1.0)
+            artist.set_facecolor(artist.get_facecolor())
+        except Exception:
+            pass
+    for line in axA.lines:
+        try:
+            line.set_color("black")
+            line.set_linewidth(1.0)
+        except Exception:
+            pass
+    axA.set_ylim(0, 1)
+    axA.set_ylabel(f"Facility-level rate\n(N={int(fac_metrics_df['key'].nunique())})", fontsize=label_fontsize)
+    axA.set_xticks(range(len(violin_cols)))
+    axA.set_xticklabels([c.replace("_", " ") for c in violin_cols], fontsize=12)
+    axA.tick_params(axis="y", labelsize=12)
+    axA.legend(loc="upper right", bbox_to_anchor=(1.02, 1.18), ncol=2, frameon=False, fontsize=11)
+    # capture handles/labels from top legend to duplicate on bottom subplot
+    _axA_handles, _axA_labels = axA.get_legend_handles_labels()
+    axA.text(-0.12, 1.05, "A.", transform=axA.transAxes, ha="left", va="top", fontsize=16)
+    set_thick_spines(axA, linewidth=1.6)
+
+    # Panel B: category-level stacked FP (extra) and FN (missed) rates for NPDES and CWNS (percent)
+    w = 0.35
+    x = range(len(gt_plot_df))
+    for i, row in gt_plot_df.iterrows():
+        npdes_x = i - w / 2
+        cwns_x = i + w / 2
+        # Use rates normalized by total GT occurrences in the category (per-GT)
+        npdes_fn_rate = row.get("NPDES_Missed_Rate_perGT", 0) * 100
+        npdes_fp_rate = row.get("NPDES_Extra_Rate_perGT", 0) * 100
+        cwns_fn_rate = row.get("CWNS_Missed_Rate_perGT", 0) * 100
+        cwns_fp_rate = row.get("CWNS_Extra_Rate_perGT", 0) * 100
+        axB.bar(npdes_x, npdes_fn_rate, w, color=to_rgba(COLORS["npdes_kw"], 0.9), edgecolor="black", linewidth=1.2, zorder=2)
+        axB.bar(npdes_x, npdes_fp_rate, w, bottom=npdes_fn_rate, color=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
+        axB.bar(cwns_x, cwns_fn_rate, w, color=to_rgba(COLORS["cwns"], 0.9), edgecolor="black", linewidth=1.2, zorder=2)
+        axB.bar(cwns_x, cwns_fp_rate, w, bottom=cwns_fn_rate, color=to_rgba(COLORS["cwns"], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
+
+    axB.set_xticks(range(len(gt_plot_df)))
+    axB.set_xticklabels(gt_plot_df["Process_Category"], rotation=45, ha="right", fontsize=tick_fontsize)
+    axB.set_ylabel(f"Error Rate (%)\n(N={n_facilities})", fontsize=label_fontsize)
+    axB.tick_params(axis="both", which="major", labelsize=tick_fontsize)
+    set_thick_spines(axB, linewidth=1.6)
+    axB.text(-0.12, 1.05, "B.", transform=axB.transAxes, ha="left", va="top", fontsize=16)
+    # average error lines (solid, percent) drawn behind the bars
+    axB.axhline(npdes_avg, color=COLORS["npdes_kw"], linewidth=1.6, linestyle="-", zorder=0)
+    axB.axhline(cwns_avg, color=COLORS["cwns"], linewidth=1.6, linestyle="-", zorder=0)
+    # label the average lines directly near the left edge (no background box)
+    try:
+        # place labels on far left (axes fraction) aligned with the average line heights
+        y_frac_npdes = npdes_avg / 100.0
+        y_frac_cwns = cwns_avg / 100.0
+        axB.text(
+            0.01,
+            y_frac_npdes,
+            "NPDES Average",
+            color=COLORS["npdes_kw"],
+            fontsize=9,
+            va="bottom",
+            ha="left",
+            transform=axB.transAxes,
+        )
+        axB.text(
+            0.01,
+            y_frac_cwns,
+            "CWNS Average",
+            color=COLORS["cwns"],
+            fontsize=9,
+            va="bottom",
+            ha="left",
+            transform=axB.transAxes,
+        )
+    except Exception:
+        pass
+    axB.set_ylim(0, 100)
+    pct_ticks = [i * 20 for i in range(6)]
+    axB.set_yticks(pct_ticks)
+    axB.set_yticklabels([f"{p}%" for p in pct_ticks], fontsize=tick_fontsize)
+
+    # Recreate the grouped legend used previously, and place it above subplot B
+    legend_groups = [
+        {
+            "header": "Data Source",
+            "items": [
+                ("  NPDES Text", {"facecolor": COLORS["npdes_kw"]}),
+                ("  CWNS", {"facecolor": COLORS["cwns"]}),
+            ],
+        },
+        {
+            "header": "Error Composition",
+            "items": [
+                ("  False Positive", {"facecolor": "gray", "alpha": 0.45}),
+                ("  False Negative", {"facecolor": "gray", "alpha": 0.9}),
+            ],
+        },
+    ]
+    legend_groups_avg = [
+        {
+            "header": "Average Error",
+            "items": [
+                Line2D([], [], color=COLORS["npdes_kw"], linewidth=1.6, linestyle="-", label="  NPDES Average"),
+                Line2D([], [], color=COLORS["cwns"], linewidth=1.6, linestyle="-", label="  CWNS Average"),
+            ],
+        },
+    ]
+    make_grouped_legend(axB, legend_groups + legend_groups_avg, loc="upper left", bbox_to_anchor=(1.02, 1.18), fontsize=11)
+
+    plt.subplots_adjust(hspace=0.35, bottom=0.33)
+    save_path = f"{figures_dir}/figure_2_ground_truth_ground_truth_vs_npdes_text_vs_cwns.png"
+    save_and_close(fig, save_path, dpi=300)
+
+    
 
     gt_rows_with_gt = [r for r in gt_simple_rows if r["GroundTruth"] > 0]
     if gt_rows_with_gt:

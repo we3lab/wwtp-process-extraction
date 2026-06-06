@@ -124,16 +124,15 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
             },
             "Implementation": {
                 "type": "string",
-                "enum": ["present", "planned", "past"],
+                "enum": ["present", "future", "past"],
             },
             "Location": {
                 "type": ["string", "null"],
                 "enum": ["on-site", "off-site", None],
             },
-            "Score": {"type": "number", "minimum": 0, "maximum": 1},
             "Sentence": {"type": "string"},
         }
-        required = ["Process", "Implementation", "Location", "Score", "Sentence"]
+        required = ["Process", "Implementation", "Location", "Sentence"]
         if web:
             props["Source"] = _SOURCE_FIELD
             props["Website"] = _WEBSITE_FIELD
@@ -187,18 +186,17 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
         },
         "Implementation": {
             "type": "string",
-            "enum": ["present", "planned", "past"],
+            "enum": ["present", "future", "past"],
         },
         "Location": {
             "type": ["string", "null"],
             "enum": ["on-site", "off-site", None],
         },
-        "Score": {"type": "number", "minimum": 0, "maximum": 1},
         "Sentence": {"type": "string"},
     }
     required = [
         "Equipment", "Process", "Role", "Substance",
-        "Implementation", "Location", "Score", "Sentence",
+        "Implementation", "Location", "Sentence",
     ]
     if web:
         props["Source"] = _SOURCE_FIELD
@@ -248,6 +246,54 @@ def get_method_paths(method: str) -> Dict[str, str]:
     }
 
 
+def _coerce_extraction_json(parsed):
+    """Best-effort reshape of model output so it matches the extraction schema.
+
+    Weaker models sometimes drop the {"items": [...]} wrapper or return single
+    scalar fields as one-element lists. Fix those here before schema validation
+    rather than failing the whole extraction.
+    """
+    item_keys = {"Equipment", "Process", "Role", "Substance",
+                 "Implementation", "Location", "Sentence"}
+
+    # Unwrap to a top-level {"items": [...]} object
+    if isinstance(parsed, list):
+        parsed = {"items": parsed}
+    elif isinstance(parsed, dict) and not isinstance(parsed.get("items"), list):
+        for key in ("output", "result", "results", "data", "extractions"):
+            inner = parsed.get(key)
+            if isinstance(inner, dict) and isinstance(inner.get("items"), list):
+                parsed = inner
+                break
+            if isinstance(inner, list):
+                parsed = {"items": inner}
+                break
+        else:
+            # A single item object returned without the items wrapper
+            if item_keys & set(parsed.keys()):
+                parsed = {"items": [parsed]}
+
+    # "items" given as a single dict instead of a list
+    if isinstance(parsed, dict) and isinstance(parsed.get("items"), dict):
+        parsed["items"] = [parsed["items"]]
+
+    items = parsed.get("items") if isinstance(parsed, dict) else None
+    if isinstance(items, list):
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            # Empty arrays → null for nullable array fields
+            for field_name in ("Process", "Role", "Substance"):
+                if item.get(field_name) == []:
+                    item[field_name] = None
+            # Single scalar fields returned as lists → unwrap to the scalar
+            for field_name in ("Equipment", "Implementation", "Location"):
+                val = item.get(field_name)
+                if isinstance(val, list):
+                    item[field_name] = val[0] if val else None
+    return parsed
+
+
 def chat_completion_json(
     model: str,
     user_message: str,
@@ -291,8 +337,11 @@ def chat_completion_json(
     if stop is not None:
         payload["stop"] = stop
 
+    content = None
     try:
         resp = requests.post(url, headers=get_headers(), json=payload, timeout=600)
+        if not resp.ok:
+            print(f"API error {resp.status_code}: {resp.text[:500]}")
         resp.raise_for_status()
         data = resp.json()
 
@@ -327,22 +376,28 @@ def chat_completion_json(
 
         parsed = json.loads(content)
 
-        items = parsed.get("items") if isinstance(parsed, dict) else None
-        if isinstance(items, list):
-            for item in items:
-                if not isinstance(item, dict):
-                    continue
-                for field_name in ("Process", "Role", "Substance"):
-                    if item.get(field_name) == []:
-                        item[field_name] = None
-
+        # Record whether the raw model output already matched the desired schema,
+        # before any coercion. This feeds the "fraction structured output" metric.
+        structured_output = None
         if schema is not None:
             try:
                 jsonschema.validate(instance=parsed, schema=schema)
-            except jsonschema.ValidationError as ve:
-                raise ValueError(f"JSON did not validate against schema: {ve}")
+                structured_output = True
+            except jsonschema.ValidationError:
+                structured_output = False
 
-        return parsed, completion_token, prompt_token, total_token, reasoning_tokens
+        parsed = _coerce_extraction_json(parsed)
+
+        # Proceed as long as we recovered an items list. Individual items may be
+        # missing optional fields; those are left blank rather than dropped, and
+        # structured_output already records that the raw output was non-conforming.
+        if schema is not None and not isinstance(parsed.get("items"), list):
+            raise ValueError("JSON output had no recoverable items list")
+
+        return parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output
 
     except (requests.RequestException, ValueError, json.JSONDecodeError) as e:
-        raise RuntimeError(f"Failed to get valid JSON. Last error: {e}")
+        err = RuntimeError(f"Failed to get valid JSON. Last error: {e}")
+        if content:
+            err.raw_output = content
+        raise err

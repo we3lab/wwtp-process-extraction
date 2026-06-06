@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from helpers.ontology_to_txt import ontology_to_txt, output_file as ONTOLOGY_GENERATED_PATH
+from helpers.ontology_to_txt import ontology_to_txt, ontology_txt_file
 from helpers.utils import build_txt_jobs, SEP
 from helpers.api_llm_search import (
     chat_completion_json,
@@ -18,11 +18,12 @@ from helpers.api_llm_search import (
     get_method_paths,
 )
 
-DATE_FOLDER = "2026-5-15"
-TXT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
-MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro
+TXT_DIR = f"wwtp_process_extraction/output/npdes/text"
+MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
-FACILITIES_INFO_PATH = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+# Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
+FACILITIES_INFO_PATH = "wwtp_process_extraction/data/unit_processes_by_facility_manual.csv"
+FULL_CA_PATH = "wwtp_process_extraction/output/site_data_relevant.csv"
 UNITPROCESS_KEYWORDS_JSON = "wwtp_process_extraction/data/unitprocess_keywords.json"
 NUM_ICL_EXAMPLES = 1
 
@@ -40,21 +41,12 @@ def parse_args():
     parser.add_argument(
         "--model",
         default=MODEL,
-        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gemini-2.0-flash-001, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
+        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
     )
     parser.add_argument(
         "--txt_folder",
         default=TXT_DIR,
         help=f"Path to folder containing permit TXT files (default: {TXT_DIR}).",
-    )
-    parser.add_argument(
-        "--facilities_information",
-        "--facilities_info_path",
-        default=FACILITIES_INFO_PATH,
-        help=(
-            "Path to CSV with columns Facility Name and PDF_File. "
-            f"Each row is processed and saved separately, even when multiple facilities share the same PDF (default: {FACILITIES_INFO_PATH})."
-        ),
     )
     parser.add_argument(
         "--skip_schema_validation",
@@ -83,23 +75,43 @@ def parse_args():
         default=None,
         help="Limit number of facilities processed (useful for testing).",
     )
+    parser.add_argument(
+        "--all_models",
+        action="store_true",
+        help="Loop over all models and methods (model_comparison mode). Ignores --model and --method.",
+    )
+    parser.add_argument(
+        "--all_methods",
+        action="store_true",
+        help="Loop over both methods (ontology-based and list-based) for the given --model in one run.",
+    )
+    parser.add_argument(
+        "--all_facilities",
+        action="store_true",
+        help=(
+            "Run the full CA set (site_data_relevant.csv) instead of the manually-read facilities. "
+            "Writes to the same output/llm_extraction/<method>_<model> folder as any other run."
+        ),
+    )
+    parser.add_argument(
+        "--repeat_runs",
+        type=int,
+        default=None,
+        help=(
+            "Run the benchmark facilities N extra times with the default model/method "
+            "(for F1 run-to-run variance), each into llm_extraction/ontology-based_gpt-5-mini/"
+            "additional_runs/run_<k>/. Ignores --model/--method/--all_models."
+        ),
+    )
     return parser.parse_args()
 
 
-def resolve_output_dir(method, model, web_search, txt_folder, facilities_information):
-    if "model_comparison" in str(facilities_information):
-        suffix = f"{method}_{model}" + ("-web" if web_search else "")
-        return Path("wwtp_process_extraction/output/llm_model_comparison") / suffix
-
-    # Derive date from txt_folder path (e.g. output/2026-5-15/npdes/text → 2026-5-15)
-    date_segment = next(
-        (p for p in Path(txt_folder).parts if re.match(r'\d{4}-\d{1,2}-\d{1,2}', p)),
-        None,
-    )
-    if date_segment:
-        return Path("wwtp_process_extraction/output") / date_segment / "llm_extraction"
-
-    return Path("wwtp_process_extraction/output/llm_extraction")
+def resolve_output_dir(method, model, web_search):
+    # Every run (full CA or model comparison) writes to output/llm_extraction/<method>_<model>.
+    # The default ontology-based_gpt-5-mini folder accumulates the full CA set; the benchmark
+    # facilities are a subset of it, so model-comparison runs for that config are reused.
+    suffix = f"{method}_{model}" + ("-web" if web_search else "")
+    return Path("wwtp_process_extraction/output/llm_extraction") / suffix
 
 
 def render_system_message(
@@ -134,7 +146,7 @@ For each extracted item, set the Source field:
 For items with Source "web_search" or "both", also set the Website field to the URL or website name where you found the information.
 If from multiple sites, pick the most relevant one. Set Website to null if the source is only the permit text.
 
-Search the web for additional information about this facility when the permit text is unclear or incomplete.
+Prefer the permit text. Only use web search if the permit text is ambiguous about a treatment process, or if you suspect a key process is missing from the permit description. Limit to at most 3 searches total.
 """
 
 
@@ -152,11 +164,15 @@ def chat_completion_web(
         "--json-schema", json.dumps(schema),
         "--output-format", "json",
         "--model", model,
+        "--effort", "medium",
         "--no-session-persistence",
     ]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     if result.returncode != 0:
-        raise RuntimeError(f"CLI failed: {result.stderr[:200]}")
+        err = RuntimeError(f"CLI failed: {result.stderr[:200]}")
+        if result.stdout.strip():
+            err.raw_output = result.stdout
+        raise err
     if not result.stdout.strip():
         raise RuntimeError("empty output from CLI")
     return _parse_claude_json(result.stdout, schema)
@@ -178,41 +194,58 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
                 idx += 1
         except json.JSONDecodeError:
             break
+    def _fail(msg):
+        err = RuntimeError(msg)
+        err.raw_output = stdout
+        raise err
+
     if not output:
-        raise RuntimeError("No result found in CLI output")
+        _fail("No result found in CLI output")
     if output.get("is_error"):
-        raise RuntimeError(f"API error: {output.get('api_error_status')}")
+        _fail(f"API error: {output.get('api_error_status')}")
+    # --json-schema puts the validated result in structured_output; result is empty in that case
+    if isinstance(output.get("structured_output"), dict):
+        return output["structured_output"], float(output.get("total_cost_usd") or 0.0)
     raw = output["result"]
     if isinstance(raw, dict):
         parsed = raw
     elif isinstance(raw, str) and raw.strip().startswith("{"):
         parsed = json.loads(raw.strip())
     else:
-        # Extract JSON from markdown wrapper or empty result
         if not raw or not raw.strip():
-            raise RuntimeError("Model returned empty result (possibly hit timeout during web search)")
-        import re
+            diag = {k: output.get(k) for k in ("subtype", "num_turns", "duration_ms", "total_cost_usd", "stop_reason")}
+            _fail(f"Model returned empty result (no final JSON emitted). CLI result meta: {diag}")
         match = re.search(r'\{.*\}', str(raw), re.DOTALL)
         if not match:
-            raise RuntimeError(f"No JSON found in result: {str(raw)[:100]}")
+            _fail(f"No JSON found in result: {str(raw)[:100]}")
         parsed = json.loads(match.group())
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
-if __name__ == "__main__":
-    args = parse_args()
+ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
+DEFAULT_MAX_TOKENS = 10000
+DEFAULT_MAX_COMPLETION_TOKENS = 20000
+# Per-model completion-token limit. Reasoning models (gpt-5, etc.) spend most of
+# their completion budget on hidden reasoning before emitting JSON, so they need a
+# higher ceiling than chat models; claude-3-haiku has a hard 4096 output cap.
+MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096, "gpt-5": 32000, "gpt-5-mini": 32000}
+ALL_METHODS = ["ontology-based", "list-based"]
+
+
+def run_extraction(args, output_dir_override=None):
     method_paths = get_method_paths(args.method)
     reference_path = Path(method_paths["reference_path"])
     prompt_path = Path(method_paths["prompt_path"])
     examples_dir = Path(method_paths["examples_dir"])
-    output_dir = resolve_output_dir(
-        args.method, args.model, args.web_search, args.txt_folder, args.facilities_information
+    facilities_info = FULL_CA_PATH if args.all_facilities else FACILITIES_INFO_PATH
+    output_dir = output_dir_override or resolve_output_dir(
+        args.method, args.model, args.web_search
     )
 
     if args.method == "ontology-based":
         print("Initializing ontology from source repository...")
         ontology_to_txt()
-        generated_path = Path(ONTOLOGY_GENERATED_PATH)
+        generated_path = Path(ontology_txt_file)
         ontology_target = Path(ONTOLOGY_PATH)
         if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
             ontology_target.parent.mkdir(parents=True, exist_ok=True)
@@ -227,14 +260,12 @@ if __name__ == "__main__":
         print(f"Initialized unit process list file: {generated_list_path}")
 
     os.makedirs(output_dir, exist_ok=True)
-    token_usage_rows = []
-    manifest_rows = []
-    jobs = build_txt_jobs(args.txt_folder, args.facilities_information)
+    jobs = build_txt_jobs(args.txt_folder, facilities_info)
 
     if not jobs:
         print(
             "No facilities were processed. "
-            f"Check --facilities_information ({args.facilities_information}) and --txt_folder ({args.txt_folder})."
+            f"Check the facilities file ({facilities_info}) and --txt_folder ({args.txt_folder})."
         )
         raise SystemExit(0)
 
@@ -246,7 +277,22 @@ if __name__ == "__main__":
     system_prompt_template = prompt_path.read_text(encoding="utf-8")
     example_schema = None if args.skip_schema_validation else build_example_schema(args.method, web=args.web_search)
 
-    facilities_source_df = pd.read_csv(args.facilities_information, dtype=str).fillna('')
+    facilities_source_df = pd.read_csv(facilities_info, dtype=str).fillna('')
+
+    # Single per-dir summary, written one row at a time so interrupting mid-model doesn't
+    # lose progress. This is the only file step6/table_1 need: step6 derives Place ID from
+    # each JSON filename ({txt_stem}_{place_id}.json), and the unit-process data lives in
+    # the JSON results, so the txt_file/extraction_file names aren't stored here.
+    token_usage_csv_path = output_dir / "token_usage_summary.csv"
+    token_usage_cols = [
+        "facility_name", "place_id", "structured_output",
+        "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
+    ]
+
+    def append_row_csv(path, row, columns):
+        pd.DataFrame([row], columns=columns).to_csv(
+            path, mode="a", header=not path.exists(), index=False
+        )
 
     if args.max_facilities is not None:
         jobs = jobs[:args.max_facilities]
@@ -260,7 +306,6 @@ if __name__ == "__main__":
             print(f"TXT file not found: {txt_path}. Skipping.")
             continue
 
-        print(f"Reading text from {txt_path}...")
         permit_extract = txt_path.read_text(encoding="utf-8")
         if not permit_extract.split(SEP, 1)[0].strip():
             print(f"Empty description section, skipping.")
@@ -315,86 +360,113 @@ if __name__ == "__main__":
                     schema=example_schema,
                 )
                 completion_token = prompt_token = total_token = reasoning_tokens = 0
-                print("Parsed JSON result:")
-                print(json.dumps(parsed, indent=2, ensure_ascii=False))
+                structured_output = True
                 print(f"Cost: ${cost_usd:.6f}")
             else:
+                model_max = MAX_TOKENS_BY_MODEL.get(args.model)
                 result = chat_completion_json(
                     model=args.model,
                     system_message=system_msg,
                     user_message=user_msg,
                     temperature=0.0,
-                    max_tokens=None if args.no_token_limit else 10000,
-                    max_completion_tokens=None if args.no_token_limit else 20000,
+                    max_tokens=None if args.no_token_limit else (model_max or DEFAULT_MAX_TOKENS),
+                    max_completion_tokens=None if args.no_token_limit else (model_max or DEFAULT_MAX_COMPLETION_TOKENS),
                     schema=example_schema,
                 )
-                parsed, completion_token, prompt_token, total_token, reasoning_tokens = result
+                parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output = result
                 cost_usd = None
-                print("Parsed JSON result:")
-                print(json.dumps(parsed, indent=2, ensure_ascii=False))
                 print(
                     f"Token usage: completion={completion_token}, prompt={prompt_token}, "
                     f"total={total_token}, reasoning={reasoning_tokens}"
                 )
 
+            # Only dump the parsed JSON for non-structured (schema-nonconforming) outputs.
+            if structured_output is False:
+                print("Parsed JSON result (non-structured):")
+                print(json.dumps(parsed, indent=2, ensure_ascii=False))
+
             with open(output_json_path, "w", encoding="utf-8") as output_file:
                 json.dump(parsed, output_file, ensure_ascii=False, indent=2)
 
-            print(f"Saved {output_json_path}")
-
-            token_usage_rows.append(
+            append_row_csv(
+                token_usage_csv_path,
                 {
                     "facility_name": facility_name,
-                    "txt_file": txt_file,
-                    "extraction_file": extraction_file_name,
+                    "place_id": place_id,
+                    "structured_output": structured_output,
                     "completion_token": completion_token,
                     "prompt_token": prompt_token,
                     "total_token": total_token,
                     "reasoning_token": reasoning_tokens,
                     "cost_usd": cost_usd,
-                }
+                },
+                token_usage_cols,
             )
-
-            if 0 <= row_idx < len(facilities_source_df):
-                facility_row = facilities_source_df.iloc[row_idx].to_dict()
-            else:
-                facility_row = {}
-            facility_row["txt_file"] = txt_file
-            facility_row["extraction_file"] = extraction_file_name
-            manifest_rows.append(facility_row)
         except Exception as exc:
             print("Error:", exc)
+            raw = getattr(exc, "raw_output", None)
+            if raw:
+                failed_path = output_dir / f"{txt_stem}_{file_id}_FAILED.json"
+                failed_path.write_text(raw if isinstance(raw, str) else json.dumps(raw), encoding="utf-8")
+                print(f"Saved raw output to {failed_path.name}")
+            append_row_csv(
+                token_usage_csv_path,
+                {
+                    "facility_name": facility_name,
+                    "place_id": place_id,
+                    "structured_output": "FAILED",
+                    "completion_token": 0,
+                    "prompt_token": 0,
+                    "total_token": 0,
+                    "reasoning_token": 0,
+                    "cost_usd": None,
+                },
+                token_usage_cols,
+            )
 
-    token_usage_df = pd.DataFrame(
-        token_usage_rows,
-        columns=[
-            "facility_name",
-            "txt_file",
-            "extraction_file",
-            "completion_token",
-            "prompt_token",
-            "total_token",
-            "reasoning_token",
-            "cost_usd",
-        ],
-    )
-    token_usage_csv_path = output_dir / "token_usage_summary.csv"
-    token_usage_df.to_csv(token_usage_csv_path, index=False)
-    print(f"Saved token usage CSV: {token_usage_csv_path}")
+    if token_usage_csv_path.exists():
+        print(f"Token usage CSV: {token_usage_csv_path}")
 
-    manifest_df = pd.DataFrame(manifest_rows)
-    manifest_csv_path = output_dir / "facility_extraction_manifest.csv"
-    manifest_df.to_csv(manifest_csv_path, index=False)
-    print(f"Saved facility manifest CSV: {manifest_csv_path}")
 
-# python wwtp_process_extraction/step3_llm_extraction_new.py \
-#   --method ontology-based \
-#   --model claude-sonnet-4-5 \
-#   --web_search \
-#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
+if __name__ == "__main__":
+    args = parse_args()
+    if args.repeat_runs:
+        # Repeated runs of the benchmark facilities with the default model/method (same config as
+        # the full-CA run) to measure F1 run-to-run variance. Each run gets its own folder so all
+        # facilities run every time (no cross-run skipping).
+        args.method, args.model = "ontology-based", MODEL
+        args.all_facilities = args.web_search = False
+        base = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gpt-5-mini/additional_runs")
+        for k in range(1, args.repeat_runs + 1):
+            print(f"\n{'='*80}\nRepeat run {k}/{args.repeat_runs}\n{'='*80}\n")
+            run_extraction(args, output_dir_override=base / f"run_{k}")
+    elif args.all_models:
+        for method in ALL_METHODS:
+            for model in ALL_MODELS:
+                print(f"\n{'='*80}")
+                print(f"Running method={method} model={model}")
+                print(f"{'='*80}\n")
+                args.method = method
+                args.model = model
+                run_extraction(args)
+    elif args.all_methods:
+        for method in ALL_METHODS:
+            print(f"\n{'='*80}\nRunning method={method} model={args.model}\n{'='*80}\n")
+            args.method = method
+            run_extraction(args)
+    else:
+        run_extraction(args)
 
-# python wwtp_process_extraction/step3_llm_extraction_new.py \
-#   --method list-based \
-#   --model claude-sonnet-4-5 \
-#   --web_search \
-#   --facilities_information wwtp_process_extraction/data/model_comparison_facilities.csv
+# Terminal commands to run (uncommented)
+
+# MODEL COMPARISON (all manual-read facilities, default FACILITIES_INFO_PATH)
+# python wwtp_process_extraction/step5_llm_extraction.py --all_models
+
+# WEB SEARCH (claude-sonnet-4-6) — both methods in one command:
+# python wwtp_process_extraction/step5_llm_extraction.py  --model claude-sonnet-4-6 --web_search --all_methods
+
+# FULL CA (all relevant facilities), ONTOLOGY-BASED, GPT-5-MINI
+# python wwtp_process_extraction/step5_llm_extraction.py --all_facilities
+
+# F1 VARIANCE: 2 extra benchmark runs (default model/method) -> additional_runs/run_1..4,
+# python wwtp_process_extraction/step5_llm_extraction.py --repeat_runs 2

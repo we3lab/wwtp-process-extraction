@@ -12,8 +12,6 @@ from helpers.utils import (
     apply_secondary_category_backfill,
 )
 
-DATE_FOLDER = "2026-5-15"
-
 
 def search_processes_in_text(text, processes_dict, results, parent_name=None):
     sub_category_found = False
@@ -43,16 +41,16 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
 
 def main():
-    rfr_data = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
-    txt_folder = f"wwtp_process_extraction/output/{DATE_FOLDER}/npdes/text"
-    out_file = f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_pdf.csv"
+    rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
+    txt_folder = f"wwtp_process_extraction/output/npdes/text"
+    out_file = f"wwtp_process_extraction/output/unit_processes_by_pdf_kw.csv"
 
     with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
         keywords = json.load(f)
 
     site_df = pd.read_csv(rfr_data, dtype=str).fillna("")
 
-    leaves = list(extract_leaves(keywords, ignore_disposal=True))
+    leaves = list(extract_leaves(keywords))
     all_keys = [name for name, _, _ in leaves]
     group_to_columns = {}
     column_priority = {}
@@ -131,9 +129,9 @@ def main():
                 present_cols = [c for c in sibling_cols if row_status.get(c, "0") in PRESENT_STATUSES]
                 if len(present_cols) <= 1:
                     continue
-                winner = min(present_cols, key=lambda c: (column_priority.get(c, 1), c))
+                best_priority = min(column_priority.get(c, 1) for c in present_cols)
                 for col in present_cols:
-                    if col != winner:
+                    if column_priority.get(col, 1) > best_priority:
                         row_status[col] = "0"
 
             apply_secondary_category_backfill(
@@ -142,7 +140,7 @@ def main():
             )
             upi.writerow(row_meta + [row_status[key] for key in all_keys])
 
-    kw_by_fac_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/kw_unit_processes_by_facility.csv"
+    kw_by_fac_path = f"wwtp_process_extraction/output/unit_processes_by_facility_kw.csv"
     raw_df = pd.read_csv(out_file, dtype=str).fillna("")
     collapsed = collapse_facility_processes(
         raw_df,
@@ -150,7 +148,7 @@ def main():
         meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"],
     )
     collapsed.to_csv(kw_by_fac_path, index=False)
-    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → kw_unit_processes_by_facility.csv")
+    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
 
 
 if __name__ == "__main__":

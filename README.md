@@ -1,64 +1,66 @@
-# NPDES Permit Analysis Tools 
+# WWTP Unit Process Extraction from Permits Tool
 These tools are designed to access unit process data from the National Pollutant Discharge Elimination System (NPDES) permits for California.
 
 ## Description 
-Researchers have utilized the CWNS to quantify greenhouse gas emissions. However, this data is infrequent, voluntary, and sparse. To address these limitations, we utilize NPDES permits. The following Python tools are used to collect its data:
+Researchers have utilized the CWNS to aggregate WWTP unit processes. However, this data is infrequent, voluntary, and sparse. To address these limitations, we utilize regulatory permits. The following Python tools are used to collect its data:
 
 
-0. Build CWNS process tables
-    - [wwtp_process_extraction/step0_build_cwns_table.py](wwtp_process_extraction/step0_build_cwns_table.py): creates cwns_processes_by_facility.csv from CWNS 2004/2008/2012 data. 2022 doesn't include CA
+1. Build CWNS process tables
+    - [wwtp_process_extraction/step1_build_cwns_table.py](wwtp_process_extraction/step1_build_cwns_table.py): creates unit_processes_by_facility_cwns.csv from CWNS 2004/2008/2012 data. 2022 doesn't include CA
 
-1. Scrape permits and site metadata
-    - [wwtp_process_extraction/step1_scrape_npdes.py](wwtp_process_extraction/scrape_npdes.py): downloads NPDES permit PDFs and writes site_data.csv and matched_cwns_npdes_ca.csv
-    
-    Uses npdes_detection.py helpers to detect which files are actually NPDES
+2. Scrape permits and site metadata
+    - [wwtp_process_extraction/step2_scrape_npdes.py](wwtp_process_extraction/step2_scrape_npdes.py): downloads NPDES permit PDFs and writes site_data_relevant and matched_cwns_npdes_ca.csv
 
-2. Detect treatment processes in permits with keyword search
-    - [wwtp_process_extraction/step2_search_npdes_text.py](wwtp_process_extraction/search_npdes_text.py): scans PDFs against unitprocess_keywords and writes kw_unit_processes.csv with present/future status
-    
-3. Detect treatment processes in permits with LLM search
-    - [wwtp_process_extraction/step3a_llm_ontology.py](wwtp_process_extraction/step3a_llm_ontology.py): run the LLM extraction using the ontology format
-        - use *--init_ontology* to reload the ontology and make it up-to-date as a .txt file under wwtp_process_extraction/data
-        - use *--model "model_name" --pdf_folder "path_to_pdf_folder" --facilities_information "path_to_facilities_csv"* to run the LLM extraction using one PDF per facility (first PDF_File per Facility Name): the results are saved as json file under output/date/llm_search_ontology
-    - [wwtp_process_extraction/step3b_llm_list.py](wwtp_process_extraction/step3b_llm_list.py): run the LLM extraction using the unitprocess_list format
-        - use *--model "model_name" --pdf "pdf_file_or_pdf_folder_path"* to run the LLM extraction using the specific model on the specific pdf(s) : the results are saved as json file under output/date/llm_search_list
+3. Extract permit text
+    - [wwtp_process_extraction/step3_get_facility_descriptions.py](wwtp_process_extraction/step3_get_facility_descriptions.py): extracts relevant text sections from permit PDFs into per-facility text files
 
-4. Post-process LLM output back to CWNS format
-    - [wwtp_process_extraction/step4_postprocess_llm_output.py](wwtp_process_extraction/step4_postprocess_llm_output.py): post-process the outputs of the LLM using the ontology and writes llm_ontology_cwns_processes_by_facility.csv with present/planned/past status.
+4. Detect treatment processes with keyword search
+    - [wwtp_process_extraction/step4_keyword_extraction.py](wwtp_process_extraction/step4_keyword_extraction.py): scans permit text against unitprocess_keywords and writes kw_unit_processes.csv with present/future status
 
-5. Compare NPDES text extraction vs CWNS survey data
-    - [wwtp_process_extraction/step5a_compare_aggregate_results.py](wwtp_process_extraction/step5a_compare_aggregate_results.py): compares llm_unit_processes.csv to cwns_processes_by_facility.csv with bar chart comparisons
+5. Detect treatment processes with LLM extraction
+    - [wwtp_process_extraction/step5_llm_extraction.py](wwtp_process_extraction/step5_llm_extraction.py): runs LLM extraction on permit text
+        - use *--method ontology-based* (default) or *--method list-based* to select prompting strategy
+        - use *--model "model_name" --txt_folder "path_to_txt_folder" --facilities_information "path_to_facilities_csv"*
+        - results saved as JSON under output/date/llm_search_ontology or llm_search_list
+
+6. Post-process LLM output back to CWNS format
+    - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): post-processes LLM outputs and writes unit_processes_by_facility_llm.csv with present/future/past status
+
+**Figures and tables**
+- [wwtp_process_extraction/figure_2_ground_truth.py](wwtp_process_extraction/figure_2_ground_truth.py): ground-truth comparison of extraction methods
+- [wwtp_process_extraction/figure_3_npdes_method_comparison.py](wwtp_process_extraction/figure_3_npdes_method_comparison.py): keyword vs LLM method comparison
+- [wwtp_process_extraction/figure_4_source_comparison.py](wwtp_process_extraction/figure_4_source_comparison.py): CWNS vs LLM unit process detection comparison
+- [wwtp_process_extraction/table_1_evaluate_model_performance.py](wwtp_process_extraction/table_1_evaluate_model_performance.py): evaluates LLM model performance against truth labels
+
+**GHG analysis**
+- [wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py](wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py): computes CA WWTP GHG emissions across three treatment process data sources (El Abbadi all-sources, El Abbadi CWNS-only, LLM permit scraping)
 
 ## How to Run
 Executing from the repository root directory:
 
 ```bash
-python wwtp_process_extraction/step0_build_cwns_table.py
-python wwtp_process_extraction/step1_scrape_npdes.py
-python wwtp_process_extraction/step2_search_npdes_text.py
-python wwtp_process_extraction/step3a_llm_ontology.py --init_ontology
-python wwtp_process_extraction/step3a_llm_ontology.py --model gemini-2.0-flash-001 --pdf_folder wwtp_process_extraction/output/2026-2-18/npdes --facilities_information wwtp_process_extraction/data/test_set_npdes_manual.csv
-python wwtp_process_extraction/step4_postprocess_llm_output.py
-python wwtp_process_extraction/step5a_compare_aggregate_results.py
-python wwtp_process_extraction/step5b_compare_facility_results.py
+python wwtp_process_extraction/step1_build_cwns_table.py
+python wwtp_process_extraction/step2_scrape_npdes.py
+python wwtp_process_extraction/step3_get_facility_descriptions.py
+python wwtp_process_extraction/step4_keyword_extraction.py
+python wwtp_process_extraction/step5_llm_extraction.py  # for all facilities
+python wwtp_process_extraction/step5_llm_extraction.py --max_facilities 5  # small test sweep
+python wwtp_process_extraction/step6_postprocess_llm_output.py
+python wwtp_process_extraction/figure_4_source_comparison.py
+python wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py
 ```
-
-## Known issues and limitations
-- When first running permit_scrape.py, a Timeout Error may appear. Continue to rerun until the program successfully opens ChromeDrive **(Ensure that the "MM-DD-YYYY" Folder is deleted before rerunning)**.
-- There are two distinct locations where permit_scrape.py is slow:
-    1. After Region selection
-    2. Selection of "ALL" Display range
-- ...
 
 ## Contact 
 
+Daly Wettermark - dalyw@stanford.edu
+
 Constance Rouffet - rouffetc@stanford.edu
+
+Fletcher Chapin - fchapin@stanford.edu
 
 Ashley Ramirez - ashlecr3@uci.edu
 
-Daly Wettermark - dalyw@stanford.edu
-
-Fletcher Chapin - fchapin@stanford.edu
+Meagan Mauter - mauter@stanford.edu
 
 ## Acknowledgements
 

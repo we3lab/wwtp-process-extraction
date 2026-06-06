@@ -104,18 +104,16 @@ def build_cwns_presence_mask(series):
     return series.map(parse_status).isin({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
 
 
-def extract_leaves(processes_dict, group_id=None, ignore_disposal=True):
+def extract_leaves(processes_dict, group_id=None):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
     for name, details in processes_dict.items():
         if not isinstance(details, dict):
             continue
-        if ignore_disposal and name == "Disposal":
-            continue
         if "alt_names" in details:
             leaves.append((name, details, group_id))
         else:
-            leaves.extend(extract_leaves(details, group_id=name, ignore_disposal=ignore_disposal))
+            leaves.extend(extract_leaves(details, group_id=name))
     return leaves
 
 
@@ -130,7 +128,7 @@ def get_unspecified_leaf_names(keywords_dict) -> frozenset:
     """Return leaf names that are catch-all 'Unspecified X' entries (priority == 1000)."""
     return frozenset(
         name
-        for name, details, _ in extract_leaves(keywords_dict, ignore_disposal=False)
+        for name, details, _ in extract_leaves(keywords_dict)
         if str(name).lower().startswith("unspecified")
         and isinstance(details, dict)
         and details.get("priority") == 1000
@@ -143,7 +141,7 @@ def build_secondary_category_lookup(keywords_dict):
     column_secondary_categories = {}
     column_global_priority = {}
     for top_cat, cat_val in keywords_dict.items():
-        for name, details, _ in extract_leaves({top_cat: cat_val}, ignore_disposal=False):
+        for name, details, _ in extract_leaves({top_cat: cat_val}):
             top_category_to_columns.setdefault(top_cat, []).append(name)
             if isinstance(details, dict):
                 column_global_priority[name] = details.get("global_priority", 1)
@@ -193,7 +191,7 @@ def apply_secondary_category_backfill(
 
 
 def get_werf_codes_for_cwns_process(cwns_process_name):
-    """for future mapping back to El Abbadi codes. Not directly used in this codebase"""
+    """for future mapping back to El Abbadi codes."""
     el_abbadi_dir = os.path.join(os.path.dirname(__file__), "data", "el_abbadi", "input")
     werf_codes_df = pd.read_csv(
         os.path.join(el_abbadi_dir, "UNIT_PROCESS_EI_CODES_WERF_modified.csv"), dtype=str
@@ -237,7 +235,7 @@ def collapse_facility_processes(
 
 
 def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
-    proc_cols = list({name for name, _, _ in extract_leaves(unitprocess_keywords, ignore_disposal=False)})
+    proc_cols = list({name for name, _, _ in extract_leaves(unitprocess_keywords)})
     left = cwns_mapping[["Place ID", "WDID", "Facility Name", "CWNS_ID", "FACILITY_ID"]]
     if target_facilities is not None:
         left = left[left["Place ID"].isin(target_facilities)]

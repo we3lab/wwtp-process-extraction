@@ -7,7 +7,7 @@ WATR = Namespace("urn:nawi-water-ontology#")
 # GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
 GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
 
-output_file = Path(__file__).resolve().parent.parent / "data" / "llm_extraction" / "input" / "ontology.txt"
+ontology_txt_file = Path(__file__).resolve().parent.parent / "data" / "llm_extraction" / "input" / "ontology.txt"
 
 #list of equipment to skip : 
 skip_equip = [
@@ -246,10 +246,10 @@ def ontology_to_txt():
     print(f"Substance count: {len(substances)}")
 
     # create the output directory if it doesn't exist
-    output_dir = Path(output_file).parent
+    output_dir = Path(ontology_txt_file).parent
     output_dir.mkdir(parents=True, exist_ok=True)
     # Save to text file in compact format
-    with open(output_file, "w") as f:
+    with open(ontology_txt_file, "w") as f:
         f.write("EQUIPMENTS:\n")
         for eq in equipment:
             parts = [eq['id']]
@@ -289,5 +289,5 @@ def ontology_to_txt():
                 parts.append(f"SubSubstanceOf: {', '.join(normalize(name) for name in sub['SubsubstanceOf'])}")
             f.write(" | ".join(parts) + "\n")
 
-    print(f"\nOutput saved to {output_file}")
+    print(f"\nOutput saved to {ontology_txt_file}")
 

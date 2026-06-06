@@ -5,35 +5,33 @@ A wastewater treatment plant permit extract
 unit process lists: list of all the potential unit processes you can find in the text
 
 Task: 
-Using only the wastewater treatment plant's permit extract, find all the planned, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by one or more unit processes from the given unit process list.
+Using only the wastewater treatment plant's permit extract, find all the future, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by one or more unit processes from the given unit process list.
 You may ignore irrelevant context.
 Think step by step:
 1. Extract explicitly from the permit text the treatments mentioned for the specific __FACILITY_NAME__ facility (if it is used in another facility or off-site it should be mentionned in the "location" field of the output JSON)
 2. Match each treatment find with the corresponding unit process or processes from the list.
-3. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("planned") or has been shut or removed ("past")
+3. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("future") or has been shut or removed ("past")
 4. Structure the output as a JSON file as requested
 
 Output:
-Return only a JSON object with this exact shape:
+Your entire response must be a single JSON object: an "items" array with one object per treatment unit, using this structure:
 {
     "items": [
         {
             "Process": string[],
-            "Implementation": "present"|"planned"|"past",
-            "Location": "on-site"|"off-site"|"off-site"|null,
-            "Score": number,
+            "Implementation": "present"|"future"|"past",
+            "Location": "on-site"|"off-site"|null,
             "Sentence": string
         }
     ]
 }
-Do not add any other top-level fields.
+Emit one object per distinct treatment step. A municipal plant typically yields ~8-20 steps. Group only the processes that occur in the same step; processes in different steps belong in different objects.
 
 Field meaning and allowed cardinality:
 - Process: process names from the list. Array of 1+ strings.
-- Implementation: one of "present", "planned", "past".
-- Location: one of "on-site", "off-site", "off-site", or null if unspecified.
-- Score: confidence score between 0 and 1.
-- Sentence: direct supporting sentence/quote from permit extract.
+- Implementation: a single string, one of "present", "future", "past".
+- Location: a single string, one of "on-site" or "off-site"
+- Sentence: shortest excerpt supporting the extraction from the permit — a phrase, not necessarily a full sentence.
 
 All process names must be exactly as in the given list.
 
@@ -48,3 +46,5 @@ __UNIT_PROCESS_LIST__
 Examples of treatments mentioned in permit text and the corresponding JSON output:
 ########################################################################
 __PROMPT_EXAMPLES__
+
+Your response must be ONLY the JSON object {"items": [...]} with no other text.

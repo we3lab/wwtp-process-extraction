@@ -1,0 +1,160 @@
+{
+  "items": [
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Wastewater first enters the WWTP at the lift station via one of two 3-inch submersible sewage pumps",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing",
+        "Denitrification",
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization",
+        "Anoxic"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "In the equalization tank wastewater is mixed with return activated sludge under anoxic conditions to encourage denitrification.",
+      "trigger_process": [
+        "Denitrification",
+        "Equalization",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "ActivatedSludge",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "transferred via an airlift pipe into a 15,592-gallon extended aeration tank, where nitrification takes place.",
+      "trigger_process": [
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Recirculation"
+      ],
+      "Role": [
+        "Secondary",
+        "Recirculation"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor",
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "flows into a 3,758-gallon circular secondary clarifier, where the mixed liquor's suspended solids are settled and recirculated back to the flow equalization tank.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "treatment by two dual media (sand/anthracite) gravity filters",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Filtered effluent then passes through an ultraviolet (UV) light disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "biosolids from the wastewater are dried in drying beds prior to disposal.",
+      "trigger_process": [
+        "Drying",
+        "Evaporation Pond",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Treated wastewater effluent is then finally discharged to one of three evaporation/percolation ponds located south of the campus.",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    }
+  ]
+}

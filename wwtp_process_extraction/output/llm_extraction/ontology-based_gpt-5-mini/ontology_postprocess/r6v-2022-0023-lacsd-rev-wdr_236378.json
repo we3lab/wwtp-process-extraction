@@ -1,0 +1,242 @@
+{
+  "items": [
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.9,
+      "Sentence": "The headworks consists of an influent pump station...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The headworks consists of...comminutors...",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The headworks consists of...bar screen...",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The headworks consists of...aerated grit chambers...",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 0.8,
+      "Sentence": "The Facility liquid waste handling station consists of a septage interceptor connected to the trunk sewer.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The headworks consists of...primary sedimentation. There are six primary sedimentation tanks...",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Following primary sedimentation, effluent is pumped into nine aeration tanks...with biological nitrification and denitrification.",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "The secondary clarifiers consist of 14 tanks operating in parallel.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Return activated sludge is sent back to one of each aeration tank.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Waste activated sludge is sent to the dissolved air flotation system prior to being sent to the anaerobic digestion system.",
+      "trigger_process": [
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion",
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Primary sludge and skimmings are pumped to the anaerobic digestion system.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "Constituent-Ammonia",
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite)...Chlorine contact tanks provide residence time for disinfection by chloramines...",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary",
+        "Backwash"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Score": 1,
+      "Sentence": "Effluent is disinfected with chloramine...prior to entering six dual media gravity filters for reduction of turbidity and suspended solids. Filtrate is sent to chlorine contact tanks while backwash is sent to influent sewer or aeration tanks.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    }
+  ]
+}

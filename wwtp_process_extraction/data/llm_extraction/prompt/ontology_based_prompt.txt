@@ -5,17 +5,17 @@ A wastewater treatment plant permit extract
 Ontology lists: equipments, processes and roles (with mandatory relationships)
 
 Task:
-Using only the wastewater treatment plant's permit extract, find all the planned, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by at least an equipment or a process from the given ontology lists.
+Using only the wastewater treatment plant's permit extract, find all the future, implemented or past treatments mentioned to be used in the __FACILITY_NAME__ facility. A treatment must be described by at least an equipment or a process from the given ontology lists.
 You may ignore irrelevant context.
 Think step by step:
 1. Extract explicitly from the permit text the treatments mentioned for the specific __FACILITY_NAME__ facility (if it is used in another facility or off-site it should be mentionned in the "location" field of the output JSON)
 2. Match each treatment find with an equipment and/or one or many processes from the ontology lists
 3. Complete with specification of the treatment with roles and substances if explicitly mentioned in the text
-4. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("planned") or has been shut or removed ("past")
+4. Determine if the treatment is currently implemented and used in the facility ("present"), planned for the future ("future") or has been shut or removed ("past")
 5. Structure the output as a JSON file as requested
 
 Output:
-Return only a JSON object with this exact shape:
+Your entire response must be a single JSON object: an "items" array with one object per treatment unit, using this structure:
 {
     "items": [
         {
@@ -23,27 +23,25 @@ Return only a JSON object with this exact shape:
             "Process": string[]|null,
             "Role": string[]|null,
             "Substance": string[]|null,
-            "Implementation": "present"|"planned"|"past",
-            "Location": "on-site"|"off-site"|"off-site"|null,
-            "Score": number,
+            "Implementation": "present"|"future"|"past",
+            "Location": "on-site"|"off-site"|null,
             "Sentence": string
         }
     ]
 }
-Do not add any other top-level fields.
+Emit one object per distinct treatment step. A municipal plant typically yields ~8-20 steps. Each object must include exactly one Equipment (or one Process if no equipment is named), plus only the processes that occur in that unit. Processes in different units belong in different objects.
 
 Field meaning and allowed cardinality:
-- Equipment: equipment name from ontology. Exactly one string or null.
-- Process: process names from ontology. Null or an array of 1+ strings.
+- Equipment: equipment name from ontology. Exactly one string, or null only if no specific equipment is identifiable. Populate whenever a physical unit or vessel is mentioned or clearly implied.
+- Process: process names from ontology. Null or an array of 1+ strings. Populate whenever a treatment process is described, even if Equipment is also set.
 - Role: role names from ontology. Null or an array (can be empty).
 - Substance: substance names explicitly mentioned in text. Null or an array (can be empty).
-- Rule: at least one of Equipment or Process must be non-null.
-- Implementation: one of "present", "planned", "past".
-- Location: one of "on-site", "off-site", "off-site", or null if unspecified.
-- Score: confidence score between 0 and 1.
-- Sentence: direct supporting sentence/quote from permit extract.
+- Rule: at least one of Equipment or Process must be non-null. Both should be set when both are relevant.
+- Implementation: a single string, one of "present", "future", "past".
+- Location: a single string, one of "on-site" or "off-site"
+- Sentence: shortest excerpt supporting the extraction from the permit — a phrase, not necessarily a full sentence.
 
-All equipment, process, role and substance names must be exactly as in the ontology lists.
+All equipment, process, role and substance names must be exactly as listed in the ontology sections (EQUIPMENTS, PROCESSES, ROLES, SUBSTANCES). Use only the most specific applicable term; its parents are inferred, so do not also list them (e.g. "CentrifugalThickener", not "CentrifugalThickener" and "Thickener").
 
 Do not include example processes listed in boilerplate language.
 
@@ -57,4 +55,4 @@ Examples of treatments mentioned in permit text and the corresponding JSON outpu
 ########################################################################
 __PROMPT_EXAMPLES__
 
-You shall use these examples to understand how to extract the relevant information from the permit text and structure it in the required JSON format. The examples are not exhaustive and you should adapt the extraction to the specific content of the permit extract provided for the __FACILITY_NAME__ facility. Always ensure that your output strictly follows the specified JSON structure and field requirements.
+You shall use these examples to understand how to extract the relevant information from the permit text and structure it in the required JSON format. The examples are not exhaustive and you should adapt the extraction to the specific content of the permit extract provided for the __FACILITY_NAME__ facility. Always ensure that your output strictly follows the specified JSON structure and field requirements. Your response must be ONLY the JSON object {"items": [...]} with no other text.

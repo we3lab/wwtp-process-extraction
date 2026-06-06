@@ -1,7 +1,7 @@
 """
 Grouped stacked bar-chart comparison of unit process detection across two data sources:
-  - CWNS (California facilities from output/cwns_processes_by_facility.csv)
-  - LLM Search (output/date/llm_unit_processes_by_facility.csv)
+  - CWNS (California facilities from output/unit_processes_by_facility_cwns.csv)
+  - LLM Search (output/date/unit_processes_by_facility_llm.csv)
 
 CWNS rows join ``ciwqs_to_cwns.csv`` to the CA step0 export (exact ``CWNS_ID``).
 The export includes placeholder rows for CA ``CWNS_ID`` values missing from CWNS
@@ -39,9 +39,8 @@ from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_a
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-DATE_FOLDER = "2026-5-15"
-DATA_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}"
-OUTPUT_DIR = f"wwtp_process_extraction/output/{DATE_FOLDER}/figures"
+DATA_DIR = f"wwtp_process_extraction/output"
+OUTPUT_DIR = f"wwtp_process_extraction/output/figures"
 MIN_COUNT = 20  # drop bar groups where both sources are below this threshold
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -267,15 +266,15 @@ all_leaf_processes = {
 proc_cols = sorted(all_leaf_processes)
 
 llm_df = pd.read_csv(
-    f"{DATA_DIR}/llm_unit_processes_by_facility.csv", dtype=str
+    f"{DATA_DIR}/unit_processes_by_facility_llm.csv", dtype=str
     )
 
 kw_df = pd.read_csv(
-    f"{DATA_DIR}/kw_unit_processes_by_facility.csv", dtype=str
+    f"{DATA_DIR}/unit_processes_by_facility_kw.csv", dtype=str
     )
 
 ca_cwns = pd.read_csv(
-    "wwtp_process_extraction/output/cwns_processes_by_facility.csv",
+    "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv",
     dtype=str,
 )
 ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].str.strip()
@@ -303,7 +302,7 @@ n_attach = int((merged_map["_cwns_merge"] == "both").sum())
 print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
 
 # Save facilities with no CWNS match
-site_data_path = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
+site_data_path = f"wwtp_process_extraction/output/site_data_relevant.csv"
 pid_to_name = {}
 _site = pd.read_csv(site_data_path, dtype=str).fillna("")
 site_facs = set(_site["Place ID"]) - {""}
@@ -337,7 +336,7 @@ facility_names = unmatched_df['FACILITY_NAME'].tolist()
 print(', '.join(facility_names))
 
 # CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
-cwns_csv = Path("wwtp_process_extraction/output/cwns_processes_by_facility.csv")
+cwns_csv = Path("wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv")
 mapping_csv = Path("wwtp_process_extraction/data/ciwqs_to_cwns.csv")
 cwns_unmatched_df = pd.read_csv(cwns_csv, dtype=str).fillna("")
 mapping_df = pd.read_csv(mapping_csv, dtype=str, keep_default_na=False).fillna("")
@@ -356,9 +355,66 @@ unmatched_cwns_no_kw = cwns_unmatched_df[
 unmatched_cwns_no_kw.to_csv(f"{DATA_DIR}/unmatched_cwns_no_kw.csv", index=False)
 
 
+# ── Final merged unit-process table (CWNS + CIWQS/LLM) ────────────────────────
+# One row per (facility, source). source ∈ {cwns, ciwqs}. Facilities present in
+# only one source get a single row. Built from the full llm_df, before the
+# overlap filtering below, so ciwqs-only facilities are kept.
+_meta = cwns_mapping.drop_duplicates("Place ID").set_index("Place ID")
+_llm_name = llm_df.drop_duplicates("Place ID").set_index("Place ID")["Facility Name"].to_dict()
+
+final_rows = []
+for source_name, src_df in [("cwns", cwns_df), ("ciwqs", llm_df)]:
+    proc_in_df = [c for c in proc_cols if c in src_df.columns]
+    for _, r in src_df.iterrows():
+        pid = r["Place ID"]
+        m = _meta.loc[pid] if pid in _meta.index else None
+        row = {
+            "source": source_name,
+            "CWNS FACILITY_ID": m["FACILITY_ID"] if m is not None else "",
+            "CWNS FACILITY_NAME": m["CWNS Facility Name"] if m is not None else "",
+            "CIWQS PLACE_ID": pid,
+            "CIWQS Facility Name": _llm_name.get(pid) or (m["Facility Name"] if m is not None else ""),
+        }
+        for c in proc_cols:
+            row[c] = r[c] if c in proc_in_df else ""
+        final_rows.append(row)
+
+final_cols = ["source", "CWNS FACILITY_ID", "CWNS FACILITY_NAME", "CIWQS PLACE_ID", "CIWQS Facility Name"] + proc_cols
+final_df = pd.DataFrame(final_rows, columns=final_cols)
+final_path = f"{DATA_DIR}/unit_processes_by_facility.csv"
+final_df.to_csv(final_path, index=False)
+print(f"\nSaved merged unit processes ({len(final_df)} rows, "
+      f"{(final_df['source'] == 'cwns').sum()} cwns + {(final_df['source'] == 'ciwqs').sum()} ciwqs): {final_path}")
+
 cwns_facilities_all = set(cwns_df["Place ID"])
 kw_df, llm_df = [df[df["Place ID"].isin(cwns_facilities_all)].copy() for df in [kw_df, llm_df]]
 llm_common_facilities, kw_common_facilities = [set(df["Place ID"]) for df in [llm_df, kw_df]]
+
+# ── Unit process counts for all processes ─────────────────────────────────────
+_cwns_common = cwns_df[cwns_df["Place ID"].isin(llm_common_facilities)].copy()
+_llm_common = llm_df[llm_df["Place ID"].isin(llm_common_facilities)].copy()
+_count_rows = []
+for proc in proc_cols:
+    if proc not in _cwns_common.columns and proc not in _llm_common.columns:
+        continue
+    cwns_c = get_facility_counts(_cwns_common, [proc]) if proc in _cwns_common.columns else {"PRESENT": 0, "PAST": 0, "FUTURE": 0, "OFFSITE": 0, "NOT_PRESENT": len(_cwns_common)}
+    llm_c = get_facility_counts(_llm_common, [proc]) if proc in _llm_common.columns else {"PRESENT": 0, "PAST": 0, "FUTURE": 0, "OFFSITE": 0, "NOT_PRESENT": len(_llm_common)}
+    _count_rows.append({"process": proc, **{f"cwns_{k.lower()}": v for k, v in cwns_c.items()}, **{f"llm_{k.lower()}": v for k, v in llm_c.items()}})
+process_counts_df = pd.DataFrame(_count_rows)
+process_counts_df.to_csv(f"{DATA_DIR}/process_counts_cwns_vs_llm.csv", index=False)
+print(f"\nSaved process counts: {f'{DATA_DIR}/process_counts_cwns_vs_llm.csv'} ({len(process_counts_df)} processes)")
+
+# TODO: denitrification filter — no dedicated leaf yet in unitprocess_keywords.json.
+# "Media Filtration" is too broad (catches sand/cloth/disc filters).
+# Proxy: facilities with BOTH Media Filtration PRESENT and Denitrification PRESENT.
+# Better fix: load llm_extraction/ontology-based_gpt-5-mini/ontology_postprocess JSONs and find items where trigger_process
+# contains BOTH "Media Filtration" and "Denitrification" on the same extracted item
+# (same equipment row) — then add a "Denitrification Filter" leaf to keywords JSON.
+_mf_present = set(_llm_common.loc[_llm_common["Media Filtration"].isin(PRESENT_STATUSES), "Place ID"])
+_dn_present = set(_llm_common.loc[_llm_common["Denitrification"].isin(PRESENT_STATUSES), "Place ID"])
+_denif_filter_proxy = len(_mf_present & _dn_present)
+_cwns_dn_c = get_facility_counts(_cwns_common, ["Denitrification"])
+print(f"  {'Denitrif. Filter (proxy: MF+DN both present)':<40} {'n/a':>14} {_denif_filter_proxy:>12}")
 
 # ── Treatment-stage groupings for per-category plots ─────────────────────────
 # Each entry: plot_title → [list of top-level JSON category names to combine]
@@ -423,8 +479,8 @@ for group_title, json_cats in PLOT_GROUPS.items():
         positions=positions,
         source_counts=[cwns_counts_list, llm_counts_list],
         source_items=[("CWNS", "cwns"), ("NPDES - LLM extraction", "npdes_llm")],
-        stack_order=stack_order_with_not_present,
-        status_legend_items=status_legend_items_with_not_present,
+        stack_order=stack_order,
+        status_legend_items=status_legend_items,
         bar_width=bar_w,
     )
     cat_spans = {}
@@ -491,7 +547,13 @@ for comparison_type in ["llm", "kw"]:
     ]
 
     n = len(cat_labels)
-    final_dir = f"wwtp_process_extraction/output/{DATE_FOLDER}/final"
+    source_counts = [all_cwns, all_llm] if not include_kw else [all_cwns, all_kw, all_llm]
+    # Drop the Offsite legend entry unless some bar actually has an offsite band
+    has_offsite = any(c.get("OFFSITE", 0) > 0 for counts in source_counts for c in counts)
+    legend_items = status_legend_items_with_not_present
+    if not has_offsite:
+        legend_items = [it for it in legend_items if it[0] != "Offsite"]
+    final_dir = f"wwtp_process_extraction/output/final"
     os.makedirs(final_dir, exist_ok=True)
     path = f"{final_dir}/figure_4_major_categories_{suffix}.png"
     fig, ax = plt.subplots(figsize=(max(14, n * (0.55 if not include_kw else 0.7)), 6))
@@ -501,8 +563,8 @@ for comparison_type in ["llm", "kw"]:
         positions=list(range(n)),
         source_items=source_items,
         stack_order=stack_order_with_not_present,
-        status_legend_items=status_legend_items_with_not_present,
-        source_counts=[all_cwns, all_llm] if not include_kw else [all_cwns, all_kw, all_llm],
+        status_legend_items=legend_items,
+        source_counts=source_counts,
         bar_width=bar_w if not include_kw else 0.24,
     )
     plt.tight_layout()
@@ -510,14 +572,10 @@ for comparison_type in ["llm", "kw"]:
     print(f"    Saved {os.path.basename(path)}")
 
 
-SITE_DATA = f"wwtp_process_extraction/output/{DATE_FOLDER}/site_data.csv"
-FACILITIES_JSON = f"wwtp_process_extraction/output/{DATE_FOLDER}/facilities.json"
-ALL_NPDES = f"wwtp_process_extraction/output/{DATE_FOLDER}/all_ca_npdes.csv"
-CWNS_TABLE = "wwtp_process_extraction/output/cwns_processes_by_facility.csv"
-CWNS_FACILITIES = "wwtp_process_extraction/data/cwns/2022/FACILITIES.csv"
-CWNS_FACILITIES_CONFIRMED = "wwtp_process_extraction/data/cwns/2022/FACILITIES_CONFIRMED.csv"
-CWNS_TYPES = "wwtp_process_extraction/data/cwns/2022/FACILITY_TYPES.csv"
-CWNS_PHYSICAL = "wwtp_process_extraction/data/cwns/2022/PHYSICAL_LOCATION.csv"
+SITE_DATA = f"wwtp_process_extraction/output/site_data_relevant.csv"
+FACILITIES_JSON = f"wwtp_process_extraction/output/facilities.json"
+ALL_NPDES = f"wwtp_process_extraction/output/site_data_all.csv"
+CWNS_TABLE = "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv"
 CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
 
 ciwqs_cols = [
@@ -542,28 +600,15 @@ ciwqs = pd.read_csv(CIWQS_MAP, dtype=str, keep_default_na=False).fillna("").rena
 all_npdes = pd.read_csv(ALL_NPDES, dtype=str).fillna("").rename(
     columns={"Latitude": "Latitude_CIWQS_from_npdes", "Longitude": "Longitude_CIWQS_from_npdes"}
 )
-cwns_fac = pd.concat([
-    pd.read_csv(CWNS_FACILITIES, dtype=str).fillna(""),
-    pd.read_csv(CWNS_FACILITIES_CONFIRMED, dtype=str).fillna(""),
-]).rename(columns={"FACILITY_NAME": "CWNS Facility Name"})
-cwns_phys = pd.read_csv(CWNS_PHYSICAL, dtype=str).fillna("").rename(
-    columns={"LATITUDE": "Latitude_CWNS_from_cwns", "LONGITUDE": "Longitude_CWNS_from_cwns"}
-)
-cwns_types = pd.read_csv(CWNS_TYPES, dtype=str).fillna("")
+cwns_fac_tp = ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME", "STATE_CODE", "LATITUDE", "LONGITUDE"]].rename(columns={"FACILITY_NAME": "CWNS Facility Name"}).copy()
+cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]] = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].apply(lambda c: c.str.strip())
 
-# Filter CWNS facilities to Treatment Plant type only — coordinates from other types are not meaningful
-tp_pairs = cwns_types[cwns_types["FACILITY_TYPE"] == "Treatment Plant"][["CWNS_ID", "FACILITY_ID"]].apply(lambda c: c.str.strip())
-cwns_fac[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]] = cwns_fac[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].apply(lambda c: c.str.strip())
-cwns_fac_tp = cwns_fac.merge(tp_pairs, on=["CWNS_ID", "FACILITY_ID"], how="inner")
-
-cwns_phys[["CWNS_ID", "FACILITY_ID"]] = cwns_phys[["CWNS_ID", "FACILITY_ID"]].apply(lambda c: c.str.strip())
-
-cwns_loc_map = (
-    cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]]
-    .drop_duplicates()
-    .merge(cwns_phys[["CWNS_ID", "FACILITY_ID", "Latitude_CWNS_from_cwns", "Longitude_CWNS_from_cwns"]].drop_duplicates(), on=["CWNS_ID", "FACILITY_ID"], how="left")
-    .drop_duplicates()
-)
+cwns_loc_map = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].drop_duplicates().merge(
+    cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "LATITUDE", "LONGITUDE"]].rename(
+        columns={"LATITUDE": "Latitude_CWNS_from_cwns", "LONGITUDE": "Longitude_CWNS_from_cwns"}
+    ).drop_duplicates(),
+    on=["CWNS_ID", "FACILITY_ID"], how="left"
+).drop_duplicates()
 
 # CWNS_ID → FACILITY_ID lookup for populating existing mapping rows
 cwns_id_to_fac_id = cwns_fac_tp.drop_duplicates("CWNS_ID").set_index("CWNS_ID")["FACILITY_ID"].to_dict()
@@ -669,8 +714,16 @@ else:
     combined = ciwqs_out
     print("\nNo new rows to add.")
 
-# Dedupe on Place ID + FACILITY_ID, sorting NPDES empties last (matching build_cwns_facility_processes logic)
-combined.sort_values(by="NPDES No.", key=lambda s: s.eq(""), ascending=True).drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first").to_csv(CIWQS_MAP, index=False)
+# Dedupe on Place ID + FACILITY_ID, preferring rows with NPDES filled, preserving original row order
+_save = combined.reset_index(drop=True).rename_axis("_orig_order").reset_index()
+_save["_npdes_empty"] = _save["NPDES No."].eq("")
+(
+    _save.sort_values(["_npdes_empty", "_orig_order"])
+    .drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first")
+    .sort_values("_orig_order")
+    [ciwqs_cols]
+    .to_csv(CIWQS_MAP, index=False)
+)
 
 coord_cols = ["Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS"]
 geo = combined[combined[coord_cols].replace("", pd.NA).notna().all(axis=1)].copy()

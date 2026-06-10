@@ -436,7 +436,7 @@ def totals_from_df(df):
 def load_common_place_ids():
     """
     Return the set of Place IDs present in both unit_processes_by_facility_cwns.csv and the
-    LLM output — the same intersection used in figure_4_source_comparison.py.
+    LLM output — the same intersection used in figure_3_source_comparison.py.
     """
     cwns_out = pd.read_csv(
         REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv', dtype=str)

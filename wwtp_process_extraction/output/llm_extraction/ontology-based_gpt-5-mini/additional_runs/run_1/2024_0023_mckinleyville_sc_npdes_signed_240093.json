@@ -11,15 +11,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks includes ... a mechanically cleaned screen, a bypass channel with a bar screen"
+      "Sentence": "The headworks includes a mechanically cleaned screen, a bypass channel with a bar screen"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -29,10 +29,13 @@
         "NitrogenRemoval",
         "Extended"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor",
+        "Constituent-DissolvedOxygen"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of two aeration basins providing a complete mix activated sludge process using extended retention of biological solids."
+      "Sentence": "Secondary treatment consists of two aeration basins providing a complete mix activated sludge process using extended retention of biological solids"
     },
     {
       "Equipment": "SedimentationTank",
@@ -49,7 +52,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two 50-feet diameter... secondary clarifiers remove the biomass ... The clarifiers include a second center well, the flocculation well, that improves clarifier performance."
+      "Sentence": "Two 50-feet diameter... secondary clarifiers remove the biomass associated with the secondary treatment process... The flocculation well reduces short-circuiting... permits natural flocculation of the biomass contained in the mixed liquor"
     },
     {
       "Equipment": "Pump",
@@ -57,12 +60,9 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation",
-        "SolidsHandling"
+        "Recirculation"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Two RAS pumps at each clarifier return the settled sludge to the activated sludge process"
@@ -71,14 +71,15 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A waste activated sludge (WAS) pump draws WAS from the RAS discharge piping and pumps the WAS to the biosolids storage basin."
+      "Sentence": "A waste activated sludge (WAS) pump draws WAS from the RAS discharge piping and pumps the WAS to the biosolids storage basin"
     },
     {
       "Equipment": "Pump",
@@ -89,37 +90,54 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A constant-speed submersible pump will be used to pump scum from the secondary clarifiers directly to the biosolids storage basin."
+      "Sentence": "A constant-speed submersible pump will be used to pump scum from the secondary clarifiers directly to the biosolids storage basin"
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling consists of pumping WAS from the secondary clarifiers to a biosolids storage basin."
+      "Sentence": "Solids handling consists of pumping WAS from the secondary clarifiers to a biosolids storage basin"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The basin is scheduled to be dredged, dewatered"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...pumped to the chlorine contact basins where chlorine solution is used to achieve disinfection and sulfur dioxide solution is used to dechlorinate."
+      "Sentence": "Secondary effluent can either flow by gravity or be pumped to the chlorine contact basins where chlorine solution is used to achieve disinfection and sulfur dioxide solution is used to dechlorinate"
     }
   ]
 }

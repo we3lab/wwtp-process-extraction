@@ -1,6 +1,139 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal, primary clarification...",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal...",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks, along with an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A 10-million-gallon overflow basin is also available for any overflows from the 16-million-gallon equalization basin.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": [
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control.",
+      "trigger_process": [
+        "Ferric Chloride Addition"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following preliminary treatment, wastewater is pumped into rectangular primary clarifiers to remove floatable and settleable material.",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins. Each basin is divided into four sections referred to as 'quads.' The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions.",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following biological treatment, the wastewater flows by gravity to secondary clarifiers.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration"
@@ -11,7 +144,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Up to 8 of the 16 filters can be used to produce Title 22 unrestricted-use non-potable recycled water.",
+      "Sentence": "Following the secondary clarifiers, the wastewater undergoes filtration. There are 16 separate mono media filters...",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -32,12 +165,10 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -103,8 +234,7 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -115,7 +245,7 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": null,
       "Process": [
         "Aeration"
       ],
@@ -198,7 +328,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges...",
       "trigger_process": [
         "Biosolids Lagoon",
         "Unspecified Lagoon"
@@ -217,10 +347,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges...",
       "trigger_process": [
         "Drying",
-        "Evaporation Pond",
         "Mechanical Dewatering"
       ]
     },
@@ -289,6 +418,18 @@
       "trigger_process": [
         "Anaerobic Digestion"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "In addition to the mesophilic digester upgrades, the project will construct a new fats, oil and grease receiving facility, including storage tanks and connections to existing facilities.",
+      "trigger_process": []
     },
     {
       "Equipment": "CentrifugalThickener",

@@ -1,6 +1,21 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "preliminary screening",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
       "Equipment": "Grinder",
       "Process": [
         "Comminution"
@@ -16,21 +31,6 @@
       "Website": "https://www.paloalto.gov/Departments/Public-Works/Regional-Water-Quality-Control-Plant/About-the-Plant"
     },
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -41,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of preliminary screening, grit removal, primary sedimentation",
+      "Sentence": "grit removal",
       "Source": "permit_text",
       "Website": null
     },
@@ -56,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sedimentation, biological treatment (fixed film reactors and activated sludge basins)",
+      "Sentence": "primary sedimentation",
       "Source": "permit_text",
       "Website": null
     },
@@ -79,11 +79,11 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -103,7 +103,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection",
+      "Sentence": "secondary clarification",
       "Source": "permit_text",
       "Website": null
     },
@@ -118,14 +118,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dual-media filtration, and ultraviolet (UV) disinfection",
+      "Sentence": "dual-media filtration",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -133,7 +134,40 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dual-media filtration, and ultraviolet (UV) disinfection",
+      "Sentence": "ultraviolet (UV) disinfection",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water",
       "Source": "permit_text",
       "Website": null
     },
@@ -167,14 +201,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "gravity-thickened, and dewatered by belt presses",
+      "Sentence": "dewatered by belt presses",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "LandApplication",
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"
@@ -184,40 +219,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered sludge is shipped offsite for treatment to Class A pathogen reduction standards and subsequently land-applied.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water",
+      "Sentence": "Dewatered sludge is shipped offsite for treatment to Class A pathogen reduction standards and subsequently land-applied",
       "Source": "permit_text",
       "Website": null
     },
@@ -232,7 +234,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "An Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis",
+      "Sentence": "Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis",
       "Source": "permit_text",
       "Website": null
     },
@@ -247,16 +249,14 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "An Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis to reduce the level of total dissolved solids.",
+      "Sentence": "microfiltration followed by reverse osmosis to reduce the level of total dissolved solids",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
-        "Aeration",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -266,8 +266,27 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins to improve and intensify the treatment process",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Stepfeed",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Upgrades to the biological treatment process to enhance total inorganic nitrogen removal. The project would remove the fixed film reactors from the treatment train and add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins",
       "Source": "both",
-      "Website": "https://www.paloalto.gov/Departments/Public-Works/Regional-Water-Quality-Control-Plant/About-the-Plant"
+      "Website": "https://www.epa.gov/wifia/palo-alto-regional-water-quality-control-plant-secondary-treatment-upgrades-project"
     }
   ]
 }

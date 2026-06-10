@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an aerated grit chamber",
+      "Sentence": "The treatment system at the Facility consists of an aerated grit chamber,",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a selector",
+      "Sentence": "The treatment system at the Facility consists of ... a selector,",
       "trigger_process": []
     },
     {
@@ -41,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a Dimminutor",
+      "Sentence": "The treatment system at the Facility consists of ... a Dimminutor,",
       "trigger_process": [
         "Comminution"
       ]
@@ -58,7 +58,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an oxidation ditch",
+      "Sentence": "The treatment system at the Facility consists of ... an oxidation ditch,",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -74,7 +74,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a secondary clarifier",
+      "Sentence": "The treatment system at the Facility consists of ... a secondary clarifier,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -90,7 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "traveling bridge filters",
+      "Sentence": "The treatment system at the Facility consists of ... traveling bridge filters,",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -99,8 +99,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -110,9 +109,24 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine (Cl2) gas chlorination, and sulfur dioxide (SO2) gas dechlorination systems",
+      "Sentence": "The treatment system at the Facility consists of ... chlorine (Cl2) gas chlorination,",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "... and sulfur dioxide (SO2) gas dechlorination systems.",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
@@ -126,7 +140,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "all treated wastewater is discharged to the Facility\u2019s five percolation ponds",
+      "Sentence": "During the summer months, all treated wastewater is discharged to the Facility\u2019s five percolation ponds.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -145,27 +159,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids produced in the aerobic digester",
+      "Sentence": "Biosolids produced in the aerobic digester are discharged to two gunite-lined sludge lagoons...",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Digestion"
+      ],
       "Role": [
         "SolidsHandling",
-        "Storage",
-        "Stabilization"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two gunite-lined sludge lagoons for storage and further decomposition",
+      "Sentence": "...discharged to two gunite-lined sludge lagoons for storage and further decomposition.",
       "trigger_process": [
         "Biosolids Lagoon",
+        "Unspecified Digestion",
         "Unspecified Lagoon"
       ]
     },
@@ -182,30 +198,30 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three sludge drying beds are used to dry biosolids",
+      "Sentence": "During the summer months, three sludge drying beds are used to dry biosolids pumped from the sludge lagoons.",
       "trigger_process": [
         "Drying",
-        "Evaporation Pond",
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
       "Role": [
         "SolidsHandling",
-        "Posttreatment",
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transported to a paved, upper area, located northeast of the Facility for further drying",
+      "Sentence": "Dried biosolids are transported to a paved, upper area... for further drying",
       "trigger_process": [
         "Drying",
-        "Evaporation Pond"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -216,27 +232,31 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "before being hauled to an offsite landfill",
+      "Sentence": "\u2026before being hauled to an offsite landfill.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Screen",
       "Process": [
-        "Recirculation"
+        "Screening"
       ],
       "Role": [
-        "Drain"
+        "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "a drain at the upper paved area that drains any waste liquids back into the oxidation ditch",
-      "trigger_process": []
+      "Sentence": "the grant evaluated the following deficiencies at the Facility: proper rag removal,",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
     }
   ]
 }

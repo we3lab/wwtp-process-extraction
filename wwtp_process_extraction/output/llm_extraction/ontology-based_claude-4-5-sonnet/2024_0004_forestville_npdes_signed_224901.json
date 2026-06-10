@@ -14,34 +14,6 @@
       "Sentence": "The headworks include a rotary hydroscreen system, a screenings washer, and a metering flume."
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The headworks include a rotary hydroscreen system, a screenings washer, and a metering flume...The cleaned and dewatered solids are disposed of at a landfill."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The cleaned and dewatered solids are disposed of at a landfill."
-    },
-    {
       "Equipment": "Pond",
       "Process": [
         "Aeration",
@@ -62,7 +34,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
         "Secondary",
@@ -71,35 +44,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The settling pond (also known as the North Pond) is used for storage during high flows and for filter backwashes."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Backwash"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater from the settling pond is recirculated to the aeration pond as necessary."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "To maintain cleanliness in the filters, the secondary effluent is pre-chlorinated using sodium hypochlorite prior to filtration."
+      "Sentence": "The settling pond (also known as the North Pond) is used for storage during high flows and for filter backwashes...Wastewater from the settling pond is recirculated to the aeration pond as necessary."
     },
     {
       "Equipment": "MicrofiltrationUnit",
@@ -128,7 +73,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the microfiltration system, filtered wastewater flows to the chlorine contact tank by gravity through an 8-inch pipeline...Sodium hypochlorite is injected into the 8-inch influent line prior to entering the chlorine contact tank using an injection quill assembly."
+      "Sentence": "To maintain cleanliness in the filters, the secondary effluent is pre-chlorinated using sodium hypochlorite prior to filtration."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sodium hypochlorite is injected into the 8-inch influent line prior to entering the chlorine contact tank using an injection quill assembly."
     },
     {
       "Equipment": "DisinfectionUnit",
@@ -161,8 +122,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -185,6 +145,41 @@
       "Implementation": "past",
       "Location": "off-site",
       "Sentence": "During the 2012 biosolids removal event, approximately 99 dry tons of solids were removed from the ponds and land applied by Synagro Technologies, Inc."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Cleaning"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The settling pond (also known as the North Pond) is used for storage during high flows and for filter backwashes."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater from the aeration pond is pumped to the filtration system."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The cleaned and dewatered solids are disposed of at a landfill."
     }
   ]
 }

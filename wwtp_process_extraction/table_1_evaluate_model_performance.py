@@ -32,11 +32,12 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict
+from helpers.utils import get_leaf_names
 
 
 DEFAULT_WORKBOOK = Path("wwtp_process_extraction/output/llm_extraction/model_comparison_all.csv")
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
-DEFAULT_OUTPUT = Path("wwtp_process_extraction/output/llm_extraction/model_performance_metrics.csv")
+DEFAULT_OUTPUT = Path("wwtp_process_extraction/output/final/table_1.csv")
 MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 MODEL_COSTS_CSV = Path("wwtp_process_extraction/data/model_costs.csv")
 MAIN_DIR = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gpt-5-mini")
@@ -55,6 +56,7 @@ MODEL_COST_MAP = {
     "gpt-mini": "GPT 5 mini",
     "gemini-2.5-pro": "Gemini 2.5 Pro",
     "gemini-pro": "Gemini 2.5 Pro",
+    "gemini-2.0-flash-001": "Gemini 2.0 Flash",
     "gemini-flash": "Gemini 2.0 Flash",
     "claude-4-5-sonnet": "Claude 4.5 Sonnet",
     "claude-sonnet-4-6-web": "Claude 4.6 Sonnet",
@@ -200,7 +202,12 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
 
     meta_cols = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
     label_cols = [col for col in df.columns if col not in meta_cols]
-    label_to_family = build_label_to_family_map(json.loads(keywords_path.read_text()))
+    _kw = json.loads(keywords_path.read_text())
+    label_to_family = build_label_to_family_map(_kw)
+    _included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val)}
+    _unit_included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val, exclude_unspecified=True)}
+    label_cols = [c for c in label_cols if c in _included]
+    unit_cols = [c for c in label_cols if c in _unit_included]
 
     manual = df[df["Method"].eq("Manual Read")].drop_duplicates("Place ID").set_index("Place ID")
     results: list[dict[str, Any]] = []
@@ -216,9 +223,9 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
             manual_row = manual.loc[place_id, label_cols]
             pred_row = subset.loc[place_id, label_cols]
 
-            _, _, label_f1, _ = label_presence_f1(manual_row, pred_row, label_cols)
+            _, _, label_f1, _ = label_presence_f1(manual_row, pred_row, unit_cols)
             _, _, family_f1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
-            state_acc = exact_state_accuracy(manual_row, pred_row, label_cols)
+            state_acc = exact_state_accuracy(manual_row, pred_row, unit_cols)
 
             per_pdf_label_f1.append(label_f1)
             per_pdf_family_f1.append(family_f1)
@@ -336,18 +343,25 @@ def predictions_for_run(run_dir, label_cols):
     return pd.DataFrame.from_dict(rows, orient="index").reindex(columns=label_cols)
 
 
-def run_metrics(pred_df, manual, label_cols, label_to_family):
-    """Macro-average the three table_1 metrics over the manual facilities for one run."""
+def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols=None):
+    """Macro-average the three table_1 metrics over the manual facilities for one run.
+
+    unit_cols (defaults to label_cols) is the leaf-level column set for Unit Process F1 and
+    State Accuracy — pass the unspecified-excluded list to keep catch-all leaves out of those
+    leaf-level metrics while Category F1 still scores over the full label_cols.
+    """
+    if unit_cols is None:
+        unit_cols = label_cols
     pred = pred_df.reindex(manual.index)  # missing facilities -> all-NaN (counts as no prediction)
     label_f1, family_f1, state_acc = [], [], []
     for place_id in manual.index:
         truth_row = manual.loc[place_id, label_cols]
         pred_row = pred.loc[place_id, label_cols]
-        _, _, f1, _ = label_presence_f1(truth_row, pred_row, label_cols)
+        _, _, f1, _ = label_presence_f1(truth_row, pred_row, unit_cols)
         _, _, ff1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
         label_f1.append(f1)
         family_f1.append(ff1)
-        state_acc.append(exact_state_accuracy(truth_row, pred_row, label_cols))
+        state_acc.append(exact_state_accuracy(truth_row, pred_row, unit_cols))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
         "Macro Category F1": pd.Series(family_f1).mean(),
@@ -362,7 +376,10 @@ def main() -> None:
     # same manual facilities used by the workbook (same n=50 baseline).
     wb = pd.read_csv(args.workbook, dtype=str)
     manual_ids = set(wb.loc[wb["Method"].eq("Manual Read"), "Place ID"].dropna())
-    manual_full = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
+    # Empty cells must stay NaN, not "". pd.notna("") is True, so fillna("") would
+    # treat every blank truth cell as a positive label: false positives become
+    # impossible and missed labels are massively overcounted. Match the LLM path.
+    manual_full = pd.read_csv(MANUAL_PATH, dtype=str)
     manual_full["Place ID"] = manual_full["Place ID"].str.strip()
     meta = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
     label_cols = [c for c in manual_full.columns if c not in meta]
@@ -380,8 +397,13 @@ def main() -> None:
     # empty strings -> NaN so absence counts as no prediction
     kw_df = kw_df.replace("", np.nan)
 
-    label_to_family = build_label_to_family_map(json.loads(args.keywords.read_text()))
-    kw_metrics = run_metrics(kw_df[label_cols], manual, label_cols, label_to_family)
+    _kw = json.loads(args.keywords.read_text())
+    label_to_family = build_label_to_family_map(_kw)
+    _included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val)}
+    _unit_included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val, exclude_unspecified=True)}
+    label_cols = [c for c in label_cols if c in _included]
+    unit_cols = [c for c in label_cols if c in _unit_included]
+    kw_metrics = run_metrics(kw_df[label_cols], manual, label_cols, label_to_family, unit_cols)
     kw_row = {
         "Method": "Keyword",
         "Model": "NPDES Keyword",
@@ -389,10 +411,35 @@ def main() -> None:
     }
     metrics = pd.concat([metrics, pd.DataFrame([kw_row])], ignore_index=True, sort=False)
 
+    # Spot-check the keyword method per process so we can audit unitprocess_keywords.json.
+    # FP = keyword fired but truth absent (keyword too broad / wrong alt_name).
+    # FN = truth present but keyword missed (keyword missing or too narrow).
+    audit_rows = []
+    for col in label_cols:
+        truth_pos = manual[col].notna()
+        pred_pos = kw_df[col].notna()
+        fp = int((pred_pos & ~truth_pos).sum())
+        fn = int((truth_pos & ~pred_pos).sum())
+        tp = int((truth_pos & pred_pos).sum())
+        if fp or fn:
+            audit_rows.append({"Process": col, "TP": tp, "FP": fp, "FN": fn, "Errors": fp + fn})
+    audit = pd.DataFrame(audit_rows).sort_values(["Errors", "FP", "Process"], ascending=[False, False, True])
+    print(f"\nKeyword spot-check: per-process disagreement with manual truth (n={len(manual)} facilities)")
+    print("  FP = keyword fired, truth absent (keyword likely too broad)")
+    print("  FN = truth present, keyword missed (keyword likely missing/too narrow)")
+    print(audit.to_string(index=False))
+    print(f"\n  Top false positives: {', '.join(audit.sort_values('FP', ascending=False).head(5)['Process'])}")
+    print(f"  Top false negatives: {', '.join(audit.sort_values('FN', ascending=False).head(5)['Process'])}")
+
     cost_df = load_price_per_pdf()
     structured_df = load_structured_output_rates()
     metrics = metrics.merge(cost_df, on=["Method", "Model"], how="left")
     metrics = metrics.merge(structured_df, on=["Method", "Model"], how="left")
+    metrics["Unit Process F1 / Price per PDF"] = np.where(
+        pd.to_numeric(metrics["Price per PDF"], errors="coerce") > 0,
+        pd.to_numeric(metrics["Macro Unit Process F1"], errors="coerce") / pd.to_numeric(metrics["Price per PDF"], errors="coerce"),
+        np.nan,
+    ).round(2)
     metrics = metrics.round(3)
 
     # Reorder rows to the user's requested display order and add placeholders.
@@ -401,16 +448,17 @@ def main() -> None:
         ("Ontology", "gpt-5-mini"),
         ("Ontology", "gpt-5"),
         ("Ontology", "gemini-2.5-pro"),
+        ("Ontology", "gemini-2.0-flash-001"),
         ("Ontology", "claude-3-haiku"),
         ("Ontology", "claude-4-5-sonnet"),
         ("Ontology", "claude-sonnet-4-6-web"),
         ("List", "gpt-5-mini"),
         ("List", "gpt-5"),
         ("List", "gemini-2.5-pro"),
+        ("List", "gemini-2.0-flash-001"),
         ("List", "claude-3-haiku"),
         ("List", "claude-4-5-sonnet"),
-        # final placeholder row as requested
-        ("Ontology", "claude-sonnet-4-6-web"),
+        ("List", "claude-sonnet-4-6-web"),
     ]
 
     ordered_rows = []
@@ -450,7 +498,12 @@ def main() -> None:
     meta = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
     label_cols = [c for c in manual_full.columns if c not in meta]
     manual = manual_full.drop_duplicates("Place ID").set_index("Place ID")
-    label_to_family = build_label_to_family_map(json.loads(KEYWORDS_PATH.read_text()))
+    _kw = json.loads(KEYWORDS_PATH.read_text())
+    label_to_family = build_label_to_family_map(_kw)
+    _included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val)}
+    _unit_included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val, exclude_unspecified=True)}
+    label_cols = [c for c in label_cols if c in _included]
+    unit_cols = [c for c in label_cols if c in _unit_included]
 
     run_dirs = [("main", MAIN_DIR)] + [
         (rd.name, rd) for rd in sorted(ADDITIONAL_DIR.glob("run_*")) if rd.is_dir()
@@ -460,7 +513,7 @@ def main() -> None:
     for label, run_dir in run_dirs:
         n = len(list(run_dir.glob("*.json")))
         print(f"Scoring {label} ({run_dir}) — {n} json")
-        metrics = run_metrics(predictions_for_run(run_dir, label_cols), manual, label_cols, label_to_family)
+        metrics = run_metrics(predictions_for_run(run_dir, label_cols), manual, label_cols, label_to_family, unit_cols)
         rows.append({"run": label, "n_facilities": n, **metrics})
 
     df = pd.DataFrame(rows)

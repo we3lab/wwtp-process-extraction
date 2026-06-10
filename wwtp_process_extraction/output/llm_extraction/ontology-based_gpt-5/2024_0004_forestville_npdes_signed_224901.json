@@ -11,21 +11,36 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include a rotary hydroscreen system, a screenings washer"
+      "Sentence": "The headworks include a rotary hydroscreen system"
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
       "Substance": [
         "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "on-site",
+      "Sentence": "The cleaned and dewatered solids are disposed of at a landfill."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
       "Sentence": "The cleaned and dewatered solids are disposed of at a landfill."
     },
     {
@@ -45,21 +60,6 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids generated during the treatment process accumulate in the aeration and settling ponds, where they undergo anaerobic digestion and densification."
-    },
-    {
-      "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Storage",
@@ -71,30 +71,15 @@
       "Sentence": "The settling pond (also known as the North Pond) is used for storage during high flows and for filter backwashes."
     },
     {
-      "Equipment": "Filter",
+      "Equipment": null,
       "Process": [
-        "Filtration"
+        "Recirculation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two treatment trains each with a holding tank, strainer, and three banks of 12 microza microfiltration modules"
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary treatment is achieved in the microfiltration system."
+      "Sentence": "Wastewater from the settling pond is recirculated to the aeration pond as necessary."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -112,11 +97,23 @@
       "Sentence": "To maintain cleanliness in the filters, the secondary effluent is pre-chlorinated using sodium hypochlorite prior to filtration."
     },
     {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment is achieved in the microfiltration system."
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -126,18 +123,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite is injected into the 8-inch influent line prior to entering the chlorine contact tank... the chlorinated effluent is dechlorinated using sodium bisulfite."
+      "Sentence": "Sodium hypochlorite is injected into the 8-inch influent line prior to entering the chlorine contact tank"
     },
     {
-      "Equipment": null,
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "Recirculation"
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater from the settling pond is recirculated to the aeration pond as necessary."
+      "Sentence": "the chlorinated effluent is dechlorinated using sodium bisulfite."
     },
     {
       "Equipment": "Pond",
@@ -152,34 +151,21 @@
       "Sentence": "Treated wastewater is discharged to an approximately 3.25-million-gallon effluent storage pond used for storage of advanced treated wastewater prior to discharge"
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
-        "Landfill"
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The cleaned and dewatered solids are disposed of at a landfill."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "past",
-      "Location": "off-site",
-      "Sentence": "approximately 99 dry tons of solids were removed from the ponds and land applied by Synagro Technologies, Inc."
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids generated during the treatment process accumulate in the aeration and settling ponds, where they undergo anaerobic digestion and densification."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -196,6 +182,21 @@
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "A chlorine gas system was replaced with a sodium hypochlorite system in May 2014."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "off-site",
+      "Sentence": "approximately 99 dry tons of solids were removed from the ponds and land applied by Synagro Technologies, Inc."
     }
   ]
 }

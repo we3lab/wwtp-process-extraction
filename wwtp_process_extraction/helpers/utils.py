@@ -104,35 +104,37 @@ def build_cwns_presence_mask(series):
     return series.map(parse_status).isin({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
 
 
-def extract_leaves(processes_dict, group_id=None):
+def extract_leaves(processes_dict, group_id=None, exclude_keys=()):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
     for name, details in processes_dict.items():
+        if name in exclude_keys:
+            continue
         if not isinstance(details, dict):
             continue
         if "alt_names" in details:
             leaves.append((name, details, group_id))
         else:
-            leaves.extend(extract_leaves(details, group_id=name))
+            leaves.extend(extract_leaves(details, group_id=name, exclude_keys=exclude_keys))
     return leaves
 
 
-def get_leaf_names(cat_name, cat_val):
-    """Return leaf process names for a category from the keywords hierarchy."""
+def get_leaf_names(cat_name, cat_val, exclude_categories=("Disposal",), exclude_unspecified=False):
+    """Return leaf process names for a category from the keywords hierarchy.
+
+    exclude_unspecified drops catch-all 'Unspecified X' leaves (priority 1000) — use for
+    leaf-level comparisons where matching a catch-all exactly would be unfair.
+    """
+    if exclude_categories and cat_name in exclude_categories:
+        return []
     if isinstance(cat_val, dict) and "alt_names" in cat_val:
         return [cat_name]
-    return [name for name, _, _ in extract_leaves(cat_val)]
-
-
-def get_unspecified_leaf_names(keywords_dict) -> frozenset:
-    """Return leaf names that are catch-all 'Unspecified X' entries (priority == 1000)."""
-    return frozenset(
-        name
-        for name, details, _ in extract_leaves(keywords_dict)
-        if str(name).lower().startswith("unspecified")
-        and isinstance(details, dict)
-        and details.get("priority") == 1000
-    )
+    leaves = extract_leaves(cat_val, exclude_keys=exclude_categories)
+    if exclude_unspecified:
+        # 'Unspecified X' catch-alls are nested leaves, never top-level categories
+        leaves = [(n, d, g) for n, d, g in leaves
+                  if not (str(n).lower().startswith("unspecified") and d.get("priority") == 1000)]
+    return [name for name, _, _ in leaves]
 
 
 def build_secondary_category_lookup(keywords_dict):

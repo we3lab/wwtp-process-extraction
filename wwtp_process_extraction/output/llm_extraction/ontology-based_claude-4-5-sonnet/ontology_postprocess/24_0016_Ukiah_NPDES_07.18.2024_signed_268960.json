@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility's secondary treatment train consists of an influent wet well, bar screens, aerated grit removal, primary clarifiers, trickling filters...",
+      "Sentence": "The Facility's secondary treatment train consists of an influent wet well, bar screens, aerated grit removal, primary clarifiers...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -44,7 +44,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...bar screens, aerated grit removal, primary clarifiers, trickling filters, aerated solids contact tank...",
+      "Sentence": "The Facility's secondary treatment train consists of an influent wet well, bar screens, aerated grit removal, primary clarifiers, trickling filters...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -68,7 +68,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "Mixing"
       ],
       "Role": [
         "Secondary"
@@ -76,7 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...trickling filters, aerated solids contact tank, secondary clarifiers, and a chlorine contactor pipe...",
+      "Sentence": "...trickling filters, aerated solids contact tank, secondary clarifiers...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -92,7 +93,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...aerated solids contact tank, secondary clarifiers, and a chlorine contactor pipe where secondary disinfection is performed...",
+      "Sentence": "...aerated solids contact tank, secondary clarifiers, and a chlorine contactor pipe...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -111,16 +112,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...a chlorine contactor pipe where secondary disinfection is performed using sodium hypochlorite.",
+      "Sentence": "...and a chlorine contactor pipe where secondary disinfection is performed using sodium hypochlorite.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "Sedimentation",
-        "Coagulation"
+        "Coagulation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Tertiary"
@@ -136,6 +137,23 @@
         "Coagulation",
         "Ferric Chloride Addition",
         "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Adsorption"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility's advanced treatment train includes the addition of ferric chloride and polymer to adsorption clarifiers and multi-media filters.",
+      "trigger_process": [
+        "Unspecified Clarification"
       ]
     },
     {
@@ -190,21 +208,16 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "...the advanced treated effluent is dechlorinated with sodium bisulfite and discharged to the Russian River.",
       "trigger_process": [
-        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -212,7 +225,7 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Disposal"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -235,7 +248,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids generated during the treatment process are reduced through thickening in dissolved air flotation units followed by stabilization using anaerobic digesters...",
+      "Sentence": "Biosolids generated during the treatment process are reduced through thickening in dissolved air flotation units followed by stabilization using anaerobic digesters (mesothermic).",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -255,15 +268,14 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...thickening in dissolved air flotation units followed by stabilization using anaerobic digesters (mesothermic).",
+      "Sentence": "Biosolids generated during the treatment process are reduced through thickening in dissolved air flotation units followed by stabilization using anaerobic digesters (mesothermic).",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -276,8 +288,7 @@
       "Location": "on-site",
       "Sentence": "Digested sludge is dewatered using a belt-filter press.",
       "trigger_process": [
-        "Unspecified Dewatering",
-        "Unspecified Filtration"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -293,13 +304,13 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "During the term of this permit, the belt-filter press is anticipated to be replaced with a FKC Screw Press that can operate continuously...",
+      "Sentence": "During the term of this permit, the belt-filter press is anticipated to be replaced with a FKC Screw Press that can operate continuously (through SCADA)...",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Thickener",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
         "Flotation"
       ],

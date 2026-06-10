@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening",
+      "Sentence": "screening, grit removal, primary clarification",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "screening, grit removal, primary clarification",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -99,7 +99,7 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "MixingBasin",
       "Process": [
         "ChemicalAddition",
         "Mixing"
@@ -140,47 +140,12 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "chlorination disinfection",
       "trigger_process": [
         "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "in the process of installing another secondary clarifier",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration",
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SMWD also planned to add new aeration basins.",
-      "trigger_process": [
-        "Unspecified AS"
       ]
     },
     {
@@ -205,14 +170,15 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is ... digested",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -243,7 +209,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill",
@@ -259,7 +227,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "the remaining biosolids are trucked to contract composting operations",
@@ -275,12 +245,47 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley.",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "in the process of installing another secondary clarifier",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD also planned to add new aeration basins",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     }
   ]

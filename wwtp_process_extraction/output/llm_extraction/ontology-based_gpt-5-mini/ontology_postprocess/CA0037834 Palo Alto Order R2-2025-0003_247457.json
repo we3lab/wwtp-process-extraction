@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of preliminary screening, grit removal...",
+      "Sentence": "preliminary screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of preliminary screening, grit removal...",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -40,20 +40,18 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of... primary sedimentation...",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": null,
       "Process": [
-        "TricklingFiltration"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -61,9 +59,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of... biological treatment (fixed film reactors and activated sludge basins)...",
+      "Sentence": "biological treatment (fixed film reactors",
       "trigger_process": [
-        "Trickling Filter"
+        "Secondary Filtration",
+        "Unspecified FFR"
       ]
     },
     {
@@ -72,15 +71,12 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of... biological treatment (fixed film reactors and activated sludge basins)...",
+      "Sentence": "biological treatment (... activated sludge basins)",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -96,7 +92,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of... secondary clarification...",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -112,7 +108,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of... dual-media filtration...",
+      "Sentence": "dual-media filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -128,7 +124,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of... ultraviolet (UV) disinfection.",
+      "Sentence": "ultraviolet (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -146,7 +142,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity-thickened...",
+      "Sentence": "gravity-thickened",
       "trigger_process": [
         "Thickening"
       ]
@@ -164,9 +160,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered by belt presses.",
+      "Sentence": "dewatered by belt presses",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Belt press filtrate is returned to the plant headworks",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered sludge is shipped offsite for treatment to Class A pathogen reduction standards and subsequently land-applied",
+      "trigger_process": [
+        "Land Application"
       ]
     },
     {
@@ -180,7 +206,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Approximately 695 acre-feet per year or 0.62 MGD of final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water.",
+      "Sentence": "final effluent undergoes additional filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -188,8 +214,7 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
         "Tertiary"
@@ -199,7 +224,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Approximately 695 acre-feet per year or 0.62 MGD of final effluent undergoes additional filtration and chlorination prior to distribution as tertiary unrestricted recycled water.",
+      "Sentence": "final effluent undergoes ... chlorination prior to distribution as tertiary unrestricted recycled water",
       "trigger_process": [
         "Chlorination"
       ]
@@ -212,12 +237,10 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-Inorganics"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "An Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis to reduce the level of total dissolved solids.",
+      "Sentence": "Advanced Water Purification System ... using microfiltration",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -230,12 +253,10 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-Inorganics"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "An Advanced Water Purification System to improve recycled water quality using microfiltration followed by reverse osmosis to reduce the level of total dissolved solids.",
+      "Sentence": "Advanced Water Purification System ... followed by reverse osmosis",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -246,13 +267,12 @@
         "Aeration"
       ],
       "Role": [
-        "NitrogenRemoval",
-        "Secondary"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The project would remove the fixed film reactors from the treatment train and add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins...",
+      "Sentence": "add ... membrane aerated biofilm reactor process units to the existing aeration basins",
       "trigger_process": [
         "Membrane Aerated Biofilm Reactor"
       ]

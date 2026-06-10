@@ -19,7 +19,7 @@ from helpers.api_llm_search import (
 )
 
 TXT_DIR = f"wwtp_process_extraction/output/npdes/text"
-MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
+MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro, gemini-2.0-flash-001
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
 # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
 FACILITIES_INFO_PATH = "wwtp_process_extraction/data/unit_processes_by_facility_manual.csv"
@@ -41,7 +41,7 @@ def parse_args():
     parser.add_argument(
         "--model",
         default=MODEL,
-        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
+        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro, gemini-2.0-flash-001 (default: {MODEL}).",
     )
     parser.add_argument(
         "--txt_folder",
@@ -222,7 +222,7 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
-ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
+ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro", "gemini-2.0-flash-001"]
 DEFAULT_MAX_TOKENS = 10000
 DEFAULT_MAX_COMPLETION_TOKENS = 20000
 # Per-model completion-token limit. Reasoning models (gpt-5, etc.) spend most of

@@ -130,12 +130,49 @@
       ]
     },
     {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity-thickened, and dewatered by belt presses.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity-thickened, and dewatered by belt presses.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
       "Equipment": "MicrofiltrationUnit",
       "Process": [
         "Microfiltration"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Recycled"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -151,7 +188,8 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Recycled"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -164,7 +202,6 @@
     {
       "Equipment": "MembraneAeratedBiofilmReactor",
       "Process": [
-        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
@@ -180,6 +217,7 @@
       "Location": "on-site",
       "Sentence": "Upgrades to the biological treatment process to enhance total inorganic nitrogen removal. The project would remove the fixed film reactors from the treatment train and add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins to improve and intensify the treatment process.",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]

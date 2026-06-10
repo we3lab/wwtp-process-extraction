@@ -50,7 +50,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment (fixed film reactors and activated sludge basins)"
+      "Sentence": "...biological treatment (fixed film reactors and activated sludge basins)..."
     },
     {
       "Equipment": "AerationBasin",
@@ -63,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment (fixed film reactors and activated sludge basins)"
+      "Sentence": "...biological treatment (fixed film reactors and activated sludge basins)..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -89,13 +89,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...dual-media filtration, and ultraviolet (UV) disinfection."
+      "Sentence": "...secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection."
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -103,7 +102,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and ultraviolet (UV) disinfection."
+      "Sentence": "...dual-media filtration, and ultraviolet (UV) disinfection."
     },
     {
       "Equipment": "GravityThickener",
@@ -121,9 +120,10 @@
       "Sentence": "Solids from primary sedimentation tanks and aeration tanks are sent to the sludge thickening facilities, gravity-thickened, and dewatered by belt presses."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltThickener",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -133,7 +133,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and dewatered by belt presses."
+      "Sentence": "...gravity-thickened, and dewatered by belt presses."
     },
     {
       "Equipment": null,
@@ -143,12 +143,21 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered sludge is shipped offsite for treatment to Class A pathogen reduction standards and subsequently land-applied."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Belt press filtrate is returned to the plant headworks."
     },
     {
       "Equipment": "Filter",
@@ -156,8 +165,7 @@
         "Filtration"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -171,8 +179,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -185,7 +192,7 @@
         "Microfiltration"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -198,7 +205,7 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -206,43 +213,50 @@
       "Sentence": "...microfiltration followed by reverse osmosis to reduce the level of total dissolved solids."
     },
     {
-      "Equipment": "MembraneAeratedBiofilmReaactor",
-      "Process": [
-        "Nitrification",
-        "Denitrification",
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The project would... add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins..."
-    },
-    {
       "Equipment": "Reactor",
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
+      "Process": null,
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "The project would remove the fixed film reactors from the treatment train..."
     },
     {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-Inorganics"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Upgrades to the biological treatment process to enhance total inorganic nitrogen removal."
+    },
+    {
+      "Equipment": "MembraneAeratedBiofilmReaactor",
+      "Process": [
+        "Aeration",
+        "Biofiltration"
+      ],
+      "Role": [
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "...add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins..."
+    },
+    {
       "Equipment": "Wetland",
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",

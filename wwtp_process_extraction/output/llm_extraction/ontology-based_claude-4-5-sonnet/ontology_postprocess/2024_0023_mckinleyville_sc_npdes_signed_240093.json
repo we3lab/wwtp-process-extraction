@@ -47,13 +47,13 @@
         "NitrogenRemoval"
       ],
       "Substance": [
-        "Constituent-DissolvedOxygen",
-        "Sludge-MixedLiquor"
+        "Constituent-DissolvedOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of two aeration basins providing a complete mix activated sludge process using extended retention of biological solids...A programmable logic controller (PLC) is used to automatically actuate the motorized valves to create separate oxic and anoxic zones along the length of the basins. The repeated cycling of environments nitrifies and denitrifies the wastewater without recycle pumping or additional external basins.",
+      "Sentence": "Secondary treatment consists of two aeration basins providing a complete mix activated sludge process using extended retention of biological solids...The repeated cycling of environments nitrifies and denitrifies the wastewater without recycle pumping or additional external basins. With the separate zones, the aeration system can achieve biological nitrogen removal.",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Extended Aeration",
         "Nitrification"
@@ -68,7 +68,7 @@
         "Secondary"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -76,6 +76,36 @@
       "trigger_process": [
         "Secondary Clarification"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Two RAS pumps at each clarifier return the settled sludge to the activated sludge process in order to maintain a viable population of the microorganisms responsible for the removal of the organic compounds present in wastewater.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A waste activated sludge (WAS) pump draws WAS from the RAS discharge piping and pumps the WAS to the biosolids storage basin.",
+      "trigger_process": []
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -114,58 +144,32 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Sedimentation",
-        "AerobicDigestion"
-      ],
+      "Process": null,
       "Role": [
         "SolidsHandling",
-        "Storage",
-        "Stabilization"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling consists of pumping WAS from the secondary clarifiers to a biosolids storage basin. The basin has been sized to provide a loading rate of less than 20 pounds volatile suspended solids per 1,000 square feet of basin water surface area.",
-      "trigger_process": [
-        "Aerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The basin is scheduled to be dredged, dewatered, and dredged...",
-      "trigger_process": [
-        "Unspecified Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Two RAS pumps at each clarifier return the settled sludge to the activated sludge process in order to maintain a viable population of the microorganisms responsible for the removal of the organic compounds present in wastewater.",
+      "Sentence": "Solids handling consists of pumping WAS from the secondary clarifiers to a biosolids storage basin.",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "During dry weather, effluent is recycled for dry-weather maintenance of the Hiller storm water treatment wetland...",
+      "trigger_process": [
+        "Wetland"
+      ]
     }
   ]
 }

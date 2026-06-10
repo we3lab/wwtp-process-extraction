@@ -1,23 +1,85 @@
 {
   "items": [
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks distribution box",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Aeration",
+        "Evaporation"
       ],
       "Role": [
-        "Secondary",
-        "Stabilization"
+        "Storage"
       ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "five unlined facultative treatment ponds",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": null,
       "Substance": [
-        "Constituent-OrganicCarbon",
-        "Constituent-SuspendedSolids"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the principal treatment process is waste stabilization ponds",
+      "Sentence": "chlorination with liquid chlorine, and dechlorination",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids are collected from all ponds ... allowed to dry on site",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled to a permitted landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -25,15 +87,13 @@
       "Process": [
         "Aeration"
       ],
-      "Role": [
-        "Aerobic"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Facility upgrades to line ponds and improve aeration",
+      "Sentence": "improve aeration",
       "trigger_process": [
-        "Aerated Lagoon"
+        "Unspecified Lagoon"
       ]
     }
   ]

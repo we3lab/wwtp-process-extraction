@@ -1,6 +1,18 @@
 {
   "items": [
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility\u2019s secondary treatment train consists of an influent wet well,",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,7 +23,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment train consists of an influent wet well, bar screens,",
+      "Sentence": "bar screens,",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +39,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment train consists of ... aerated grit removal,",
+      "Sentence": "aerated grit removal,",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +55,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment train consists of ... primary clarifiers,",
+      "Sentence": "primary clarifiers,",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -51,8 +63,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -60,7 +71,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment train consists of ... trickling filters,",
+      "Sentence": "trickling filters,",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -77,7 +88,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment train consists of ... aerated solids contact tank,",
+      "Sentence": "aerated solids contact tank,",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -93,7 +104,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment train consists of ... secondary clarifiers,",
+      "Sentence": "secondary clarifiers,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -112,18 +123,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a chlorine contactor pipe where secondary disinfection is performed using sodium hypochlorite.",
+      "Sentence": "chlorine contactor pipe where secondary disinfection is performed using sodium hypochlorite.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation",
-        "Flocculation",
-        "Adsorption",
-        "ChemicalAddition"
+        "Flocculation"
       ],
       "Role": [
         "Tertiary"
@@ -134,12 +143,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s advanced treatment train includes the addition of ferric chloride and polymer to adsorption clarifiers",
+      "Sentence": "the addition of ferric chloride and polymer to adsorption clarifiers and multi-media filters.",
       "trigger_process": [
         "Coagulation",
         "Ferric Chloride Addition",
         "Flocculation",
         "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Adsorption",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "adsorption clarifiers",
+      "trigger_process": [
+        "Unspecified Clarification"
       ]
     },
     {
@@ -153,7 +179,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s advanced treatment train includes ... multi-media filters.",
+      "Sentence": "multi-media filters.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -186,73 +212,40 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sent to the Recycled Water Storage Ponds for distribution to recycled water users.",
+      "Sentence": "three recycled water storage ponds with synthetic liners to provide storage for the disinfected tertiary treated recycled water",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Recycled water is delivered by a recycled water pump station and transmission system",
+      "Sentence": "delivered by a recycled water pump station and transmission system",
       "trigger_process": []
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Dewatering"
       ],
       "Role": [
-        "Secondary",
-        "Posttreatment"
+        "SolidsHandling",
+        "Recirculation"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary effluent is disinfected with sodium hypochlorite in the secondary chlorine contact basin and sent to the percolation ponds for disposal.",
+      "Sentence": "Digested sludge is dewatered using a belt-filter press.",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sent to the percolation ponds for disposal.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the advanced treated effluent is dechlorinated with sodium bisulfite and discharged to the Russian River.",
-      "trigger_process": [
-        "Dechlorination"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -268,7 +261,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids generated during the treatment process are reduced through thickening in dissolved air flotation units",
+      "Sentence": "thickening in dissolved air flotation units",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -277,12 +270,11 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Stabilization",
+        "SolidsHandling",
         "Anaerobic"
       ],
       "Substance": [
@@ -301,30 +293,15 @@
         "Dewatering"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Recirculation"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge is dewatered using a belt-filter press.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the belt-filter press is anticipated to be replaced with a FKC Screw Press",
+      "Sentence": "the belt-filter press is anticipated to be replaced with a FKC Screw Press that can operate continuously (through SCADA)",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -347,16 +324,34 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Feed"
+        "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "installation of a septage receiving station.",
-      "trigger_process": []
+      "Sentence": "sent to the percolation ponds for disposal.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the advanced treated effluent is dechlorinated with sodium bisulfite and discharged to the Russian River.",
+      "trigger_process": [
+        "Dechlorination"
+      ]
     }
   ]
 }

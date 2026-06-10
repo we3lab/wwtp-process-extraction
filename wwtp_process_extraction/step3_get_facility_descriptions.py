@@ -34,9 +34,18 @@ DESC_PRIORITY_RE = re.compile(
     re.IGNORECASE,
 )
 # compliance/regulatory boilerplate signals — these don't appear in factual facility descriptions
-BOILERPLATE_RE = re.compile(r"pursuant to|shall comply|must be \w+|shall be \w+", re.IGNORECASE)
+BOILERPLATE_RE = re.compile(
+    r"pursuant to|shall comply|must be \w+|shall be \w+"
+    r"|inter-tidal|intertidal|tide gate|kayak|interpretive center"
+    r"|RPA for Discharge|WQBELs|Endpoint \d+\s+is established"
+    r"|133\.10|Construction, Operation, and Maintenance Specifications",
+    re.IGNORECASE,
+)
+# "pond" is a search-only clustering term (not a keyword-match alt_name — it was removed from
+# Unspecified Lagoon). Pond-heavy paragraphs (e.g. capacity/freeboard tables) otherwise have no
+# vocab hits, creating a gap that truncates the description before solids/biosolids sections.
 VOCAB_COMBINED_RE = re.compile(
-    WASTEWATER_VOCAB_RE.pattern + "|" + DESC_PRIORITY_RE.pattern,
+    WASTEWATER_VOCAB_RE.pattern + "|" + DESC_PRIORITY_RE.pattern + r"|\bponds?\b",
     re.IGNORECASE,
 )
 # section headers: uppercase or digit start, ≤80 chars (lowercase starts match sentence wraps too often)
@@ -114,7 +123,7 @@ def find_desc_clusters(text):
         # extend boilerplate check past the cluster — compliance phrases often
         # follow the vocab hits in the same paragraph
         bpl_window = text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end() + LOOKBACK_HEADER]
-        if BOILERPLATE_RE.search(bpl_window):
+        if len(BOILERPLATE_RE.findall(bpl_window)) >= 2:
             continue
         desc_clusters.append(c)
     if desc_clusters:
@@ -278,14 +287,20 @@ def extract_from_pdf(pdf_path, mode):
         if not clusters:
             # no vocab clusters found — likely image-only or no treatment description text
             continue
+        # clusters are score-sorted; anchor on the best, then process all clusters within
+        # MAX_CLUSTER_DISTANCE of it in DOCUMENT order. This keeps multi-facility ordering while
+        # ensuring a description split across clusters starts at its earliest part, not the
+        # highest-scoring middle (e.g. a filter/backwash section out-scoring the headworks start).
+        anchor = clusters[0][0]
+        ordered = sorted(
+            (c for c in clusters if abs(c[0] - anchor) <= MAX_CLUSTER_DISTANCE),
+            key=lambda c: c[0],
+        )
         sections = []
         prev_end = 0
-        for cs, ce in clusters:
+        for cs, ce in ordered:
             if cs < prev_end:
                 continue
-            # stop before distant clusters — appended general orders, monitoring tables, etc.
-            if sections and cs - sections[0]["metadata"]["start_pos"] > MAX_CLUSTER_DISTANCE:
-                break
             start = snap_back_to_header(text, cs)
             result = extract_section(text, start, ce, attachment_page, spec, mode)
             sections.append(result)
@@ -307,8 +322,8 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     # Mode controls which part of the PDF to search and where to stop extraction.
     # NPDES: Attachment F fact sheet only. NOA/WDR: full document.
     mode_map = {
-        "NPDES PERMIT": "NPDES",
-        "CO-PERMITTEE": "NPDES",
+        "NPDES PERMIT": "Facility Permit",
+        "CO-PERMITTEE": "Facility Permit",
         "ENROLLEE - NPDES": "NOA",
         "ENROLLEE - WDR": "NOA",
         "WDR": "WDR",
@@ -316,10 +331,10 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     }
     with site_data.open("r", newline="", encoding="utf-8") as f:
         mode = next(
-            (mode_map.get((row.get("Reg_Measure_Type") or "").strip().upper(), "NPDES")
+            (mode_map.get((row.get("Reg_Measure_Type") or "").strip().upper(), "Facility Permit")
              for row in csv.DictReader(f)
              if (row.get("PDF_File") or "").strip() == pdf_path.name),
-            "NPDES",
+            "Facility Permit",
         )
     cache = Path(pdf_path).parent / "text" / f"{Path(pdf_path).stem}.txt"
     if not regenerate_text_excerpts and cache.exists():

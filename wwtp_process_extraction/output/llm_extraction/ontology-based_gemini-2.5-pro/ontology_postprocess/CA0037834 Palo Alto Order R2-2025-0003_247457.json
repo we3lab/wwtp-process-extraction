@@ -59,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment (fixed film reactors and activated sludge basins)",
+      "Sentence": "...biological treatment (fixed film reactors and activated sludge basins)...",
       "trigger_process": [
         "Secondary Filtration",
         "Unspecified FFR"
@@ -76,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment (fixed film reactors and activated sludge basins)",
+      "Sentence": "...biological treatment (fixed film reactors and activated sludge basins)...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -108,7 +108,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...dual-media filtration, and ultraviolet (UV) disinfection.",
+      "Sentence": "...secondary clarification, dual-media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -116,8 +116,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -125,7 +124,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and ultraviolet (UV) disinfection.",
+      "Sentence": "...dual-media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -149,9 +148,10 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltThickener",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -161,9 +161,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and dewatered by belt presses.",
+      "Sentence": "...gravity-thickened, and dewatered by belt presses.",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Thickening"
       ]
     },
     {
@@ -174,9 +174,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered sludge is shipped offsite for treatment to Class A pathogen reduction standards and subsequently land-applied.",
@@ -185,13 +183,24 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Belt press filtrate is returned to the plant headworks.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Filter",
       "Process": [
         "Filtration"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -208,8 +217,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -225,7 +233,7 @@
         "Microfiltration"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -241,7 +249,7 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -252,42 +260,50 @@
       ]
     },
     {
-      "Equipment": "MembraneAeratedBiofilmReaactor",
+      "Equipment": "Reactor",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The project would remove the fixed film reactors from the treatment train...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": [
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
-        "Secondary",
-        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-Inorganics"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Upgrades to the biological treatment process to enhance total inorganic nitrogen removal.",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "MembraneAeratedBiofilmReaactor",
+      "Process": [
+        "Aeration",
+        "Biofiltration"
+      ],
+      "Role": [
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The project would... add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins...",
+      "Sentence": "...add nitrogen removal and membrane aerated biofilm reactor process units to the existing aeration basins...",
       "trigger_process": [
-        "Denitrification",
-        "Membrane Aerated Biofilm Reactor",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "The project would remove the fixed film reactors from the treatment train...",
-      "trigger_process": [
-        "Secondary Filtration",
-        "Unspecified FFR"
+        "Membrane Aerated Biofilm Reactor"
       ]
     },
     {
@@ -295,9 +311,7 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",

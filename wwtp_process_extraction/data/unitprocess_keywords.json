@@ -170,7 +170,7 @@
       "werf_codes": ["LAGOON_FAC"]
     },
     "Aerated Lagoon": {
-      "alt_names": ["aerated lagoon", "aerated pond"],
+      "alt_names": ["aerated lagoon", "aerated pond", "oxidation pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Aerated"],
       "ontology_triggers": ["Equipment-Pond", "Role-Aerobic"],
@@ -203,11 +203,11 @@
       "alt_names": ["evaporat"],
       "alt_names_case_sensitive": [],
       "cwns_processes": [],
-      "ontology_triggers": ["Process-Evaporation"],
+      "ontology_triggers": [["Equipment-Pond", "Process-Evaporation"]],
       "werf_codes": []
     },
     "Unspecified Lagoon": {
-      "alt_names": ["lagoon", "pond"],
+      "alt_names": ["lagoon", "oxidation pond", "treatment pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)"],
       "ontology_triggers": ["Equipment-Pond"],
@@ -218,20 +218,23 @@
   },
   "Nutrient Removal": {
     "Biological Nutrient Removal": {
-      "AO": {
+      "AO (anoxic/oxic)": {
         "alt_names": ["anoxic-oxic", "a/o", "anoxic oxic", "anoxic-aerobic", "anoxic aerobic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
-        "ontology_triggers_multi": [
-          {
-            "priority": 3,
-            "Equipment": ["AerationBasin", "Reactor", "Tank"],
-            "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
-          }
-        ],
-        "ontology_triggers": ["Process-AO"],
+        "ontology_triggers": [["Process-AO"], ["Role-Anoxic", "Role-Aerobic"]],
+        "exclude_if_any": ["Role-Anaerobic", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
         "secondary_category": ["Activated Sludge"],
         "werf_codes": ["AS-BDENIT"]
+      },
+      "AO (anaerobic/oxic)": {
+        "alt_names": ["anaerobic-oxic", "anaerobic oxic", "anaerobic-aerobic", "anaerobic aerobic"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [],
+        "ontology_triggers": [["Role-Anaerobic", "Role-Aerobic", "Equipment-AerationBasin"], ["Role-Anaerobic", "Role-Aerobic", "Equipment-Reactor"], ["Role-Anaerobic", "Role-Aerobic", "Equipment-Tank"]],
+        "exclude_if_any": ["Role-Anoxic", "Process-Denitrification", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
+        "secondary_category": ["Activated Sludge"],
+        "werf_codes": []
       },
       "A2O": {
         "alt_names": ["anaerobic-anoxic-oxic", "a/a/o", "anaerobic anoxic oxic", "a2o"],

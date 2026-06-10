@@ -12,18 +12,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of an aerated grit chamber"
+      "Sentence": "The treatment system at the Facility consists of an aerated grit chamber, a selector, a Dimminutor, an oxidation ditch, a secondary clarifier, traveling bridge filters, chlorine (Cl2) gas chlorination, and sulfur dioxide (SO2) gas dechlorination systems."
     },
     {
       "Equipment": "Reactor",
-      "Process": null,
+      "Process": [
+        "BiologicalProcess"
+      ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of an aerated grit chamber, a selector, a Dimminutor"
+      "Sentence": "The treatment system at the Facility consists of an aerated grit chamber, a selector, a Dimminutor..."
     },
     {
       "Equipment": "Grinder",
@@ -36,7 +39,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of... a Dimminutor, an oxidation ditch"
+      "Sentence": "The treatment system at the Facility consists of... a selector, a Dimminutor, an oxidation ditch..."
     },
     {
       "Equipment": "OxidationDitch",
@@ -44,12 +47,13 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of... an oxidation ditch, a secondary clarifier"
+      "Sentence": "The treatment system at the Facility consists of... an oxidation ditch, a secondary clarifier..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -62,7 +66,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of... an oxidation ditch, a secondary clarifier"
+      "Sentence": "The treatment system at the Facility consists of... an oxidation ditch, a secondary clarifier, traveling bridge filters..."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -75,14 +79,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of... a secondary clarifier, traveling bridge filters"
+      "Sentence": "The treatment system at the Facility consists of... a secondary clarifier, traveling bridge filters..."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -95,12 +98,26 @@
       "Sentence": "The treatment system at the Facility consists of... chlorine (Cl2) gas chlorination, and sulfur dioxide (SO2) gas dechlorination systems."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": null,
       "Process": [
-        "Filtration"
+        "Dechlorination"
       ],
       "Role": [
         "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system at the Facility consists of... and sulfur dioxide (SO2) gas dechlorination systems."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Sedimentation",
+        "Evaporation"
+      ],
+      "Role": [
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -116,7 +133,9 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Biosolids produced in the aerobic digester are discharged to two gunite-lined sludge lagoons for storage and further decomposition."
@@ -124,7 +143,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Digestion"
+        "Digestion",
+        "Sedimentation"
       ],
       "Role": [
         "SolidsHandling",
@@ -140,7 +160,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -158,9 +179,11 @@
         "Recirculation"
       ],
       "Role": [
-        "Drain"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "In addition, there is a drain at the upper paved area that drains any waste liquids back into the oxidation ditch."
@@ -173,7 +196,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are transported to a paved, upper area, located northeast of the Facility for further drying before being hauled to an offsite landfill."
@@ -189,20 +214,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the grant evaluated the following deficiencies at the Facility: proper rag removal"
-    },
-    {
-      "Equipment": "VariableFrequencyDrive",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "automated aeration in the oxidation ditch with variable frequency drive"
+      "Sentence": "The Discharger received a Clean Water State Revolving Fund (CWSRF) planning grant for the Facility in January 2017; the grant evaluated the following deficiencies at the Facility: proper rag removal..."
     }
   ]
 }

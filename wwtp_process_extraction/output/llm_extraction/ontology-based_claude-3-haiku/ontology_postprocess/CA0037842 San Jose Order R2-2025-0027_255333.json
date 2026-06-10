@@ -1,93 +1,35 @@
 {
   "items": [
     {
-      "Equipment": "Filter",
+      "Equipment": "Screen",
       "Process": [
-        "Filtration",
-        "Backwashing"
+        "Screening"
       ],
       "Role": [
-        "Tertiary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Up to 8 of the 16 filters can be used to produce Title 22 unrestricted-use non-potable recycled water. The Discharger backwashes the filters to clean the media. Each filter is backwashed approximately once every 24 hours.",
+      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal...",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "BackwashEqualizationBasin",
-      "Process": [
-        "Equalization"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "FlocculationBasin",
-      "Process": [
-        "Flocculation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
-      "trigger_process": [
-        "Flocculation"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
+      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal...",
       "trigger_process": [
-        "Unspecified Clarification"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
-      "trigger_process": [
-        "Chlorination"
+        "Grit Removal"
       ]
     },
     {
@@ -98,14 +40,68 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The settled solids from the backwash water are pumped back to primary treatment.",
+      "Sentence": "...primary clarification, advanced secondary treatment with an activated sludge process...",
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...advanced secondary treatment with an activated sludge process configured and operated for biological nutrient removal (BNR)...",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...secondary clarifiers, mono-media gravity filtration...",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltration",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...mono-media gravity filtration, and disinfection with chlorine (sodium hypochlorite)...",
+      "trigger_process": [
+        "Media Filtration"
       ]
     },
     {
@@ -119,34 +115,14 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Disinfectant-SodiumBisulfite"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection. As the effluent leaves the contact channels, its chlorine residual is measured, and an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection...an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
-      "trigger_process": [
-        "Anaerobic Digestion"
       ]
     },
     {
@@ -169,9 +145,28 @@
       ]
     },
     {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -183,6 +178,7 @@
       "Location": "on-site",
       "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
+        "Drying",
         "Mechanical Dewatering"
       ]
     },

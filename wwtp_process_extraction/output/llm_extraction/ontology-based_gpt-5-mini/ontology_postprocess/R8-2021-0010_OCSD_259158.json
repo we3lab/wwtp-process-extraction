@@ -1,66 +1,80 @@
 {
   "items": [
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "TricklingFilter",
       "Process": [
-        "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "TricklingFiltration"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "past",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger ceased continuous effluent disinfection using chlorination/dechlorination at Discharge Point 001 (120\u201d outfall).",
+      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Trickling Filter"
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Oxidation",
-        "ChemicalAddition"
+        "Sedimentation"
       ],
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "sodium hypochlorite has been used as oxidant chemical to treat foul air (i.e., H S control) in scrubbers at primary treatment process",
+      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment",
       "trigger_process": [
-        "Unspecified Chemical Addition"
+        "Primary Clarification"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Chlorination",
-        "ChemicalAddition"
+        "ActivatedSludge"
       ],
       "Role": [
-        "SolidsHandling"
+        "Secondary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "sodium hypochlorite has been used ... to control the bulking from filamentous organisms in the return activated sludge (RAS)",
+      "Sentence": "After the GWRS Final Expansion, the activated sludge treatment process will treat only SARI and side-stream flows.",
       "trigger_process": [
-        "Chlorination",
-        "Unspecified Chemical Addition"
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Build a Plant 2 effluent pump station that will convey approximately 50-85 MGD of secondary effluent from Plant No. 2 trickling filter solids contact process to the GWRS Facility.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Build a 6 MG equalization storage tank at Plant No. 2 to store secondary effluent during peak day flows and be returned to the system during low flow periods",
+      "trigger_process": [
+        "Equalization"
       ]
     }
   ]

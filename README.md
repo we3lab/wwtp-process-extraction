@@ -27,9 +27,9 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
     - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): post-processes LLM outputs and writes unit_processes_by_facility_llm.csv with present/future/past status
 
 **Figures and tables**
-- [wwtp_process_extraction/figure_2_ground_truth.py](wwtp_process_extraction/figure_2_ground_truth.py): ground-truth comparison of extraction methods
-- [wwtp_process_extraction/figure_3_npdes_method_comparison.py](wwtp_process_extraction/figure_3_npdes_method_comparison.py): keyword vs LLM method comparison
-- [wwtp_process_extraction/figure_4_source_comparison.py](wwtp_process_extraction/figure_4_source_comparison.py): CWNS vs LLM unit process detection comparison
+- [wwtp_process_extraction/figure_2_data_source_comparison.py](wwtp_process_extraction/figure_2_data_source_comparison.py): ground-truth comparison of extraction methods
+- [wwtp_process_extraction/figure_s2_npdes_method_comparison.py](wwtp_process_extraction/figure_s2_npdes_method_comparison.py): keyword vs LLM method comparison
+- [wwtp_process_extraction/figure_3_source_comparison.py](wwtp_process_extraction/figure_3_source_comparison.py): CWNS vs LLM unit process detection comparison
 - [wwtp_process_extraction/table_1_evaluate_model_performance.py](wwtp_process_extraction/table_1_evaluate_model_performance.py): evaluates LLM model performance against truth labels
 
 **GHG analysis**
@@ -46,7 +46,7 @@ python wwtp_process_extraction/step4_keyword_extraction.py
 python wwtp_process_extraction/step5_llm_extraction.py  # for all facilities
 python wwtp_process_extraction/step5_llm_extraction.py --max_facilities 5  # small test sweep
 python wwtp_process_extraction/step6_postprocess_llm_output.py
-python wwtp_process_extraction/figure_4_source_comparison.py
+python wwtp_process_extraction/figure_3_source_comparison.py
 python wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py
 ```
 

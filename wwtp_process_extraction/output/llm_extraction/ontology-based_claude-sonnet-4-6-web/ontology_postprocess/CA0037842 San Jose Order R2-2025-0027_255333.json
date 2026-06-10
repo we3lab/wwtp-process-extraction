@@ -11,9 +11,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent screening and grit removal",
-      "Source": "web_search",
-      "Website": "https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/water-utilities/regional-wastewater-facility/treatment-process",
+      "Sentence": "Preliminary treatment consists of screens followed by grit removal.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -29,11 +29,48 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal to separate sand, gravel, and other heavy particles",
-      "Source": "web_search",
-      "Website": "https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/water-utilities/regional-wastewater-facility/treatment-process",
+      "Sentence": "Preliminary treatment consists of screens followed by grit removal.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Ferric Chloride Addition"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks, along with an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -47,9 +84,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD)",
-      "Source": "both",
-      "Website": "https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/water-utilities/regional-wastewater-facility/treatment-process",
+      "Sentence": "wastewater is pumped into rectangular primary clarifiers to remove floatable and settleable material.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -65,17 +102,17 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval",
-        "PhosphorusRemoval",
-        "Stepfeed"
+        "PhosphorusRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "step-feed Biological Nutrient Removal (BNR) activated sludge process, consisting of two BNR facilities with two batteries each",
-      "Source": "web_search",
-      "Website": "https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/water-utilities/regional-wastewater-facility/treatment-process",
+      "Sentence": "A modified biological nutrient removal (BNR) process is employed... The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -89,14 +126,12 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD)",
-      "Source": "both",
-      "Website": "https://www.sanjoseca.gov/your-government/departments-offices/environmental-services/water-utilities/regional-wastewater-facility/treatment-process",
+      "Sentence": "Following biological treatment, the wastewater flows by gravity to secondary clarifiers.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -104,8 +139,7 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
-        "Backwashing"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -113,7 +147,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Up to 8 of the 16 filters can be used to produce Title 22 unrestricted-use non-potable recycled water. The Discharger backwashes the filters to clean the media.",
+      "Sentence": "There are 16 separate mono media filters, 4 of which are dedicated to producing Title 22 unrestricted-use non-potable recycled water.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -124,12 +158,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Backwash"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage",
+      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -141,11 +176,13 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by flocculation and sedimentation",
+      "Sentence": "followed by flocculation and sedimentation.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -157,10 +194,10 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
-      "Substance": [
-        "Constituent-SuspendedSolids"
+      "Role": [
+        "Backwash"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "followed by flocculation and sedimentation. The settled solids from the backwash water are pumped back to primary treatment.",
@@ -176,7 +213,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -204,7 +243,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection...an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection. An appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -213,7 +252,7 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Tank",
       "Process": [
         "Aeration",
         "Dechlorination"
@@ -221,12 +260,10 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "Constituent-DissolvedOxygen"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system in case upstream meters indicate there is remaining residual chlorine.",
+      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -246,7 +283,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
+      "Sentence": "The process consists of primary sludge screening.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -266,7 +303,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dissolved air flotation (DAF) thickening of primary and secondary sludges",
+      "Sentence": "dissolved air flotation (DAF) thickening of primary and secondary sludges.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -288,11 +325,28 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
+      "Sentence": "Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Cogenerator",
+      "Process": [
+        "Cogeneration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Cogeneration facility using methane gas produced by digesters to generate electricity and heat, powering approximately 60% of facility power consumption.",
+      "Source": "web_search",
+      "Website": "https://dbia.org/project/cogeneration-facility-at-the-san-jose-santa-clara-regional-wastewater-facility/",
+      "trigger_process": [
+        "Cogeneration",
+        "Unspecified Incineration"
       ]
     },
     {
@@ -307,7 +361,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -328,12 +382,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering using open air drying beds",
+      "Sentence": "dewatering using open air drying beds.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Drying",
-        "Evaporation Pond",
         "Mechanical Dewatering"
       ]
     },
@@ -364,13 +417,16 @@
     {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "LandApplication",
         "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",

@@ -242,7 +242,7 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
     if target_facilities is not None:
         left = left[left["Place ID"].isin(target_facilities)]
     right = collapse_facility_processes(ca_cwns_df[["CWNS_ID"] + proc_cols], ["CWNS_ID"], [])
-    merged = left.merge(right, on="CWNS_ID", how="left", indicator="_cwns_merge")
+    merged = left.merge(right, on="CWNS_ID", how="inner", indicator="_cwns_merge")
     cwns_by_facility = collapse_facility_processes(
         merged, ["Place ID"], ["WDID", "Facility Name", "CWNS_ID", "FACILITY_ID", "_cwns_merge"]
     ).drop(columns=["CWNS_ID", "FACILITY_ID", "_cwns_merge"], errors="ignore").fillna("")

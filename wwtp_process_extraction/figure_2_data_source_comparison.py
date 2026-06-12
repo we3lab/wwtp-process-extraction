@@ -96,6 +96,7 @@ def main():
 
     ca_cwns_data = pd.read_csv(CWNS_CA_CSV, dtype=str, low_memory=False)
     ca_cwns_data["CWNS_ID"] = ca_cwns_data["CWNS_ID"].str.strip()
+
     # Build leaf → top-level category mapping
     leaf_to_category = {
         leaf: cat_name
@@ -103,13 +104,20 @@ def main():
         for leaf in get_leaf_names(cat_name, cat_value)
     }
 
+    # remove facilities with no data in CWNS
+    print(
+        "Total CWNS facilities excluded due to lack of data:",
+        sum((ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1))
+    )
+    ca_cwns_data = ca_cwns_data[~(ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1)]
+
     # Load Google Sheets
     supplemental_data_df = pd.read_csv("wwtp_process_extraction/data/supplemental_data_unit_processes_by_facility.csv", dtype=str).fillna("")
     supplemental_data_df["Place ID"] = supplemental_data_df["Place ID"].str.strip()
     npdes_text_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
-    print(f"GroundTruth sheet: {len(supplemental_data_df)} facilities")
+    print(f"Ground Truth sheet: {len(supplemental_data_df)} facilities")
     print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
 
     meta_cols = [
@@ -137,6 +145,9 @@ def main():
         ca_cwns_data, target_facilities=common_facilities
     )
 
+    # remove facilities that were inadvertently added back but have no CWNS data
+    common_facilities = common_facilities & set(cwns_common["Place ID"])
+
     # print facilities from the ground truth dataNOT in common_facilities
     sd_not_common = set(supplemental_data_df["Place ID"]) - common_facilities
     if sd_not_common:
@@ -144,6 +155,7 @@ def main():
         for pid in sd_not_common:
             name = supplemental_data_df.loc[supplemental_data_df["Place ID"] == pid, "Facility Name"].iloc[0]
             print(f"  {pid}: {name}")
+    # TODO: ignore Unspecified columns for unit-process-level analysis
     sd_fac, npdes_fac, cwns_fac = build_category_facility_sets(
         all_sheet_process_cols,
         supplemental_data_common,
@@ -278,7 +290,8 @@ def main():
                 fp = int(fp)
                 fn = int(fn)
                 sd_count = int(Supplemental_Data_Count)
-                num_cols = len(all_sheet_process_cols - ["ok Agency", "Facility Name", "Place ID", "NPDES No.", "PDF_File"])
+                cols_to_ignore = {"ok Agency", "Facility Name", "Place ID", "NPDES No.", "PDF_File"} 
+                num_cols = len(set(all_sheet_process_cols) - cols_to_ignore)
             except Exception:
                 continue
             facility_metrics.append(

@@ -153,6 +153,8 @@ def main():
     )
 
     sd_simple_rows = build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities)
+    print(sd_fac)
+    all_cats = sorted(set(list(sd_fac.keys()) + list(npdes_fac.keys()) + list(cwns_fac.keys())))
 
     tick_fontsize = 12
     label_fontsize = 14
@@ -214,6 +216,7 @@ def main():
             for col in all_sheet_process_cols
             if col in supplemental_data_common.columns and is_present(supplemental_data_row.get(col, ""))
         }
+
         npdes_set = {
             col
             for col in all_sheet_process_cols
@@ -257,7 +260,7 @@ def main():
 
     sd_comparison_df = pd.DataFrame(facility_rows)
     sd_comparison_csv = (
-        f"wwtp_process_extraction/output/supplemental_data_comparison_by_facility.csv"
+        "wwtp_process_extraction/output/supplemental_data_comparison_by_facility.csv"
     )
     sd_comparison_df.to_csv(sd_comparison_csv, index=False)
 
@@ -274,16 +277,17 @@ def main():
             try:
                 fp = int(fp)
                 fn = int(fn)
-                Supplemental_Data_Count = int(Supplemental_Data_Count)
+                sd_count = int(Supplemental_Data_Count)
+                num_cols = len(all_sheet_process_cols - ["ok Agency", "Facility Name", "Place ID", "NPDES No.", "PDF_File"])
             except Exception:
                 continue
             facility_metrics.append(
                 {
                     "Source": src,
                     "key": key,
-                    "False_Positive_Rate": fp / Supplemental_Data_Count if Supplemental_Data_Count else None,
-                    "False_Negative_Rate": fn / Supplemental_Data_Count if Supplemental_Data_Count else None,
-                    "Error_Rate": (fp + fn) / Supplemental_Data_Count if Supplemental_Data_Count else None,
+                    "False_Positive_Rate": fp / (num_cols - sd_count),
+                    "False_Negative_Rate": fn / sd_count,
+                    "Error_Rate": (fp + fn) / num_cols,
                 }
             )
 
@@ -297,7 +301,7 @@ def main():
     plot_df = (
         fac_metrics_df.melt(id_vars=["Source", "key"], value_vars=violin_cols, var_name="Metric", value_name="Value")
     )
-    palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["cwns"]}
+    palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["Clean Watershed Needs Survey"]}
     sns.boxplot(
         data=plot_df,
         x="Metric",

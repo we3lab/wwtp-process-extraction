@@ -30,7 +30,8 @@ WASTEWATER_VOCAB_RE = re.compile(
     re.IGNORECASE,
 )
 DESC_PRIORITY_RE = re.compile(
-    r"treatment process|consists of|leach\s*field|comprised of|upgraded",
+    r"treatment process|consists of|leach\s*field|comprised of|upgraded"
+    r"|headworks|preliminary treatment|primary treatment|secondary treatment",
     re.IGNORECASE,
 )
 # compliance/regulatory boilerplate signals — these don't appear in factual facility descriptions
@@ -68,6 +69,8 @@ LOOKBACK_HEADER = 600      # boilerplate/desc-signal check window around each cl
 SNAP_BACK_CHARS = 2000     # how far back from cluster start to look for a section header
 MIN_CHANGES_VOCAB = 2      # min vocab hits in 1000 chars after "planned changes" phrase
 MAX_CLUSTER_DISTANCE = 10000  # max chars from first cluster; cuts off distant general-order boilerplate
+CONTIG_GAP = 2500          # max gap between consecutive qualifying clusters to treat as one description
+DIVERSITY_MIN = 6          # a cluster naming >= this many distinct processes qualifies as a description
 
 
 
@@ -115,10 +118,19 @@ def find_desc_clusters(text):
     desc_clusters = []
     for c in clusters:
         window = text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end()]
-        if not DESC_PRIORITY_RE.search(window):
-            continue
         # skip table-of-contents clusters (dot leaders like "......")
         if len(DOT_RE.findall(window)) >= 3:
+            continue
+        # A process-dense cluster (many distinct processes) is a description regardless of nearby
+        # phrasing — it qualifies even without a description signal in the lookback window (header
+        # across a page break) and even if compliance language trips the boilerplate filter (a
+        # real treatment description that also references a Cease and Desist Order, etc.).
+        if len(set(h.group().lower() for h in c)) >= DIVERSITY_MIN:
+            desc_clusters.append(c)
+            continue
+        # otherwise: require a description signal and reject compliance/O&M boilerplate. Admin
+        # tables ("Facility Information") name few processes and fall here, staying excluded.
+        if not DESC_PRIORITY_RE.search(window):
             continue
         # extend boilerplate check past the cluster — compliance phrases often
         # follow the vocab hits in the same paragraph
@@ -287,15 +299,24 @@ def extract_from_pdf(pdf_path, mode):
         if not clusters:
             # no vocab clusters found — likely image-only or no treatment description text
             continue
-        # clusters are score-sorted; anchor on the best, then process all clusters within
-        # MAX_CLUSTER_DISTANCE of it in DOCUMENT order. This keeps multi-facility ordering while
-        # ensuring a description split across clusters starts at its earliest part, not the
-        # highest-scoring middle (e.g. a filter/backwash section out-scoring the headworks start).
-        anchor = clusters[0][0]
-        ordered = sorted(
-            (c for c in clusters if abs(c[0] - anchor) <= MAX_CLUSTER_DISTANCE),
-            key=lambda c: c[0],
-        )
+        # clusters are score-sorted; anchor on the best, then take a run of qualifying clusters
+        # around it (document order). Asymmetric: extend BACKWARD only through contiguous clusters
+        # (gap <= CONTIG_GAP) so a split description starts at its earliest part (e.g. SJSC's
+        # headworks before the higher-scoring filters) while NOT pulling in a preceding
+        # "PERMIT INFORMATION" admin table sitting across a page gap. Extend FORWARD to all
+        # qualifying clusters within MAX_CLUSTER_DISTANCE of the anchor, capturing trailing
+        # solids / advanced-treatment sections (e.g. Palo Alto's MBR/RO); non-description tables
+        # (effluent limits, monitoring) lack a desc signal so they never qualify and aren't reached.
+        anchor = clusters[0]
+        bypos = sorted(clusters, key=lambda c: c[0])
+        ai = bypos.index(anchor)
+        lo = ai
+        while lo > 0 and bypos[lo][0] - bypos[lo - 1][1] <= CONTIG_GAP:
+            lo -= 1
+        hi = ai
+        while hi < len(bypos) - 1 and bypos[hi + 1][0] - anchor[0] <= MAX_CLUSTER_DISTANCE:
+            hi += 1
+        ordered = bypos[lo:hi + 1]
         sections = []
         prev_end = 0
         for cs, ce in ordered:
@@ -322,8 +343,8 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     # Mode controls which part of the PDF to search and where to stop extraction.
     # NPDES: Attachment F fact sheet only. NOA/WDR: full document.
     mode_map = {
-        "NPDES PERMIT": "Facility Permit",
-        "CO-PERMITTEE": "Facility Permit",
+        "NPDES PERMIT": "NPDES",
+        "CO-PERMITTEE": "NPDES",
         "ENROLLEE - NPDES": "NOA",
         "ENROLLEE - WDR": "NOA",
         "WDR": "WDR",
@@ -331,10 +352,10 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     }
     with site_data.open("r", newline="", encoding="utf-8") as f:
         mode = next(
-            (mode_map.get((row.get("Reg_Measure_Type") or "").strip().upper(), "Facility Permit")
+            (mode_map.get((row.get("Reg_Measure_Type") or "").strip().upper(), "NPDES")
              for row in csv.DictReader(f)
              if (row.get("PDF_File") or "").strip() == pdf_path.name),
-            "Facility Permit",
+            "NPDES",
         )
     cache = Path(pdf_path).parent / "text" / f"{Path(pdf_path).stem}.txt"
     if not regenerate_text_excerpts and cache.exists():
@@ -364,7 +385,7 @@ def extract_one(args):
 
 def main():
     rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
-    directory = f"wwtp_process_extraction/output/npdes"
+    directory = f"wwtp_process_extraction/output/permits"
 
     site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
     pdfs = site_data["PDF_File"].tolist()

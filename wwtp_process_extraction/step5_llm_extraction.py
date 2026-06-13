@@ -18,7 +18,7 @@ from helpers.api_llm_search import (
     get_method_paths,
 )
 
-TXT_DIR = f"wwtp_process_extraction/output/npdes/text"
+TXT_DIR = f"wwtp_process_extraction/output/permits/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro, gemini-2.0-flash-001
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
 # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.

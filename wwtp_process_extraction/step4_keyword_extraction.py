@@ -42,7 +42,7 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
 def main():
     rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
-    txt_folder = f"wwtp_process_extraction/output/npdes/text"
+    txt_folder = f"wwtp_process_extraction/output/permits/text"
     out_file = f"wwtp_process_extraction/output/unit_processes_by_pdf_kw.csv"
 
     with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:

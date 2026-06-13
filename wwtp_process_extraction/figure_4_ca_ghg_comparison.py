@@ -16,7 +16,7 @@
 #   - Biogas electricity (E-train variants) is present in Source 1 only.
 #   - TT assignment fallback uses El Abbadi's EPA region × flow-size bins (all CA = Region 9,
 #     so only flow-size bins differentiate: <2,2-4,4-7,7-16,16-46,46-100,≥100 MGD).
-#   - Fallback is NOT applied to Source 3; facilities without a TT are simply excluded.
+#   - Fallback is applied to all three sources using the within-source assigned pool.
 
 import io
 import json
@@ -30,15 +30,14 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
 from helpers.plotting import COLORS
 from helpers.utils import build_cwns_facility_processes
-GHG_ROOT = Path('/home/daly/git/US_WWTP_GHG')  # local fallback
+GHG_ROOT = Path('/home/daly/git/US_WWTP_GHG')
 MC_DIR = GHG_ROOT / 'uncertainty_sensitivity_results/Monte_Carlo'  # MC files stay local
 GHG_INPUT = GHG_ROOT / 'GHG_accounting/input_data'
 OUTPUT_DIR = SCRIPT_DIR / 'output'
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 GHG_GITHUB = 'https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/main'
 
@@ -82,67 +81,9 @@ E_TO_BASE = {
     'G1E': 'G1', 'H1E': 'H1', 'I1E': 'I1', 'N1E': 'N1', 'O1E': 'O1',
 }
 
-ONTOLOGY_TXT = REPO_ROOT / 'wwtp_process_extraction/data/llm_extraction/input/ontology.txt'
-ONTOLOGY_JSON_DIR = REPO_ROOT / 'wwtp_process_extraction/output/2026-5-25/llm_postprocess_ontology'
+LLM_CSV = REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_facility_llm.csv'
 
-
-def build_ontology_graph():
-    """Parse ontology.txt IS-A graph into three dicts for ancestry traversal."""
-    proc_parents = {}
-    equip_parents = {}
-    equip_procs = {}  # equipment → processes it performs
-    section = None
-    with open(ONTOLOGY_TXT) as f:
-        for line in f:
-            line = line.strip()
-            if line == 'EQUIPMENTS:':
-                section = 'equip'
-            elif line == 'PROCESSES:':
-                section = 'proc'
-            elif not line or line.startswith('#'):
-                continue
-            elif section == 'proc':
-                parts = [p.strip() for p in line.split('|')]
-                name = parts[0]
-                for part in parts[1:]:
-                    if part.startswith('SubProcess:'):
-                        parents = [p.strip() for p in part[len('SubProcess:'):].split(',')]
-                        proc_parents[name] = parents
-            elif section == 'equip':
-                parts = [p.strip() for p in line.split('|')]
-                name = parts[0]
-                for part in parts[1:]:
-                    if part.startswith('SubEquip:'):
-                        parents = [p.strip() for p in part[len('SubEquip:'):].split(',')]
-                        equip_parents[name] = parents
-                    elif part.startswith('Process:'):
-                        procs = [p.replace('Process-', '').strip()
-                                 for p in part[len('Process:'):].split(',')]
-                        equip_procs[name] = procs
-    return proc_parents, equip_parents, equip_procs
-
-
-PROC_PARENTS, EQUIP_PARENTS, EQUIP_PROCS = build_ontology_graph()
-
-
-def load_ontology_to_werf():
-    """Load ontology_to_werf.csv and invert to {ontology_name: [werf_code, ...]}."""
-    csv_path = SCRIPT_DIR / 'ontology_to_werf.csv'
-    df = pd.read_csv(csv_path)
-    name_to_werf = {}
-    for _, row in df.iterrows():
-        werf = row['werf_code']
-        for name in str(row['ontology_names']).split(';'):
-            name = name.strip()
-            if name:
-                name_to_werf.setdefault(name, []).append(werf)
-    return name_to_werf
-
-
-ONTOLOGY_TO_WERF = load_ontology_to_werf()
-
-# CWNS column names (from unitprocess_keywords.json) → WERF codes.
-# Used by load_cwns_source (Source 2); Source 3 uses the ontology JSON path instead.
+# Column names from unitprocess_keywords.json → WERF codes (used by Sources 2 and 3).
 def load_cwns_col_to_werf():
     kw_path = REPO_ROOT / 'wwtp_process_extraction/data/unitprocess_keywords.json'
     with open(kw_path) as f:
@@ -164,21 +105,6 @@ def load_cwns_col_to_werf():
 CWNS_COL_TO_WERF = load_cwns_col_to_werf()
 
 PRESENT_STATUSES = {'PRESENT', 'PRESENT_AND_FUTURE'}
-
-
-def get_ontology_ancestors(name):
-    """BFS over ontology IS-A graph; returns all ancestor process/equipment names."""
-    seen = set()
-    queue = [name]
-    while queue:
-        current = queue.pop()
-        if current in seen:
-            continue
-        seen.add(current)
-        queue.extend(PROC_PARENTS.get(current, []))
-        queue.extend(EQUIP_PARENTS.get(current, []))
-        queue.extend(EQUIP_PROCS.get(current, []))
-    return seen
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -442,9 +368,7 @@ def load_common_place_ids():
         REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv', dtype=str)
     ciwqs = pd.read_csv(
         REPO_ROOT / 'wwtp_process_extraction/data/ciwqs_to_cwns.csv', dtype=str)
-    llm = pd.read_csv(
-        REPO_ROOT / 'wwtp_process_extraction/output/2026-5-25/unit_processes_by_facility_llm.csv',
-        dtype=str)
+    llm = pd.read_csv(LLM_CSV, dtype=str)
 
     cwns_pids = set(ciwqs[ciwqs['CWNS_ID'].isin(cwns_out['CWNS_ID'])]['Place ID'].dropna())
     llm_pids = set(llm['Place ID'].dropna())
@@ -471,6 +395,36 @@ def pid_to_cwns_flow(common_pids):
     # Drop duplicate CWNS_NUMs (one CWNS facility shouldn't count for multiple Place IDs)
     link = link.drop_duplicates(subset=['CWNS_NUM'])
     return link
+
+
+# ── regional fallback ─────────────────────────────────────────────────────────
+
+def apply_regional_fallback(df):
+    """Assign TT to unmatched facilities using flow-size bin pool from the same source df."""
+    tt_cols = [tt for tt in ALL_TT if tt in df.columns]
+    flow_bins = [0, 2, 4, 7, 16, 46, 100, float('inf')]
+    flow_labels = ['<2', '2-4', '4-7', '7-16', '16-46', '46-100', '≥100']
+    df = df.copy()
+    df['_size_bin'] = pd.cut(
+        pd.to_numeric(df['FLOW_2022_MGD_FINAL'], errors='coerce').fillna(0),
+        bins=flow_bins, labels=flow_labels, right=False)
+    assigned = df[df['TT_IDENTIFIED'] >= 1].copy()
+    n_fallback = 0
+    for idx in df[df['TT_IDENTIFIED'] < 1].index:
+        size = df.at[idx, '_size_bin']
+        # narrow → wide: same size bin first, then all assigned (all CA = EPA Region 9)
+        for pool_mask in [assigned['_size_bin'] == size, pd.Series(True, index=assigned.index)]:
+            pool = assigned[pool_mask]
+            if pool.empty:
+                continue
+            tt_sums = pool[tt_cols].sum()
+            best_tt = tt_sums.idxmax()
+            if tt_sums[best_tt] > 0:
+                df.at[idx, best_tt] = 1
+                df.at[idx, 'TT_IDENTIFIED'] = 1
+                n_fallback += 1
+                break
+    return df.drop(columns=['_size_bin']), n_fallback
 
 
 # ── Sources 1 & 2: El Abbadi (CWNS-based) ────────────────────────────────────
@@ -546,127 +500,48 @@ def load_cwns_source(common_pids, include_manual=True):
     df['LAGOON_UNCATEGORIZED'] = df[['LAGOON_OTHER', 'STBL_POND']].max(axis=1) \
         if 'STBL_POND' in df.columns else df['LAGOON_OTHER']
 
-    # Regional fallback using El Abbadi flow-size bins (all CA = EPA Region 9, so only
-    # size matters for within-CA pool). Bins match tt_assignment_2022.ipynb exactly.
-    tt_cols = [tt for tt in ALL_TT if tt in df.columns]
-    flow_bins = [0, 2, 4, 7, 16, 46, 100, float('inf')]
-    flow_labels = ['<2', '2-4', '4-7', '7-16', '16-46', '46-100', '≥100']
-    df['_size_bin'] = pd.cut(
-        pd.to_numeric(df['FLOW_2022_MGD_FINAL'], errors='coerce').fillna(0),
-        bins=flow_bins, labels=flow_labels, right=False)
-
-    assigned = df[df['TT_IDENTIFIED'] >= 1].copy()
-    no_tt_mask = df['TT_IDENTIFIED'] < 1
-    n_fallback = 0
-    for idx in df[no_tt_mask].index:
-        size = df.at[idx, '_size_bin']
-        # narrow → wide fallback: size → all assigned (all CA is EPA Region 9)
-        for pool_mask in [
-            assigned['_size_bin'] == size,
-            pd.Series(True, index=assigned.index),
-        ]:
-            pool = assigned[pool_mask]
-            if pool.empty:
-                continue
-            tt_sums = pool[tt_cols].sum()
-            best_tt = tt_sums.idxmax()
-            if tt_sums[best_tt] > 0:
-                df.at[idx, best_tt] = 1
-                df.at[idx, 'TT_IDENTIFIED'] = 1
-                n_fallback += 1
-                break
-
-    df = df.drop(columns=['_size_bin'])
+    df, n_fallback = apply_regional_fallback(df)
     print(f'Source 2 (CWNS-only, re-derived): {len(df)} CWNS rows, '
           f'{int((df["TT_IDENTIFIED"] >= 1).sum())} with TT assignment '
           f'({n_fallback} via regional fallback)')
     return df
 
 
-# ── Source 3: permit scraping ─────────────────────────────────────────────────────
-
-def load_ontology_pivot(common_pids):
-    """Read per-facility ontology JSONs and map detected processes to WERF codes.
-
-    Uses IS-A inheritance so e.g. MLE → AO → ActivatedSludge → AS, giving
-    BASIC_AS=True even when only a specific variant is named in the permit text.
-    Returns a DataFrame with one row per Place ID, binary WERF code columns.
-    """
-    # Place ID is encoded as the last underscore-separated number in each filename
-    pid_to_jsons = {}
-    for json_path in ONTOLOGY_JSON_DIR.glob('*.json'):
-        last_part = json_path.stem.rsplit('_', 1)[-1]
-        if last_part.isdigit():
-            pid_to_jsons.setdefault(last_part, []).append(json_path)
-
-    present_implementations = {'present', 'planned', 'future'}
-    records = []
-    for pid in common_pids:
-        werf_codes_found = set()
-        for json_path in pid_to_jsons.get(str(pid), []):
-            with open(json_path) as f:
-                data = json.load(f)
-            for item in data.get('items', []):
-                if str(item.get('Implementation', '')).lower() not in present_implementations:
-                    continue
-                # Process field uses "Process-X" IRI prefix; strip it
-                procs = [p.replace('Process-', '') for p in (item.get('Process') or [])]
-                equip = item.get('Equipment')
-                roles = item.get('Role') or []
-
-                # Expand each detected process/equipment via ontology IS-A ancestors
-                candidates = procs + ([equip] if equip else [])
-                for candidate in candidates:
-                    for ancestor in get_ontology_ancestors(candidate):
-                        werf_codes_found.update(ONTOLOGY_TO_WERF.get(ancestor, []))
-
-                # Lagoons appear as Equipment=Pond; type comes from the Role field
-                if equip == 'Pond':
-                    role_str = ' '.join(roles).lower()
-                    if 'aerobic' in role_str or 'aerated' in role_str:
-                        werf_codes_found.add('LAGOON_AER')
-                    elif 'anaerobic' in role_str:
-                        werf_codes_found.add('LAGOON_ANAER')
-                    elif 'stabilization' in role_str or 'facultative' in role_str:
-                        werf_codes_found.add('LAGOON_FAC')
-                    else:
-                        werf_codes_found.add('LAGOON')
-
-        rec = {'Place ID': str(pid)}
-        for wc in werf_codes_found:
-            rec[wc] = 1
-        records.append(rec)
-
-    return pd.DataFrame(records).fillna(0)
-
+# ── Source 3: LLM permit extraction ──────────────────────────────────────────
 
 def load_source3(common_pids):
     """
-    LLM-extracted unit processes for common_pids, mapped to WERF codes via ontology
-    inheritance, then to treatment trains using the Tarallo et al. 2015 assignment logic.
-    One row per CWNS_NUM (facilities with multiple CWNS_IDs under one Place ID are
-    expanded so that each CWNS_NUM gets the same LLM unit processes but its own flow).
+    LLM-extracted unit processes loaded from unit_processes_by_facility_llm.csv,
+    mapped to WERF codes via unitprocess_keywords.json (same as Source 2).
+    One row per CWNS_NUM.
     """
-    llm_pivot = load_ontology_pivot(common_pids)
+    llm = pd.read_csv(LLM_CSV, dtype=str)
+    llm = llm[llm['Place ID'].isin(common_pids)].copy()
 
-    # NIT flag: set if nitrification-type process present
+    status_cols = [c for c in llm.columns if c in CWNS_COL_TO_WERF]
+    records = []
+    for _, row in llm.iterrows():
+        werf_present = set()
+        for col in status_cols:
+            if str(row.get(col, '')).strip().upper() in {'PRESENT', 'FUTURE'}:
+                werf_present.update(CWNS_COL_TO_WERF[col])
+        rec = {'Place ID': str(row['Place ID']).strip()}
+        for wc in werf_present:
+            rec[wc] = 1
+        records.append(rec)
+
+    llm_pivot = pd.DataFrame(records).fillna(0)
+
     nit_indicator = ['BNIT', 'BNR', 'AS-BDENIT', 'AS-A2O']
     llm_pivot['NIT'] = (llm_pivot[[c for c in nit_indicator if c in llm_pivot.columns]]
                         .sum(axis=1) > 0).astype(int)
-
-    # BIO-P flag: A2O and multi-stage Bardenpho perform biological P removal
     bio_p_indicator = ['AS-A2O', 'BNR']
     llm_pivot['BIO-P'] = (llm_pivot[[c for c in bio_p_indicator if c in llm_pivot.columns]]
                           .sum(axis=1) > 0).astype(int)
-
-    # BIOGAS_EL: proxy from anaerobic digestion and/or cogeneration detection
     and_col = llm_pivot['AND'] if 'AND' in llm_pivot.columns else 0
     cogen_col = llm_pivot['BIOGAS_CWNS'] if 'BIOGAS_CWNS' in llm_pivot.columns else 0
     llm_pivot['BIOGAS_EL'] = ((and_col > 0) | (cogen_col > 0)).astype(int)
 
-    # Clear lagoon WERF codes before TT assignment if any secondary treatment is present
-    # (lagoons in LLM output are often storage/effluent ponds, not treatment lagoons).
-    # Done pre-assignment so TT_IDENTIFIED is computed correctly from the start.
     secondary_werf = ['AS', 'AS-A2O', 'AS-BDENIT', 'AS-EA', 'AS-OD', 'AS-P',
                       'AS-PUREO', 'AS-SA', 'AS-SBR', 'TF', 'TF-BF', 'TF-RBC', 'MBR-BNR']
     lagoon_werf = ['LAGOON', 'LAGOON_AER', 'LAGOON_ANAER', 'LAGOON_FAC', 'STBL_POND']
@@ -678,7 +553,6 @@ def load_source3(common_pids):
     if n_cleared:
         print(f'  Cleared lagoon WERF codes for {n_cleared} facilities with secondary treatment')
 
-    # expand to one row per CWNS_NUM (so each gets its own flow)
     link = pid_to_cwns_flow(common_pids)
     merged = link.merge(llm_pivot, on='Place ID', how='inner')
 
@@ -687,17 +561,18 @@ def load_source3(common_pids):
     df['LAGOON_OTHER'] = df['LAGOON'].values if 'LAGOON' in df.columns else 0
     df['LAGOON_UNCATEGORIZED'] = df[['LAGOON_OTHER', 'STBL_POND']].max(axis=1) \
         if 'STBL_POND' in df.columns else df['LAGOON_OTHER']
-    n_with_tt = int((df['TT_IDENTIFIED'] >= 1).sum())
-    print(f'Source 3 (WE3Lab LLM): {len(df)} CWNS rows, {n_with_tt} with TT assignment')
-    print(f'  ({len(df) - n_with_tt} without sufficient unit processes for TT assignment — excluded from GHG calc)')
+    df, n_fallback = apply_regional_fallback(df)
+    print(f'Source 3 (WE3Lab LLM): {len(df)} CWNS rows, '
+          f'{int((df["TT_IDENTIFIED"] >= 1).sum())} with TT assignment '
+          f'({n_fallback} via regional fallback)')
     return df
 
 
 # ── comparison plot ───────────────────────────────────────────────────────────
 src_labels = {
-    'source1': 'El Abbadi\n(CWNS +\nManual Corrections)',
-    'source2': 'El Abbadi\n(CWNS-only)',
-    'source3': 'New Data\n(Permit Scraping)',
+    'source1': '\n(CWNS +\nManual Corrections)\n(El Abbadi and Feng)',
+    'source2': '\n(CWNS-only)',
+    'source3': '\n(Permit Scraping)',
 }
 
 
@@ -729,7 +604,7 @@ def plot_comparison(results, output_dir):
               bbox_to_anchor=(1.01, 1), borderaxespad=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    fig.savefig(output_dir / 'ca_ghg_comparison_stacked.png', dpi=150, bbox_inches='tight')
+    fig.savefig(output_dir / 'final' / 'figure_4.png', dpi=150, bbox_inches='tight')
     plt.close(fig)
 
 # ── N2O breakdown by secondary treatment ─────────────────────────────────────
@@ -789,9 +664,19 @@ def n2o_by_secondary(df, ef, label=''):
     return groups
 
 
-# colorblind-safe palette mapped to treatment categories
-cb_palette = ['#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2', '#CC79A7', '#D55E00']
-CATEGORY_COLORS = dict(zip(SECONDARY_ORDER, cb_palette))
+cb_palette = [
+    '#C94040',  # CH4
+    '#9B3080',  # N2O
+    '#F2CFA0',  # Bio CO2
+    '#D4924A',  # FNG combustion
+    '#8B5E2E',  # Biosolids
+    '#6E92B0',  # Electricity
+    '#B8B8B8',  # NG upstream
+]
+
+# N2O breakdown: warm sequential from light→dark with lagoon as contrasting sage
+_n2o_palette = ['#FADA99', '#F5B560', '#E08030', '#C05820', '#8B3410', '#84B07A']
+CATEGORY_COLORS = dict(zip(SECONDARY_ORDER, _n2o_palette))
 
 
 def _grouped_legend(ax, header_items_pairs):
@@ -849,7 +734,7 @@ def plot_n2o_breakdown(dfs, ef, output_dir):
     ]
     _grouped_legend(ax, [('Treatment Type', list(reversed(cat_handles)))])
     fig.tight_layout()
-    fig.savefig(output_dir / 'ca_n2o_by_secondary_color.png', dpi=150, bbox_inches='tight')
+    fig.savefig(output_dir / 'ghg' /'ca_n2o_by_secondary_color.png', dpi=150, bbox_inches='tight')
     plt.close(fig)
 
 

@@ -23,19 +23,6 @@ category_to_leaves = {c: get_leaf_names(c, unitprocess_keywords[c]) for c in cat
 all_leaves = [p for leaves in category_to_leaves.values() for p in leaves]
 
 
-def build_inputs(manual_df, pred_df, leaves):
-    """Key-aligned manual/pred frames (one row per facility, leaf-status columns)."""
-    keys = sorted(set(manual_df["Place ID"].dropna()) & set(pred_df["Place ID"].dropna()))
-    m = manual_df.drop_duplicates("Place ID").set_index("Place ID").reindex(keys)
-    p = pred_df.drop_duplicates("Place ID").set_index("Place ID").reindex(keys)
-    man = pd.DataFrame({"key": keys})
-    pre = pd.DataFrame({"key": keys})
-    for leaf in leaves:
-        man[leaf] = m[leaf].map(parse_status).values if leaf in m.columns else ""
-        pre[leaf] = p[leaf].map(parse_status).values if leaf in p.columns else ""
-    return man, pre
-
-
 def to_category_states(metric_df):
     """Collapse leaf states to one present/absent state per category, per facility."""
     out = pd.DataFrame({"key": metric_df["key"]})
@@ -57,9 +44,17 @@ def main():
     per_method = {}
     for method, _ in METHODS:
         pred = wb[(wb["Method"] == method) & (wb["Model"] == MODEL)].copy()
-        man_in, pred_in = build_inputs(manual, pred, all_leaves)
+
+        keys = sorted(set(manual["Place ID"].dropna()) & set(pred["Place ID"].dropna()))
+        m = manual.drop_duplicates("Place ID").set_index("Place ID").reindex(keys)
+        p = pred.drop_duplicates("Place ID").set_index("Place ID").reindex(keys)
+        manual_df = pd.DataFrame({"key": keys})
+        pred_df = pd.DataFrame({"key": keys})
+        for leaf in all_leaves:
+            manual_df[leaf] = m[leaf].map(parse_status).values if leaf in m.columns else ""
+            pred_df[leaf] = p[leaf].map(parse_status).values if leaf in p.columns else ""
         cat_metrics = compute_metrics(
-            to_category_states(man_in), to_category_states(pred_in), categories, method
+            to_category_states(manual_df), to_category_states(pred_df), categories, method
         )
         per_method[method] = cat_metrics.set_index("Label")
 
@@ -68,17 +63,7 @@ def main():
     keep = [c for c in categories if support.get(c, 0) > 0]
     keep = sorted(keep, key=lambda c: per_method["Ontology"].loc[c, "F1"])  # ascending → best on top
 
-    # ── companion table ───────────────────────────────────────────────────────
-    table = pd.DataFrame({"Category": keep, "n_facilities": [int(support[c]) for c in keep]})
-    for method, _ in METHODS:
-        table[f"F1 ({method})"] = [round(float(per_method[method].loc[c, "F1"]), 3) for c in keep]
-    os.makedirs(FINAL_DIR, exist_ok=True)
-    table_path = f"{FINAL_DIR}/table_s3_category_f1_method.csv"
-    table.to_csv(table_path, index=False)
-    print(table.to_string(index=False))
-    print(f"\nSaved {table_path}")
-
-    # ── grouped horizontal bars ───────────────────────────────────────────────
+    # grouped horizontal bars
     y = range(len(keep))
     h = 0.38
     fig, ax = plt.subplots(figsize=(8, max(5, 0.42 * len(keep))))

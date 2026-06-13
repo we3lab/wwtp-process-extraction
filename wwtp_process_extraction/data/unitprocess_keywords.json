@@ -46,7 +46,7 @@
     "Unspecified Clarification": {
       "alt_names": ["sedimentation", "clarifier", "clarification", "settling"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Sedimentation", "Clarification, Other", "Clarification, Tube Settlers", "Settling Tank", "Imhoff Tank", "Sedimentation, Other"],
+      "cwns_processes": ["Sedimentation", "Clarification, Other", "Clarification, Tube Settlers", "Settling Tank", "Imhoff Tank", "Sedimentation, Other", "Clarification, In-Channel"],
       "ontology_triggers": [
         ["Process-Sedimentation"],
         ["Equipment-ImhoffTank"]
@@ -61,7 +61,7 @@
     "Screening/Microstrainer": {
       "alt_names": ["screening", "bar screen", "bar-screen", "fine screen", "mechanical screen", "microstrainer", "headworks", "drum screen", "step screen", "band screen", "trash rack", "primary screen", "gravity screen"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary"],
+      "cwns_processes": ["Screen, Mechanical Bar", "Screen (Bar Rack and Coarse)", "Microstrainer, Primary", "Screen, Bar", "Screen (Fine and Microstrainers)", "Microstrainer, Secondary", "Other Screening"],
       "ontology_triggers": ["Process-Screening"],
       "priority": 1,
       "werf_codes": ["MOD_SCREEN"]
@@ -139,14 +139,14 @@
     "Nitrification": {
       "alt_names": [" nitrif"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Nitrification, Biological (Combined and BOD Reduction)", "Nitrification, Biological (Other)", "Nitrification, Biological (Separate Stage)"],
+      "cwns_processes": ["Nitrification, Biological (Combined and BOD Reduction)", "Nitrification, Biological (Other)", "Nitrification, Biological (Separate Stage)", "Biological Nitrification - Separate Stage"],
       "ontology_triggers": ["Process-Nitrification"],
       "werf_codes": ["BNIT"]
     },
     "Unspecified AS": {
       "alt_names": ["activated sludge", "aerated", "aeration", " oxic"],
       "alt_names_case_sensitive": ["CAS"],
-      "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix"],
+      "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Growth Process, Other Suspended"],
       "ontology_triggers_multi": {
         "priority": 4,
         "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
@@ -210,7 +210,7 @@
     "Unspecified Lagoon": {
       "alt_names": ["lagoon", "oxidation pond", "treatment pond"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)"],
+      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)", "Pond, Total Containment", "Storage (Lagoon)"],
       "ontology_triggers": ["Equipment-Pond"],
       "priority": 1000,
       "global_priority": 1000,
@@ -292,7 +292,7 @@
       "Denitrification": {
         "alt_names": ["denitrif", "anoxic"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biological Denitrification", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification", "Denitrification Filter"],
+        "cwns_processes": ["Biological Denitrification", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification", "Denitrification Filter", "Biological Denitrification, (Separate Stage)"],
         "ontology_triggers": ["Process-Denitrification"],
         "secondary_category": ["Activated Sludge"],
         "werf_codes": ["BDENIT"]
@@ -313,7 +313,7 @@
       "Chemical N Removal": {
         "alt_names": ["chemical nitrogen removal", "ammonia stripping", "breakpoint chlorination"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Chemical N Removal"],
+        "cwns_processes": ["Chemical N Removal", "Ammonia Stripping"],
         "ontology_triggers": [
           ["Role-NitrogenRemoval", "Equipment-IonExchangeMembrane"],
           ["Role-NutrientRemoval", "Process-Stripping"]
@@ -371,7 +371,7 @@
         "Trickling Filter": {
           "alt_names": ["biofilter", "trickling filt"],
           "alt_names_case_sensitive": ["TF"],
-          "cwns_processes": ["Trickling Filter, Biofilter", "Trickling Filter, Other Media", "Trickling Filter, Redwood Slats", "Trickling Filter, Plastic Media", "Trickling Filter, Rock Media", "Filter, Mixed Media", "Filter, Rapid Sand", "Filter, Slow Sand"],
+          "cwns_processes": ["Trickling Filter, Biofilter", "Trickling Filter, Other Media", "Trickling Filter, Redwood Slats", "Trickling Filter, Plastic Media", "Trickling Filter, Rock Media", "Filter, Mixed Media", "Filter, Rapid Sand", "Filter, Slow Sand", "Trickling Filter"],
           "ontology_triggers": ["Process-TricklingFiltration"],
           "werf_codes": ["TF-BF", "TF"]
         },
@@ -400,7 +400,7 @@
         "Unspecified FFR": {
           "alt_names": ["fixed film", "biological filt"],
           "alt_names_case_sensitive": ["FFR"],
-          "cwns_processes": [],
+          "cwns_processes": ["Growth Process, Other Attached"],
           "ontology_triggers": ["Process-Biofiltration"],
           "priority": 1000,
           "werf_codes": ["TF"]
@@ -507,7 +507,7 @@
   "Wetland": {
     "alt_names": ["constructed wetland", "treatment wetland", "engineered wetland", "surface wetland", "free water surface wetland", "fws wetland", "nature-based", "nature based", "green infrastructure", "wetland", "horizontal levee"],
     "alt_names_case_sensitive": ["FWS"],
-    "cwns_processes": ["Wet Ponds", "Constructed Wetlands", "Freesurface/Wetland (Marsh System)"],
+    "cwns_processes": ["Wet Ponds", "Constructed Wetlands", "Freesurface/Wetland (Marsh System)", "Freesurface/Wetland(Marsh System)"],
     "ontology_triggers": ["Equipment-Wetland"],
     "werf_codes": ["CONWTLND", "WTLND-SURF"]
   },
@@ -542,7 +542,7 @@
   "Activated Carbon": {
     "alt_names": ["activated carbon"],
     "alt_names_case_sensitive": [" GAC "],
-    "cwns_processes": ["Activated Carbon, Granular", "Activated Carbon, Powdered"],
+    "cwns_processes": ["Activated Carbon, Granular", "Activated Carbon, Powdered", "Carbon Regeneration"],
     "ontology_triggers": ["Process-GranularActivatedCarbon"],
     "werf_codes": ["MOD_GAC"]
   },
@@ -550,14 +550,14 @@
     "Chlorination": {
       "alt_names": ["chlorination", "chlorine disinfection", "disinfection chlorine", "sodium hypochlorite", "chloramine", "chlorine contact"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection, Chlorination", "Disinfection, Gaseous Chloride", "Disinfection, Liquid Chloride", "Disinfection, Breakpoint Chlorination", "Disinfection, Sodium Hypochlorite", "Disinfection Hypochlorite Bisulfite"],
+      "cwns_processes": ["Disinfection, Chlorination", "Disinfection, Gaseous Chloride", "Disinfection, Liquid Chloride", "Disinfection, Breakpoint Chlorination", "Disinfection, Sodium Hypochlorite", "Disinfection Hypochlorite Bisulfite", "Chlorinate Oxidation (Purifax)"],
       "ontology_triggers": ["Process-Chlorination"],
       "werf_codes": ["DISINF"]
     },
     "Dechlorination": {
       "alt_names": ["dechlorination", "dechlorinated", "bisulfite", "bisulphite", "sulphur dioxide"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Disinfection Hypochlorite Bisulfite", "Dechlorination, Bisulphite", "Dechlorination, Sulphur Dioxide"],
+      "cwns_processes": ["Disinfection Hypochlorite Bisulfite", "Dechlorination, Bisulphite", "Dechlorination, Sulphur Dioxide", "Dechlorination"],
       "ontology_triggers": ["Process-Dechlorination"],
       "werf_codes": []
     },
@@ -616,14 +616,22 @@
     "Lime Addition": {
       "alt_names": ["lime addition", "lime treatment", "lime stabilization", "alkaline stabilization"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Biosolids Lime Stabilization", "Lime Treatment, Single Stage Primary", "Lime Treatment, Single Stage Tertiary", "Lime Treatment, Two Stage Primary", "Lime Treatment, Two Stage Tertiary"],
+      "cwns_processes": [
+        "Biosolids Lime Stabilization", 
+        "Lime Treatment, Single Stage Primary", 
+        "Lime Treatment, Single Stage Tertiary", 
+        "Lime Treatment, Two Stage Primary", 
+        "Lime Treatment, Two Stage Tertiary",
+        "Recarbonation",
+        "Recalcination"
+      ],
       "ontology_triggers": ["pHAdjuster-Lime"],
       "werf_codes": ["LIME"]
     },
     "Neutralization": {
       "alt_names": ["neutralization", "ph adjustment"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Neutralization"],
+      "cwns_processes": ["Neutralization", "Reduction"],
       "ontology_triggers": [
         ["Process-Neutralization"],
         ["Process-pHAdjustment"],
@@ -635,7 +643,7 @@
     "Unspecified Chemical Addition": {
       "alt_names": ["chemical addition", "chemical feed", "dosing"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Chemical Addition (Other)", "Chemical Addition (Other), Primary"],
+      "cwns_processes": ["Chemical Addition (Other)", "Chemical Addition (Other), Primary", "Other Chemical Addition", "Other Chemical Treatment"],
       "ontology_triggers": ["Process-ChemicalAddition"],
       "priority": 1000,
       "werf_codes": ["MOD_CHEM"]
@@ -687,9 +695,18 @@
         "werf_codes": ["DEWATER"]
       },
       "Drying": {
-        "alt_names": ["drying"],
+        "alt_names": ["drying", "evaporation"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Heat Drying", "Biosolids Air Drying, Sand Beds", "Biosolids Air Drying, Other Media", "Biosolids Air Drying"],
+        "cwns_processes": [
+          "Biosolids Heat Drying", 
+          "Biosolids Air Drying, Sand Beds", 
+          "Biosolids Air Drying, Other Media", 
+          "Biosolids Air Drying", 
+          "Biosolids (Heat Treatment-Blowers)", 
+          "Biosolids (Heat Treatment)",
+          "Evaporation",
+          "Evapotranspiration Bed"
+        ],
         "ontology_triggers": [],
         "werf_codes": ["BIODRY"]
       },
@@ -714,7 +731,7 @@
       "Thickening": {
         "alt_names": ["thicken"],
         "alt_names_case_sensitive": ["DAFT", "GBT"],
-        "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other"],
+        "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other", "Swirl Concentrators", "Vortex Solids Separators"],
         "ontology_triggers": [["Equipment-Thickener"], ["Process-Flotation", "Role-SolidsHandling"]],
         "werf_codes": ["MOD_THICKEN"]
       }
@@ -734,7 +751,21 @@
       "Land Application": {
         "alt_names": ["applied to land", "land treatment", "compost", "spread"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Land Application (Spreading)", "Land Treatment", "Biosolids Composting, Other", "Biosolids Composting, In-Vessel", "Biosolids Composting, Window", "Land Application, Slow Rate, W/O Underdrain", "Land Application, Slow Rate, With Underdrain"],
+        "cwns_processes": [
+          "Biosolids Land Application (Spreading)", 
+          "Land Treatment", "Biosolids Composting, Other", 
+          "Biosolids Composting, In-Vessel", 
+          "Biosolids Composting, Window", 
+          "Land Application, Slow Rate, W/O Underdrain", 
+          "Land Application, Slow Rate, With Underdrain", 
+          "Other Land Treatment System", 
+          "Biosolids Composting, Static Pile", 
+          "Leach Field (Standard)", 
+          "Leach Field (Multiple Unit with Soil Absorption)",
+          "Overland Flow System", 
+          "Mound System", 
+          "Rapid Infiltration System, W/O Underdrain"
+        ],
         "ontology_triggers": ["Process-LandApplication"],
         "werf_codes": ["LAND_TRT"]
       },
@@ -748,7 +779,7 @@
       "Unspecified Disposal": {
         "alt_names": ["biosolids disposal"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Biosolids Disposal (Other)", "Biosolids Wet Air Oxidation", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility"],
+        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Freezing", "Biosolids Disposal (Other)", "Biosolids Wet Air Oxidation", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility", "Biosolids (Heat Treatment)", "Ocean Disposal Of Biosolids"],
         "ontology_triggers": [
           ["Process-BiosolidsDisposal"]
         ],
@@ -775,7 +806,7 @@
       "Unspecified Incineration": {
         "alt_names": ["incineration", "incinerator"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Co-Incineration With Solid Waste", "Biosolids Incineration (Other)"],
+        "cwns_processes": ["Biosolids Co-Incineration With Solid Waste", "Biosolids Incineration (Other)", "Incineration - Rotary Kiln"],
         "ontology_triggers": ["Process-Incineration"],
         "priority": 1000,
         "werf_codes": []
@@ -785,14 +816,14 @@
       "Cogeneration": {
         "alt_names": ["cogeneration", "chp", "combined heat and power"],
         "alt_names_case_sensitive": ["CHP"],
-        "cwns_processes": [],
+        "cwns_processes": ["Biosolids Digestor Gas Utilization Facilities"],
         "ontology_triggers": ["Process-Cogeneration"],
         "werf_codes": ["BIOGAS_CWNS"]
       },
       "Heat Recovery": {
         "alt_names": ["heat recovery", "recover heat", "heat exchanger"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Heat Recovery and Utilization"],
+        "cwns_processes": ["Biosolids Heat Recovery and Utilization", "Pyrolysis", "Co-Pyrolysis With Solid Waste"],
         "ontology_triggers": [
           ["Equipment-HeatExchanger", "Role-SolidsHandling"],
           ["Equipment-HeatExchanger", "Process-BiosolidsDisposal"]
@@ -804,7 +835,16 @@
   "Septic Tank": {
     "alt_names": ["septic", "imhoff"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Septic Tank", "Imhoff Tank"],
+    "cwns_processes": [
+      "Septic Tank",
+      "Imhoff Tank", 
+      "Septic Tank Effluent Pump Sewer System", 
+      "Septage Receiving Facility", 
+      "Septage Treatment - Separate Stage", 
+      "Leach Field (Standard)", 
+      "Leach Field (Multiple Unit with Soil Absorption)", 
+      "Mound System"
+    ],
     "ontology_triggers": [
       ["Equipment-SepticTank"],
       ["Equipment-ImhoffTank"]

@@ -570,9 +570,9 @@ def load_source3(common_pids):
 
 # ── comparison plot ───────────────────────────────────────────────────────────
 src_labels = {
-    'source1': '\n(CWNS +\nManual Corrections)\n(El Abbadi and Feng)',
-    'source2': '\n(CWNS-only)',
-    'source3': '\n(Permit Scraping)',
+    'source1': '\nCWNS +\nManual Corrections\n(El Abbadi and Feng)',
+    'source2': '\nCWNS-only',
+    'source3': '\nPermit Scraping',
 }
 
 

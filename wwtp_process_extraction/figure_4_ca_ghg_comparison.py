@@ -568,16 +568,91 @@ def load_source3(common_pids):
     return df
 
 
+def load_source4(common_pids):
+    """
+    Source 3 (LLM permit extraction) with BIOGAS_EL flags from El Abbadi's
+    tt_assignments_2022.csv instead of the AND/cogen proxy. Tests whether applying
+    the WEF/DOE biogas utilization data on top of LLM unit processes resolves
+    the FNG combustion discrepancy.
+    """
+    tt_s1 = pd.read_csv(_fetch('GHG_accounting/input_data/tt_assignments_2022.csv'),
+                        dtype={'CWNS_NUM': str})
+    e_train_codes = list(E_TO_BASE.keys())
+    for col in e_train_codes:
+        if col in tt_s1.columns:
+            tt_s1[col] = pd.to_numeric(tt_s1[col], errors='coerce').fillna(0)
+    e_train_sum = tt_s1[[c for c in e_train_codes if c in tt_s1.columns]].sum(axis=1)
+    biogas_cwns_set = set(tt_s1.loc[e_train_sum > 0, 'CWNS_NUM'])
+
+    llm = pd.read_csv(LLM_CSV, dtype=str)
+    llm = llm[llm['Place ID'].isin(common_pids)].copy()
+
+    status_cols = [c for c in llm.columns if c in CWNS_COL_TO_WERF]
+    records = []
+    for _, row in llm.iterrows():
+        werf_present = set()
+        for col in status_cols:
+            if str(row.get(col, '')).strip().upper() in {'PRESENT', 'FUTURE'}:
+                werf_present.update(CWNS_COL_TO_WERF[col])
+        rec = {'Place ID': str(row['Place ID']).strip()}
+        for wc in werf_present:
+            rec[wc] = 1
+        records.append(rec)
+
+    llm_pivot = pd.DataFrame(records).fillna(0)
+
+    nit_indicator = ['BNIT', 'BNR', 'AS-BDENIT', 'AS-A2O']
+    llm_pivot['NIT'] = (llm_pivot[[c for c in nit_indicator if c in llm_pivot.columns]]
+                        .sum(axis=1) > 0).astype(int)
+    bio_p_indicator = ['AS-A2O', 'BNR']
+    llm_pivot['BIO-P'] = (llm_pivot[[c for c in bio_p_indicator if c in llm_pivot.columns]]
+                          .sum(axis=1) > 0).astype(int)
+
+    secondary_werf = ['AS', 'AS-A2O', 'AS-BDENIT', 'AS-EA', 'AS-OD', 'AS-P',
+                      'AS-PUREO', 'AS-SA', 'AS-SBR', 'TF', 'TF-BF', 'TF-RBC', 'MBR-BNR']
+    lagoon_werf = ['LAGOON', 'LAGOON_AER', 'LAGOON_ANAER', 'LAGOON_FAC', 'STBL_POND']
+    has_secondary = llm_pivot[[c for c in secondary_werf if c in llm_pivot.columns]].sum(axis=1) > 0
+    for col in lagoon_werf:
+        if col in llm_pivot.columns:
+            llm_pivot.loc[has_secondary, col] = 0
+
+    link = pid_to_cwns_flow(common_pids)
+    merged = link.merge(llm_pivot, on='Place ID', how='inner')
+
+    # Override BIOGAS_EL from El Abbadi E-train assignments.
+    # Also set AND=1 where WEF confirms biogas utilization but LLM didn't detect the digester
+    # assuming biogas use implies an anaerobic digester exists.
+    wef_mask = merged['CWNS_NUM'].isin(biogas_cwns_set)
+    merged['BIOGAS_EL'] = wef_mask.astype(int)
+    and_col = merged['AND'] if 'AND' in merged.columns else pd.Series(0, index=merged.index)
+    merged['AND'] = ((and_col > 0) | wef_mask).astype(int)
+    n_biogas = int(wef_mask.sum())
+    n_and_added = int((wef_mask & (and_col == 0)).sum())
+    print(f'  Source 4: {n_biogas} facilities with BIOGAS_EL from WEF/DOE data '
+          f'({n_and_added} also had AND set by implication)')
+
+    df = assign_treatment_trains(merged)
+    df['LAGOON_OTHER'] = df['LAGOON'].values if 'LAGOON' in df.columns else 0
+    df['LAGOON_UNCATEGORIZED'] = df[['LAGOON_OTHER', 'STBL_POND']].max(axis=1) \
+        if 'STBL_POND' in df.columns else df['LAGOON_OTHER']
+    df, n_fallback = apply_regional_fallback(df)
+    print(f'Source 4 (LLM + WEF biogas): {len(df)} CWNS rows, '
+          f'{int((df["TT_IDENTIFIED"] >= 1).sum())} with TT assignment '
+          f'({n_fallback} via regional fallback)')
+    return df
+
+
 # ── comparison plot ───────────────────────────────────────────────────────────
 src_labels = {
     'source1': '\nCWNS +\nManual Corrections\n(El Abbadi and Feng)',
     'source2': '\nCWNS-only',
     'source3': '\nPermit Scraping',
+    'source4': '\nPermit Scraping\n+ WEF Biogas',
 }
 
 
 def plot_comparison(results, output_dir):
-    sources = ['source2', 'source1', 'source3']
+    sources = ['source2', 'source1', 'source3', 'source4']
 
     components = {
         'CH₄ (Scope 1)':            ('CH4_MTyr',     cb_palette[0]),
@@ -698,7 +773,7 @@ def _grouped_legend(ax, header_items_pairs):
 
 def plot_n2o_breakdown(dfs, ef, output_dir):
     from matplotlib.patches import Patch
-    sources = ['source2', 'source1', 'source3']
+    sources = ['source2', 'source1', 'source3', 'source4']
 
     print('N2O breakdown diagnostics:')
     breakdowns = {s: n2o_by_secondary(df, ef, label=s) for s, df in dfs.items()}
@@ -756,6 +831,7 @@ if __name__ == '__main__':
     df1_raw = load_cwns_source(common_pids, include_manual=True)
     df2_raw = load_cwns_source(common_pids, include_manual=False)
     df3_raw = load_source3(common_pids)
+    df4_raw = load_source4(common_pids)
 
     # 1:1 matching: filter Sources 1 and 2 to the same CWNS_NUMs that Source 3 assigned
     assigned_cwns = set(df3_raw.loc[df3_raw['TT_IDENTIFIED'] >= 1, 'CWNS_NUM'])
@@ -764,35 +840,39 @@ if __name__ == '__main__':
     df1 = df1_raw[df1_raw['CWNS_NUM'].isin(assigned_cwns)].copy()
     df2 = df2_raw[df2_raw['CWNS_NUM'].isin(assigned_cwns)].copy()
     df3 = df3_raw.copy()
+    df4 = df4_raw[df4_raw['CWNS_NUM'].isin(assigned_cwns)].copy()
 
     print('\n── GHG calculation ──')
     df1_ghg, _ = calc_ghg(df1, ef, grid_carbon, 'Source 1')
     df2_ghg, _ = calc_ghg(df2, ef, grid_carbon, 'Source 2')
     df3_ghg, _ = calc_ghg(df3, ef, grid_carbon, 'Source 3')
+    df4_ghg, _ = calc_ghg(df4, ef, grid_carbon, 'Source 4')
 
-    # Enforce 3-way intersection: only rows present in ALL sources
+    # Enforce 4-way intersection
     s1_cwns = set(df1_ghg['CWNS_NUM'])
     s2_cwns = set(df2_ghg['CWNS_NUM'])
     s3_cwns = set(df3_ghg['CWNS_NUM'])
-    common_cwns = s1_cwns & s2_cwns & s3_cwns
-    print(f'\n── 3-way intersection ──')
-    print(f'  Source 1: {len(s1_cwns)} | Source 2: {len(s2_cwns)} | Source 3: {len(s3_cwns)}')
-    print(f'  Dropped by Source 2 only: {len(s1_cwns & s3_cwns - s2_cwns)} CWNS facilities')
-    print(f'  Dropped by Source 3 only: {len(s1_cwns & s2_cwns - s3_cwns)} CWNS facilities')
-    print(f'  Final 3-way intersection: {len(common_cwns)} CWNS facilities')
+    s4_cwns = set(df4_ghg['CWNS_NUM'])
+    common_cwns = s1_cwns & s2_cwns & s3_cwns & s4_cwns
+    print(f'\n── 4-way intersection ──')
+    print(f'  S1: {len(s1_cwns)} | S2: {len(s2_cwns)} | S3: {len(s3_cwns)} | S4: {len(s4_cwns)}')
+    print(f'  Final 4-way intersection: {len(common_cwns)} CWNS facilities')
     df1_ghg = df1_ghg[df1_ghg['CWNS_NUM'].isin(common_cwns)].copy()
     df2_ghg = df2_ghg[df2_ghg['CWNS_NUM'].isin(common_cwns)].copy()
     df3_ghg = df3_ghg[df3_ghg['CWNS_NUM'].isin(common_cwns)].copy()
+    df4_ghg = df4_ghg[df4_ghg['CWNS_NUM'].isin(common_cwns)].copy()
 
     totals1 = totals_from_df(df1_ghg)
     totals2 = totals_from_df(df2_ghg)
     totals3 = totals_from_df(df3_ghg)
+    totals4 = totals_from_df(df4_ghg)
 
-    results = {'source1': totals1, 'source2': totals2, 'source3': totals3}
+    results = {'source1': totals1, 'source2': totals2, 'source3': totals3, 'source4': totals4}
     source_names = {
         'source1': 'El Abbadi (all sources)',
         'source2': 'El Abbadi (CWNS-only)',
         'source3': 'WE3Lab LLM',
+        'source4': 'WE3Lab LLM + WEF Biogas',
     }
 
     print('\n════════════════════════════════════════════════════════════════')
@@ -826,19 +906,23 @@ if __name__ == '__main__':
 
     print('\n── % change relative to El Abbadi (CWNS-only) ──')
     base = totals2
-    for key, name in [('source1', 'El Abbadi (all sources)'), ('source3', 'WE3Lab LLM')]:
+    for key, name in [('source1', 'El Abbadi (all sources)'),
+                      ('source3', 'WE3Lab LLM'),
+                      ('source4', 'WE3Lab LLM + WEF Biogas')]:
         r = results[key]
         n2o_pct = (r['N2O_MTyr'] - base['N2O_MTyr']) / base['N2O_MTyr'] * 100
+        fng_pct = (r['NG_comb_MTyr'] - base['NG_comb_MTyr']) / base['NG_comb_MTyr'] * 100
         tot_pct = (r['total_MTyr'] - base['total_MTyr']) / base['total_MTyr'] * 100
-        print(f'  {name}: N2O {n2o_pct:+.1f}%,  Total {tot_pct:+.1f}%')
+        print(f'  {name}: N2O {n2o_pct:+.1f}%,  FNG {fng_pct:+.1f}%,  Total {tot_pct:+.1f}%')
     df1_ghg.to_csv(OUTPUT_DIR / 'source1_facility_emissions.csv', index=False)
     df2_ghg.to_csv(OUTPUT_DIR / 'source2_facility_emissions.csv', index=False)
     df3_ghg.to_csv(OUTPUT_DIR / 'source3_facility_emissions.csv', index=False)
+    df4_ghg.to_csv(OUTPUT_DIR / 'source4_facility_emissions.csv', index=False)
 
     print('\nGenerating plots...')
     plot_comparison(results, OUTPUT_DIR)
     plot_n2o_breakdown(
-        {'source1': df1_ghg, 'source2': df2_ghg, 'source3': df3_ghg},
+        {'source1': df1_ghg, 'source2': df2_ghg, 'source3': df3_ghg, 'source4': df4_ghg},
         ef, OUTPUT_DIR,
     )
     print('Done.')

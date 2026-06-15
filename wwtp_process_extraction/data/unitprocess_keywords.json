@@ -93,9 +93,10 @@
   },
   "Flotation": {
     "alt_names": ["flotation"],
-    "alt_names_case_sensitive": ["DAF"],
-    "cwns_processes": ["Flotation", "Biosolids Thickening, Dissolved Air Flotation"],
+    "alt_names_case_sensitive": [],
+    "cwns_processes": ["Flotation"],
     "ontology_triggers": ["Process-Flotation"],
+    "exclude_if_any": ["Role-SolidsHandling"],
     "priority": 1,
     "werf_codes": ["MOD_CHEM"]
   },
@@ -148,7 +149,7 @@
       "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Activated Sludge, Contact Stabilization", "Activated Sludge, Anaerobic/Anoxic", "Activated Sludge, Other Mode", "Activated Sludge, Conventional", "Activated Sludge, High Rate", "Activated Sludge, Complete Mix", "Growth Process, Other Suspended"],
       "ontology_triggers_multi": {
         "priority": 4,
-        "Equipment": ["AerationBasin", "Reactor", "Tank"],
+        "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
         "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"max": 0}, "Aerobic": {"min": 1}}
       },
       "ontology_triggers": [
@@ -200,14 +201,14 @@
       "werf_codes": ["STBL_POND"]
     },
     "Evaporation Pond": {
-      "alt_names": ["evaporat"],
+      "alt_names": ["evaporat", "evapotranspirat"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": [],
+      "cwns_processes": ["Evaporation", "Evapotranspiration Bed"],
       "ontology_triggers": [["Equipment-Pond", "Process-Evaporation"]],
       "werf_codes": []
     },
     "Unspecified Lagoon": {
-      "alt_names": ["lagoon", "oxidation pond", "treatment pond"],
+      "alt_names": ["lagoon", "treatment pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)", "Pond, Total Containment", "Storage (Lagoon)"],
       "ontology_triggers": ["Equipment-Pond"],
@@ -223,6 +224,13 @@
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
         "ontology_triggers": [["Process-AO"], ["Role-Anoxic", "Role-Aerobic"]],
+        "ontology_triggers_multi": [
+          {
+            "priority": 3,
+            "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
+            "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
+          }
+        ],
         "exclude_if_any": ["Role-Anaerobic", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
         "secondary_category": ["Activated Sludge"],
         "werf_codes": ["AS-BDENIT"]
@@ -242,7 +250,7 @@
         "cwns_processes": ["Activated Sludge, Anaerobic/Anoxic/Oxic", "Activated Sludge, Anaerobic/Anoxic"],
         "ontology_triggers_multi": {
           "priority": 1,
-          "Equipment": ["AerationBasin", "Reactor", "Tank"],
+          "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
           "role_counts": {"Anaerobic": {"min": 1}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
         },
         "ontology_triggers": ["Process-A2O"],
@@ -695,9 +703,7 @@
           "Biosolids Air Drying, Other Media", 
           "Biosolids Air Drying", 
           "Biosolids (Heat Treatment-Blowers)", 
-          "Biosolids (Heat Treatment)",
-          "Evaporation",
-          "Evapotranspiration Bed"
+          "Biosolids (Heat Treatment)"
         ],
         "ontology_triggers": [],
         "werf_codes": ["BIODRY"]
@@ -722,9 +728,9 @@
     "Thickening": {
       "Thickening": {
         "alt_names": ["thicken"],
-        "alt_names_case_sensitive": ["DAFT", "GBT"],
+        "alt_names_case_sensitive": ["DAF", "GBT"],
         "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other", "Swirl Concentrators", "Vortex Solids Separators"],
-        "ontology_triggers": ["Equipment-Thickener"],
+        "ontology_triggers": [["Equipment-Thickener"], ["Process-Flotation", "Role-SolidsHandling"]],
         "werf_codes": ["MOD_THICKEN"]
       }
     },

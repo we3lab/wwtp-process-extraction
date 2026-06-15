@@ -70,21 +70,16 @@ for name, details, group_id, _ in leaves:
     trigger_rules.append((name, clauses, priority, group_id))
 trigger_rules.sort(key=lambda r: r[2])
 
-# ontology_triggers_multi rules: sorted by priority
-multi_rules = []
-for name, details, group_id, _ in leaves:
+# ontology_triggers_multi: role counts aggregated facility-wide across matching items, so a
+# config split across separate basins still fires. List specific reactor classes (not generic
+# Reactor/Tank) so an AnaerobicDigester never matches and can't leak its Anaerobic role.
+facility_multi_rules = []
+for name, details, _, _ in leaves:
     me = details.get("ontology_triggers_multi")
     if me:
         for rule in (me if isinstance(me, list) else [me]):
-            multi_rules.append((name, rule, group_id))
-multi_rules.sort(key=lambda r: r[1]["priority"])
-
-# Pre-group multi rules once; applied per-item below.
-multi_rules_by_group = {}
-for col, rule, group_id in multi_rules:
-    if not group_id:
-        continue
-    multi_rules_by_group.setdefault(group_id, []).append((col, rule))
+            facility_multi_rules.append((name, rule))
+facility_multi_rules.sort(key=lambda r: r[1].get("priority", 1))
 
 # Load ontology from GitHub
 for filename in [
@@ -285,42 +280,6 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
             if any(matches_item(token, components) for token in exclusion_tokens):
                 item_result[col] = ""
 
-        for group_id, grouped_rules in multi_rules_by_group.items():
-            match_col = None
-            for col, rule in grouped_rules:
-                if rule.get("Equipment") and not any(
-                    eq in components["Equipment"] for eq in rule["Equipment"]
-                ):
-                    continue
-                if rule.get("Role") and not all(r in components["Role"] for r in rule["Role"]):
-                    continue
-                if not all(
-                    role_counts.get(r, 0) >= b.get("min", 0)
-                    and role_counts.get(r, 0) <= b.get("max", float("inf"))
-                    for r, b in rule.get("role_counts", {}).items()
-                ):
-                    continue
-                match_col = col
-                break
-
-            if match_col:
-                sibling_cols = group_to_columns.get(group_id, [])
-                existing_present = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
-                if existing_present:
-                    best_existing_priority = min(
-                        column_priority.get(c, 1) for c in existing_present
-                    )
-                    if (
-                        best_existing_priority <= column_priority.get(match_col, 1)
-                        and match_col not in existing_present
-                    ):
-                        continue
-
-                for sibling_col in sibling_cols:
-                    if sibling_col in item_result:
-                        item_result[sibling_col] = ""
-                item_result[match_col] = "PRESENT"
-
         for group_id, sibling_cols in group_to_columns.items():
             present_cols = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
             if len(present_cols) <= 1:
@@ -378,6 +337,32 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         for col, value in item_result.items():
             if value == "PRESENT":
                 result[col] = apply_implementation(result.get(col, ""), impl_value, impl_location)
+
+    # Full facility-scoped multi-matching rules aggregate the role counts across matching items
+    rank = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
+    for col, rule in facility_multi_rules:
+        if col not in result:
+            continue
+        eq_set = set(rule.get("Equipment", []))
+        matching = [
+            (components, role_counts, impl_value, impl_location)
+            for _, components, role_counts, impl_value, impl_location in item_components
+            if not eq_set or (components["Equipment"] & eq_set)
+        ]
+        excl = column_exclude_if_any.get(col, [])
+        if any(any(matches_item(tok, comps) for tok in excl) for comps, _, _, _ in matching):
+            continue
+        agg = Counter()
+        status = ""
+        for comps, role_counts, impl_value, impl_location in matching:
+            agg.update(role_counts)
+            status = apply_implementation(status, impl_value, impl_location)
+        ok = all(
+            agg.get(r, 0) >= b.get("min", 0) and agg.get(r, 0) <= b.get("max", float("inf"))
+            for r, b in rule.get("role_counts", {}).items()
+        )
+        if ok and rank.get(status, 0) > rank.get(result.get(col, ""), 0):
+            result[col] = status
 
     if output_json_data is not None and output_json_path is not None:
         with open(output_json_path, "w") as f:

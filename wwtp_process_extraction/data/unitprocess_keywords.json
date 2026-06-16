@@ -93,7 +93,7 @@
   },
   "Flotation": {
     "alt_names": ["flotation"],
-    "alt_names_case_sensitive": ["DAF"],
+    "alt_names_case_sensitive": [],
     "cwns_processes": ["Flotation"],
     "ontology_triggers": ["Process-Flotation"],
     "exclude_if_any": ["Role-SolidsHandling"],
@@ -198,17 +198,18 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Pond, Stabilization"],
       "ontology_triggers": ["Equipment-Pond", "Process-Stabilization"],
+      "exclude_if_any": ["Role-SolidsHandling"],
       "werf_codes": ["STBL_POND"]
     },
     "Evaporation Pond": {
-      "alt_names": ["evaporat"],
+      "alt_names": ["evaporat", "evapotranspirat"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["evaporation"],
+      "cwns_processes": ["Evaporation", "Evapotranspiration Bed"],
       "ontology_triggers": [["Equipment-Pond", "Process-Evaporation"]],
       "werf_codes": []
     },
     "Unspecified Lagoon": {
-      "alt_names": ["lagoon", "oxidation pond", "treatment pond"],
+      "alt_names": ["lagoon", "treatment pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)", "Pond, Total Containment", "Storage (Lagoon)"],
       "ontology_triggers": ["Equipment-Pond"],
@@ -303,7 +304,8 @@
         "cwns_processes": ["Activated Sludge, with Phosphorus Removal", "Biological Nutrient Removal (BNR) Membrane Bio-Reactor (MBR)", "Biological Nutrient Removal", "Phosphorus Removal, Biological", "Duckweed (Lemna)", "Phosphorus Removal, Biological (Phostrip)"],
         "ontology_triggers": [
           ["Process-Nitrification"],
-          ["Process-Denitrification"]
+          ["Process-Denitrification"],
+          ["Role-NutrientRemoval"]
         ],
         "priority": 1000,
         "werf_codes": ["BNR"]
@@ -327,17 +329,6 @@
         "ontology_triggers": ["Role-PhosphorusRemoval", "Process-ChemicalProcess"],
         "werf_codes": ["CHEM-P"]
       }
-    },
-    "Unspecified Nutrient Removal": {
-      "alt_names": ["nutrient removal"],
-      "alt_names_case_sensitive": [],
-      "cwns_processes": [],
-      "ontology_triggers": [
-        ["Role-NutrientRemoval"]
-      ],
-      "priority": 1000,
-      "global_priority": 1000,
-      "werf_codes": ["BNR"]
     }
   },
   "Filtration": {
@@ -613,25 +604,38 @@
       "ontology_triggers": ["Flocculant"],
       "werf_codes": ["MOD_CHEM_PRIM"]
     },
-    "Lime Addition": {
-      "alt_names": ["lime addition", "lime treatment", "lime stabilization", "alkaline stabilization"],
+    "Lime Treatment": {
+      "alt_names": ["lime treatment", "recarbonation", "recalcination"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": [
-        "Biosolids Lime Stabilization", 
-        "Lime Treatment, Single Stage Primary", 
-        "Lime Treatment, Single Stage Tertiary", 
-        "Lime Treatment, Two Stage Primary", 
-        "Lime Treatment, Two Stage Tertiary",
-        "Recarbonation",
-        "Recalcination"
-      ],
+      "cwns_processes": ["Lime Treatment, Single Stage Primary", "Lime Treatment, Single Stage Tertiary", "Lime Treatment, Two Stage Primary", "Lime Treatment, Two Stage Tertiary", "Recarbonation", "Recalcination"],
       "ontology_triggers": ["pHAdjuster-Lime"],
+      "exclude_if_any": ["Role-SolidsHandling"],
       "werf_codes": ["LIME"]
     },
-    "Neutralization": {
-      "alt_names": ["neutralization", "ph adjustment"],
+    "Reduction": {
+      "alt_names": ["reduciton", "reducing agent"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Neutralization", "Reduction"],
+      "cwns_processes": ["Reduction"],
+      "ontology_triggers": [
+        ["ReducingAgent"],
+        ["Process-Reduction"]
+      ],
+      "werf_codes": ["MOD_CHEM"]
+    },
+    "Oxidation": {
+      "alt_names": ["oxidation", "oxidizing agent"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": [],
+      "ontology_triggers": [
+        ["OxidizingAgent"],
+        ["Process-Oxidation"]
+      ],
+      "werf_codes": ["MOD_CHEM"]
+    },
+    "Neutralization": {
+      "alt_names": ["neutralization", "ph adjustment", "adjust ph"],
+      "alt_names_case_sensitive": [],
+      "cwns_processes": ["Neutralization"],
       "ontology_triggers": [
         ["Process-Neutralization"],
         ["Process-pHAdjustment"],
@@ -651,6 +655,17 @@
   },
   "Solids Processing": {
     "Digestion": {
+      "Thermal Hydrolysis": {
+        "alt_names": ["thermal hydrol"],
+        "alt_names_case_sensitive": ["CAMBI"],
+        "cwns_processes": [],
+        "ontology_triggers": [
+          ["Process-AnaerobicDigestion"],
+          ["Equipment-ImhoffTank"]
+        ],
+        "priority": 1,
+        "werf_codes": ["AND"]
+      },
       "Anaerobic Digestion": {
         "alt_names": ["anaerobic digest", "anaerobic sludge digest", "mesophilic", "thermophilic", "ferment"],
         "alt_names_case_sensitive": ["AD"],
@@ -695,7 +710,7 @@
         "werf_codes": ["DEWATER"]
       },
       "Drying": {
-        "alt_names": ["drying", "evaporation"],
+        "alt_names": ["drying"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [
           "Biosolids Heat Drying", 
@@ -703,9 +718,7 @@
           "Biosolids Air Drying, Other Media", 
           "Biosolids Air Drying", 
           "Biosolids (Heat Treatment-Blowers)", 
-          "Biosolids (Heat Treatment)",
-          "Evaporation",
-          "Evapotranspiration Bed"
+          "Biosolods (Heat Treatment)"
         ],
         "ontology_triggers": [],
         "werf_codes": ["BIODRY"]
@@ -730,36 +743,53 @@
     "Thickening": {
       "Thickening": {
         "alt_names": ["thicken"],
-        "alt_names_case_sensitive": ["DAFT", "GBT"],
+        "alt_names_case_sensitive": ["DAF", "GBT"],
         "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other", "Swirl Concentrators", "Vortex Solids Separators"],
-        "ontology_triggers": [["Equipment-Thickener"], ["Process-Flotation", "Role-SolidsHandling"]],
+        "ontology_triggers": [
+          ["Equipment-Thickener"],
+          ["Process-Flotation", "Role-SolidsHandling"]
+        ],
         "werf_codes": ["MOD_THICKEN"]
       }
     },
-    "Biosolids Lagoon": {
-      "alt_names": ["biosolids lagoon", "sludge lagoon"],
-      "alt_names_case_sensitive": [],
-      "cwns_processes": ["Biosolids Lagoon"],
-      "ontology_triggers": [
-        ["Equipment-Pond", "Role-SolidsHandling"],
-        ["Equipment-Pond", "Process-BiosolidsDisposal"]
-      ],
-      "secondary_category": ["Lagoon"],
-      "werf_codes": ["BS_LAGOON"]
+    "Stabilization": {
+      "Biosolids Lagoon": {
+        "alt_names": ["biosolids lagoon", "sludge lagoon"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Biosolids Lagoon", "Biosolids Aerated Storage"],
+        "ontology_triggers": [
+          ["Equipment-Pond", "Role-SolidsHandling"],
+          ["Equipment-Pond", "Process-BiosolidsDisposal"]
+        ],
+        "secondary_category": ["Lagoon"],
+        "werf_codes": ["BS_LAGOON"]
+      },
+      "Biosolids Wet Air Oxidation": {
+        "alt_names": ["wet air oxidation", "wet oxidation"],
+        "alt_names_case_sensitive": ["WAO"],
+        "cwns_processes": ["Biosolids Wet Air Oxidation"],
+        "ontology_triggers": [["Process-Oxidation", "Process-Stabilization", "Role-SolidsHandling"]],
+        "werf_codes": []
+      },
+      "Lime Stabilization": {
+        "alt_names": ["lime stabilization", "alkaline stabilization"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": ["Biosolids Lime Stabilization"],
+        "ontology_triggers": [["pHAdjuster-Lime", "Role-SolidsHandling"]],
+        "werf_codes": ["LIME"],
+        "secondary_category": ["Chemical Addition"]
+      }
     },
     "Disposal": {
       "Land Application": {
-        "alt_names": ["applied to land", "land treatment", "compost", "spread"],
+        "alt_names": ["applied to land", "land treatment", "spread"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [
           "Biosolids Land Application (Spreading)", 
-          "Land Treatment", "Biosolids Composting, Other", 
-          "Biosolids Composting, In-Vessel", 
-          "Biosolids Composting, Window", 
+          "Land Treatment",
           "Land Application, Slow Rate, W/O Underdrain", 
           "Land Application, Slow Rate, With Underdrain", 
           "Other Land Treatment System", 
-          "Biosolids Composting, Static Pile", 
           "Leach Field (Standard)", 
           "Leach Field (Multiple Unit with Soil Absorption)",
           "Overland Flow System", 
@@ -768,6 +798,18 @@
         ],
         "ontology_triggers": ["Process-LandApplication"],
         "werf_codes": ["LAND_TRT"]
+      },
+      "Composting": {
+        "alt_names": ["compost"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [
+          "Biosolids Composting, Other", 
+          "Biosolids Composting, In-Vessel", 
+          "Biosolids Composting, Window",
+          "Biosolids Composting, Static Pile"
+        ],
+        "ontology_triggers": ["Process-Composting"],
+        "werf_codes": []
       },
       "Biosolids Landfill": {
         "alt_names": ["landfill", "monofil", "trenching"],
@@ -779,7 +821,7 @@
       "Unspecified Disposal": {
         "alt_names": ["biosolids disposal"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biosolids Lime Stabilization", "Biosolids Freezing", "Freezing", "Biosolids Disposal (Other)", "Biosolids Wet Air Oxidation", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids (Heat Treatment-Blowers)", "Biosolids Aerated Storage", "Biosolids Surface Disposal, Unlined Facility", "Biosolids (Heat Treatment)", "Ocean Disposal Of Biosolids"],
+        "cwns_processes": ["Biosolids Freezing", "Freezing", "Biosolids Disposal (Other)", "Biosolids Distribution And/Or Marketing of Biosolids", "Biosolids Other Treatment", "Biosolids Surface Disposal, Unlined Facility", "Ocean Disposal Of Biosolids"],
         "ontology_triggers": [
           ["Process-BiosolidsDisposal"]
         ],

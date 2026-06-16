@@ -38,8 +38,8 @@ def build_category_facility_sets(
 
     for col in process_cols:
         category = leaf_to_category.get(col, col)
-        print("category:", category)
-        print("col:", col)
+        # print("category:", category)
+        # print("col:", col)
         if col in sd_common.columns:
             for _, row in sd_common.iterrows():
                 if is_present(row.get(col, "")):
@@ -295,7 +295,7 @@ def main():
                 fp = int(fp)
                 fn = int(fn)
                 sd_count = int(Supplemental_Data_Count)
-                cols_to_ignore = {"ok Agency", "Facility Name", "Place ID", "NPDES No.", "PDF_File"} 
+                cols_to_ignore = {"Agency", "Facility Name", "Place ID", "NPDES No.", "PDF_File"} 
                 num_cols = len(set(cols_no_unspec) - cols_to_ignore)
             except Exception:
                 continue
@@ -303,9 +303,9 @@ def main():
                 {
                     "Source": src,
                     "Key": key,
-                    "False_Positive_Rate": fp / (num_cols - sd_count),
-                    "False_Negative_Rate": fn / sd_count,
-                    "Error_Rate": (fp + fn) / num_cols,
+                    "False Positive (FP) Rate": fp / (num_cols - sd_count),
+                    "False Positive (FN) Rate": fn / sd_count,
+                    "Error Rate": (fp + fn) / num_cols,
                 }
             )
 
@@ -314,10 +314,10 @@ def main():
     # Create two-panel figure: A=split violin per facility, B=category-level stacked FP/FN counts
     fig, (axA, axB) = plt.subplots(2, 1, figsize=(12, 10), gridspec_kw={"height_ratios": [1, 1]})
 
-    # Panel A: split violin similar to figure_s2 comparing NPDES vs CWNS
-    violin_cols = ["False_Positive_Rate", "False_Negative_Rate", "Error_Rate"]
+    # Panel A: boxplot comparing NPDES vs CWNS
+    boxplot_cols = ["False Positive (FP) Rate", "False Positive (FN) Rate", "Error Rate"]
     plot_df = (
-        fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=violin_cols, var_name="Metric", value_name="Value")
+        fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=boxplot_cols, var_name="Metric", value_name="Value")
     )
     palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["Clean Watershed Needs Survey"]}
     sns.boxplot(
@@ -350,8 +350,8 @@ def main():
             pass
     axA.set_ylim(0, 1)
     axA.set_ylabel(f"Facility-level rate\n(N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
-    axA.set_xticks(range(len(violin_cols)))
-    axA.set_xticklabels([c.replace("_", " ") for c in violin_cols], fontsize=12)
+    axA.set_xticks(range(len(boxplot_cols)))
+    axA.set_xticklabels([c.replace("_", " ") for c in boxplot_cols], fontsize=12)
     axA.tick_params(axis="y", labelsize=12)
     axA.legend(
         handles=[
@@ -419,10 +419,10 @@ def main():
 
     axB.legend(
         handles=[
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", label="Facility Permit False Positive"),
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.9), edgecolor="black", hatch="....", label="Facility Permit False Negative"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.45), edgecolor="black", label="CWNS False Positive"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS False Negative"),
+            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", label="Facility Permit FP"),
+            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.9), edgecolor="black", hatch="....", label="Facility Permit FN"),
+            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.45), edgecolor="black", label="CWNS FP"),
+            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS FN"),
         ],
         loc="upper center",
         bbox_to_anchor=(0.66, 1.18),

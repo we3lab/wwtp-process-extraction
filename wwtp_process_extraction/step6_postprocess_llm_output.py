@@ -338,7 +338,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
             if value == "PRESENT":
                 result[col] = apply_implementation(result.get(col, ""), impl_value, impl_location)
 
-    # Facility-scoped multi-rules: aggregate role counts across matching items (additive).
+    # Full facility-scoped multi-matching rules aggregate the role counts across matching items
     rank = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
     for col, rule in facility_multi_rules:
         if col not in result:

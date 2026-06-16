@@ -6,8 +6,8 @@
         "Screening"
       ],
       "Role": [
-        "Primary",
-        "Pretreatment"
+        "Pretreatment",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -23,8 +23,8 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary",
-        "Pretreatment"
+        "Pretreatment",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -77,7 +77,7 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NitrogenRemoval"
+        "NutrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -112,7 +112,8 @@
         "Storage"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -124,9 +125,7 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Storage"
-      ],
+      "Process": null,
       "Role": [
         "Storage"
       ],
@@ -217,6 +216,62 @@
       ]
     },
     {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge.",
+      "trigger_process": [
+        "Centrifuge",
+        "Thickening"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
         "Landfill"
@@ -225,7 +280,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings are hauled offsite to a landfill for disposal.",
+      "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal.",
       "trigger_process": [
         "Biosolids Landfill"
       ]

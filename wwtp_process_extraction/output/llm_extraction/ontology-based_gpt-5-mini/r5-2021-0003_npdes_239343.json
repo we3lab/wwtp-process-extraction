@@ -37,20 +37,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment ... primary sedimentation"
+      "Sentence": "Primary treatment ... consists of ... primary sedimentation"
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
         "TricklingFiltration"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service)"
+      "Sentence": "At the north plant, the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service)"
     },
     {
       "Equipment": "AerationBasin",
@@ -86,19 +84,6 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond"
-    },
-    {
-      "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Storage"
@@ -106,7 +91,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond"
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond"
     },
     {
       "Equipment": null,
@@ -119,12 +104,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "applied to agricultural fields"
+      "Sentence": "blended with treated food processing wastewater and applied directly to agricultural fields"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "Pond",
       "Process": [
-        "Coagulation",
+        "Aeration"
+      ],
+      "Role": [
+        "Storage",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The food processing wastewater is stored and aerated in a lined pond"
+    },
+    {
+      "Equipment": "StaticMixer",
+      "Process": [
         "Mixing"
       ],
       "Role": [
@@ -146,7 +144,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "... flocculation ..."
+      "Sentence": "undergoes tertiary treatment through ... flocculation"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -159,13 +157,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "... cloth media filtration ..."
+      "Sentence": "undergoes tertiary treatment through ... cloth media filtration"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -173,7 +170,91 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "... and ultraviolet (UV) disinfection"
+      "Sentence": "undergoes tertiary treatment through ... ultraviolet (UV) disinfection"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The disinfected tertiary recycled water is pumped from the Facility to its Truck Fill Station"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The City also has one recycled water user, the Great Wolf Lodge where water is sent for landscape irrigation"
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sludge from secondary sedimentation is thickened by dissolved air flotation"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters"
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal"
     },
     {
       "Equipment": "Pump",
@@ -184,22 +265,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tailwater ... is collected in a sump and pumped back to the irrigation supply system"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Grit and screenings are hauled offsite to a landfill for disposal"
+      "Sentence": "Tailwater from Fields 2, 4, and a small portion of 5, is collected in a sump and pumped back to the irrigation supply system"
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
+      "Sentence": "The wastewater treatment process consists of ... screening ...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
+      "Sentence": "The wastewater treatment process consists of ... grit removal ...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification",
+      "Sentence": "The wastewater treatment process consists of ... primary clarification ...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,14 +54,15 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": [
         "HighPurityOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "high purity oxygen activated sludge",
+      "Sentence": "The wastewater treatment process consists of ... high purity oxygen activated sludge ...",
       "trigger_process": [
         "Pure Oxygen"
       ]
@@ -77,7 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "The wastewater treatment process consists of ... secondary clarification ...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -85,16 +86,32 @@
     {
       "Equipment": "DisinfectionUnit",
       "Process": [
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary effluent may also be diverted around biological treatment, disinfected, and \u201cblended\u201d... The \u201cblended\u201d wastewater is then dechlorinated",
+      "Sentence": "The wastewater treatment process consists of ... disinfection ...",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater treatment process consists of ... dechlorination.",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -105,30 +122,16 @@
         "Recirculation"
       ],
       "Role": [
-        "Equalization",
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside",
+      "Sentence": "... stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside.",
       "trigger_process": [
         "Equalization"
       ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "primary effluent may also be diverted around biological treatment, disinfected, and \u201cblended\u201d with disinfected biologically treated effluent",
-      "trigger_process": []
     },
     {
       "Equipment": "Pump",
@@ -139,8 +142,60 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the plant can accept up to 425 MGD of influent by means of five 85 MGD influent pumps",
+      "Sentence": "the plant can accept up to 425 MGD of influent by means of five 85 MGD influent pumps.",
       "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary effluent may also be diverted around biological treatment, disinfected, and \u201cblended\u201d with disinfected biologically treated effluent.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners ...",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes ... eleven anaerobic digestors.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
     },
     {
       "Equipment": "DewateringUnit",
@@ -150,10 +205,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years",
+      "Sentence": "The solids handling process at the Facility includes ... five dewatering centrifuges.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -161,15 +218,147 @@
     {
       "Equipment": null,
       "Process": [
-        "Adsorption"
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The resulting material, referred to as biosolids, is hauled offsite by a contractor for beneficial reuse as soil amendment.",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Cogeneration"
       ],
       "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Resource Recovery Program ... increases methane production for renewable power generation.",
+      "trigger_process": [
+        "Cogeneration",
+        "Unspecified Incineration"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection ...",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection ...",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers ...",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans, at a minimum, to rehabilitate ... grit dewatering over the next five years.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "NutrientRemoval"
+      ],
       "Substance": [
-        "OdorControlAgent-ActivatedCarbon"
+        "HighPurityOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
+      "Sentence": "The Discharger is conducting a multi-year pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal.",
+      "trigger_process": [
+        "Pure Oxygen"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": [
+        "HighPurityOxygen"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans, at a minimum, to rehabilitate ... the oxygen production plant ...",
       "trigger_process": []
     }
   ]

@@ -1,12 +1,23 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the Fowler wastewater trunk line is diverted at Pump Station B and pumped to Pump Station E"
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -19,25 +30,25 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary treatment consists of ... a vortex grit removal mechanism"
+      "Sentence": "Primary treatment consists of ... a vortex grit removal mechanism"
     },
     {
       "Equipment": "MixingBasin",
       "Process": [
-        "Mixing",
-        "Denitrification"
+        "Mixing"
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Each bioreactor train consists of two anoxic zones"
@@ -46,13 +57,11 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge",
-        "Nitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -60,9 +69,9 @@
       "Sentence": "followed by one aerobic zone with two aeration grids"
     },
     {
-      "Equipment": "UltrafiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "Ultrafiltration"
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary"
@@ -78,8 +87,7 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -107,6 +115,78 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II"
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks. The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days"
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days"
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility"
     }
   ]
 }

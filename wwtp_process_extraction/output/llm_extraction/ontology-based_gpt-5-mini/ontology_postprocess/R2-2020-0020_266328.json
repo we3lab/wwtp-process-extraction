@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment with bar screening",
+      "Sentence": "preliminary treatment with bar screening and grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment with ... grit removal",
+      "Sentence": "preliminary treatment with bar screening and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -59,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment with trickling filters",
+      "Sentence": "secondary treatment with trickling filters and secondary sedimentation",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -75,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment with ... secondary sedimentation",
+      "Sentence": "secondary treatment with trickling filters and secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -117,13 +117,46 @@
       ]
     },
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Planned Facility operations and processes are anticipated to include ... preliminary treatment, including screening and grit removal",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Planned Facility operations and processes are anticipated to include ... preliminary treatment, including screening and grit removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
       "Equipment": "MembraneBioreactor",
       "Process": [
         "ActivatedSludge",
         "MembraneProcess"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -134,25 +167,10 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "activated sludge biological process basins",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -171,7 +189,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],

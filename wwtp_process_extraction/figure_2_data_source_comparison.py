@@ -425,7 +425,7 @@ def main():
             Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS False Negative"),
         ],
         loc="upper center",
-        bbox_to_anchor=(0.5, 1.18),
+        bbox_to_anchor=(0.66, 1.18),
         ncol=4,
         frameon=False,
         fontsize=11,

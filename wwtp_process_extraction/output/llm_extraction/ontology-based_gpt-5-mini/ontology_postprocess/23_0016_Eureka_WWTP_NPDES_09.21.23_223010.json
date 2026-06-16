@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary treatment with mechanical bar screens",
+      "Sentence": "Wastewater entering the facility undergoes primary treatment with mechanical bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "Wastewater entering the facility undergoes primary treatment with ... grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification",
+      "Sentence": "Wastewater entering the facility undergoes primary treatment with ... primary clarification",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -85,7 +85,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary",
@@ -96,9 +97,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection",
+      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection...then dechlorinated",
       "trigger_process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
@@ -106,11 +108,9 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Retention"
+        "Detention"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The chlorinated effluent is stored in a holding pond",
@@ -119,50 +119,22 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Wetland",
       "Process": [
-        "Dechlorination"
+        "Recirculation"
       ],
       "Role": [
-        "Posttreatment"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then dechlorinated",
-      "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "directed to the 13-acre freshwater holding marsh (Overflow Marsh)",
+      "Sentence": "excess treated wastewater from the effluent holding pond can be directed to the 13-acre freshwater holding marsh (Overflow Marsh) and pumped back to the effluent holding pond",
       "trigger_process": [
         "Equalization",
         "Wetland"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and pumped back to the effluent holding pond once flows subside",
-      "trigger_process": []
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -196,7 +168,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "may be processed on site using a centrifuge",
+      "Sentence": "Solids ... may be processed on site using a centrifuge",
       "trigger_process": [
         "Centrifuge",
         "Thickening"
@@ -214,11 +186,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "stored in one of two facultative sludge lagoons",
+      "Sentence": "or stored in one of two facultative sludge lagoons",
       "trigger_process": [
         "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "resulting in the Facility bypassing secondary treatment ... and blending primary treated effluent with secondary treated effluent in the storage pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater is conveyed to the Facility through an extensive sanitary sewer system consisting of ... 3 pump stations",
+      "trigger_process": []
     }
   ]
 }

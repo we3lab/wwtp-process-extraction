@@ -6,7 +6,6 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment",
         "Primary"
       ],
       "Substance": null,
@@ -20,7 +19,6 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment",
         "Primary"
       ],
       "Substance": null,
@@ -71,8 +69,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": null,
       "Substance": [
@@ -80,13 +77,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection. The chlorinated effluent is stored in a holding pond then dechlorinated..."
+      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection."
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged at Discharge Point 001 to Humboldt Bay in conjunction with ebb tide cycles."
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -113,9 +124,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons."
@@ -128,6 +137,18 @@
       "Role": [
         "SolidsHandling"
       ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -138,18 +159,28 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Digestion"
+        "Mixing"
       ],
       "Role": [
-        "SolidsHandling",
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
+      "Substance": null,
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons."
+      "Sentence": "...blending primary treated effluent with secondary treated effluent in the storage pond. This practice is prohibited in the current permit..."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The 2014 Effluent Discharge Study committed to implementing a long-term, sustainable approach to limiting infiltration and inflow through projects like... trickling filter pump station rehabilitation..."
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal..."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "Screen",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal..."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "GritChamber",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification..."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,7 +50,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification..."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "AerationBasin",
@@ -67,7 +67,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification..."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "SedimentationTank",
@@ -80,7 +80,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "DisinfectionUnit",
@@ -93,7 +93,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, and dechlorination."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "DisinfectionUnit",
@@ -106,29 +106,118 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, and dechlorination."
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination."
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Storage"
+      ],
       "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin..."
+      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside."
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection",
+        "Chlorination"
+      ],
       "Role": [
-        "Feed"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "During peak wet weather flows, the plant can accept up to 425 MGD of influent by means of five 85 MGD influent pumps."
+      "Sentence": "Primary effluent may also be diverted around biological treatment, disinfected, and 'blended' with disinfected biologically treated effluent."
+    },
+    {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges."
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges."
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted."
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project"
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project"
     },
     {
       "Equipment": "SedimentationTank",
@@ -144,7 +233,7 @@
       "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years."
     },
     {
-      "Equipment": null,
+      "Equipment": "GritChamber",
       "Process": [
         "Dewatering"
       ],

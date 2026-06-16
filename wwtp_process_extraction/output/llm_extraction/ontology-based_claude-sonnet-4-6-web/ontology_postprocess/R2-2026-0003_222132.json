@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination.",
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -29,29 +29,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
+      "Sentence": "...screening, grit removal, primary clarification, high purity oxygen activated sludge...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Mechanical Dewatering"
       ]
     },
     {
@@ -65,7 +47,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarification, high purity oxygen activated sludge, secondary clarification...",
+      "Sentence": "...grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -76,14 +58,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Detention",
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside.",
+      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -93,18 +74,18 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": [
         "HighPurityOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...high purity oxygen activated sludge...",
+      "Sentence": "...high purity oxygen activated sludge, secondary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -122,7 +103,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, and dechlorination.",
+      "Sentence": "...high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -144,12 +125,51 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...disinfection, and dechlorination. ...The 'blended' wastewater is then dechlorinated prior to being discharged to Central San Francisco Bay through a deepwater outfall.",
+      "Sentence": "...secondary clarification, disinfection, and dechlorination. The 'blended' wastewater is then dechlorinated prior to being discharged to Central San Francisco Bay through a deepwater outfall.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Filtration",
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Thickening"
       ]
     },
     {
@@ -166,28 +186,87 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "EBMUD employs anaerobic digestion to stabilize solids, reduce pathogen levels, and produce biogas as a renewable energy source.",
-      "Source": "web_search",
-      "Website": "https://www.circleofblue.org/2015/world/oaklands-water-treatment-plant-generates-its-own-energy-and-then-some/",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges. The digesters are maintained at a certain residence time and temperature to meet U.S. EPA Class B standards.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "Cogenerator",
+      "Equipment": "CentrifugalThickener",
       "Process": [
-        "Cogeneration"
+        "Centrifugation",
+        "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The digested sludge is then dewatered in one of five centrifuges.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Centrifuge",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the resulting material, referred to as biosolids, is hauled offsite by a contractor for beneficial reuse as soil amendment",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "EBMUD has 11 megawatts of biogas-fueled electrical generating capacity, more than the plant's power demand.",
-      "Source": "web_search",
-      "Website": "https://www.circleofblue.org/2015/world/oaklands-water-treatment-plant-generates-its-own-energy-and-then-some/",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Cogeneration",
-        "Unspecified Incineration"
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     },
     {
@@ -206,8 +285,8 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The Discharger is conducting a multi-year pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal.",
-      "Source": "permit_text",
-      "Website": null,
+      "Source": "both",
+      "Website": "https://www.cwea.org/news/a-high-purity-oxygen-activated-sludge-system-provides-nutrient-removal-for-ebmud/",
       "trigger_process": [
         "Denitrification",
         "Nitrification"

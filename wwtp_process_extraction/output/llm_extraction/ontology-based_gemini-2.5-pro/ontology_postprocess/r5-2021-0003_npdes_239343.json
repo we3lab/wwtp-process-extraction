@@ -6,8 +6,7 @@
         "Aeration"
       ],
       "Role": [
-        "Storage",
-        "Pretreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -22,13 +21,11 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond, and then applied to agricultural fields when needed.",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
       "trigger_process": [
         "Land Application"
       ]
@@ -39,8 +36,7 @@
         "Screening"
       ],
       "Role": [
-        "Primary",
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -57,8 +53,7 @@
         "Aeration"
       ],
       "Role": [
-        "Primary",
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -89,9 +84,7 @@
       "Process": [
         "TricklingFiltration"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
@@ -168,22 +161,6 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
@@ -191,7 +168,7 @@
       "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Tailwater from Fields 2, 4, and a small portion of 5, is collected in a sump and pumped back to the irrigation supply system.",
       "trigger_process": []
     },
@@ -244,8 +221,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -256,6 +232,78 @@
       "Sentence": "Secondary effluent in excess of crop demands undergoes tertiary treatment through rapid mixing, flocculation, cloth media filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal.",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

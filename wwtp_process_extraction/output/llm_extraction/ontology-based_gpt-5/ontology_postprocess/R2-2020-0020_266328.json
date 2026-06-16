@@ -84,34 +84,20 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection with sodium hypochlorite",
+      "Sentence": "disinfection with sodium hypochlorite, and dechlorination with sodium bisulfite.",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorination with sodium bisulfite",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -125,7 +111,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "equalization basin for storage of instantaneous peak flows",
+      "Sentence": "an equalization basin for storage of instantaneous peak flows",
       "trigger_process": [
         "Equalization"
       ]
@@ -163,25 +149,9 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "activated sludge biological process basins",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Filtration",
+        "ActivatedSludge",
         "MembraneProcess"
       ],
       "Role": [
@@ -190,7 +160,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "submerged membrane filtration trains",
+      "Sentence": "secondary treatment by means of a membrane bioreactor (MBR), consisting of activated sludge biological process basins and submerged membrane filtration trains",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -219,7 +189,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -235,8 +205,7 @@
       "Equipment": "Wetland",
       "Process": null,
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",

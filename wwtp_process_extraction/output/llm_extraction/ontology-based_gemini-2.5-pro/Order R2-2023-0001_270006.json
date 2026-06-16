@@ -1,6 +1,30 @@
 {
   "items": [
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a 3.0 million gallon (MG) underground storage tank to eliminate sanitary sewer overflows from the Sears Point Pump Station"
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an 8.6 MG storage basin adjacent to the treatment plant to eliminate sanitary sewer overflows from the Ryder Street Pump Station"
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,7 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification, disinfection by chlorination, and dechlorination by sodium bisulfite."
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation"
     },
     {
       "Equipment": "GritChamber",
@@ -25,7 +49,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation..."
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation"
     },
     {
       "Equipment": "SedimentationTank",
@@ -38,7 +62,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of... primary sedimentation by circular and rectangular clarifiers..."
+      "Sentence": "primary sedimentation by circular and rectangular clarifiers"
     },
     {
       "Equipment": "TricklingFilter",
@@ -51,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by trickling filters followed by activated sludge aeration basins..."
+      "Sentence": "biological treatment by trickling filters followed by activated sludge aeration basins"
     },
     {
       "Equipment": "AerationBasin",
@@ -65,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by trickling filters followed by activated sludge aeration basins, secondary clarification..."
+      "Sentence": "followed by activated sludge aeration basins, secondary clarification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -78,22 +102,102 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...activated sludge aeration basins, secondary clarification, disinfection by chlorination..."
+      "Sentence": "secondary clarification, disinfection by chlorination"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Disinfection",
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
         "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...disinfection by chlorination, and dechlorination by sodium bisulfite."
+      "Sentence": "disinfection by chlorination, and dechlorination by sodium bisulfite."
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger treats its biosolids by gravity thickening or co-settling, lime stabilization, and dewatering by belt-filter presses."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger treats its biosolids by gravity thickening or co-settling, lime stabilization, and dewatering by belt-filter presses."
+    },
+    {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering by belt-filter presses."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger’s stabilized, dewatered biosolids are hauled offsite for land application at the Discharger’s Biosolids Utilization Project on Tubbs Island, Sonoma County."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Beginning in November 2019, the Discharger began sending a small portion of its biosolids to the Lystek Organic Material Recovery Center located at the Fairfield Suisun Sewer District wastewater treatment plant in Fairfield, California"
     }
   ]
 }

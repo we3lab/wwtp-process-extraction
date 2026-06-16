@@ -99,8 +99,9 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
+        "Chlorination",
         "Disinfection",
-        "Chlorination"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -112,31 +113,17 @@
       "Location": "on-site",
       "Sentence": "replacing the chlorine disinfection with UV disinfection",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorination",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Equalization"
+        "Equalization",
+        "Retention",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -166,10 +153,9 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -181,7 +167,7 @@
       "Location": "on-site",
       "Sentence": "then dewatered using storage basins",
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -195,7 +181,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried biosolids are hauled to a landfill.",
+      "Sentence": "Dried biosolids are hauled to a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -203,11 +189,14 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",

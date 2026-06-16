@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening, aerated grit removal",
+      "Sentence": "Treatment consists of screening...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -19,8 +19,7 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
@@ -28,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening, aerated grit removal",
+      "Sentence": "Treatment consists of... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -55,13 +54,12 @@
         "TricklingFiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment by trickling filters followed by activated sludge aeration basins",
+      "Sentence": "biological treatment by trickling filters",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -69,8 +67,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -79,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment by trickling filters followed by activated sludge aeration basins",
+      "Sentence": "followed by activated sludge aeration basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -104,8 +101,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -115,10 +111,138 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection by chlorination, and dechlorination by sodium bisulfite",
+      "Sentence": "disinfection by chlorination",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and dechlorination by sodium bisulfite",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a 3.0 million gallon (MG) underground storage tank",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an 8.6 MG storage basin adjacent to the treatment plant",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger treats its biosolids by gravity thickening or co-settling",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering by belt-filter presses",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "lime stabilization",
+      "trigger_process": [
+        "Lime Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "stabilized, dewatered biosolids are hauled offsite for land application at the Discharger\u2019s Biosolids Utilization Project on Tubbs Island",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "began sending a small portion of its biosolids to the Lystek Organic Material Recovery Center located at the Fairfield Suisun Sewer District wastewater treatment plant in Fairfield",
+      "trigger_process": [
+        "Unspecified Disposal"
       ]
     },
     {
@@ -126,13 +250,11 @@
       "Process": [
         "Mixing"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The plant blends primary-treated effluent with secondary-treated effluent before discharging the blended effluent to Carquinez Strait via Discharge Point 001.",
+      "Sentence": "The plant blends primary-treated effluent with secondary-treated effluent before discharging the blended effluent",
       "trigger_process": []
     }
   ]

@@ -57,7 +57,7 @@
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
         "Microfiltration"
       ],
@@ -69,7 +69,7 @@
       "Location": "on-site",
       "Sentence": "microfiltration through a membrane bioreactor (MBR);",
       "trigger_process": [
-        "Membrane Bioreactor"
+        "Membrane Aerated Biofilm Reactor"
       ]
     },
     {
@@ -86,24 +86,6 @@
       "Sentence": "ultraviolet (UV) light disinfection;",
       "trigger_process": [
         "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatering via centrifuge, and disposal to a Class III solid waste landfill.",
-      "trigger_process": [
-        "Mechanical Dewatering"
       ]
     },
     {
@@ -126,20 +108,22 @@
       ]
     },
     {
-      "Equipment": "EqualizationBasin",
+      "Equipment": "CentrifugalThickener",
       "Process": [
-        "Equalization"
+        "Centrifugation"
       ],
       "Role": [
-        "Equalization",
-        "Detention"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin and a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows.",
+      "Sentence": "dewatering via centrifuge",
       "trigger_process": [
-        "Equalization"
+        "Centrifuge",
+        "Thickening"
       ]
     }
   ]

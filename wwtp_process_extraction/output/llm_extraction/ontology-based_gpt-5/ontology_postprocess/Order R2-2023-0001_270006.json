@@ -5,11 +5,13 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening...",
+      "Sentence": "Treatment consists of screening, aerated grit removal...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -17,14 +19,15 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of... aerated grit removal...",
+      "Sentence": "Treatment consists of screening, aerated grit removal...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -50,7 +53,9 @@
       "Process": [
         "TricklingFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -62,10 +67,11 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -97,16 +103,123 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
+      "Role": [
+        "Tertiary"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "disinfection by chlorination, and dechlorination by sodium bisulfite",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "treats its biosolids by gravity thickening",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "or co-settling",
+      "trigger_process": [
+        "Unspecified Clarification"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "pHAdjuster-Lime",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "lime stabilization",
+      "trigger_process": [
+        "Lime Addition"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering by belt-filter presses",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled offsite for land application at the Discharger\u2019s Biosolids Utilization Project on Tubbs Island",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "operates the storage basin like an equalization basin",
+      "trigger_process": [
+        "Equalization"
       ]
     }
   ]

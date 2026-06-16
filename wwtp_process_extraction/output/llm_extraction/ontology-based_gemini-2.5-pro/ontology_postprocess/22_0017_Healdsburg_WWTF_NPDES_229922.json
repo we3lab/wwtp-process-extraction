@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of influent screening and grit removal",
+      "Sentence": "The treatment system consists of influent screening and grit removal;",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,9 +27,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of influent screening and grit removal",
+      "Sentence": "The treatment system consists of influent screening and grit removal;",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin and a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows.",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -49,7 +66,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins",
+      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins;",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -59,19 +76,18 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Ultrafiltration",
-        "Separation"
+        "Microfiltration",
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": [
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The immersed membrane filtration process separates suspended solids from the wastewater using a very fine filter (i.e., ultrafilter).",
+      "Sentence": "The MBR combines the secondary biological treatment and immersed membrane filtration processes.",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -79,8 +95,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -88,7 +103,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved in an open channel UV disinfection system",
+      "Sentence": "Disinfection is achieved in an open channel UV disinfection system with sufficient low pressure/high output lamps to disinfect a peak daily flow of 4.0 mgd.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -106,40 +121,64 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins",
+      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins.",
       "trigger_process": []
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system",
-      "trigger_process": []
+      "Sentence": "The Facility has two recycled water storage ponds, 25 million gallon and 15 million gallon capacity, with synthetic liners to provide storage for the disinfected tertiary treated recycled water",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
     },
     {
-      "Equipment": "Digester",
+      "Equipment": "Screen",
       "Process": [
-        "Digestion"
+        "Screening"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a proprietary sludge digestion process",
+      "Sentence": "All solids transferred from the biological process to the interchange tanks are first passed through a 250 micron rotary drum screen to remove inert non-biodegradable material",
       "trigger_process": [
-        "Unspecified Digestion"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "AerobicDigestion",
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Permittee uses a proprietary solids removal and digestion process that combines aerobic and anaerobic processes.",
+      "trigger_process": [
+        "AO (anaerobic/oxic)",
+        "Aerobic Digestion",
+        "Anaerobic Digestion",
+        "Unspecified AS"
       ]
     },
     {
@@ -152,13 +191,15 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering via centrifuge",
+      "Sentence": "In the final solids removal step, digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge and conveyed to a dumpster.",
       "trigger_process": [
         "Centrifuge",
+        "Polymer Addition",
         "Thickening"
       ]
     },
@@ -170,68 +211,26 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal to a Class III solid waste landfill",
+      "Sentence": "All solids are then transported for disposal at Redwood Landfill in Marin County or Hay Road Landfill in Solano County.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "divert inadequately treated wastewater from downstream of the UV disinfection system and return it to the headworks for re-treatment",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility has two recycled water storage ponds, 25 million gallon and 15 million gallon capacity",
+      "Sentence": "During the discharge season (October 1 through May 14), wastewater may be discharged to Basalt Pond at Discharge Point 001",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

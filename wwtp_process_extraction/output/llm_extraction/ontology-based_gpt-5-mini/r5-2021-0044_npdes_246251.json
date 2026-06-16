@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent screening"
+      "Sentence": "The treatment system at the Facility consists of influent screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal"
+      "Sentence": "The treatment system at the Facility consists of ... grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -67,9 +67,9 @@
       "Sentence": "secondary clarification"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -83,6 +83,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
@@ -93,19 +94,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection, filtration, and dechlorination"
+      "Sentence": "The treatment system at the Facility consists of ... disinfection, filtration, and dechlorination"
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
       "Role": [
-        "Storage",
-        "Equalization"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "lined emergency storage basins located onsite"
+      "Sentence": "replacing the chlorine disinfection with UV disinfection"
     },
     {
       "Equipment": "AerobicDigester",
@@ -114,8 +116,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -125,19 +126,22 @@
       "Sentence": "Primary and secondary solids are aerobically digested"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Tank",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Drying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Posttreatment",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then dewatered using storage basins"
+      "Sentence": "then dewatered using storage basins. Dried biosolids are hauled to a landfill."
     },
     {
       "Equipment": null,
@@ -147,21 +151,26 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are hauled to a landfill"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": "Tank",
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Feed"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "replace the current influent pump station for larger capacity during wet weather flows"
+      "Sentence": "attenuated with lined emergency storage basins located onsite and returned to the treatment system when flows decrease"
     },
     {
       "Equipment": "GritChamber",
@@ -184,27 +193,12 @@
       ],
       "Role": [
         "NitrogenRemoval",
-        "NutrientRemoval",
-        "Aerobic",
-        "Anoxic"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "retrofitting the existing aeration basins to provide nitrification and denitrification"
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "replacing the chlorine disinfection with UV disinfection"
     },
     {
       "Equipment": "SedimentationTank",
@@ -220,9 +214,9 @@
       "Sentence": "adding capacity to the existing secondary clarifiers"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -231,6 +225,17 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "adding capacity to the existing ... filters"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "replace the current influent pump station for larger capacity during wet weather flows"
     }
   ]
 }

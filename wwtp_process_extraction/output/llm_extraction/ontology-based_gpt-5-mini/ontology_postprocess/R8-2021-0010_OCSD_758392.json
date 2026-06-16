@@ -1,6 +1,19 @@
 {
   "items": [
     {
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": [
+        "Pretreatment",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "passes through metering and diversion structures and continues to headworks facilities for preliminary treatment",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -9,11 +22,50 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment...",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "preliminary treatment includes grit and screenings removal",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "preliminary treatment includes grit and screenings removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Pretreatment",
+        "Primary"
+      ],
+      "Substance": [
+        "WastewaterTreatmentChemical",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment",
+      "trigger_process": [
+        "Alum Addition",
+        "Ferric Chloride Addition",
+        "Lime Addition",
+        "Polymer Addition"
       ]
     },
     {
@@ -25,9 +77,9 @@
         "Primary"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment...",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -35,15 +87,16 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment...",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -57,50 +110,12 @@
         "Secondary"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "After the GWRS Final Expansion, the activated sludge treatment process will treat only SARI and side-stream flows.",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment",
       "trigger_process": [
         "Unspecified AS"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Build a 6 MG equalization storage tank at Plant No. 2 to store secondary effluent during peak day flows...",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Build a Plant 2 effluent pump station that will convey approximately 50-85 MGD of secondary effluent from Plant No. 2 trickling filter solids contact process to the GWRS Facility.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Relocate the existing plant water pump station to a location more suitable for receiving the trickling filter solids contact treatment processes.",
-      "trigger_process": []
     }
   ]
 }

@@ -49,6 +49,22 @@
       ]
     },
     {
+      "Equipment": "BiotowerFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "At the north plant, the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service).",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -89,19 +105,22 @@
       ]
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": "Pond",
       "Process": [
-        "TricklingFiltration"
+        "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Storage",
+        "Equalization"
       ],
-      "Substance": null,
-      "Implementation": "past",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "At the north plant, the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service).",
+      "Sentence": "The food processing wastewater is stored and aerated in a lined pond, and then applied to agricultural fields when needed.",
       "trigger_process": [
-        "Trickling Filter"
+        "Equalization"
       ]
     },
     {
@@ -137,43 +156,58 @@
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Aeration",
-        "LandApplication"
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "Storage",
-        "Pretreatment"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond, and then applied to agricultural fields when needed.",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Land Application",
-        "Unspecified Lagoon"
+        "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "LandApplication"
+        "Flotation"
       ],
       "Role": [
-        "Disposal"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
       "trigger_process": [
-        "Land Application"
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewatering",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge.",
+      "trigger_process": [
+        "Centrifuge"
       ]
     }
   ]

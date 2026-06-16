@@ -4,12 +4,13 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed"
+        "Feed",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent pumping",
+      "Sentence": "the same process trains which include influent pumping,",
       "trigger_process": []
     },
     {
@@ -20,10 +21,12 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sedimentation",
+      "Sentence": "the same process trains which include influent pumping, primary sedimentation,",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -60,10 +63,12 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sedimentation",
+      "Sentence": "secondary sedimentation,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -79,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation",
+      "Sentence": "coagulation, inert media filtration,",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -96,7 +101,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "inert media filtration",
+      "Sentence": "inert media filtration,",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -105,11 +110,11 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine",
@@ -117,30 +122,28 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination for disinfection, and dechlorination. Sodium hypochlorite is used as a disinfectant at the Facility",
+      "Sentence": "chlorination for disinfection; Sodium hypochlorite is used as a disinfectant at the Facility.",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "ActivatedSludge",
-        "Denitrification",
-        "Nitrification"
+        "Dechlorination"
       ],
       "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Posttreatment",
+        "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "constructed a biological nutrient removal system with nitrogen denitrification process (NDN) ... has been in operation since June 2003",
+      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine. The Facility also has a backup sodium bisulfite dechlorination system.",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Dechlorination"
       ]
     }
   ]

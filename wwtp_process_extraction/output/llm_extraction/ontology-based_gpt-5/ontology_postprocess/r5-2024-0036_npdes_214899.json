@@ -27,29 +27,38 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of...a vortex grit removal mechanism.",
+      "Sentence": "and a vortex grit removal mechanism.",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
       "Equipment": "Reactor",
+      "Process": null,
+      "Role": [
+        "Secondary",
+        "Anoxic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each bioreactor train consists of two anoxic zones",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Mixing",
         "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
+      "Sentence": "followed by one aerobic zone with two aeration grids.",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Unspecified AS"
       ]
     },
@@ -90,8 +99,7 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -103,14 +111,96 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days.",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the solids are sent to dewatering equipment, which includes a centrifuge.",
+      "trigger_process": [
+        "Centrifuge",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility",
+      "trigger_process": [
+        "Land Application"
+      ]
     }
   ]
 }

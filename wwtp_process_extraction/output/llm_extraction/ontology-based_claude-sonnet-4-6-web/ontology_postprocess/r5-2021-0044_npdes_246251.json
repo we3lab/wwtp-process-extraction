@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal...",
+      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...influent screening, grit removal, primary clarification...",
+      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -47,11 +47,29 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...grit removal, primary clarification, biological treatment by activated sludge...",
+      "Sentence": "...primary clarification, biological treatment by activated sludge...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Retention",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Hauled septic and high influent flows that exceed treatment design capacity are attenuated with lined emergency storage basins located onsite and returned to the treatment system when flows decrease.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -84,7 +102,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, filtration, and dechlorination.",
+      "Sentence": "...biological treatment by activated sludge, secondary clarification, disinfection, filtration, and dechlorination.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -102,9 +120,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...disinfection, filtration, and dechlorination.",
-      "Source": "both",
-      "Website": "https://www.scorca.gov/",
+      "Sentence": "...secondary clarification, disinfection, filtration, and dechlorination.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -133,23 +151,6 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Hauled septic and high influent flows that exceed treatment design capacity are attenuated with lined emergency storage basins located onsite and returned to the treatment system when flows decrease.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion"
@@ -173,6 +174,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
+        "Dewatering",
         "Drying"
       ],
       "Role": [
@@ -210,6 +212,26 @@
       ]
     },
     {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Two existing anaerobic digesters, no longer in use, will be demolished.",
+      "Source": "web_search",
+      "Website": "https://www.scorca.gov/files/a433409c8/2022-0708++SC-OR+WWTP+Draft++IS-MND_F+.pdf",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -220,7 +242,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "upgrades to the existing grit removal system",
+      "Sentence": "upgrades to the existing grit removal system, retrofitting the existing aeration basins to provide nitrification and denitrification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [

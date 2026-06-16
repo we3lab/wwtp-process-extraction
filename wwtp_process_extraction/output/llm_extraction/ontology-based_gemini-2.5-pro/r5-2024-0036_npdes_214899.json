@@ -11,20 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens..."
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...with a bypass channel/bar with screens..."
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens..."
     },
     {
       "Equipment": "GritChamber",
@@ -42,36 +29,21 @@
     {
       "Equipment": "Reactor",
       "Process": [
-        "Denitrification"
+        "AO"
       ],
       "Role": [
         "Secondary",
         "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Each bioreactor train consists of two anoxic zones..."
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration",
-        "Nitrification"
-      ],
-      "Role": [
-        "Secondary",
         "Aerobic",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...followed by one aerobic zone with two aeration grids."
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids."
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "Filter",
       "Process": [
         "Filtration"
       ],
@@ -86,11 +58,11 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -118,6 +90,85 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II..."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids."
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Detention"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days."
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility..."
     }
   ]
 }

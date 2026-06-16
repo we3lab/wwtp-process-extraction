@@ -42,25 +42,45 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anoxic",
-        "NutrogenRemoval"
+        "NitrogenRemoval"
       ],
       "Substance": [
-        "Constituent-Organics"
+        "Constituent-Ammonia",
+        "Constituent-Nitrate"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
     },
     {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-Nitrate"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins",
+      "trigger_process": [
+        "Denitrification",
+        "Unspecified AS"
+      ]
+    },
+    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Microfiltration",
+        "Ultrafiltration",
         "ActivatedSludge"
       ],
       "Role": [
@@ -72,7 +92,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration through a membrane bioreactor (MBR); ultraviolet (UV) light disinfection; and return activated sludge pumping from the MBR back to the aeration basins",
+      "Sentence": "microfiltration through a membrane bioreactor (MBR); The MBR combines the secondary biological treatment and immersed membrane filtration processes. The immersed membrane filtration process separates suspended solids from the wastewater using a very fine filter (i.e., ultrafilter).",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -80,7 +100,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -88,7 +109,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved in an open channel UV disinfection system with sufficient low pressure/high output lamps to disinfect a peak daily flow of 4.0 mgd",
+      "Sentence": "ultraviolet (UV) light disinfection; Disinfection is achieved in an open channel UV disinfection system with sufficient low pressure/high output lamps to disinfect a peak daily flow of 4.0 mgd.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -98,7 +119,9 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -108,22 +131,59 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system, followed by a proprietary sludge digestion process",
+      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "AnaerobicDigestion",
+        "AerobicDigestion",
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Permittee uses a proprietary solids removal and digestion process that combines aerobic and anaerobic processes. Solids are periodically removed from the biological process and transferred to two digester tanks, referred to as interchange reactors.",
       "trigger_process": [
-        "Unspecified Digestion"
+        "AO (anaerobic/oxic)",
+        "Aerobic Digestion",
+        "Anaerobic Digestion",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All solids transferred from the biological process to the interchange tanks are first passed through a 250 micron rotary drum screen to remove inert non-biodegradable material",
+      "trigger_process": [
+        "Screening/Microstrainer"
       ]
     },
     {
@@ -136,13 +196,15 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering via centrifuge, and disposal to a Class III solid waste landfill",
+      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge",
       "trigger_process": [
         "Centrifuge",
+        "Polymer Addition",
         "Thickening"
       ]
     },
@@ -159,23 +221,23 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal to a Class III solid waste landfill",
+      "Sentence": "disposal to a Class III solid waste landfill; All solids are then transported for disposal at Redwood Landfill in Marin County or Hay Road Landfill in Solano County.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Process": null,
       "Role": [
         "Equalization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin and a 3.35 million gallon equalization basin",
+      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin and a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows.",
       "trigger_process": [
         "Equalization"
       ]
@@ -191,7 +253,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtered and UV disinfected wastewater flows by gravity to the 25 million gallon recycled water storage pond, 15 million gallon recycled water storage pond, or Basalt Pond",
+      "Sentence": "Filtered and UV disinfected wastewater flows by gravity to the 25 million gallon recycled water storage pond, 15 million gallon recycled water storage pond, or Basalt Pond.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

@@ -28,7 +28,9 @@
     },
     {
       "Equipment": "Reactor",
-      "Process": null,
+      "Process": [
+        "ActivatedSludge"
+      ],
       "Role": [
         "Secondary",
         "Anoxic"
@@ -41,6 +43,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
@@ -55,7 +58,8 @@
     {
       "Equipment": "Filter",
       "Process": [
-        "Filtration"
+        "Filtration",
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary"
@@ -102,8 +106,10 @@
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II"
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "Reactor",
+      "Process": [
+        "Digestion"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -120,19 +126,20 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days."
+      "Sentence": "the reduced solids are purged into the digester, which holds the solids for 10 to 15 days."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -152,7 +159,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill."
@@ -165,10 +174,27 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "off-site",
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "or a composting facility."
     }
   ]
 }

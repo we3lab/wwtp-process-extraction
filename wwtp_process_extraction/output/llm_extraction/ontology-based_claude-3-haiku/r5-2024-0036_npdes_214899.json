@@ -1,12 +1,12 @@
 {
   "items": [
     {
-      "Equipment": "Drum Screen",
+      "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
       "Role": [
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -14,12 +14,12 @@
       "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism."
     },
     {
-      "Equipment": "GritRemoval",
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -27,7 +27,7 @@
       "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism."
     },
     {
-      "Equipment": "BioreactorTrain",
+      "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
@@ -43,12 +43,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater flows from the primary treatment units into two main bioreactor trains used for secondary treatment. Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids."
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids."
     },
     {
-      "Equipment": "MembraneFilteration",
+      "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
-        "Microfiltration"
+        "MembraneProcess",
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -59,9 +60,10 @@
       "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment."
     },
     {
-      "Equipment": "UVDisinfectionSystem",
+      "Equipment": "UVDisinfectionUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -72,12 +74,13 @@
       "Sentence": "The tertiary-treated effluent is disinfected using an ultraviolet light (UV) disinfection system."
     },
     {
-      "Equipment": "StorageTank",
+      "Equipment": "Tank",
       "Process": [
         "Storage"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -85,12 +88,13 @@
       "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank."
     },
     {
-      "Equipment": "StorageTank",
+      "Equipment": "Tank",
       "Process": [
         "Storage"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -100,10 +104,12 @@
     {
       "Equipment": "InterchangeTank",
       "Process": [
-        "Sedimentation"
+        "Thickening",
+        "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -129,13 +135,13 @@
       "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days."
     },
     {
-      "Equipment": "Centrifuge",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
-        "SolidsHandling",
-        "Dewatering"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"

@@ -13,18 +13,17 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "macerators ... and into a wet well. Plant return flows from the belt press and waste stream mix with influent in the wet well"
+      "Sentence": "into a wet well. Plant return flows from the belt press and waste stream mix with influent in the wet well"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
@@ -55,7 +54,9 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -68,46 +69,15 @@
       "Process": [
         "Flotation"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dissolved air floatation thickener (DAFT) process water"
-    },
-    {
-      "Equipment": "UltrafiltrationUnit",
-      "Process": [
-        "Ultrafiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sending disinfected secondary effluent water to an ultrafiltration membrane"
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "followed by a reverse osmosis membrane to reduce total dissolved solids"
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The processed water is stored in an onsite reservoir"
+      "Sentence": "dissolved air floatation thickener (DAFT)"
     },
     {
       "Equipment": "Screen",
@@ -118,14 +88,31 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A side stream rotary micro screening process removes rags and foreign materials from the tank prior to WAS being pumped to the DAFT"
+      "Sentence": "A side stream rotary micro screening process removes rags and foreign materials"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Settled sludge from the secondary clarifiers is collected in the Return Activated Sludge (RAS)/Waste Activated Sludge (WAS) Tank"
     },
     {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -138,7 +125,9 @@
       "Process": [
         "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -147,36 +136,52 @@
       "Sentence": "Sludge from the aerobic digesters is dewatered using a belt press"
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "MakeUp"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "WAS being pumped to the DAFT"
+      "Sentence": "The processed water is stored in an onsite reservoir and used for plant processes onsite and water for cleaning operations within the collection system"
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "UltrafiltrationUnit",
       "Process": [
-        "Recirculation"
+        "Ultrafiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Settled sludge from the secondary clarifiers is collected in the Return Activated Sludge (RAS)/Waste Activated Sludge (WAS) Tank"
+      "Sentence": "The system operates by sending disinfected secondary effluent water to an ultrafiltration membrane"
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "followed by a reverse osmosis membrane to reduce total dissolved solids"
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
+      "Role": [
+        "SolidsHandling"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "biosolids are stockpiled in holding bins prior to disposal by composting facility"

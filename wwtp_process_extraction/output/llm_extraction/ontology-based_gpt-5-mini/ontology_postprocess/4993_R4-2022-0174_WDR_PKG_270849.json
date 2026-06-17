@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of influent screening, primary sedimentation, primary effluent equalization, activated sludge biological treatment with nitrification and denitrification, secondary sedimentation, inert media filtration, disinfection (UV and/or chloramination), and dechlorination (as needed).",
+      "Sentence": "influent screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of influent screening, primary sedimentation, primary effluent equalization...",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -43,8 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of ... primary effluent equalization...",
+      "Sentence": "primary effluent equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -66,8 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of ... activated sludge biological treatment with nitrification and denitrification...",
+      "Sentence": "activated sludge biological treatment with nitrification and denitrification",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -85,8 +81,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of ... secondary sedimentation...",
+      "Sentence": "secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -102,8 +97,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of ... inert media filtration...",
+      "Sentence": "inert media filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -114,13 +108,13 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment at the Valencia WRP consists of ... disinfection (UV and/or chloramination)...",
+      "Sentence": "UV disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -140,8 +134,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Hypochlorite and ammonia are still used to disinfect treated effluent at the Valencia WRP prior to discharging the effluent to the Santa Clara River.",
+      "Sentence": "Hypochlorite and ammonia are still used to disinfect treated effluent",
       "trigger_process": [
         "Chlorination"
       ]
@@ -154,13 +147,10 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Prior to discharge, sulfur dioxide and/or sodium bisulfite is added to the treated effluent to remove residual chlorine.",
+      "Sentence": "Prior to discharge, sulfur dioxide and/or sodium bisulfite is added to the treated effluent to remove residual chlorine",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -178,28 +168,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge from both the Saugus and Valencia WRPs is thickened by dissolved air flotation.",
+      "Sentence": "waste activated sludge ... is thickened by dissolved air flotation",
       "trigger_process": [
         "Thickening"
       ]
     },
     {
-      "Equipment": "AnaerobicDigester",
+      "Equipment": null,
       "Process": [
         "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically...",
+      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -217,8 +206,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting...",
+      "Sentence": "digested ... dewatered",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -226,18 +214,69 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Digested sludge then undergoes dewatering ... and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application.",
+      "Location": "off-site",
+      "Sentence": "then reused through composting",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the permittee may also dispose of biosolids in a landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "or by direct land application",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "ActivatedSludge",
+        "Denitrification"
+      ],
+      "Role": [
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological nutrient removal system with a nitrogen denitrification process (NDN) ... has been in operation since September 2003",
+      "trigger_process": [
+        "Denitrification",
+        "SBR"
       ]
     },
     {
@@ -251,8 +290,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "SCVSD is making progress towards completing the UV disinfection, Micro Filtration, and Reverse Osmosis (MF/RO) capital improvement projects.",
+      "Sentence": "completing the ... Micro Filtration ... capital improvement projects",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -263,13 +301,13 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "SCVSD began constructing the MF/RO treatment units and should complete construction by December 31, 2022.",
+      "Sentence": "completing the ... Reverse Osmosis (MF/RO) capital improvement projects",
       "trigger_process": [
         "Reverse Osmosis"
       ]

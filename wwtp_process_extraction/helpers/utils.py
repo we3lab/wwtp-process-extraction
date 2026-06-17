@@ -55,19 +55,35 @@ def package_sub_readers(reader):
         return
     
 
-def normalize_text(s: str) -> str:
-    """Normalize text by removing special whitespace characters and lowercasing."""
-    if not s:
-        return ""
-    # Normalize Unicode form
-    s = unicodedata.normalize("NFKC", s)
-    s = re.sub(r"[­​‌‍﻿]", "", s)
-    s = re.sub(r"[  ᠎ -   　]", "", s)
-    # Lowercase everything
-    return s.lower()
+def hasprocess_fragments(graph, cls, watr_ns, sh_ns):
+    """Process fragments declared by a class's own SHACL hasProcess shape(s).
+
+    The ontology declares "this equipment implies this process" two equivalent ways:
+    `sh:hasValue watr:Process-X` or `sh:qualifiedValueShape [ sh:class watr:Process-X ]`.
+    """
+    fragments = set()
+    for prop in graph.objects(cls, sh_ns.property):
+        for path in graph.objects(prop, sh_ns.path):
+            if path != watr_ns.hasProcess:
+                continue
+            for val in graph.objects(prop, sh_ns.hasValue):
+                if val.fragment:
+                    fragments.add(val.fragment)
+            for qualified_shape in graph.objects(prop, sh_ns.qualifiedValueShape):
+                for val in graph.objects(qualified_shape, sh_ns["class"]):
+                    if val.fragment:
+                        fragments.add(val.fragment)
+    return fragments
+
 
 def normalize_text(text):
-    return re.sub(r"\s+", " ", (text or "").replace("\n", " ").replace("\r", " ")).strip()
+    """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase."""
+    if not text:
+        return ""
+    text = unicodedata.normalize("NFKC", text)
+    text = re.sub(r"[­​‌‍﻿]", "", text)  # zero-width chars
+    text = re.sub(r"\s+", " ", text).strip()
+    return text.lower()
 
 def parse_status(val) -> str:
     """Normalize any status cell to a canonical token.
@@ -272,12 +288,11 @@ def build_txt_jobs(txt_folder: str, facilities_information: str):
 
         txt_path = Path(pdf_file_value)
         if not txt_path.is_absolute():
-            txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
+            path_value = Path(pdf_file_value)
+            path_value = txt_folder_path / path_value
+            txt_name = path_value.with_suffix(".txt").name
+            txt_path = txt_folder_path / txt_name
 
-        # if txt_path.suffix.lower() != ".txt":
-        #     raise ValueError(
-        #         f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
-        #     )
         if not txt_path.exists() or not txt_path.is_file():
             print(f"No txt for '{facility_name}': {txt_path.name}, skipping.")
             continue
@@ -285,11 +300,3 @@ def build_txt_jobs(txt_folder: str, facilities_information: str):
         jobs.append((row_idx, txt_path, txt_path.name, facility_name))
 
     return jobs
-
-
-def txt_file_value_to_txt_name(file_value: str) -> str:
-    path_value = Path(file_value)
-    return path_value.with_suffix(".txt").name
-
-
-

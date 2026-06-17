@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Raw wastewater is mechanically screened",
+      "Sentence": "The WWTF consists of a mechanical bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -20,15 +19,16 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "a 500,000-gallon concrete aeration basin",
+      "Sentence": "an activated sludge treatment unit (a 500,000-gallon concrete aeration basin, a clarifier, and a sludge return system)",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -38,42 +38,44 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "a clarifier",
+      "Sentence": "After the wastewater flows out the clarifier",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "a sludge return system",
+      "Sentence": "an activated sludge treatment unit (a 500,000-gallon concrete aeration basin, a clarifier, and a sludge return system)",
       "trigger_process": []
     },
     {
-      "Equipment": null,
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "Coagulation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "polymer coagulant is added to the wastewater before the wastewater enters into the sand filters",
       "trigger_process": [
         "Coagulation",
@@ -92,8 +94,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The sand filters are backwashed continuously with filtered wastewater",
+      "Sentence": "sand filters ... The sand filters are backwashed continuously with filtered wastewater",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -110,7 +111,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Filtered effluent is disinfected by the UV system",
       "trigger_process": [
         "UV Disinfection"
@@ -125,8 +125,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "two unlined storage ponds (Upper pond and Lower Pond)",
+      "Sentence": "stored in the Lower Pond prior conveyance to the 70-acre Golf Course",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Upper Pond serves as backup storage when the Lower Pond is full",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -136,15 +149,15 @@
       "Process": null,
       "Role": [
         "Stabilization",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "pumped to a 125,000-gallon concrete sludge lagoon for stabilization and storage prior to dewatering",
+      "Sentence": "Waste activated sludge is pumped to a 125,000-gallon concrete sludge lagoon for stabilization and storage prior to dewatering",
       "trigger_process": []
     },
     {
@@ -160,56 +173,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "dewatering by the sludge belt press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
+        "Storage",
         "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "then removed for off-site disposal",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
+      "Substance": [
+        "Fluid-Sludge"
       ],
-      "Role": null,
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Supernatant liquid from the drying process is pumped back to the headworks",
+      "Sentence": "The dewatered sludge is stored in the uncovered dry sludge storage area on site",
       "trigger_process": []
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "All effluent in the Upper Pond is subsequently returned to the headworks",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
+      "Sentence": "Supernatant liquid from the drying process is pumped back to the headworks",
+      "trigger_process": []
     }
   ]
 }

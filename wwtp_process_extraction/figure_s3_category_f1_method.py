@@ -1,15 +1,17 @@
 """SI figure: category-level F1 for gpt-5-mini, ontology vs list method."""
 
 import os
+import sys
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from step6_postprocess_llm_output import build_model_comparison
 from helpers.metrics import compute_metrics
 from helpers.utils import parse_status, get_leaf_names, merge_column_statuses, unitprocess_keywords
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
-WORKBOOK = "wwtp_process_extraction/output/llm_extraction/model_comparison_all.csv"
 MANUAL_PATH = "wwtp_process_extraction/data/unit_processes_by_facility_manual.csv"
 FINAL_DIR = "wwtp_process_extraction/output/final"
 MODEL = "gpt-5-mini"
@@ -33,7 +35,7 @@ def to_category_states(metric_df):
 
 
 def main():
-    wb = pd.read_csv(WORKBOOK, dtype=str).fillna("")
+    wb = build_model_comparison().fillna("")
     wb["Place ID"] = wb["Place ID"].str.strip()
     manual = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
     manual["Place ID"] = manual["Place ID"].str.strip()

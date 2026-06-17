@@ -11,27 +11,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Influent enters the headworks of the Facility and is processed through macerators (i.e., channel grinders)",
+      "Sentence": "Influent enters the headworks of the Facility and is processed through macerators (i.e., channel grinders) and into a wet well.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Comminution"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Plant return flows from the belt press and waste stream mix with influent in the wet well.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -47,7 +31,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment system, which consists of two 370,000-gallon aeration basins",
+      "Sentence": "...secondary treatment system, which consists of two 370,000-gallon aeration basins, four rectangular clarifiers...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -62,10 +46,12 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four rectangular clarifiers",
+      "Sentence": "...secondary treatment system, which consists of two 370,000-gallon aeration basins, four rectangular clarifiers...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -87,30 +73,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination in two chlorine contact chambers with sodium hypochlorite, and dechlorination in an effluent channel with sodium bisulfite",
+      "Sentence": "...chlorination in two chlorine contact chambers with sodium hypochlorite, and dechlorination in an effluent channel with sodium bisulfite, prior to discharge through the ocean outfall...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "SolidsHandling",
-        "Retention"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Settled sludge from the secondary clarifiers is collected in the Return Activated Sludge (RAS)/Waste Activated Sludge (WAS) Tank.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": []
     },
     {
       "Equipment": "Screen",
@@ -120,9 +89,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A side stream rotary micro screening process removes rags and foreign materials from the tank prior to WAS being pumped to the DAFT.",
@@ -145,7 +112,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "WAS being pumped to the DAFT... dissolved air floatation thickener (DAFT) process water",
+      "Sentence": "...WAS being pumped to the DAFT. Thickened sludge is then pumped to an aerobic digester...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -166,7 +133,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Thickened sludge is then pumped to an aerobic digester",
+      "Sentence": "Thickened sludge is then pumped to an aerobic digester...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -174,10 +141,9 @@
       ]
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -187,11 +153,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the aerobic digesters is dewatered using a belt press",
+      "Sentence": "Sludge from the aerobic digesters is dewatered using a belt press, and biosolids are stockpiled in holding bins prior to disposal by composting facility.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Thickening"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "...biosolids are stockpiled in holding bins prior to disposal by composting facility.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -205,7 +189,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The system operates by sending disinfected secondary effluent water to an ultrafiltration membrane followed by a reverse osmosis membrane",
+      "Sentence": "The system operates by sending disinfected secondary effluent water to an ultrafiltration membrane followed by a reverse osmosis membrane to reduce total dissolved solids.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -223,7 +207,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an ultrafiltration membrane followed by a reverse osmosis membrane to reduce total dissolved solids",
+      "Sentence": "The system operates by sending disinfected secondary effluent water to an ultrafiltration membrane followed by a reverse osmosis membrane to reduce total dissolved solids.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -239,30 +223,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The processed water is stored in an onsite reservoir and used for plant processes onsite",
+      "Sentence": "The processed water is stored in an onsite reservoir and used for plant processes onsite and water for cleaning operations within the collection system.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "biosolids are stockpiled in holding bins prior to disposal by composting facility",
-      "Source": "both",
-      "Website": "https://www.montsan.org/about-the-district",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
     }
   ]
 }

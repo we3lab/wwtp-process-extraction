@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "Wastewater treatment processes for both treatment trains include screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "Wastewater treatment processes for both treatment trains include ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include ... primary sedimentation ...",
+      "Sentence": "Wastewater treatment processes for both treatment trains include ... primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -64,8 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Wastewater treatment processes for both treatment trains include ... secondary treatment with activated sludge aeration ...",
+      "Sentence": "secondary treatment with activated sludge aeration",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -81,8 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include ... secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "secondary treatment with activated sludge aeration and secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -98,8 +93,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge)",
       "trigger_process": [
         "Thickening"
       ]
@@ -111,24 +105,24 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic"
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes ... anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalThickener",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -138,11 +132,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes ... centrifuge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering"
+        "Mechanical Dewatering",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -158,10 +168,27 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill, and dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill or a contractor-operated compost site.",
+      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to ... a contractor-operated compost site",
+      "trigger_process": [
+        "Composting"
       ]
     }
   ]

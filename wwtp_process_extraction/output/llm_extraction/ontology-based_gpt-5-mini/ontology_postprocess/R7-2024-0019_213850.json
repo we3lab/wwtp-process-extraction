@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The headworks is comprised of coarse mechanical screening with a manual bar rack in the bypass channel.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Influent flow is metered and passed through mechanical fine screening prior to treatment through the four-cell aerated lagoon treatment system.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -43,18 +41,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Two submersible pumps equipped with variable frequency drives pump influent to the treatment system.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "VariableFrequencyDrive",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.8,
       "Sentence": "Two submersible pumps equipped with variable frequency drives pump influent to the treatment system.",
       "trigger_process": []
     },
@@ -70,10 +56,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "The current treatment system consists of an aerated lagoon system with four cells.",
       "trigger_process": [
         "Aerated Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Accumulated inert solids and biosolids will be dredged from the bottom of each lagoon cell annually...",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -88,33 +92,15 @@
         "Posttreatment"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The disinfection system uses liquid sodium hypochlorite for disinfection followed by liquid sodium bisulfite for dechlorination prior to discharge through Discharge Point 001 to the Dixie Drain 1-C, a water of the United States, and tributary to New River.",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
+        "Disinfectant-Chlorine",
         "pHAdjuster-SulfuricAcid"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The Discharger may add sulfuric acid to the chlorine chamber during summer months to control effluent pH concentrations from exceeding the instantaneous maximum effluent limitation of 9 s.u.",
+      "Sentence": "Effluent ... undergoes disinfection by chlorination, followed by dechlorination. The disinfection system uses liquid sodium hypochlorite ... The Discharger may add sulfuric acid to the chlorine chamber...",
       "trigger_process": [
+        "Chlorination",
+        "Dechlorination",
         "Neutralization"
       ]
     },
@@ -124,37 +110,36 @@
         "Drying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Accumulated inert solids and biosolids will be dredged from the bottom of each lagoon cell annually and solar dried on two drying beds prior to being hauled off-site for disposal to either a landfill or by a contractor for composting.",
+      "Sentence": "Accumulated inert solids and biosolids will be ... solar dried on two drying beds prior to being hauled off-site...",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "BiosolidsDisposal",
+        "Landfill",
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
       "Sentence": "hauled off-site for disposal to either a landfill or by a contractor for composting.",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Biosolids Landfill",
+        "Composting"
       ]
     }
   ]

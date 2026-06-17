@@ -1,19 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "SluiceGate",
-      "Process": null,
-      "Role": [
-        "Pretreatment",
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "passes through metering and diversion structures and continues to headworks facilities for preliminary treatment",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -24,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment includes grit and screenings removal",
+      "Sentence": "Preliminary treatment includes grit and screenings removal.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -40,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment includes grit and screenings removal",
+      "Sentence": "Preliminary treatment includes grit and screenings removal.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -48,24 +35,25 @@
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition"
+        "ChemicalAddition",
+        "Coagulation",
+        "Flocculation"
       ],
       "Role": [
         "Pretreatment",
         "Primary"
       ],
       "Substance": [
-        "WastewaterTreatmentChemical",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment",
+      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment.",
       "trigger_process": [
-        "Alum Addition",
-        "Ferric Chloride Addition",
-        "Lime Addition",
-        "Polymer Addition"
+        "Coagulation",
+        "Flocculation",
+        "Polymer Addition",
+        "Primary Clarification"
       ]
     },
     {
@@ -79,7 +67,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities",
+      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -87,8 +75,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -96,7 +83,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment",
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -112,7 +99,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment",
+      "Sentence": "New activated sludge system at Reclamation Plant No. 1, completed in Fall 2012.",
       "trigger_process": [
         "Unspecified AS"
       ]

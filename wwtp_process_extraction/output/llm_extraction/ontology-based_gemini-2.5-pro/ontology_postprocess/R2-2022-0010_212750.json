@@ -11,30 +11,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary wastewater treatment process prior to discharge from Discharge Point 001 includes a bar screen, two aeration basins, four clarifiers, three filters...",
+      "Sentence": "The tertiary wastewater treatment process prior to discharge from Discharge Point 001 includes a bar screen...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "One 5.6-million-gallon Flow Equalization Basin that enables it to collect and store wastewater of any condition from all parts of the treatment plant if needed;",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
@@ -43,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility treats its wastewater to tertiary or secondary standards as described below...The tertiary wastewater treatment process...includes...two aeration basins...",
+      "Sentence": "The Facility treats its wastewater to tertiary or secondary standards as described below and shown in the Process Flow Diagram in Attachment C.",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -59,29 +43,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary wastewater treatment process prior to discharge from Discharge Point 001 includes...four clarifiers...",
+      "Sentence": "The secondary wastewater treatment process... includes the same bar screen, aeration basins, and clarifiers as described above...",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "Pump",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Recirculation"
       ],
       "Role": [
-        "Tertiary"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After secondary clarification, the Discharger adds sodium hypochlorite and ammonium sulfate to the wastewater (chloramination) to limit the production of trihalomethanes.",
-      "trigger_process": [
-        "Chlorination"
-      ]
+      "Sentence": "Sludge that settles to the bottom of the clarifiers is sent back to the primary distribution structure, located before the aeration basins...",
+      "trigger_process": []
     },
     {
       "Equipment": "Filter",
@@ -110,10 +91,13 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After filtration, wastewater is routed to the tertiary chlorine contact basin.",
+      "Sentence": "After secondary clarification, the Discharger adds sodium hypochlorite and ammonium sulfate to the wastewater (chloramination)... After filtration, wastewater is routed to the tertiary chlorine contact basin.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -130,7 +114,43 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger adds sodium bisulfite in the tertiary effluent clearwell prior to routing tertiary-treated wastewater to either the Riverside Ponds or the 20-million-gallon Effluent Storage Pond.",
+      "Sentence": "The Discharger adds sodium bisulfite in the tertiary effluent clearwell prior to routing tertiary-treated wastewater...",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...wastewater flow that exceeds the treatment capacity of the filters is routed to the secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Secondary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger adds sodium bisulfite to dechlorinate the wastewater prior to discharge to the Napa River via Discharge Point 002.",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -145,9 +165,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the Riverside Ponds, tertiary-treated wastewater is discharged via Discharge Point 001 to the Napa River.",
+      "Sentence": "...four Riverside Ponds that operate in series.",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "One 5.6-million-gallon Flow Equalization Basin that enables it to collect and store wastewater of any condition from all parts of the treatment plant if needed;",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -159,7 +194,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary-treated wastewater stored in the 20-million-gallon Effluent Storage Pond is routed to the Riverside Ponds when discharge capacity is available.",
+      "Sentence": "One 20-million-gallon Effluent Storage Pond containing effluent from the tertiary effluent clearwell after disinfection and dechlorination...",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -179,27 +214,6 @@
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "After secondary clarification, wastewater flow that exceeds the treatment capacity of the filters is routed to the secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection. The Discharger adds sodium bisulfite to dechlorinate the wastewater prior to discharge...",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
@@ -211,7 +225,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge that settles to the bottom of the clarifiers is sent back to the primary distribution structure, located before the aeration basins, or to a 72,000-gallon-capacity sludge holding tank...",
+      "Sentence": "...a 72,000-gallon-capacity sludge holding tank and then to the sludge drying beds.",
       "trigger_process": []
     },
     {
@@ -228,63 +242,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...a 72,000-gallon-capacity sludge holding tank and then to the sludge drying beds.",
+      "Sentence": "Sludge that settles to the bottom of the clarifiers is sent...to a 72,000-gallon-capacity sludge holding tank and then to the sludge drying beds.",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility (Central Valley Composting).",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication",
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Discharger hires a contractor to remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley).",
-      "trigger_process": [
-        "Biosolids Landfill",
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Detention"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Rehabilitate or replace the Riverside Ponds (required by CDO September 1, 2024 Provision 2).",
-      "trigger_process": [
-        "Unspecified Lagoon"
+        "Drying"
       ]
     },
     {
@@ -303,6 +263,60 @@
       "Sentence": "Other upcoming Facility changes include installing a new screw press for increased sludge dewatering...",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger hires a contractor to remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley).",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger hires a contractor to remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley).",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility (Central Valley Composting).",
+      "trigger_process": [
+        "Anaerobic Digestion"
       ]
     }
   ]

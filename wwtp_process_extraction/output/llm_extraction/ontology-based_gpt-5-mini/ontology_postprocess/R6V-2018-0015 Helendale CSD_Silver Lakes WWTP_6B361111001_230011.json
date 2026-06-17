@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment plant is a secondary treatment facility employing a trickling filter.",
       "trigger_process": [
         "Trickling Filter"
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant has redundant primary and secondary clarifiers and trickling filters.",
+      "Sentence": "The plant has redundant primary and secondary clarifiers...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -45,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant has redundant primary and secondary clarifiers and trickling filters.",
+      "Sentence": "The plant has redundant primary and secondary clarifiers...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -54,13 +51,10 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Final effluent is measured and discharged into two percolation ponds.",
       "trigger_process": [
         "Unspecified Lagoon"
@@ -72,16 +66,10 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Chlorine is no longer used to disinfect effluent; however effluent still flows through the chlorine contact chamber.",
       "trigger_process": [
         "Chlorination"
@@ -89,16 +77,11 @@
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Process": null,
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "Some of the final effluent is pumped from the percolation ponds to irrigate 60 acres of feed crop.",
       "trigger_process": []
     },
@@ -108,8 +91,8 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Stabilization",
+        "SolidsHandling",
         "Aerobic"
       ],
       "Substance": [
@@ -117,17 +100,31 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids consisting of sludge and scum from the primary and secondary clarifiers are pumped to the aerobic digester for stabilization.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids ... are pumped to the aerobic digester for stabilization.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Drying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -137,18 +134,31 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Following aerobic digestion, the biosolids are dewatered in 12 solar drying beds that have synthetic plastic liners.",
+      "Sentence": "Following aerobic digestion, the biosolids are dewatered in 12 solar drying beds...",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
       "Process": [
-        "BiosolidsDisposal"
+        "Recirculation"
       ],
+      "Role": [
+        "Recirculation",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Liquids drained from each drying bed are combined into a common line and sent to the trickling filter pump station.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Storage",
         "SolidsHandling"
@@ -158,11 +168,8 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Dewatered biosolids are stored in bins and hauled to Liberty Composting in Bakersfield or other authorized disposal locations.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
+      "Sentence": "Dewatered biosolids are stored in bins and hauled to Liberty Composting...",
+      "trigger_process": []
     },
     {
       "Equipment": "Screen",
@@ -175,7 +182,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Grit and screenings from the headworks are disposed into a local authorized lined Class III landfill.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -192,26 +198,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Grit and screenings from the headworks are disposed into a local authorized lined Class III landfill.",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Liquids drained from each drying bed are combined into a common line and sent to the trickling filter pump station.",
-      "trigger_process": []
     }
   ]
 }

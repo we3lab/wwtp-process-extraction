@@ -59,7 +59,8 @@
     {
       "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
-        "Microfiltration"
+        "Filtration",
+        "MembraneProcess"
       ],
       "Role": [
         "Secondary"
@@ -75,7 +76,8 @@
     {
       "Equipment": "UVDisinfectionUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -86,6 +88,28 @@
       "Sentence": "ultraviolet (UV) light disinfection;",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering via centrifuge, and disposal to a Class III solid waste landfill.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering",
+        "Polymer Addition"
       ]
     },
     {
@@ -108,22 +132,20 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "EqualizationBasin",
       "Process": [
-        "Centrifugation"
+        "Equalization"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment",
+        "Detention"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering via centrifuge",
+      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin and a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows.",
       "trigger_process": [
-        "Centrifuge",
-        "Thickening"
+        "Equalization"
       ]
     }
   ]

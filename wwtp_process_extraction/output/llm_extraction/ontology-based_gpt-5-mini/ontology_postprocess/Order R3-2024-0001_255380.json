@@ -1,6 +1,22 @@
 {
   "items": [
     {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to the most recent upgrades, the facility\u2019s treatment process consisted of an equalization basin",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "mechanical screening with washer compactor",
+      "Sentence": "The final upgraded treatment system currently consists of mechanical screening with washer compactor",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "aerated grit removal",
+      "Sentence": "The final upgraded treatment system currently consists of ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,10 +59,61 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary settling",
+      "Sentence": "The final upgraded treatment system currently consists of ... primary settling",
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to the most recent upgrades, the facility\u2019s treatment process consisted of ... biofiltration",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to the most recent upgrades, the facility\u2019s treatment process consisted of ... secondary settling",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to the most recent upgrades ... nitrification with two activated sludge aeration basins",
+      "trigger_process": [
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -69,13 +134,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "four MLE bioreactors",
+      "Sentence": "The two activated sludge basins were converted to Modified Ludzack-Ettinger (MLE) bioreactors for nutrient removal... final upgraded treatment system currently consists of ... four MLE bioreactors",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
         "MLE",
         "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "During the upgrade, the discharger removed or abandoned ... tertiary dual media filtration",
+      "trigger_process": [
+        "Media Filtration"
       ]
     },
     {
@@ -89,8 +169,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "hollowfiber membranes",
+      "Sentence": "The final upgraded treatment system currently consists of ... hollowfiber membranes",
       "trigger_process": [
         "Ultrafiltration"
       ]
@@ -101,13 +180,13 @@
         "UVDisinfection"
       ],
       "Role": [
+        "Disinfection",
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "UV disinfection",
+      "Sentence": "The final upgraded treatment system currently consists of ... UV disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -118,7 +197,7 @@
         "Chlorination"
       ],
       "Role": [
-        "Storage",
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": [
@@ -126,31 +205,36 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "the recycled water sent to the storage tank will be dosed with chlorine to maintain a chlorine residual in the recycled water distribution line",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": null,
       "Process": [
-        "Chlorination",
         "Dechlorination"
       ],
-      "Role": [
-        "Posttreatment"
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "During the upgrade, the discharger removed or abandoned ... chlorine disinfection and dechlorination",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "OxidizingAgent-HydrogenPeroxide"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "The Discharger may use sodium hypochlorite (chlorine) for maintenance purposes such as membrane cleaning...If chlorine is used for membrane cleaning, dechlorination of the effluent with sodium bisulfite may be necessary",
+      "Sentence": "If chlorine is used for membrane cleaning, dechlorination of the effluent with sodium bisulfite may be necessary to remove the chlorine residual",
       "trigger_process": [
-        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -165,29 +249,29 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the dissolved air floatation thickener (DAFT) was modified into a sludge blend tank",
+      "Sentence": "DAFT was modified into a sludge blend tank",
       "trigger_process": [
         "Thickening"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "The upgraded biosolids handling train now consists of a sludge blend tank",
       "trigger_process": []
     },
     {
-      "Equipment": "Thickener",
+      "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -195,8 +279,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "now consists of ... two rotary screw thickeners",
+      "Sentence": "The upgraded biosolids handling train now consists of two rotary screw thickeners",
       "trigger_process": [
         "Thickening"
       ]
@@ -210,77 +293,15 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "two anaerobic digesters",
+      "Sentence": "The upgraded biosolids handling train now consists of ... two anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "a digested sludge storage tank",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Conditioner",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.6,
-      "Sentence": "an odor control unit",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "a screw press, and a belt filter press, with the final product hauled for composting",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Biosolids were previously handled with ... drying beds",
-      "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
@@ -289,134 +310,99 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids were previously handled with ... three anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "During the upgrade, the discharger removed or abandoned the following components of the facility: bio filter",
-      "trigger_process": [
-        "Unspecified FFR"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "removed or abandoned the following components of the facility: ... secondary clarifier",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "removed or abandoned the following components of the facility: ... final clarifiers",
-      "trigger_process": [
-        "Unspecified Clarification"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "removed or abandoned the following components of the facility: ... tertiary dual media filtration",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "During the upgrade, the discharger removed or abandoned the following components of the facility: ... chlorine disinfection and dechlorination",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Evaporation"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "There are two lined evaporation ponds located at southwest corner of the Facility property.",
-      "trigger_process": [
-        "Evaporation Pond"
-      ]
+      "Sentence": "The upgraded biosolids handling train now consists of a digested sludge storage tank",
+      "trigger_process": []
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Containment",
+        "Storage"
       ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "There are two lined evaporation ponds located at southwest corner of the Facility property",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The upgraded biosolids handling train now consists of ... a screw press, and a belt filter press",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the final product hauled for composting",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Prior to the most recent upgrades, the facility\u2019s treatment process consisted of an equalization basin",
+      "Sentence": "Prior to the most recent upgrades ... cooling using evaporative cooling towers",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Cleaning"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger may use sodium hypochlorite (chlorine) for maintenance purposes such as membrane cleaning in the MLE unit when hydrogen peroxide and/or citric acid is insufficient",
       "trigger_process": [
-        "Equalization"
+        "Oxidation",
+        "Ultrafiltration"
       ]
     }
   ]

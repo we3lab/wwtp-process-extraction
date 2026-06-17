@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens...",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and a vortex grit removal mechanism.",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -35,13 +35,16 @@
     {
       "Equipment": "Reactor",
       "Process": [
-        "AO"
+        "ActivatedSludge",
+        "Denitrification",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
         "Anoxic",
         "Aerobic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -72,11 +75,11 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -107,7 +110,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II...",
+      "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II, as described in section II.E of this Fact Sheet.",
       "trigger_process": []
     },
     {
@@ -136,8 +139,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Detention"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -166,6 +168,7 @@
       "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge.",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
       ]
     },
@@ -177,9 +180,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill.",
@@ -195,14 +196,28 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility...",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
+      "trigger_process": [
+        "Composting"
       ]
     }
   ]

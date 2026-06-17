@@ -1,12 +1,12 @@
 {
   "items": [
     {
-      "Equipment": "Drum Screen",
+      "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
       "Role": [
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -17,23 +17,23 @@
       ]
     },
     {
-      "Equipment": "GritRemoval",
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
       "trigger_process": [
-        "Primary Clarification"
+        "Grit Removal"
       ]
     },
     {
-      "Equipment": "BioreactorTrain",
+      "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
@@ -49,7 +49,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater flows from the primary treatment units into two main bioreactor trains used for secondary treatment. Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -57,9 +57,10 @@
       ]
     },
     {
-      "Equipment": "MembraneFilteration",
+      "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
-        "Microfiltration"
+        "MembraneProcess",
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -69,13 +70,14 @@
       "Location": "on-site",
       "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment.",
       "trigger_process": [
-        "Microfiltration"
+        "Membrane Aerated Biofilm Reactor"
       ]
     },
     {
-      "Equipment": "UVDisinfectionSystem",
+      "Equipment": "UVDisinfectionUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -89,12 +91,13 @@
       ]
     },
     {
-      "Equipment": "StorageTank",
+      "Equipment": "Tank",
       "Process": [
         "Storage"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -105,12 +108,13 @@
       ]
     },
     {
-      "Equipment": "StorageTank",
+      "Equipment": "Tank",
       "Process": [
         "Storage"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -123,10 +127,12 @@
     {
       "Equipment": "InterchangeTank",
       "Process": [
-        "Sedimentation"
+        "Thickening",
+        "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -135,7 +141,8 @@
       "Location": "on-site",
       "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids.",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Thickening",
+        "Unspecified Digestion"
       ]
     },
     {
@@ -158,13 +165,13 @@
       ]
     },
     {
-      "Equipment": "Centrifuge",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
-        "SolidsHandling",
-        "Dewatering"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -173,7 +180,8 @@
       "Location": "on-site",
       "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge.",
       "trigger_process": [
-        "Centrifuge"
+        "Centrifuge",
+        "Mechanical Dewatering"
       ]
     }
   ]

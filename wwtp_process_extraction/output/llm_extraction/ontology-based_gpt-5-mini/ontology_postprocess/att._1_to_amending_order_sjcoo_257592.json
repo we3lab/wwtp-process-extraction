@@ -10,9 +10,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "screening, grit removal, primary clarification (9.0-MGD capacity), and a combination of (1) high-rate trickling filtration and recirculation (6.0-MGD capacity) and (2) activated sludge aeration and secondary clarification (6.0-MGD capacity).",
+      "Location": "on-site",
+      "Sentence": "Wastewater treatment processes for both treatment trains include screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,9 +26,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "screening, grit removal, primary clarification (9.0-MGD capacity), and a combination of...",
+      "Location": "on-site",
+      "Sentence": "include...aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -44,11 +42,44 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "primary clarification (9.0-MGD capacity)",
+      "Location": "on-site",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary treatment with activated sludge aeration",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary sedimentation",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
@@ -62,101 +93,26 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "a combination of (1) high-rate trickling filtration and recirculation (6.0-MGD capacity)",
+      "Location": "on-site",
+      "Sentence": "high-rate trickling filtration and recirculation",
       "trigger_process": [
         "Trickling Filter"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Coagulation"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "(2) activated sludge aeration and secondary clarification (6.0-MGD capacity)",
+      "Location": "on-site",
+      "Sentence": "tertiary treatment through chemical addition/flash mixing",
       "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "activated sludge aeration and secondary clarification (6.0-MGD capacity)",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "SMWD was in the process of installing another secondary clarifier (at the time, the design was done and out for bid).",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "SMWD also planned to add new aeration basins.",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "StaticMixer",
-      "Process": [
-        "ChemicalAddition",
-        "Mixing"
-      ],
-      "Role": [
-        "Tertiary",
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
-      "trigger_process": [
+        "Coagulation",
         "Unspecified Chemical Addition"
       ]
     },
@@ -170,9 +126,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Location": "on-site",
+      "Sentence": "tertiary filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -184,24 +139,34 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Location": "on-site",
+      "Sentence": "chlorination disinfection",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
       "Equipment": "Thickener",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids processing...includes thickening (secondary sludge)",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Dewatering"
+        "Flotation"
       ],
       "Role": [
         "SolidsHandling"
@@ -210,17 +175,16 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
+      "Location": "on-site",
+      "Sentence": "Biosolids are treated through dissolved air floatation",
       "trigger_process": [
         "Thickening"
       ]
     },
     {
-      "Equipment": "Digester",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -230,11 +194,30 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion",
       "trigger_process": [
-        "Unspecified Digestion"
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "centrifuge dewatering",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering",
+        "Thickening"
       ]
     },
     {
@@ -249,9 +232,8 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
+      "Location": "on-site",
+      "Sentence": "dewatered...using belt filter press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -259,52 +241,191 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "ChemicalAddition",
+        "Oxidation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "potassium permanganate and sodium hypochlorite addition followed by green-sand filtration",
+      "trigger_process": [
+        "Oxidation"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill",
+      "Location": "on-site",
+      "Sentence": "green-sand filtration",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Media Filtration"
       ]
+    },
+    {
+      "Equipment": "CartridgeFiltrationUnit",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "cartridge filtration",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "RO treatment",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "aeration",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "pHAdjustment"
       ],
-      "Role": [
-        "SolidsHandling"
+      "Role": null,
+      "Substance": [
+        "pHAdjuster-SulfuricAcid"
       ],
-      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "the remaining biosolids are trucked to contract composting operations.",
+      "Location": "on-site",
+      "Sentence": "chemical addition (addition of sulfuric acid...); pH adjustment",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Neutralization"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "UltravioletLightUnit",
       "Process": [
-        "Landfill"
+        "UVDisinfection"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "post treatment conditioning, which will include UV disinfection",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "pretreatment consisting of flocculation",
+      "trigger_process": [
+        "Flocculation"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The treatment system will likely include...microfiltration",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Brine Discharge Holding Tank would allow for brine storage",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "post treatment conditioning, which will include...calcite contactors",
+      "trigger_process": [
+        "Neutralization"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley.",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD was in the process of installing another secondary clarifier",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Unspecified Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD also planned to add new aeration basins",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     }
   ]

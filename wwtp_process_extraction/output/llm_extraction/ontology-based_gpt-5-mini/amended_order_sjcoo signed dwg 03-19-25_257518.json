@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening"
+      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: screening, grit removal..."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal"
+      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: screening, grit removal, primary clarification..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -51,7 +51,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "high-rate trickling filtration and recirculation (6.0-MGD capacity)"
+      "Sentence": "a combination of (1) high-rate trickling filtration and recirculation (6.0-MGD capacity)..."
     },
     {
       "Equipment": "AerationBasin",
@@ -67,21 +67,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge aeration and secondary clarification (6.0-MGD capacity)"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SMWD was in the process of installing ... planned to add new aeration basins ... increase the aeration basin from 6 MGD to 9 MGD"
     },
     {
       "Equipment": "SedimentationTank",
@@ -107,10 +92,25 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "SMWD was in the process of installing another secondary clarifier (at the time, the design was done and out for bid)"
+      "Sentence": "SMWD was in the process of installing another secondary clarifier (at the time, the design was done and out for bid)."
     },
     {
-      "Equipment": "StaticMixer",
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD also planned to add new aeration basins... will increase the aeration basin from 6 MGD to 9 MGD."
+    },
+    {
+      "Equipment": "MixingBasin",
       "Process": [
         "ChemicalAddition",
         "Mixing"
@@ -121,7 +121,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treatment through chemical addition/flash mixing"
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing..."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -134,7 +134,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary filtration"
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through...tertiary filtration..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -145,14 +145,18 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination disinfection"
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through...chlorination disinfection."
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Dewatering"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -161,7 +165,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened"
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered..."
     },
     {
       "Equipment": "Digester",
@@ -177,7 +181,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is ... digested"
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered..."
     },
     {
       "Equipment": "DewateringUnit",
@@ -192,37 +196,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered, using belt filter press"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "the remaining biosolids are trucked to contract composting operations"
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press."
     },
     {
       "Equipment": null,
@@ -235,7 +209,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley"
+      "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill..."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "...the remaining biosolids are trucked to contract composting operations."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley."
     }
   ]
 }

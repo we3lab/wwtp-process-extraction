@@ -1,22 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Primary treatment consists of a headwork with comminutor",
-      "trigger_process": [
-        "Comminution"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -27,29 +11,74 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a bypass channel with bar screen",
+      "Sentence": "a bypass channel with bar screen.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headwork with comminutor",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an aeration basin with coarse bubble diffusers",
+      "Sentence": "Walker Process packaged activated sludge plant that includes an aeration basin with coarse bubble diffusers",
       "trigger_process": [
         "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge and waste activated sludge is pumped by airlift pump.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an...secondary sedimentation basin.",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
@@ -67,41 +96,43 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an aerobic digester",
+      "Sentence": "The waste activated sludge is aerobically digested",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "CentrifugalThickener",
       "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "secondary sedimentation basin",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return activated sludge and waste activated sludge is pumped by airlift pump",
+      "Sentence": "pumped to a centrifuge for partial thickening.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "stored in a 10,000-gallon underground storage tank prior to hauling to the Donald C. Tillman Water Reclamation Plant",
       "trigger_process": []
     },
     {
@@ -115,7 +146,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment is provided through coagulation",
+      "Sentence": "Tertiary treatment is provided through coagulation, rapid mix, flocculation, and sand filtration.",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -132,7 +163,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rapid mix",
+      "Sentence": "Tertiary treatment is provided through...rapid mix...",
       "trigger_process": []
     },
     {
@@ -146,7 +177,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flocculation",
+      "Sentence": "Tertiary treatment is provided through...flocculation...",
       "trigger_process": [
         "Flocculation"
       ]
@@ -158,13 +189,12 @@
         "Backwashing"
       ],
       "Role": [
-        "Tertiary",
-        "Backwash"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtration consists of three continuous backwash Dynasand\u00ae filters",
+      "Sentence": "Filtration consists of three continuous backwash Dynasand\u00ae filters.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -172,61 +202,25 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Disinfection",
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is provided by four ultraviolet lamps in series",
+      "Sentence": "Disinfection is provided by four ultraviolet lamps in series.",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pumped to a centrifuge for partial thickening",
-      "trigger_process": [
-        "Centrifuge",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Tank",
+      "Equipment": "MembraneBioreactor",
       "Process": null,
       "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The thickened, digested sludge is stored in a 10,000-gallon underground storage tank prior to hauling to the Donald C. Tillman Water Reclamation Plant",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "ActivatedSludge",
-        "MembraneProcess"
-      ],
-      "Role": [
-        "Secondary",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": [
@@ -234,9 +228,10 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger plans to upgrade the facility with a Membrane Bioreactor (MBR) that is capable of reducing the amount of nitrogen compounds including ammonia from the effluent discharge",
+      "Sentence": "The Discharger plans to upgrade the facility with a Membrane Bioreactor (MBR) that is capable of reducing the amount of nitrogen compounds including ammonia... The new treatment process is expected to be operational in 2026.",
       "trigger_process": [
-        "Membrane Bioreactor"
+        "Membrane Bioreactor",
+        "Unspecified Nutrient Removal"
       ]
     }
   ]

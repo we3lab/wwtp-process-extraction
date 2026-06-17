@@ -33,7 +33,7 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Reactor",
       "Process": [
         "ChemicalAddition"
       ],
@@ -67,6 +67,20 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -77,7 +91,6 @@
         "Secondary",
         "Anoxic",
         "Aerobic",
-        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -88,6 +101,7 @@
       "Location": "on-site",
       "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins. Each basin is divided into four sections referred to as 'quads.' The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions.",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -119,7 +133,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following the secondary clarifiers, the wastewater undergoes filtration. There are 16 separate mono media filters, 4 of which are dedicated to producing Title 22 unrestricted-use non-potable recycled water and 12 of which produce water suitable for discharge to San Francisco Bay.",
+      "Sentence": "There are 16 separate mono media filters, 4 of which are dedicated to producing Title 22 unrestricted-use non-potable recycled water and 12 of which produce water suitable for discharge to San Francisco Bay.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -140,11 +154,10 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -188,7 +201,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -210,8 +225,7 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -222,7 +236,7 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Reactor",
       "Process": [
         "Aeration"
       ],
@@ -304,7 +318,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
       "trigger_process": [
         "Biosolids Lagoon",
         "Unspecified Lagoon"
@@ -323,10 +337,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
@@ -346,7 +359,24 @@
       "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -478,8 +508,45 @@
       "Sentence": "This project will build a new digested sludge dewatering facility, including a new building, centrifuges, conveyors, truck bays, and polymer storage and dosing equipment is underway.",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Polymer Addition",
         "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing.",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing.",
+      "trigger_process": [
+        "Drying"
       ]
     }
   ]

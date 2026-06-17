@@ -1,95 +1,114 @@
 {
   "items": [
     {
-      "Equipment": null,
+      "Equipment": "Grinder",
       "Process": [
-        "Nitrification",
-        "Denitrification"
+        "Comminution"
       ],
       "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "A nitrification-denitrification process is currently under construction to achieve the final effluent limits",
+      "Sentence": "preliminary treatment (grinders, bar screening and grit removal)",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "rags and plastics by screening",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Grit is removed by settling",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Aeration"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "NitrogenRemoval"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "PhosphorusRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "replacement of the aerators in the four existing oxidation ditches",
+      "Sentence": "two oxidation ditches and one anaerobic tank...The aerobic zone provides oxygen for living microorganisms...The anoxic zone of the oxidation ditch denitrifies the waste stream",
       "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification",
         "Oxidation Ditch"
       ]
     },
     {
-      "Equipment": "VariableFrequencyDrive",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Aeration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "to include adjustable frequency drives",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Denitrification"
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anaerobic",
+        "NutrientRemoval",
+        "PhosphorusRemoval"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "anoxic tank",
+      "Sentence": "anaerobic tank...the anaerobic/aerobic zones remove phosphorus biologically",
       "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
+        "Anaerobic Digestion",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Denitrification",
-        "Filtration"
+        "Sedimentation"
       ],
       "Role": [
-        "NitrogenRemoval",
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.97,
-      "Sentence": "Two new Parkson Denitrification filters are 98% complete.",
+      "Sentence": "Final clarification in secondary clarifiers",
       "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
+        "Secondary Clarification"
       ]
     },
     {
@@ -98,14 +117,201 @@
         "Recirculation"
       ],
       "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from secondary clarifiers is pumped either to the oxidation ditches (return activated sludge), or directly to the belt press for dewatering (waste activated sludge)",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The belt press dewaters waste activated sludge typically to 14 percent solids",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "which is then composted in the sludge drying beds",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Permittee treats the dried sludge using wind-row composting on-site during dry weather",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauls sludge to the Liberty Compost Facility Synagro at Lost Hills, California, during wet weather",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and bar screenings are hauled off-site for disposal at the Toland Landfill located at Santa Paula, California",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "tertiary filtration...passing the water through a bed of granular material such as the sand used at the Ojai Valley WWTP",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Disinfection",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "disinfection with ultraviolet light during normal operation",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Disinfection",
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sodium hypochlorite is used to disinfect the effluent...Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Equalization Basins: These basins allow for adjustments of flow to the filters",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
         "Backwash"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.99,
-      "Sentence": "The backwash pump station for the two new denitrification filters to send filter backwash water back to the head of the plant is 100% complete.",
+      "Sentence": "The backwash pump station for the two new denitrification filters to send filter backwash water back to the head of the plant is 100% complete",
       "trigger_process": []
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "Denitrification",
+        "MediaFiltration"
+      ],
+      "Role": [
+        "NitrogenRemoval",
+        "NutrientRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Two new Parkson Denitrification filters are 98% complete",
+      "trigger_process": [
+        "Denitrification",
+        "Denitrification Filter",
+        "Media Filtration",
+        "Unspecified AS"
+      ]
     },
     {
       "Equipment": "Tank",
@@ -113,14 +319,13 @@
         "ChemicalAddition"
       ],
       "Role": [
-        "Storage",
-        "Feed"
+        "Feed",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Two micro \u201cC\u201d carbon holding tanks have been installed",
+      "Sentence": "Two micro \u201cC\u201d carbon holding tanks have been installed along with a chemical feed pump system, which has been used to deliver carbon to the oxidation ditches",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
@@ -136,26 +341,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "chemical feed pump system, which has been used to deliver carbon to the oxidation ditches",
+      "Sentence": "a chemical feed pump system, which has been used to deliver carbon to the oxidation ditches and to facilitate denitrification",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "VariableFrequencyDrive",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Aerobic",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "including additional aeration",
+      "Sentence": "replacement of the aerators in the four existing oxidation ditches to include adjustable frequency drives (not started yet)",
       "trigger_process": []
     }
   ]

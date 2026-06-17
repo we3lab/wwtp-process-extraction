@@ -3,7 +3,7 @@
     {
       "Equipment": "Screen",
       "Process": [
-        "Screening"
+        "Process-Screening"
       ],
       "Role": [
         "Pretreatment"
@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process includes screening and grit removal,",
+      "Sentence": "The treatment process includes screening and grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -20,16 +19,17 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process includes screening and grit removal,",
+      "Sentence": "The treatment process includes screening and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -37,7 +37,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Primary"
@@ -45,8 +45,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary clarification,",
+      "Sentence": "primary clarification",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,44 +53,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "biological treatment using trickling towers and/or aeration basins (parallel treatment processes),",
-      "trigger_process": [
-        "Trickling Filter"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "biological treatment using trickling towers and/or aeration basins (parallel treatment processes),",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
+        "Process-TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -99,8 +61,40 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "secondary clarification,",
+      "Sentence": "biological treatment using trickling towers",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Process-Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological treatment using ... aeration basins (parallel treatment processes)",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Process-Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -108,8 +102,9 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Process-Chlorination",
+        "Process-Disinfection",
+        "Process-Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -119,26 +114,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disinfection using sodium hypochlorite,",
+      "Sentence": "disinfection using sodium hypochlorite, and dechlorination using sodium bisulfite",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and dechlorination using sodium bisulfite.",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -151,23 +129,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "stored at a pump station (4.0 MG) and in an onsite storage basin (16 MG) for treatment after the high flows subside.",
+      "Sentence": "stored at a pump station (4.0 MG)",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "stored at a pump station (4.0 MG) and in an onsite storage basin (16 MG) for treatment after the high flows subside.",
+      "Sentence": "onsite storage basin (16 MG) for treatment after the high flows subside",
       "trigger_process": [
         "Equalization"
       ]
@@ -175,7 +152,7 @@
     {
       "Equipment": "FlocculationBasin",
       "Process": [
-        "Flocculation"
+        "Process-Flocculation"
       ],
       "Role": [
         "Tertiary"
@@ -183,8 +160,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Recycled Water Facility\u2019s treatment process consists of flocculation and clarification, sand filtration, and chlorination.",
+      "Sentence": "The Recycled Water Facility's treatment process consists of flocculation and clarification",
       "trigger_process": [
         "Flocculation"
       ]
@@ -192,7 +168,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Tertiary"
@@ -200,8 +176,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Recycled Water Facility\u2019s treatment process consists of flocculation and clarification, sand filtration, and chlorination.",
+      "Sentence": "The Recycled Water Facility's treatment process consists of flocculation and clarification",
       "trigger_process": [
         "Unspecified Clarification"
       ]
@@ -209,7 +184,7 @@
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration"
+        "Process-RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -217,47 +192,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Recycled Water Facility\u2019s treatment process consists of flocculation and clarification, sand filtration, and chlorination.",
+      "Sentence": "The Recycled Water Facility's treatment process consists of ... sand filtration",
       "trigger_process": [
         "Media Filtration"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Recycled Water Facility\u2019s treatment process consists of flocculation and clarification, sand filtration, and chlorination.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "Process-AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary solids are sent to the anaerobic digesters,",
+      "Sentence": "Primary solids are sent to the anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -265,24 +220,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "secondary solids are first concentrated using gravity belt thickeners,",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
+        "Process-Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -292,11 +230,45 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Sentence": "secondary solids are first concentrated using gravity belt thickeners",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Process-Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
       "Sentence": "Digested biosolids are dewatered by centrifuge",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sent to a separate composting facility",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -309,9 +281,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "hauled by truck for land application,",
+      "Location": "off-site",
+      "Sentence": "hauled by truck for land application",
       "trigger_process": [
         "Land Application"
       ]
@@ -324,49 +295,61 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "or sent to a landfill by a contractor.",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings from the wastewater treatment process are also sent to a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Landfill"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Grit and screenings from the wastewater treatment process are also sent to a landfill.",
+      "Sentence": "All stormwater from the plant property is directed to the Emergency Retention Basin and pumped to the trickling filter for secondary treatment",
       "trigger_process": [
-        "Biosolids Landfill",
-        "Grit Removal"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "Process-AnaerobicDigestion"
       ],
       "Role": [
-        "Anaerobic",
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Implement the East County Bioenergy Project, an organics co-digestion project",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Cogenerator",
+      "Process": [
+        "Process-Cogeneration"
+      ],
+      "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Implement the East County Bioenergy Project, an organics co-digestion project that will divert organic waste from local landfills,",
+      "Sentence": "Implement the East County Bioenergy Project ... enable the District to become energy self-sufficient",
       "trigger_process": [
-        "Anaerobic Digestion"
+        "Cogeneration"
       ]
     },
     {
@@ -378,26 +361,8 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Replace sodium bisulfite storage tanks that are at the end of their service lives;",
+      "Sentence": "Replace sodium bisulfite storage tanks that are at the end of their service lives",
       "trigger_process": []
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Rehabilitate the plant\u2019s headworks and grit removal structures;",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
     }
   ]
 }

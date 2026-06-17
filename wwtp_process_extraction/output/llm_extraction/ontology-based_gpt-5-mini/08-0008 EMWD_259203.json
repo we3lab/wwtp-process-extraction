@@ -1,6 +1,45 @@
 {
   "items": [
     {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Process-Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment systems employed at each RWRF consist of primary, secondary, and tertiary wastewater treatment processes."
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Process-ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment systems employed at each RWRF consist of primary, secondary, and tertiary wastewater treatment processes."
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "Process-MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment systems employed at each RWRF consist of primary, secondary, and tertiary wastewater treatment processes."
+    },
+    {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
@@ -9,13 +48,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Deepen 4 of the existing 18 ponds to increase storage capacity by 30 MG."
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Dewatering"
+        "Process-Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -25,27 +63,53 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Sludge thickening, Rotary Drum Thickener (RDT) expansion to 20 MGD"
     },
     {
       "Equipment": "Screen",
       "Process": [
-        "Screening"
+        "Process-Screening"
       ],
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Replacement of influent screens with 3 new bar screens"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Process-Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "One new screenings washer/compactor"
+    },
+    {
+      "Equipment": "Cogenerator",
+      "Process": [
+        "Process-Cogeneration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "By Dec 2008: Fuel Cells"
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Secondary"
@@ -53,13 +117,12 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Secondary clarifier expansion"
+      "Sentence": "By Sept 2011: Secondary clarifier expansion"
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "Process-MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -67,28 +130,28 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.99,
-      "Sentence": "Tertiary filter expansion to 22.0 MGD annual average (24.2 maximum month)"
+      "Sentence": "By Sept 2011: Tertiary filter expansion to 22.0 MGD annual average"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Process-Chlorination",
+        "Process-Disinfection"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Two new chlorine contact basins"
+      "Sentence": "By Sept 2011: Two new chlorine contact basins"
     },
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Pretreatment"
@@ -96,22 +159,20 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.97,
-      "Sentence": "One new Plant 2 vortex grit basin"
+      "Sentence": "By Oct 2012: One new Plant 2 vortex grit basin"
     },
     {
       "Equipment": "Pump",
       "Process": [
-        "Recirculation"
+        "Process-Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "RAS/WAS pumping capacity expansion"
+      "Sentence": "By Oct 2012: RAS/WAS pumping capacity expansion"
     },
     {
       "Equipment": "Pump",
@@ -122,56 +183,50 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Filter Influent Pumping expansion"
+      "Sentence": "By Oct 2012: Filter Influent Pumping expansion"
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
       "Process": [
-        "Coagulation",
-        "Flocculation"
+        "Process-Coagulation",
+        "Process-Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Coagulant-Alum",
         "Flocculant-Polymer"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Additional alum and polymer pump facility"
+      "Sentence": "By Oct 2012: Additional alum and polymer pump facility"
     },
     {
       "Equipment": "Digester",
       "Process": [
-        "Digestion"
+        "Process-Digestion"
       ],
       "Role": [
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Sludge digestion expansion"
+      "Sentence": "By Oct 2012: Sludge digestion expansion"
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Digested Sludge Storage"
+      "Sentence": "By Oct 2012: Digested Sludge Storage"
     }
   ]
 }

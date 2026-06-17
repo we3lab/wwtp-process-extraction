@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of influent screening, grit removal, primary clarification..."
+      "Sentence": "The wastewater treatment process consists of influent screening..."
     },
     {
       "Equipment": "GritChamber",
@@ -25,8 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of influent screening, grit removal, primary clarification..."
+      "Sentence": "The wastewater treatment process consists of ... grit removal..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,16 +37,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of influent screening, grit removal, primary clarification..."
+      "Sentence": "The wastewater treatment process consists of ... primary clarification..."
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "MLE",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "MLE"
       ],
       "Role": [
         "Secondary",
@@ -60,7 +57,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "activated sludge biological treatment (with Modified Ludzack-Ettinger process for nitrification/denitrification)"
     },
     {
@@ -74,14 +70,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of influent screening, grit removal, primary clarification, activated sludge biological treatment..., secondary clarification..."
+      "Sentence": "...secondary clarification..."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -91,23 +87,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of ... disinfection with sodium hypochlorite..."
+      "Sentence": "disinfection with sodium hypochlorite, and dechlorination using sodium bisulfite."
     },
     {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The wastewater treatment process consists of ... disinfection with sodium hypochlorite, and dechlorination using sodium bisulfite."
+      "Sentence": "The treated effluent (disinfected and dechlorinated) is pumped through an effluent force main to Rodeo..."
     },
     {
       "Equipment": "GravityThickener",
@@ -122,8 +111,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger thickens primary and secondary sludge with a gravity thickener,"
+      "Sentence": "The Discharger thickens primary and secondary sludge with a gravity thickener..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -140,14 +128,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "treats the combined sludge with anaerobic digestion to a Class B level,"
+      "Sentence": "treats the combined sludge with anaerobic digestion to a Class B level..."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -157,13 +144,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
       "Sentence": "and dewaters the combined sludge with a centrifuge."
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
@@ -172,8 +157,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Biosolids are currently hauled to the Keller Canyon Landfill for disposal."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": null,
+      "Sentence": "The Discharger is considering composting ... of biosolids for future disposal practices."
     },
     {
       "Equipment": null,
@@ -185,9 +182,8 @@
       ],
       "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "The Discharger is considering composting and land application of biosolids for future disposal practices."
+      "Location": null,
+      "Sentence": "The Discharger is considering ... land application of biosolids for future disposal practices."
     }
   ]
 }

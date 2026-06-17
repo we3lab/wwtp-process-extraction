@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary sedimentation, activated sludge biological treatment with nitrification and denitrification...",
+      "Sentence": "Treatment at the Saugus WRP consists of influent screening, primary sedimentation, activated sludge biological treatment...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -46,18 +46,15 @@
       "Role": [
         "Secondary",
         "NitrogenRemoval",
-        "NutrientRemoval",
-        "Aerobic",
-        "Anoxic"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...activated sludge biological treatment with nitrification and denitrification...biological nutrient removal system with a nitrogen denitrification process (NDN)...",
+      "Sentence": "activated sludge biological treatment with nitrification and denitrification... biological nutrient removal system with a nitrogen denitrification process (NDN)",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -73,7 +70,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, dual media pressure filtration...",
+      "Sentence": "activated sludge biological treatment with nitrification and denitrification, secondary sedimentation, dual media pressure filtration...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -91,7 +88,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...dual media pressure filtration, disinfection (UV and/or chloramination), and dechlorination as needed.",
+      "Sentence": "secondary sedimentation, dual media pressure filtration, disinfection (UV and/or chloramination), and dechlorination as needed",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -110,9 +107,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "SCVSD installed the UV disinfection system at the Saugus WRP on July 20, 2021...UV disinfection will be a new disinfection process used at the Saugus WRP to reduce chloride discharge to the Santa Clara River.",
-      "Source": "permit_text",
-      "Website": null,
+      "Sentence": "SCVSD installed the UV disinfection system at the Saugus WRP on July 20, 2021",
+      "Source": "both",
+      "Website": "https://www.lacsd.org/services/wastewater-programs-permits/santa-clarita-chloride-compliance",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -121,8 +118,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -132,12 +128,32 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Hypochlorite and ammonia are used to disinfect treated effluent...the chloramination disinfection system will be retained as a backup disinfection process. Treated wastewater discharged to Santa Clara River is dechlorinated with sodium bisulfite.",
+      "Sentence": "Hypochlorite and ammonia are used to disinfect treated effluent at the Saugus WRP... Additional disinfectant may be dosed prior to the serpentine chlorine contact chamber. UV disinfection will be a new disinfection process... however, the chloramination disinfection system will be retained as a backup disinfection process.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
         "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "ReducingAgent"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated wastewater discharged to Santa Clara River is dechlorinated with sodium bisulfite, to remove residual chlorine when chloramines are used as the disinfecting agent.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Dechlorination",
+        "Reduction"
       ]
     },
     {
@@ -153,7 +169,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids from both the Valencia and the Saugus WRPs are processed at the Valencia WRP...Waste activated sludge from both the Saugus and Valencia WRPs is thickened by dissolved air flotation.",
+      "Sentence": "Waste activated sludge from both the Saugus and Valencia WRPs is thickened by dissolved air flotation. Biosolids from both the Valencia and the Saugus WRPs are processed at the Valencia WRP.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -174,7 +190,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered...",
+      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -194,11 +210,47 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting...",
+      "Sentence": "Thickened waste activated sludge and primary sludge are combined, digested anaerobically, dewatered and then reused through composting.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dewatered and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the permittee may also dispose of biosolids in a landfill or by direct land application",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -209,12 +261,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...dewatered and then reused through composting, although the permittee may also dispose of biosolids in a landfill or by direct land application.",
+      "Sentence": "the permittee may also dispose of biosolids in a landfill or by direct land application",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [

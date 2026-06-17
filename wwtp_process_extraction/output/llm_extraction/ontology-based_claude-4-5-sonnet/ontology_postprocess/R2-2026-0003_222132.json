@@ -3,7 +3,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Adsorption"
+        "GasTransfer"
       ],
       "Role": [
         "Pretreatment"
@@ -61,6 +61,20 @@
       "trigger_process": [
         "Primary Clarification"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside.",
+      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -131,24 +145,9 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": [
-        "Storage"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "DisinfectionUnit",
       "Process": [
-        "Disinfection",
-        "Chlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -158,11 +157,11 @@
       "Location": "on-site",
       "Sentence": "Primary effluent may also be diverted around biological treatment, disinfected, and 'blended' with disinfected biologically treated effluent.",
       "trigger_process": [
-        "Chlorination"
+        "Unspecified Disinfection"
       ]
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "GravityBeltThickener",
       "Process": [
         "Filtration"
       ],
@@ -212,9 +211,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "Sentence": "The digested sludge is then dewatered in one of five centrifuges.",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
       ]
     },
@@ -227,9 +227,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "Sentence": "The resulting material, referred to as biosolids, is hauled offsite by a contractor for beneficial reuse as soil amendment.",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {

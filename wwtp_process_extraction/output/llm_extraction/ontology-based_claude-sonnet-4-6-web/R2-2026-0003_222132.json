@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
+      "Sentence": "wastewater treatment process consists of odor control, screening, grit removal, primary clarification",
       "Source": "permit_text",
       "Website": null
     },
@@ -26,9 +26,41 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...screening, grit removal, primary clarification, high purity oxygen activated sludge...",
+      "Sentence": "wastewater treatment process consists of odor control, screening, grit removal, primary clarification",
       "Source": "permit_text",
       "Website": null
+    },
+    {
+      "Equipment": "BiologicalAeratedFilter",
+      "Process": [
+        "BiologicallyActiveFiltration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wastewater treatment process consists of odor control, screening",
+      "Source": "both",
+      "Website": "https://www.ebmud.com/wastewater/collection-treatment/whats-smell"
+    },
+    {
+      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Process": [
+        "GranularActivatedCarbon"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "OdorControlAgent-ActivatedCarbon"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wastewater treatment process consists of odor control, screening",
+      "Source": "both",
+      "Website": "https://www.ebmud.com/wastewater/collection-treatment/whats-smell"
     },
     {
       "Equipment": "SedimentationTank",
@@ -41,7 +73,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification...",
+      "Sentence": "grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification",
       "Source": "permit_text",
       "Website": null
     },
@@ -49,33 +81,33 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside",
+      "Sentence": "wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": [
         "HighPurityOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...high purity oxygen activated sludge, secondary clarification...",
-      "Source": "permit_text",
-      "Website": null
+      "Sentence": "high purity oxygen activated sludge",
+      "Source": "both",
+      "Website": "https://www.cwea.org/news/a-high-purity-oxygen-activated-sludge-system-provides-nutrient-removal-for-ebmud/"
     },
     {
       "Equipment": "SedimentationTank",
@@ -88,7 +120,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination",
+      "Sentence": "high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination",
       "Source": "permit_text",
       "Website": null
     },
@@ -99,30 +131,13 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, and dechlorination. The 'blended' wastewater is then dechlorinated prior to being discharged to Central San Francisco Bay through a deepwater outfall.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
+      "Sentence": "secondary clarification, disinfection, and dechlorination",
       "Source": "permit_text",
       "Website": null
     },
@@ -158,15 +173,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges. The digesters are maintained at a certain residence time and temperature to meet U.S. EPA Class B standards.",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
       "Source": "permit_text",
       "Website": null
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -191,7 +206,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the resulting material, referred to as biosolids, is hauled offsite by a contractor for beneficial reuse as soil amendment",
+      "Sentence": "biosolids that are land applied in dry weather or composted",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "biosolids that are land applied in dry weather or composted",
       "Source": "permit_text",
       "Website": null
     },
@@ -206,7 +236,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project",
+      "Sentence": "generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project",
       "Source": "permit_text",
       "Website": null
     },
@@ -221,7 +251,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project",
+      "Sentence": "generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project",
       "Source": "permit_text",
       "Website": null
     },
@@ -240,7 +270,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger is conducting a multi-year pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal.",
+      "Sentence": "pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal... equipment upgrades and/or new facilities for supplemental treatment",
       "Source": "both",
       "Website": "https://www.cwea.org/news/a-high-purity-oxygen-activated-sludge-system-provides-nutrient-removal-for-ebmud/"
     }

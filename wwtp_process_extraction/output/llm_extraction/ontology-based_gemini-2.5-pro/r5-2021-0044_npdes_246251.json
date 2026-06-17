@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of ... primary clarification, biological treatment by activated sludge..."
+      "Sentence": "The treatment system at the Facility consists of...primary clarification, biological treatment by activated sludge..."
     },
     {
       "Equipment": "AerationBasin",
@@ -50,7 +50,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of ... biological treatment by activated sludge, secondary clarification..."
+      "Sentence": "The treatment system at the Facility consists of...biological treatment by activated sludge, secondary clarification..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -63,31 +63,47 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of ... secondary clarification, disinfection, filtration, and dechlorination."
+      "Sentence": "The treatment system at the Facility consists of...secondary clarification, disinfection, filtration..."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Disinfection",
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of ... disinfection, filtration, and dechlorination."
+      "Sentence": "The treatment system at the Facility consists of...disinfection, filtration, and dechlorination."
     },
     {
       "Equipment": "Filter",
       "Process": [
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of ... disinfection, filtration, and dechlorination."
+      "Sentence": "The treatment system at the Facility consists of...disinfection, filtration, and dechlorination."
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system at the Facility consists of...filtration, and dechlorination."
     },
     {
       "Equipment": "Reservoir",
@@ -147,17 +163,6 @@
       "Sentence": "Dried biosolids are hauled to a landfill."
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "One project is to replace the current influent pump station for larger capacity during wet weather flows."
-    },
-    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -177,6 +182,7 @@
         "Denitrification"
       ],
       "Role": [
+        "Secondary",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -188,10 +194,11 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -215,7 +222,9 @@
       "Process": [
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",

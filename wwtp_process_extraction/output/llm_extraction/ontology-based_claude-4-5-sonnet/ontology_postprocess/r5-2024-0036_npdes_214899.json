@@ -70,7 +70,8 @@
       "Location": "on-site",
       "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
       "trigger_process": [
-        "Nitrification"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -133,21 +134,19 @@
     {
       "Equipment": "Reactor",
       "Process": [
-        "Digestion"
+        "Hydrolysis"
       ],
       "Role": [
         "SolidsHandling",
         "Stabilization"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids.",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "Digester",
@@ -156,8 +155,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Detention"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -186,6 +184,7 @@
       "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge.",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
       ]
     },
@@ -215,6 +214,20 @@
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
+      "trigger_process": [
+        "Composting"
       ]
     }
   ]

@@ -63,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarifier",
+      "Sentence": "primary clarifier, two activated sludge aeration basins",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -83,7 +83,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two activated sludge aeration basins",
+      "Sentence": "two activated sludge aeration basins, two secondary clarifiers",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -101,32 +101,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two secondary clarifiers",
+      "Sentence": "two activated sludge aeration basins, two secondary clarifiers",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a chlorine contact chamber",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Chlorination"
       ]
     },
     {
@@ -148,20 +127,25 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "ChlorinationUnit",
       "Process": [
+        "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and dechlorination",
+      "Sentence": "a chlorine contact chamber, anthracite bed filter, and dechlorination",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -187,8 +171,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltThickener",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -203,11 +188,11 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Thickening"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Tank",
       "Process": null,
       "Role": [
         "SolidsHandling",
@@ -221,15 +206,12 @@
       "Sentence": "stockpiled in a sludge holding bed. The holding bed contains drains which permit leachate to flow back to the head of the liquid treatment train",
       "Source": "permit_text",
       "Website": null,
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -240,10 +222,10 @@
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Biosolids are periodically removed and hauled by Liberty Composting to its 162-acre composting facility in Kern County, California",
-      "Source": "both",
-      "Website": "https://summerlandsd.org/about-us/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     }
   ]

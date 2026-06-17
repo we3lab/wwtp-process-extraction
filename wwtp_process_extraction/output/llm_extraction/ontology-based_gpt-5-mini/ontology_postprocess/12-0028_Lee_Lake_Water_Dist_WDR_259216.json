@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, seven sequencing batch reactors (activated sludge/secondary clarification), flow equalization, rapid mix/flocculation, filtration, chlorination and dechlorination.",
+      "Sentence": "The wastewater treatment process consists of screening, grit removal...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, seven sequencing batch reactors (activated sludge/secondary clarification), flow equalization, rapid mix/flocculation, filtration, chlorination and dechlorination.",
+      "Sentence": "The wastewater treatment process consists of screening, grit removal...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -37,8 +35,7 @@
     {
       "Equipment": "SequencingBatchReactor",
       "Process": [
-        "ActivatedSludge",
-        "Sedimentation"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
@@ -46,11 +43,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "seven sequencing batch reactors (activated sludge/secondary clarification)",
       "trigger_process": [
-        "SBR",
-        "Secondary Clarification"
+        "SBR"
       ]
     },
     {
@@ -62,8 +57,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The wastewater treatment process consists of ... flow equalization ...",
+      "Sentence": "flow equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -73,12 +67,13 @@
       "Process": [
         "Coagulation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The wastewater treatment process consists of ... rapid mix/flocculation ...",
+      "Sentence": "rapid mix/flocculation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -89,12 +84,13 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The wastewater treatment process consists of ... rapid mix/flocculation ...",
+      "Sentence": "rapid mix/flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -110,8 +106,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, seven sequencing batch reactors (activated sludge/secondary clarification), flow equalization, rapid mix/flocculation, filtration, chlorination and dechlorination.",
+      "Sentence": "filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -129,8 +124,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of ... filtration, chlorination and dechlorination.",
+      "Sentence": "chlorination and dechlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -143,7 +137,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -151,8 +144,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge is conveyed to three aerobic digesters and dewatered prior to disposal.",
+      "Sentence": "waste activated sludge is conveyed to three aerobic digesters",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -171,18 +163,17 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Digested sludge is dewatered with a centrifuge and the sludge cake (Class B Biosolids) is delivered directly to a local composting facility.",
+      "Sentence": "Digested sludge is dewatered with a centrifuge",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -192,11 +183,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "The Facility can also utilize on-site lined drying beds as a secondary method of dewatering.",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sludge cake (Class B Biosolids) is delivered directly to a local composting facility",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -204,12 +209,13 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Filtrate from the dewatering process is returned to the headworks of the treatment facility.",
+      "Sentence": "Filtrate from the dewatering process is returned to the headworks",
       "trigger_process": []
     },
     {
@@ -221,8 +227,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Undisinfected secondary treated wastewater may be discharged to an unlined storage/percolation basin located in the northwest portion of the Facility.",
+      "Sentence": "Undisinfected secondary treated wastewater may be discharged to an unlined storage/percolation basin",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

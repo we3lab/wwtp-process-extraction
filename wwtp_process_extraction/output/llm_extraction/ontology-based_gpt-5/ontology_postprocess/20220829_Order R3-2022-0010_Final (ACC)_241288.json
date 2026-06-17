@@ -11,24 +11,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "processed through macerators (i.e., channel grinders)",
+      "Sentence": "Influent enters the headworks of the Facility and is processed through macerators (i.e., channel grinders)",
       "trigger_process": [
         "Comminution"
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...and into a wet well.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two 370,000-gallon aeration basins",
+      "Sentence": "the secondary treatment system, which consists of two 370,000-gallon aeration basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -44,7 +54,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four rectangular clarifiers",
+      "Sentence": "...four rectangular clarifiers...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -56,7 +66,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -74,46 +84,17 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "ReducingAgent"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dechlorination in an effluent channel with sodium bisulfite",
       "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "UltrafiltrationUnit",
-      "Process": [
-        "Ultrafiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "an ultrafiltration membrane",
-      "trigger_process": [
-        "Ultrafiltration"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "followed by a reverse osmosis membrane",
-      "trigger_process": [
-        "Reverse Osmosis"
+        "Dechlorination",
+        "Reduction"
       ]
     },
     {
@@ -124,12 +105,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A side stream rotary micro screening process removes rags",
+      "Sentence": "A side stream rotary micro screening process removes rags and foreign materials from the tank",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -147,7 +126,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "prior to WAS being pumped to the DAFT",
+      "Sentence": "prior to WAS being pumped to the DAFT.",
       "trigger_process": [
         "Thickening"
       ]
@@ -192,18 +171,94 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "biosolids are stockpiled in holding bins prior to disposal by composting facility.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sending disinfected secondary effluent water to an ultrafiltration membrane",
+      "trigger_process": [
+        "Ultrafiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "followed by a reverse osmosis membrane to reduce total dissolved solids.",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "biosolids are stockpiled in holding bins prior to disposal by composting facility",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
+      "Location": "on-site",
+      "Sentence": "The processed water is stored in an onsite reservoir",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Settled sludge from the secondary clarifiers is collected in the Return Activated Sludge (RAS)/Waste Activated Sludge (WAS) Tank.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "prior to flowing to the subnate tank and being combined with the main influent flow",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Plant return flows from the belt press and waste stream mix with influent in the wet well.",
+      "trigger_process": []
     }
   ]
 }

@@ -12,8 +12,8 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens...",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -29,9 +29,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens, grit chambers...",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Sentence": "...grit chambers, chemical addition, primary clarifiers...",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Grit Removal"
       ]
@@ -55,6 +55,23 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...flow equalization/emergency storage basins",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -65,28 +82,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary and primary treatment at RP-1 includes...primary clarifiers...",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
-      "trigger_process": [
-        "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Preliminary and primary treatment at RP-1 includes...flow equalization/emergency storage basins.",
+      "Sentence": "...primary clarifiers, and flow equalization/emergency storage basins",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Equalization"
+        "Primary Clarification"
       ]
     },
     {
@@ -107,8 +107,8 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Secondary treatment consists of aeration trains with oxic/anoxic zones and secondary clarifiers.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -127,8 +127,8 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Secondary treatment consists of aeration trains with oxic/anoxic zones and secondary clarifiers.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -189,9 +189,9 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -200,10 +200,10 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sedimentation, filtration, chlorination, and dechlorination.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -221,9 +221,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment trains consist of...chlorination, and dechlorination.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sedimentation, filtration, chlorination, and dechlorination.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -263,8 +263,8 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Thickening"
       ]
@@ -284,8 +284,8 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -310,6 +310,27 @@
       ]
     },
     {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Digested sludge is dewatered with belt presses.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
       "Equipment": "CentrifugalThickener",
       "Process": [
         "Centrifugation"
@@ -322,9 +343,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids treatment at RP-1 includes...centrifuge dewatering.",
-      "Source": "both",
-      "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
+      "Sentence": "Solids treatment at RP-1 includes...centrifuge dewatering. Centrifuge concentrate is pumped to the Non-Reclaimable Waste System (NRWS) line...",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Centrifuge",
         "Thickening"
@@ -333,19 +354,21 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "biosolids are hauled to the Inland Empire Regional Composting Facility in the city of Rancho Cucamonga",
+      "Sentence": "biosolids are hauled to the Inland Empire Regional Composting Facility in the city of Rancho Cucamonga for further treatment to produce Class A compost",
       "Source": "web_search",
       "Website": "https://www.ieua.org/regional-water-recycling-plant-no-1/",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     }
   ]

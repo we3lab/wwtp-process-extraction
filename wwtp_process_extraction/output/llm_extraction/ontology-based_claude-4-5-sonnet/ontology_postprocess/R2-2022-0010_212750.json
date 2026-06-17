@@ -19,8 +19,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -100,6 +100,7 @@
       "Location": "on-site",
       "Sentence": "The Discharger adds sodium bisulfite in the tertiary effluent clearwell prior to routing tertiary-treated wastewater to either the Riverside Ponds or the 20-million-gallon Effluent Storage Pond.",
       "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -113,7 +114,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four Riverside Ponds that operate in series...From the Riverside Ponds, tertiary-treated wastewater is discharged via Discharge Point 001 to the Napa River.",
+      "Sentence": "From the Riverside Ponds, tertiary-treated wastewater is discharged via Discharge Point 001 to the Napa River.",
       "trigger_process": [
         "Polishing Lagoon"
       ]
@@ -122,14 +123,15 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Tertiary-treated wastewater stored in the 20-million-gallon Effluent Storage Pond is routed to the Riverside Ponds when discharge capacity is available.",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Polishing Lagoon"
       ]
     },
     {
@@ -164,6 +166,7 @@
       "Location": "on-site",
       "Sentence": "The Discharger adds sodium bisulfite to dechlorinate the wastewater prior to discharge to the Napa River via Discharge Point 002.",
       "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -225,8 +228,7 @@
       "Location": "on-site",
       "Sentence": "Sludge that settles to the bottom of the clarifiers is sent back to the primary distribution structure, located before the aeration basins, or to a 72,000-gallon-capacity sludge holding tank and then to the sludge drying beds.",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
@@ -248,7 +250,25 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility (Central Valley Composting).",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "LandApplication"
       ],
       "Role": [
@@ -265,22 +285,17 @@
       ]
     },
     {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility (Central Valley Composting).",
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Rehabilitate or replace the Riverside Ponds (required by CDO Provision 2).",
       "trigger_process": [
-        "Anaerobic Digestion"
+        "Unspecified Lagoon"
       ]
     },
     {

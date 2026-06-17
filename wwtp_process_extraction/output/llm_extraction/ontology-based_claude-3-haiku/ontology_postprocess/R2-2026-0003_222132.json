@@ -52,15 +52,11 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": [
         "HighPurityOxygen"
@@ -69,9 +65,6 @@
       "Location": "on-site",
       "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination.",
       "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Nitrification",
         "Pure Oxygen"
       ]
     },
@@ -102,7 +95,8 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Disinfectant-Chlorine",
+        "pHAdjuster-SodiumBisulfite"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -115,7 +109,6 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -153,8 +146,7 @@
     {
       "Equipment": "CentrifugalThickener",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -166,24 +158,24 @@
       "Location": "on-site",
       "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
       "trigger_process": [
-        "Centrifuge",
         "Thickening"
       ]
     },
     {
-      "Equipment": "MicrofiltrationUnit",
+      "Equipment": "MembraneAeratedBiofilmReactor",
       "Process": [
-        "Microfiltration"
+        "Biofiltration"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project.",
+      "Sentence": "The Discharger is conducting a multi-year pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal. If the pilot is successful, the Discharger could implement changes ranging from simple process updates to equipment upgrades and/or new facilities for supplemental treatment.",
       "trigger_process": [
-        "Microfiltration"
+        "Unspecified FFR",
+        "Unspecified Filtration"
       ]
     }
   ]

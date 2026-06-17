@@ -6,7 +6,8 @@
         "Screening"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -21,7 +22,8 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -33,7 +35,7 @@
     {
       "Equipment": "MixingBasin",
       "Process": [
-        "Mixing",
+        "ActivatedSludge",
         "Denitrification"
       ],
       "Role": [
@@ -51,9 +53,9 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
         "ActivatedSludge",
-        "Nitrification"
+        "Nitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -69,7 +71,7 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Ultrafiltration"
+        "Microfiltration"
       ],
       "Role": [
         "Tertiary"
@@ -101,7 +103,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -129,16 +132,18 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Retention"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks. The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids.",
-      "Source": "both",
-      "Website": "https://watercollaborativedelivery.org/project/clovis-sewage-treatment-and-water-reclamation-facility-ca/"
+      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids.",
+      "Source": "permit_text",
+      "Website": null
     },
     {
       "Equipment": "Digester",
@@ -147,6 +152,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Detention"
       ],
       "Substance": [
@@ -159,10 +165,10 @@
       "Website": null
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -184,9 +190,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill.",
@@ -201,12 +205,25 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
       "Source": "permit_text",
       "Website": null
     }

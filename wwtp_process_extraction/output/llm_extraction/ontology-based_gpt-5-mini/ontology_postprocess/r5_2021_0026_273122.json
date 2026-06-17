@@ -1,41 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Residual solids (i.e., sludge) from the wastewater treatment process will collect on the bottom of the ponds over time.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation",
-        "Mixing"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Screened influent entering the system flows to the recirculating pump station where it is mixed with treated effluent and sent to the treatment ponds.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -46,36 +11,128 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The new headworks includes a mechanical bar screen and compactor.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility includes an influent pump station...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
       "Process": [
-        "Landfill"
+        "Recirculation"
       ],
       "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screened influent ... flows to the recirculating pump station where it is mixed with treated effluent and sent to the treatment ponds.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility includes ... two irrigation pump stations...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the pasture areas are ... equipped with a tailwater return system, which collects all excess runoff ... and returns it to the WWTF at the recirculating station for the ponds.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "BiologicalProcess",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval",
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Screenings collected at the headworks are deposited in a dumpster and hauled off to a local landfill for disposal.",
+      "Location": "on-site",
+      "Sentence": "The Facility includes ... four large facultative treatment ponds (Ponds 1, 2, 5, and 6)",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Biosolids Lagoon",
+        "Secondary Clarification",
+        "Unspecified Lagoon",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "Evaporation",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility includes ... three effluent storage/disposal ponds (Ponds 3, 4, and 7). The Facility relies on evapotranspiration, evaporation, and percolation for effluent disposal.",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent is applied to the LAAs via flood irrigation during the irrigation season.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "BiosolidsDisposal",
-        "Landfill"
+        "Landfill",
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -85,31 +142,26 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "According to the Discharger, accumulated sludge in the ponds is monitored regularly and, when necessary, the individual pond is drained, and the sludge hauled off to a landfill or nearby composting facility for disposal.",
+      "Sentence": "the individual pond is drained, and the sludge hauled off to a landfill or nearby composting facility for disposal ... expected to occur sometime within the next five years.",
       "trigger_process": [
-        "Biosolids Lagoon",
         "Biosolids Landfill",
-        "Unspecified Lagoon"
+        "Composting"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Recirculation"
       ],
       "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The recirculation contributes additional oxygen and nutrients for microbial activity to enhance organic and nitrogen removal and balance organic loading within the system.",
+      "Sentence": "effluent is recirculated between the treatment and storage/disposal ponds.",
       "trigger_process": [
-        "Aerated Lagoon"
+        "Unspecified Lagoon"
       ]
     }
   ]

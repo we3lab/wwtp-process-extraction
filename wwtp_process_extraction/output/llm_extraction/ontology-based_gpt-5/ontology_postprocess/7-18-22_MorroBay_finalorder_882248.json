@@ -11,23 +11,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "two coarse screen and grit removal trains",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "two parallel fine screens",
+      "Sentence": "headworks, which will include two coarse screen and grit removal trains",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -49,19 +33,53 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Screen",
       "Process": [
-        "BiosolidsDisposal"
+        "Screening"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Screenings and grit from the headworks facilities will be hauled offsite for disposal.",
+      "Location": "on-site",
+      "Sentence": "and two parallel fine screens.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SAFE settling basin ... will capture and equalize the wet weather flows ... provide sedimentation treatment",
+      "trigger_process": [
+        "Equalization",
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "flows to the SAFE filter system for filtration treatment.",
+      "trigger_process": [
+        "Unspecified Filtration"
       ]
     },
     {
@@ -69,19 +87,20 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Recirculation"
       ],
       "Role": [
         "Secondary",
         "NutrientRemoval",
         "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "two biological nutrient removal (BNR) basins ... pre-anoxic, aerobic, and post-anoxic basins in-series.",
+      "Sentence": "two biological nutrient removal (BNR) basins ... activated sludge ... pre-anoxic, aerobic, and post-anoxic basins in-series.",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -94,12 +113,12 @@
         "Filtration"
       ],
       "Role": [
-        "Secondary"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "then pumped to the MBR.",
+      "Sentence": "Filtrate from the MBR will be stored in two RO feed tanks",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -108,7 +127,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -120,12 +140,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Overflows from these tanks will be discharged to an outfall balancing tank.",
+      "Sentence": "routed to the outfall balancing tank where it will be blended with tertiary-treated MBR effluent",
       "trigger_process": [
         "Equalization"
       ]
@@ -152,38 +173,6 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SAFE settling basin, will capture and equalize the wet weather flows",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SAFE filter system for filtration treatment. Primary treated effluent from the SAFE filter system",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
-    },
-    {
       "Equipment": "CartridgeFiltrationUnit",
       "Process": [
         "Filtration"
@@ -205,12 +194,13 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Permeate"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "an RO system",
+      "Sentence": "an RO system ... the RO permeate would be approximately 0.80 MGD",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -237,6 +227,40 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination",
+      "trigger_process": [
+        "Chlorination",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "and a calcite contactor.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
         "Disinfection"
       ],
       "Role": [
@@ -247,25 +271,79 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "(UV/AOP) chlorination",
+      "Sentence": "RO concentrate ... diverted directly to the RO concentrate disinfection contact pipeline for chlorination",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "AerationBasin",
       "Process": [
-        "MediaFiltration"
+        "Aeration",
+        "Mixing"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "sludge holding tanks will receive, store, and aerate ... mixers and bubble diffusers.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "dewatered by a belt filter press with a polymer storage and feed system.",
+      "trigger_process": [
+        "Mechanical Dewatering",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "and a calcite contactor.",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids will be transported offsite for beneficial use",
       "trigger_process": [
-        "Media Filtration"
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids will be transported offsite for ... landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

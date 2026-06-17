@@ -91,25 +91,34 @@
     {
       "Equipment": "CoagulationBasin",
       "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sedimentation, filtration, chlorination, and dechlorination.",
+      "trigger_process": [
         "Coagulation",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
         "Flocculation"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Coagulant",
-        "Flocculant-Polymer"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sedimentation, filtration, chlorination, and dechlorination.",
       "trigger_process": [
-        "Alum Addition",
-        "Coagulation",
-        "Ferric Chloride Addition",
-        "Flocculation",
-        "Polymer Addition"
+        "Flocculation"
       ]
     },
     {
@@ -155,8 +164,7 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Disinfectant-SodiumBisulfite"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -169,7 +177,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -222,7 +230,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -237,7 +245,7 @@
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -254,7 +262,137 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "By 2024, the Discharger plans to complete its treatment capacity expansion at RP-5 and will add a biosolids handling process, to RP-5, that will consist one (1) acid phase digester, three (3) gas phase digesters, one (1) digested sludge storage tank, and associated ancillary equipment.",
+      "Sentence": "Also, new solids-thickening and biosolids dewatering facilities equipped with odor control system will be built and food waste will be fed to the digesters.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "trigger_process": [
+        "Aerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Also, new solids-thickening and biosolids dewatering facilities equipped with odor control system will be built and food waste will be fed to the digesters.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -262,8 +400,7 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Filtration",
-        "ActivatedSludge"
+        "Biofiltration"
       ],
       "Role": [
         "Tertiary"
@@ -274,6 +411,27 @@
       "Sentence": "Also, the four (4) existing secondary clarifiers and the tertiary sand-media filters will be demolished and a new 10 membrane bioreactor (MBR) units will be built (8 equipped with membranes and two left for future expansion) and will include eight (8) filtrate pumps, two (2) back-pulse pumps, and four (4) air scour blowers.",
       "trigger_process": [
         "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The existing chlorine disinfection system will be kept and operated (see Figure 6 of Attachment C for the new RP-5 process flow schematic after 2024).",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
       ]
     }
   ]

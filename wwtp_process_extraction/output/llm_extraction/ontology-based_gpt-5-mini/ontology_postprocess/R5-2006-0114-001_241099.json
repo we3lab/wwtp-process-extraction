@@ -1,0 +1,184 @@
+{
+  "items": [
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Influent wastewater will be screened with a fine mesh self-cleaning gravity screen to remove larger solids and grit",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Mixing",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Screened wastewater will be treated using an SBR process. The SBR will consist of a 200,000 gallon lined basin that will be aerated and mixed using floating aerators. The aerators will be cycled on and off to create anoxic conditions to facilitate denitrification.",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "SBR"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Flow from the SBR will be equalized in a secondary effluent storage basin with a storage capacity of approximately 49,000 gallons.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration",
+        "Coagulation",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Coagulant-PolyaluminumChloride",
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Duplex sand filters will be used to remove suspended solids... A polymer (polyaluminum chloride) will be added to the discharge to increase the efficiency of the sand filters. Solids removed by the filters will be flushed in backwash water and returned to the SBR basin.",
+      "trigger_process": [
+        "Coagulation",
+        "Media Filtration",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Disinfection will be performed by addition of hypochlorite to the sand filter effluent. Duplex hypochlorite feed units will be used for redundancy.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Disinfected wastewater will flow by gravity to the effluent storage basin.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "From the effluent storage basin the treated wastewater will be pumped to lined recycled water storage reservoirs.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion",
+        "Dewatering",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Sludge will discharged to the sludge storage basin for digestion and thickening. Decant water from the basin will be returned to the SBR pond. Sludge will be hauled off-site for disposal.",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Containment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An emergency storage reservoir will be available for storage of wastewater during a malfunction of the treatment plant and when effluent doesn\u2019t meet effluent requirements.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "LandApplication",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The treatment system consists of screening, SBR, flow equalization, sand filtration, disinfection, effluent pumping, and land application.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    }
+  ]
+}

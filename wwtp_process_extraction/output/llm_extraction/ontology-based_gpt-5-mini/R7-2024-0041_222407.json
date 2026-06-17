@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wastewater from the community is pumped from seven lift stations to a final lift station"
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -8,19 +19,16 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "preliminary treatment, where solids are removed by an automatic bar screen."
+      "Sentence": "preliminary treatment, where solids are removed by an automatic bar screen"
     },
     {
       "Equipment": null,
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "ChemicalAddition"
       ],
       "Role": [
         "Pretreatment"
@@ -31,8 +39,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals from the wastewater."
+      "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals from the wastewater"
     },
     {
       "Equipment": "SedimentationTank",
@@ -45,8 +52,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater is then directed through the plant\u0019s primary clarifiers."
+      "Sentence": "Wastewater is then directed through the plant’s primary clarifiers"
     },
     {
       "Equipment": "AerationBasin",
@@ -61,7 +67,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Secondary treatment is achieved through biological treatment via six aeration basins"
     },
     {
@@ -75,8 +80,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and secondary clarification through four final clarifiers."
+      "Sentence": "secondary clarification through four final clarifiers"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -84,13 +88,13 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged to Central Main Drain."
+      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged to Central Main Drain"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -99,7 +103,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -107,8 +110,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary sludge generated from the primary clarifiers is pumped to anaerobic digesters."
+      "Sentence": "Primary sludge generated from the primary clarifiers is pumped to anaerobic digesters"
     },
     {
       "Equipment": "GravityBeltThickener",
@@ -123,13 +125,26 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Secondary sludge generated from the secondary clarifiers is processed through a gravity belt thickener"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following anaerobic digestion, sludge is directed through a belt press"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
         "Drying"
       ],
       "Role": [
@@ -140,8 +155,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Following anaerobic digestion, sludge is directed through a belt press, dried to approximately 90 percent solids in drying beds"
+      "Sentence": "dried to approximately 90 percent solids in drying beds"
     },
     {
       "Equipment": null,
@@ -149,7 +163,6 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication",
         "SolidsHandling"
       ],
       "Substance": [
@@ -157,8 +170,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "and then land-applied at locations in Arizona."
+      "Sentence": "then land-applied at locations in Arizona"
     },
     {
       "Equipment": "Reservoir",
@@ -166,54 +178,12 @@
         "Evaporation"
       ],
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Collected wastewater in the emergency storage basin can be pumped to the primary clarifiers if necessary; however, it is typically allowed to evaporate."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "replacement of UV units"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "replacement of secondary clarifiers"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "replacement of aeration blowers"
+      "Sentence": "The Facility maintains an emergency storage basin ... however, it is typically allowed to evaporate"
     }
   ]
 }

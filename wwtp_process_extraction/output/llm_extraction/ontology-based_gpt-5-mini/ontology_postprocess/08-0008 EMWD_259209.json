@@ -1,40 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Screens and Grit removal",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Screens and Grit removal",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -45,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Primary Clarifiers",
+      "Sentence": "The treatment systems employed at each RWRF consist of primary, secondary, and tertiary wastewater treatment processes.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,32 +19,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification",
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Diffused activated sludge w/ additional aeration secondary clarifiers",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
@@ -87,10 +27,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "secondary clarifiers",
+      "Sentence": "The treatment systems employed at each RWRF consist of primary, secondary, and tertiary wastewater treatment processes.",
       "trigger_process": [
-        "Secondary Clarification"
+        "Unspecified AS"
       ]
     },
     {
@@ -102,71 +41,39 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "Secondary effluent equalization basins and pump station",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "StaticMixer",
       "Process": [
-        "Recirculation"
+        "Mixing"
       ],
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Two new pumps at the existing filter influent pump station",
+      "Sentence": "Two new flocculation basins with a rapid mixing chamber",
       "trigger_process": []
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
-        "Flocculation",
-        "Mixing"
+        "Flocculation"
       ],
       "Role": [
-        "Tertiary"
+        "Pretreatment"
       ],
       "Substance": [
         "Flocculant-Polymer"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "Two new flocculation basins with a rapid mixing chamber",
       "trigger_process": [
         "Flocculation",
-        "Polymer Addition"
-      ]
-    },
-    {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation",
-        "ChemicalAddition",
-        "Mixing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Coagulant-Alum",
-        "Coagulant-FerricChloride",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "chemical system modification for alum, polymer, and chlorination",
-      "trigger_process": [
-        "Alum Addition",
-        "Coagulation",
-        "Ferric Chloride Addition",
         "Polymer Addition"
       ]
     },
@@ -181,10 +88,30 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "New cloth media filters",
       "trigger_process": [
         "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-Alum",
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Chemical system modification for alum, polymer, and chlorination; APT Chemical/Ferric Chloride Facility",
+      "trigger_process": [
+        "Alum Addition",
+        "Coagulation",
+        "Ferric Chloride Addition"
       ]
     },
     {
@@ -201,10 +128,88 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "Three new chlorine contact basins",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Tertiary effluent pond modifications",
+      "trigger_process": [
+        "Polishing Lagoon"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Grit chambers",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Primary Clarifier",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Plant 3 Aeration Basins",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Secondary Clarifiers",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
@@ -215,12 +220,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "WAS Thickening Building",
       "trigger_process": [
         "Thickening"
@@ -234,12 +236,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "Sludge Dewatering Building",
       "trigger_process": [
         "Mechanical Dewatering"
@@ -248,24 +247,32 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "Digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Sludge Storage Tank",
+      "trigger_process": []
     },
     {
       "Equipment": "Flare",
@@ -278,36 +285,8 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
       "Sentence": "Digester Gas Flaring Facility",
       "trigger_process": [
-        "Unspecified Incineration"
-      ]
-    },
-    {
-      "Equipment": "Compressor",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Digester Gas Compression Facility",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Cogenerator",
-      "Process": [
-        "Cogeneration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Cogeneration facility",
-      "trigger_process": [
-        "Cogeneration",
         "Unspecified Incineration"
       ]
     },
@@ -320,51 +299,23 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "Biofilters",
       "trigger_process": [
         "Biologically Active Filtration"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Sludge Storage Tank",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Low Pressure Digester Gas Holder",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Boiler",
+      "Equipment": "Cogenerator",
       "Process": [
-        "Incineration"
+        "Cogeneration"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Boiler Facility",
+      "Sentence": "Cogeneration facility",
       "trigger_process": [
-        "Unspecified Incineration"
+        "Cogeneration"
       ]
     }
   ]

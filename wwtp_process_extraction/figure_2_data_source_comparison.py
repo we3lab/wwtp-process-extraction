@@ -203,9 +203,14 @@ def main():
         ["CWNS_Error_Rate_perGT", "NPDES_Error_Rate_perGT"], ascending=[True, True]
     ).reset_index(drop=True)
 
-    # Average error rates (percent) using per-GT normalization (errors per ground-truth occurrence)
-    npdes_avg = float(sd_plot_df["NPDES_Error_Rate_perGT"].mean() * 100) if not sd_plot_df.empty else 0.0
-    cwns_avg = float(sd_plot_df["CWNS_Error_Rate_perGT"].mean() * 100) if not sd_plot_df.empty else 0.0
+    # Per-leaf (unit-process) rows for the printed GT=0 false-positive diagnostic below;
+    # identity mapping keeps each leaf separate (panel B above stays category-level by design).
+    sd_leaf, npdes_leaf, cwns_leaf = build_category_facility_sets(
+        cols_no_unspec, supplemental_data_common, text_common, cwns_common,
+        {leaf: leaf for leaf in cols_no_unspec},
+    )
+    leaf_rows = pd.DataFrame(build_sd_rows(sd_leaf, npdes_leaf, cwns_leaf, common_facilities))
+    leaf_gt = leaf_rows[leaf_rows["GroundTruth"] > 0]
 
     # Build facility-level comparison rows (used for violin panel)
     facility_rows = []
@@ -304,7 +309,7 @@ def main():
                     "Source": src,
                     "Key": key,
                     "False Positive (FP) Rate": fp / (num_cols - sd_count),
-                    "False Positive (FN) Rate": fn / sd_count,
+                    "False Negative (FN) Rate": fn / sd_count,
                     "Error Rate": (fp + fn) / num_cols,
                 }
             )
@@ -312,10 +317,10 @@ def main():
     fac_metrics_df = pd.DataFrame(facility_metrics).dropna()
 
     # Create two-panel figure: A=split violin per facility, B=category-level stacked FP/FN counts
-    fig, (axA, axB) = plt.subplots(2, 1, figsize=(12, 10), gridspec_kw={"height_ratios": [1, 1]})
+    fig, (axA, axB) = plt.subplots(2, 1, figsize=(10, 10), gridspec_kw={"height_ratios": [1, 1]})
 
     # Panel A: boxplot comparing NPDES vs CWNS
-    boxplot_cols = ["False Positive (FP) Rate", "False Positive (FN) Rate", "Error Rate"]
+    boxplot_cols = ["False Positive (FP) Rate", "False Negative (FN) Rate", "Error Rate"]
     plot_df = (
         fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=boxplot_cols, var_name="Metric", value_name="Value")
     )
@@ -349,7 +354,7 @@ def main():
         except Exception:
             pass
     axA.set_ylim(0, 1)
-    axA.set_ylabel(f"Facility-level rate\n(N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
+    axA.set_ylabel(f"Facility-level (N={int(fac_metrics_df['Key'].nunique())})\nUnit Process Error Rate", fontsize=label_fontsize)
     axA.set_xticks(range(len(boxplot_cols)))
     axA.set_xticklabels([c.replace("_", " ") for c in boxplot_cols], fontsize=12)
     axA.tick_params(axis="y", labelsize=12)
@@ -408,7 +413,7 @@ def main():
         ha="right",
         fontsize=tick_fontsize,
     )
-    axB.set_ylabel(f"Categorical error rate", fontsize=label_fontsize)
+    axB.set_ylabel(f"Categorical Error Rate", fontsize=label_fontsize)
     axB.tick_params(axis="both", which="major", labelsize=tick_fontsize)
     set_thick_spines(axB, linewidth=1.6)
     axB.text(-0.12, 1.05, "B.", transform=axB.transAxes, ha="left", va="top", fontsize=16)
@@ -425,7 +430,7 @@ def main():
             Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS FN"),
         ],
         loc="upper center",
-        bbox_to_anchor=(0.66, 1.18),
+        bbox_to_anchor=(0.59, 1.18),
         ncol=4,
         frameon=False,
         fontsize=11,
@@ -437,17 +442,16 @@ def main():
     save_path = f"{figures_dir}/figure_2_supplemental_data_supplemental_data_vs_npdes_text_vs_cwns.png"
     save_and_close(fig, save_path, dpi=300)
 
-    
-
-    sd_rows_with_gt = [r for r in sd_simple_rows if r["GroundTruth"] > 0]
-    if sd_rows_with_gt:
-        sd_zero_cwns_fp = sum(r["CWNS_FP"] for r in sd_simple_rows if r["GroundTruth"] == 0)
-        print(
-            f"\nAverage error vs Ground Truth (categories with GT>0): CWNS = {cwns_avg:.1f}%, NPDES Text = {npdes_avg:.1f}%"
-        )
-        for r in sd_simple_rows:
-            if r["GroundTruth"] == 0 and r["CWNS_FP"] > 0:
-                print(f"  CWNS FP in category '{r['Process_Category']}' with GT=0, FP={r['CWNS_FP']}")
+    # Mean facility-level error rate (unit-process granularity) — matches panel A's Error Rate box.
+    err_by_src = fac_metrics_df.groupby("Source")["Error Rate"].mean() * 100
+    npdes_avg = float(err_by_src.get("NPDES", 0.0))
+    cwns_avg = float(err_by_src.get("CWNS", 0.0))
+    print(
+        f"\nMean facility-level error rate (unit processes): Facility Permit = {npdes_avg:.1f}%, CWNS = {cwns_avg:.1f}%"
+    )
+    for _, r in leaf_rows.iterrows():
+        if r["GroundTruth"] == 0 and r["CWNS_FP"] > 0:
+            print(f"  CWNS FP in unit process '{r['Process_Category']}' with GT=0, FP={int(r['CWNS_FP'])}")
 
 
 if __name__ == "__main__":

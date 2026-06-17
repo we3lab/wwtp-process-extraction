@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel, grit pump, grit cyclone separator, and influent pump dry well with three influent pumps.",
+      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel, grit pump, grit cyclone separator, and influent pump dry well with three influent pumps.",
+      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel...",
       "trigger_process": [
         "Comminution"
       ]
@@ -43,27 +43,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel, grit pump, grit cyclone separator, and influent pump dry well with three influent pumps.",
+      "Sentence": "...a grit channel, grit pump, grit cyclone separator, and influent pump dry well with three influent pumps.",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoonsand two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds).",
+      "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoonsand two lined polishing ponds",
       "trigger_process": [
-        "Aerated Lagoon"
+        "Unspecified AS"
       ]
     },
     {
@@ -72,15 +70,15 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoonsand two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds).",
+      "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoonsand two lined polishing ponds",
       "trigger_process": [
-        "Secondary Clarification"
+        "Unspecified Clarification",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -89,7 +87,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -107,7 +106,9 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The activated sludge treatment system consists of two activated sludge basins, two secondary clarifiers and sludge handling facilities",
@@ -123,76 +124,35 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Combined secondary effluent from each lagoon system module and the Biolac\u00ae system is conveyed to the chlorine contact basin to be disinfected and de-chlorinated prior to discharge",
+      "Sentence": "Combined secondary effluent from each lagoon system module and the Biolac\u00ae system is conveyed to the chlorine contact basin to be disinfected and de-chlorinated",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "GravityBeltThickener",
+      "Equipment": null,
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Disinfection"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge is pumped from the two secondary clarifiers to a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer before entering the thickener.",
+      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster.",
       "trigger_process": [
-        "Polymer Addition",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering",
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank and is then pumped to a single 2-meter gravity belt filter press where it is dewatered.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total).",
-      "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Unspecified Disinfection"
       ]
     },
     {
@@ -212,9 +172,82 @@
       ]
     },
     {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste activated sludge is pumped from the two secondary clarifiers to a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer before entering the thickener.",
+      "trigger_process": [
+        "Polymer Addition",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank and is then pumped to a single 2-meter gravity belt filter press where it is dewatered.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...pumped to a single 2-meter gravity belt filter press where it is dewatered.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total).",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -226,7 +259,7 @@
       "Location": "off-site",
       "Sentence": "The dewatered sludge is discharged into a truck trailer before being hauled off site by a private hauler for composting.",
       "trigger_process": [
-        "Land Application"
+        "Composting"
       ]
     },
     {
@@ -240,7 +273,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase l is currently under design and includes diversion of 1.0 MGD of secondary effluent (expandable to 2.5 MGD) to a Title 22 compliant tertiary filtration and disinfection system...includes a Filter Feed Pump Station, Tertiary Filters utilizing cloth disk filters",
+      "Sentence": "Phase l is currently under design and includes diversion of 1.0 MGD of secondary effluent (expandable to 2.5 MGD) to a Title 22 compliant tertiary filtration and disinfection system",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -256,26 +289,40 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Phase l project design is currently 30 percent complete and includes a Filter Feed Pump Station, Tertiary Filters utilizing cloth disk filters, ultraviolet (UV) disinfection, a recycled water pump station",
+      "Sentence": "The Phase l project design is currently 30 percent complete and includes a Filter Feed Pump Station, Tertiary Filters utilizing cloth disk filters, ultraviolet (UV) disinfection...",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "ChemicalAddition"
-      ],
+      "Process": null,
       "Role": [
         "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "...seasonal and operational storage, electrical building, and a chemical storage and feed system (sodium hypochlorite).",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "ChemicalAddition",
+        "Chlorination"
+      ],
+      "Role": [
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Phase l project design is currently 30 percent complete and includes...a chemical storage and feed system (sodium hypochlorite).",
+      "Sentence": "...a chemical storage and feed system (sodium hypochlorite).",
       "trigger_process": [
+        "Chlorination",
         "Unspecified Chemical Addition"
       ]
     }

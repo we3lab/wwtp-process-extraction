@@ -11,25 +11,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks system two automatic bar screens",
+      "Sentence": "The headworks system two automatic bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "grit channel",
-      "trigger_process": [
-        "Grit Removal"
       ]
     },
     {
@@ -43,9 +27,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Screening solids removed from the headworks system are routed to a grinder-washer/compactor unit",
+      "Sentence": "two grinder-washer compactors",
       "trigger_process": [
         "Comminution"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "grit channel, grit pump, grit cyclone separator",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
@@ -61,21 +61,19 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four lined aerated lagoons",
+      "Sentence": "lined aerated lagoons",
       "trigger_process": [
-        "Aerated Lagoon"
+        "Unspecified AS"
       ]
     },
     {
@@ -89,7 +87,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two lined polishing ponds",
+      "Sentence": "lined polishing ponds",
       "trigger_process": [
         "Polishing Lagoon"
       ]
@@ -100,8 +98,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -131,8 +128,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -150,53 +147,21 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster",
-      "trigger_process": [
-        "Unspecified Disinfection"
-      ]
-    },
-    {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
+        "Filtration",
+        "Sedimentation"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
+        "Fluid-Sludge",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer before entering the thickener",
+      "Sentence": "Waste activated sludge is pumped ... to a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer before entering the thickener.",
       "trigger_process": [
         "Polymer Addition",
         "Thickening"
@@ -206,13 +171,14 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "thickened waste activated sludge flows to a 48,000-gallon sludge holding tank",
+      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank",
       "trigger_process": []
     },
     {
@@ -223,45 +189,13 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "pumped to a single 2-meter gravity belt filter press where it is dewatered",
       "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hauled off site by a private hauler for composting",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total)",
-      "trigger_process": [
-        "Drying",
         "Mechanical Dewatering"
       ]
     },
@@ -271,16 +205,34 @@
         "Drying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total)",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sludge from the facility has been hauled away to the Synagro Arizona Soils Composting facility in Vicksburg, Arizona",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -294,51 +246,39 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "tertiary filtration ... includes ... Tertiary Filters utilizing cloth disk filters",
+      "Sentence": "diversion of 1.0 MGD ... to a Title 22 compliant tertiary filtration ... The project design ... includes ... Tertiary Filters utilizing cloth disk filters",
       "trigger_process": [
         "Media Filtration"
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
-        "Tertiary"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "ultraviolet (UV) disinfection",
+      "Sentence": "includes a Filter Feed Pump Station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "includes ... ultraviolet (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Filter Feed Pump Station",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "recycled water pump station",
-      "trigger_process": []
     },
     {
       "Equipment": "Reservoir",
@@ -359,7 +299,7 @@
       ],
       "Role": [
         "MakeUp",
-        "Feed"
+        "Storage"
       ],
       "Substance": [
         "Disinfectant-Chlorine"

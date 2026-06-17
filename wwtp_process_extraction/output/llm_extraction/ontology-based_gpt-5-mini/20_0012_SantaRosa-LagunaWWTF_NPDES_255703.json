@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "grit removal in aerated grit chambers"
     },
     {
@@ -20,14 +19,14 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "sludge and scum removal in primary sedimentation tanks"
     },
     {
@@ -36,13 +35,11 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "biological secondary treatment (activated sludge)"
     },
     {
@@ -58,7 +55,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "alum coagulation"
     },
     {
@@ -72,7 +68,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
       "Sentence": "flocculation"
     },
     {
@@ -86,7 +81,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
       "Sentence": "clarification"
     },
     {
@@ -100,8 +94,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "followed by tertiary filtration"
+      "Sentence": "tertiary filtration"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -114,8 +107,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "ultraviolet light (UV) disinfection"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "replace the outdated UV disinfection system with new UV disinfection system"
     },
     {
       "Equipment": "Pond",
@@ -126,32 +131,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The pond system consists of Brown Pond; Meadow Lane Ponds A, B, C, and D; and Delta Pond."
+      "Sentence": "effluent storage pond system"
     },
     {
       "Equipment": "Thickener",
-      "Process": [
-        "Dewatering"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Biosolids generated during the treatment process are thickened"
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
-      ],
-      "Role": [
-        "Anaerobic",
-        "Stabilization",
         "SolidsHandling"
       ],
       "Substance": [
@@ -159,8 +144,24 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "anaerobically digested"
+      "Sentence": "Biosolids generated during the treatment process are thickened"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "are thickened, anaerobically digested"
     },
     {
       "Equipment": "DewateringUnit",
@@ -171,13 +172,27 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Flocculant-Polymer",
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered using belt filters and polymer addition"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "dewatered using belt filters and polymer addition"
+      "Sentence": "produces Class A compost"
     },
     {
       "Equipment": null,
@@ -187,60 +202,22 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "beneficially used as soil amendment on City-owned property as well as privately owned property"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "produces Class A compost during the winter and spring months"
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "replace the outdated UV disinfection system with new UV disinfection system"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "construct an on-site diversion system to allow non-compliant effluent from the UV system to be diverted to a dedicated storage pond"
     },
     {
       "Equipment": "Flare",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.7,
       "Sentence": "replacing the waste gas flare"
     }
   ]

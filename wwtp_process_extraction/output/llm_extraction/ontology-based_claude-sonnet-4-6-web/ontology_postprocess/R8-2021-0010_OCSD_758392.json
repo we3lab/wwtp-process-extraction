@@ -12,8 +12,8 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Preliminary treatment includes grit and screenings removal.",
-      "Source": "both",
-      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district-water-reclamation-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -30,21 +30,22 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Preliminary treatment includes grit and screenings removal.",
-      "Source": "both",
-      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district-water-reclamation-plant-no-1/",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "ChemicalAddition",
-        "Coagulation"
+        "pHAdjustment",
+        "Coagulation",
+        "Flocculation"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": [
         "Flocculant-Polymer"
@@ -56,8 +57,8 @@
       "Website": null,
       "trigger_process": [
         "Coagulation",
-        "Polymer Addition",
-        "Primary Clarification"
+        "Flocculation",
+        "Polymer Addition"
       ]
     },
     {
@@ -81,8 +82,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -90,7 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment.",
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment. Trickling filter project at Reclamation Plant No. 1, completed in Spring 2006.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -100,38 +100,104 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment.",
+      "Sentence": "New activated sludge system at Reclamation Plant No. 1, completed in Fall 2012... sodium hypochlorite has been used... to control the bulking from filamentous organisms in the return activated sludge (RAS).",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Unspecified AS"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Filtration"
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "return activated sludge (RAS)",
+      "Source": "both",
+      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district/",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Secondary treated trickling filter and activated sludge effluents from Reclamation Plant No. 1 are delivered to the Orange County Water District (OCWD) for further tertiary treatment and reclamation.",
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The disinfection program initiated in 2002 was based on using sodium hypochlorite (bleach) for disinfection and sodium bisulfite for dechlorination... OC San has ceased continuous chlorination/dechlorination since May 2015.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Unspecified Filtration"
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Class B pathogen reduction via anaerobic digestion; biosolids are highly treated, safe, nutrient-rich organic material derived from the wastewater treatment process.",
+      "Source": "web_search",
+      "Website": "https://ocsan.gov/wp-content/uploads/2026/03/01_EPA_FINAL_2025_Biosolids_Annual_Report_wo_Cover-Ltr.pdf",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Cogenerator",
+      "Process": [
+        "Cogeneration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "bio-gas through anaerobic digestion, which is then used to generate electricity and heat for the plants",
+      "Source": "web_search",
+      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district/",
+      "trigger_process": [
+        "Cogeneration",
+        "Unspecified Incineration"
       ]
     }
   ]

@@ -83,9 +83,7 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -98,8 +96,7 @@
       "Sentence": "Secondary treatment consists of aeration trains with oxic/anoxic zones",
       "trigger_process": [
         "AO (anoxic/oxic)",
-        "Denitrification",
-        "Nitrification"
+        "Unspecified AS"
       ]
     },
     {
@@ -203,18 +200,22 @@
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "Dewatering"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Storm water flows generated on site at RP-1 are collected and pumped to the liquid treatment process of RP-1 for treatment",
-      "trigger_process": []
+      "Sentence": "Digested sludge is dewatered with belt presses",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
     },
     {
       "Equipment": "GravityThickener",
@@ -259,8 +260,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -285,13 +286,13 @@
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes ... digester gas utilization",
       "trigger_process": [
-        "Cogeneration",
-        "Unspecified Incineration"
+        "Cogeneration"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -303,25 +304,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes ... centrifuge dewatering",
-      "trigger_process": [
-        "Centrifuge",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge is dewatered with belt presses",
       "trigger_process": [
         "Mechanical Dewatering"
       ]

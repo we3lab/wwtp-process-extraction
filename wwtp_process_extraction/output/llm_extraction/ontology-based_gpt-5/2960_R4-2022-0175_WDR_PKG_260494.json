@@ -35,10 +35,11 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge biological treatment with nitrification and denitrification"
@@ -72,8 +73,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -87,7 +87,21 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Hypochlorite and ammonia are used to disinfect treated effluent at the Saugus WRP"
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
         "Dechlorination"
       ],
       "Role": [
@@ -98,7 +112,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Hypochlorite and ammonia are used to disinfect treated effluent… Treated wastewater… is dechlorinated with sodium bisulfite"
+      "Sentence": "Treated wastewater discharged to Santa Clara River is dechlorinated with sodium bisulfite, to remove residual chlorine when chloramines are used"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -113,7 +127,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Waste activated sludge from both the Saugus and Valencia WRPs is thickened by dissolved air flotation"
+      "Sentence": "Waste activated sludge from both the Saugus and Valencia WRPs is thickened by dissolved air flotation."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -121,8 +135,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -144,37 +157,35 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
+      "Sentence": "digested anaerobically, dewatered and then reused through composting"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
       "Sentence": "dewatered and then reused through composting"
     },
     {
-      "Equipment": null,
+      "Equipment": "UltravioletLightUnit",
       "Process": [
-        "Landfill"
+        "UVDisinfection"
       ],
       "Role": [
-        "SolidsHandling"
+        "Tertiary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "may also dispose of biosolids in a landfill"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "or by direct land application"
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SCVSD plans on meeting the TMDL-based chloride final effluent limitation by upgrading its disinfection system... The UV technology will be designed to disinfect the treated effluent"
     }
   ]
 }

@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "preliminary treatment (bar screening and grit removal);",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "preliminary treatment (bar screening and grit removal);",
       "trigger_process": [
         "Grit Removal"
@@ -45,7 +43,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "primary treatment (primary sedimentation and scum removal);",
       "trigger_process": [
         "Primary Clarification"
@@ -68,29 +65,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary treatment (activated sludge biological treatment with nitrification and denitrification (NDN));",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "secondary sedimentation with coagulation;",
-      "trigger_process": [
-        "Secondary Clarification"
       ]
     },
     {
@@ -104,12 +83,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary sedimentation with coagulation;",
       "trigger_process": [
         "Coagulation",
         "Secondary Clarification",
         "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary sedimentation with coagulation;",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
@@ -123,7 +117,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "tertiary treatment (aqua cloth and deep bed sand filtration);",
       "trigger_process": [
         "Media Filtration"
@@ -140,7 +133,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "tertiary treatment (aqua cloth and deep bed sand filtration);",
       "trigger_process": [
         "Media Filtration"
@@ -154,14 +146,14 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "disinfection with ammonium hydroxide and sodium hypochlorite; and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Chlorination",
@@ -178,8 +170,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The LAGWRP Primary Effluent Equalization Improvement project is in the works to add an equalization function to the Facility.",
+      "Sentence": "add an equalization function to the Facility... provide 5 MG of storage capacity",
       "trigger_process": [
         "Equalization"
       ]
@@ -195,9 +186,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The AWPDF will consist of ozone treatment followed by biological activated carbon filtration, microfiltration, reverse osmosis, advanced oxidation process with ultraviolet treatment and sodium hypochlorite.",
+      "Sentence": "AWPDF will consist of ozone treatment",
       "trigger_process": [
+        "Oxidation",
         "Ozonation"
       ]
     },
@@ -212,8 +203,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The AWPDF will consist of ozone treatment followed by biological activated carbon filtration, microfiltration, reverse osmosis, advanced oxidation process with ultraviolet treatment and sodium hypochlorite.",
+      "Sentence": "biological activated carbon filtration",
       "trigger_process": [
         "Activated Carbon"
       ]
@@ -229,8 +219,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The AWPDF will consist of ozone treatment followed by biological activated carbon filtration, microfiltration, reverse osmosis, advanced oxidation process with ultraviolet treatment and sodium hypochlorite.",
+      "Sentence": "microfiltration",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -246,8 +235,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The AWPDF will consist of ozone treatment followed by biological activated carbon filtration, microfiltration, reverse osmosis, advanced oxidation process with ultraviolet treatment and sodium hypochlorite.",
+      "Sentence": "reverse osmosis",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -255,7 +243,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "AdvancedOxidation"
+        "AdvancedOxidation",
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -265,9 +254,9 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The AWPDF will consist of ozone treatment followed by biological activated carbon filtration, microfiltration, reverse osmosis, advanced oxidation process with ultraviolet treatment and sodium hypochlorite.",
+      "Sentence": "advanced oxidation process with ultraviolet treatment and sodium hypochlorite",
       "trigger_process": [
+        "UV Disinfection",
         "UV-AOP"
       ]
     }

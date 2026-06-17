@@ -9,9 +9,8 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "off-site",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The screening occurs at two of the Discharger\u2019s pump stations.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "Grit Removal"
@@ -45,146 +43,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection.",
+      "Sentence": "The treatment process consists of ... sequencing batch reactors ...",
       "trigger_process": [
         "SBR"
-      ]
-    },
-    {
-      "Equipment": "RapidSandFilter",
-      "Process": [
-        "RapidSandFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection.",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection.",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "By late fall of 2024, the Discharger plans to design and construct a new UV disinfection system that will include two channels, replacing the existing one-channel system.",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "During construction of this project, the Discharger may use a temporary UV disinfection system or a temporary chlorination and dechlorination disinfection system.",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "the headworks improvement project that will include ... decommissioning the Discharger\u2019s hypochlorite tank.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the headworks improvement project that will include ... installing bar screens at the treatment plant",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the headworks improvement project that will include replacing its grit removal system",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "In 2019, the Discharger built a 2.1 million gallon equalization basin near its Linda Mar pump station.",
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -194,19 +55,20 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic"
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Sludge from the sequencing batch reactors is aerated and contained in waste activated sludge tanks...",
+      "Sentence": "Sludge from the sequencing batch reactors is aerated and contained in waste activated sludge tanks before being diverted to the gravity belt thickeners.",
       "trigger_process": []
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -216,8 +78,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "before being diverted to the gravity belt thickeners.",
+      "Sentence": "Sludge from the sequencing batch reactors ... before being diverted to the gravity belt thickeners.",
       "trigger_process": [
         "Thickening"
       ]
@@ -229,15 +90,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Next, thickened solids are digested in autothermal thermophilic aerobic digesters and dewatered with centrifuges.",
       "trigger_process": [
         "Aerobic Digestion"
@@ -257,49 +117,160 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and dewatered with centrifuges.",
+      "Sentence": "thickened solids are digested in autothermal thermophilic aerobic digesters and dewatered with centrifuges.",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication",
-        "Landfill"
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The Discharger hires a contractor to pick up the sludge for land application, composting, or landfill disposal.",
       "trigger_process": [
-        "Biosolids Landfill",
         "Land Application"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Disinfection"
+        "Composting"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "or routes it to the North Coast County Water District, where it receives additional disinfection and distribution for recycled water use.",
+      "Sentence": "The Discharger hires a contractor to pick up the sludge for land application, composting, or landfill disposal.",
       "trigger_process": [
-        "Unspecified Disinfection"
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger hires a contractor to pick up the sludge for land application, composting, or landfill disposal.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment process consists of ... sand filtration ...",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment process consists of ... ultraviolet (UV) disinfection.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "By late fall of 2024, the Discharger plans to design and construct a new UV disinfection system that will include two channels, replacing the existing one-channel system.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "During construction of this project, the Discharger may use a temporary UV disinfection system or a temporary chlorination and dechlorination disinfection system.",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks improvement project ... and decommissioning the Discharger\u2019s hypochlorite tank.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "In 2019, the Discharger built a 2.1 million gallon equalization basin near its Linda Mar pump station.",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -313,9 +284,70 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Discharger either diverts its effluent to its cascade aerator, where the effluent discharges into Calera Creek...",
+      "Sentence": "The Discharger either diverts its effluent to its cascade aerator, where the effluent discharges into Calera Creek ...",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the effluent discharges into Calera Creek and travels to the Discharger\u2019s constructed wetlands to the Pacific Ocean.",
+      "trigger_process": [
+        "Wetland"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "off-site",
+      "Location": "off-site",
+      "Sentence": "or routes it to the North Coast County Water District, where it receives additional disinfection and distribution for recycled water use.",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the headworks improvement project that will include ... installing bar screens at the treatment plant",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the headworks improvement project that will include replacing its grit removal system",
+      "trigger_process": [
+        "Grit Removal"
+      ]
     }
   ]
 }

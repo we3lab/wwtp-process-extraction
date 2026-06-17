@@ -61,7 +61,8 @@
       "Location": "on-site",
       "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
       "trigger_process": [
-        "Nitrification"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -115,7 +116,7 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "Polishing"
+        "Biofiltration"
       ],
       "Role": [
         "Posttreatment"
@@ -129,24 +130,6 @@
       "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for \"polishing\" treatment to remove ammonia and other pollutants before being discharged to Peyton Slough at Discharge Point 001.",
       "trigger_process": [
         "Wetland"
-      ]
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
-      "trigger_process": [
-        "Thickening"
       ]
     },
     {
@@ -169,7 +152,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -184,44 +167,7 @@
       "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DryingBed",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
-      "trigger_process": [
-        "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -238,6 +184,25 @@
       "Sentence": "The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment and controls.",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -259,10 +224,11 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "NutrientRemoval"
+        "Biofiltration"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "NutrientRemoval"
       ],
       "Substance": [
         "Constituent-Ammonia",
@@ -272,6 +238,7 @@
       "Location": "on-site",
       "Sentence": "The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
       "trigger_process": [
+        "Unspecified Nutrient Removal",
         "Wetland"
       ]
     }

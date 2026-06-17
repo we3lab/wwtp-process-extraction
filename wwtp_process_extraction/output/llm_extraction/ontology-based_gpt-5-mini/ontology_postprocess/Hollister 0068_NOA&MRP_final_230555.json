@@ -1,0 +1,238 @@
+{
+  "items": [
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The new pretreatment facility will consist of a grit chamber followed by fine screens.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The new pretreatment facility will consist of a grit chamber followed by fine screens.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The MBR combines a suspended growth biological reactor for activated sludge treatment with submerged membranes for solids separation.",
+      "trigger_process": [
+        "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Recirculation",
+        "Mixing"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-DissolvedOxygen",
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A deoxygenation (deox) zone is located upstream of the anoxic zone.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Denitrification",
+        "Mixing"
+      ],
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-DissolvedOxygen",
+        "Constituent-Nitrate"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The next treatment stage of the MBR process is the anoxic zone... to promote the oxidation of dissolved nitrates into nitrogen gas which is removed to the atmosphere, a process called denitrification.",
+      "trigger_process": [
+        "Denitrification",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "ActivatedSludge",
+        "Nitrification"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": [
+        "Constituent-DissolvedOxygen",
+        "Constituent-Ammonia"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The aeration zone will be equipped with fine bubble diffusers... to promote a suspended biological growth that breaks down the soluble BOD... and promote growth of nitrifying bacteria, which oxidize ammonia into nitrates \u2013 a process called nitrification.",
+      "trigger_process": [
+        "Nitrification",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Denitrification",
+        "Mixing"
+      ],
+      "Role": [
+        "Anoxic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The aeration basins overflow into post-anoxic basins, which are designed to further enhance the denitrification process.",
+      "trigger_process": [
+        "Denitrification",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration"
+      ],
+      "Role": [
+        "Tertiary",
+        "Permeate"
+      ],
+      "Substance": [
+        "Constituent-Bacteria",
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The selected Zenon membrane configuration will consist of hollow fiber ultrafiltration membranes... The immersed membranes separate the solids from the MBR effluent, called permeate.",
+      "trigger_process": [
+        "Ultrafiltration"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Sodium hypochlorite will be used to dose stored permeate in a backwash tank.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Permeate"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A slight vacuum will be applied to the permeate header by a centrifugal pump... the permeate will flow through the pump to the downstream processes.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Six axial flow pumps (5 duty, 1 standby) will be used to provide a flow up to 6Q... The mixed liquor recirculation pumps will be VFD driven for flow control.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Compressor",
+      "Process": [
+        "GasTransfer",
+        "AirScouring"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Aeration air will be provided to the system by high-speed turbocompressors... Four separate high-speed turbocompressors... will supply the membrane agitation air.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Disinfection of the portion of the MBR effluent used for recycled water will be accomplished by chlorination.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An aboveground, fuel-type storage tank and gear pumps are used for storage and feed of the methanol.",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    }
+  ]
+}

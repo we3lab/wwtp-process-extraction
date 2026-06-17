@@ -86,16 +86,16 @@
         "NutrientRemoval",
         "NitrogenRemoval",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "Anaerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A modified biological nutrient removal (BNR) process is employed...The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions.",
+      "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3)...The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions...partial denitrification.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -121,7 +121,8 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary"
@@ -129,7 +130,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are 16 separate mono media filters, 4 of which are dedicated to producing Title 22 unrestricted-use non-potable recycled water.",
+      "Sentence": "There are 16 separate mono media filters...The Discharger backwashes the filters to clean the media. Each filter is backwashed approximately once every 24 hours.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -176,27 +177,6 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Backwash"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
         "Disinfection",
         "Dechlorination"
       ],
@@ -208,7 +188,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection...an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection...sodium bisulfite is added to neutralize the hypochlorite.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -217,19 +197,18 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
         "Dechlorination"
       ],
       "Role": [
-        "Posttreatment",
-        "Stabilization"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system.",
+      "Sentence": "The channel provides...backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system in case upstream meters indicate there is remaining residual chlorine.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -290,7 +269,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
+      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -309,7 +288,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -330,18 +309,40 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds.",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill",
+        "LandApplication",
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Biosolids Landfill",
+        "Composting",
+        "Land Application"
       ]
     },
     {
       "Equipment": "CentrifugalThickener",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -357,6 +358,7 @@
       "Website": null,
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Polymer Addition",
         "Thickening"
       ]
@@ -372,7 +374,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
+      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -390,7 +392,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
+      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -409,64 +411,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
+      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Cogenerator",
-      "Process": [
-        "Cogeneration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "cogeneration facility completed in August 2020, uses biogas and natural gas to power approximately 60% of the facility's energy consumption",
-      "Source": "web_search",
-      "Website": "https://en.wikipedia.org/wiki/San_Jos%C3%A9%E2%80%93Santa_Clara_Regional_Wastewater_Facility",
-      "trigger_process": [
-        "Cogeneration",
-        "Unspecified Incineration"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered biosolids are...land applied as a soil amendment",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Biosolids Landfill"
       ]
     }
   ]

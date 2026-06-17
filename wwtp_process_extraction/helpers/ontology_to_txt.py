@@ -1,6 +1,7 @@
 from pathlib import Path
-from rdflib import Graph, Namespace
 from rdflib import Graph, Namespace, RDF, RDFS
+
+from helpers.utils import hasprocess_fragments
 
 WATR = Namespace("urn:nawi-water-ontology#")
 
@@ -79,13 +80,8 @@ def equipment_to_txt (equipment_file):
         if has_parent_suffix :
             continue
 
-        # unit processes (from sh:hasValue where sh:path == watr:hasProcess)
-        unit_processes = []
-        for prop in g.objects(cls, SH.property):
-            for path in g.objects(prop, SH.path):
-                if path == WATR.hasProcess:
-                    for val in g.objects(prop, SH.hasValue):
-                        unit_processes.append(local_name(str(val)))
+        # unit processes implied by this equipment's own SHACL hasProcess shape(s)
+        unit_processes = sorted(hasprocess_fragments(g, cls, WATR, SH))
 
         equipment.append({
             "id": cls_name,

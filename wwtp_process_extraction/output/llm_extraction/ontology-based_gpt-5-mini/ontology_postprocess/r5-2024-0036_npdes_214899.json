@@ -1,18 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "the Fowler wastewater trunk line is diverted at Pump Station B and pumped to Pump Station E",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -23,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -39,33 +27,48 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of ... a vortex grit removal mechanism",
+      "Sentence": "vortex grit removal mechanism",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pumped the combined flow to the Facility",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Reactor",
       "Process": [
-        "Mixing"
+        "ActivatedSludge",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Anoxic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Each bioreactor train consists of two anoxic zones",
-      "trigger_process": []
+      "trigger_process": [
+        "Denitrification",
+        "Unspecified AS"
+      ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Aeration",
-        "ActivatedSludge"
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
@@ -76,7 +79,8 @@
       "Location": "on-site",
       "Sentence": "followed by one aerobic zone with two aeration grids",
       "trigger_process": [
-        "Unspecified AS"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -90,7 +94,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment",
+      "Sentence": "pumped to the membrane filtration units, which provide tertiary treatment",
       "trigger_process": [
         "Unspecified Membrane Process"
       ]
@@ -98,7 +102,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -120,7 +125,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank",
+      "Sentence": "disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank",
       "trigger_process": []
     },
     {
@@ -136,19 +141,19 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "Tank",
       "Process": [
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "Detention"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks. The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days",
+      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -158,36 +163,48 @@
       "Process": [
         "Digestion"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days",
+      "Sentence": "reduced solids are purged into the digester, which holds the solids for 10 to 15 days",
       "trigger_process": [
         "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation",
         "Dewatering"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge",
+      "Sentence": "the solids are sent to dewatering equipment",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering equipment, which includes a centrifuge",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering",
         "Thickening"
       ]
     },
@@ -196,10 +213,10 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill",
@@ -212,15 +229,27 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled ... to a composting facility",
+      "trigger_process": [
+        "Composting"
       ]
     }
   ]

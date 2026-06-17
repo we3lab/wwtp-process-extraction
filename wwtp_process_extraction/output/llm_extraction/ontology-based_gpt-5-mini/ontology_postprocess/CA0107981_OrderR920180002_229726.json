@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "mechanically cleaned bar screens",
+      "Sentence": "Secondary treatment at HARRF is accomplished by mechanically cleaned bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -23,22 +22,40 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment",
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "aerated grit removal (cyclonic grit chambers)",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": null,
       "Process": [
         "Coagulation",
+        "Flocculation",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "chemically-enhanced primary treatment (CEPT)",
+      "trigger_process": [
+        "Coagulation",
+        "Flocculation",
+        "Primary Clarification",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
         "Sedimentation"
       ],
       "Role": [
@@ -47,12 +64,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "chemically-enhanced primary treatment (CEPT)",
+      "Sentence": "Sludge from primary sedimentation is anaerobically digested",
       "trigger_process": [
-        "Coagulation",
-        "Primary Clarification",
-        "Unspecified Chemical Addition"
+        "Primary Clarification"
       ]
     },
     {
@@ -68,7 +82,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "aeration basins equipped with membrane fine-bubble diffusers",
       "trigger_process": [
         "Unspecified AS"
@@ -85,7 +98,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
@@ -93,7 +105,9 @@
     },
     {
       "Equipment": "Reservoir",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization",
         "Storage"
@@ -101,7 +115,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "one 2-million gallon concrete storage reservoir for secondary effluent equalization storage",
       "trigger_process": [
         "Equalization"
@@ -109,7 +122,9 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization",
         "Storage"
@@ -117,10 +132,131 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "one 2-million gallon storage pond for secondary effluent and/or brine equalization storage",
       "trigger_process": [
         "Equalization"
+      ]
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment at HARRF consists of chemical coagulation and flocculation",
+      "trigger_process": [
+        "Coagulation",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment at HARRF consists of chemical coagulation and flocculation",
+      "trigger_process": [
+        "Flocculation"
+      ]
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "RapidSandFiltration",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "DynaSand\u00ae monomedia continuous backwash upflow filtration",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "disinfection using ultraviolet light",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "disinfection using ... chlorination",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Excess tertiary-treated wastewater may be dechlorinated and discharged to an onsite pond",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from primary sedimentation is anaerobically digested",
+      "trigger_process": [
+        "Anaerobic Digestion"
       ]
     },
     {
@@ -136,31 +272,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Waste activated sludge from the secondary clarifiers is thickened by dissolved air flotation",
       "trigger_process": [
         "Thickening"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sludge from primary sedimentation is anaerobically digested",
-      "trigger_process": [
-        "Anaerobic Digestion"
       ]
     },
     {
@@ -177,10 +291,8 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "dewatered by centrifuge",
       "trigger_process": [
-        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
@@ -192,90 +304,118 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "dewatered sludge is trucked to Yuma, Arizona and land applied",
       "trigger_process": [
         "Land Application"
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "UltrafiltrationUnit",
       "Process": [
-        "Coagulation",
+        "Microfiltration",
+        "Ultrafiltration",
+        "Backwashing",
+        "Cleaning",
         "ChemicalAddition"
       ],
       "Role": [
-        "Tertiary"
+        "Pretreatment",
+        "Feed"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Tertiary treatment at HARRF consists of chemical coagulation",
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes",
       "trigger_process": [
-        "Coagulation",
+        "Microfiltration",
+        "Ultrafiltration",
         "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "Flocculation",
-        "Mixing"
+        "ReverseOsmosis",
+        "ChemicalAddition",
+        "Cleaning"
       ],
       "Role": [
-        "Tertiary"
+        "Advanced"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Tertiary treatment at HARRF consists of ... flocculation",
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "RO treatment trains with associated chemical addition, backwash, chemical cleaning, and membrane conditioning processes",
       "trigger_process": [
-        "Flocculation"
+        "Reverse Osmosis",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Equalization"
+      ],
+      "Role": [
+        "Equalization",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "low-flow MFRO waste or residuals streams will be discharged to an on-site waste equalization wet well prior to discharge to the sanitary sewer",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "constructing a new 2-million-gallon replacement anaerobic digester",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "constructing a new sludge thickening system",
+      "trigger_process": [
+        "Thickening"
       ]
     },
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration",
-        "Backwashing",
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
-        "Tertiary",
-        "Backwash"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "DynaSand\u00ae monomedia continuous backwash upflow filtration",
+      "Sentence": "constructing a new 12-MGD tertiary treatment facility that features a deep bed sand filter system",
       "trigger_process": [
         "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disinfection using ultraviolet light",
-      "trigger_process": [
-        "UV Disinfection"
       ]
     },
     {
@@ -285,16 +425,14 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disinfection using ... chlorination",
+      "Sentence": "constructing a new ... chlorine contact basins",
       "trigger_process": [
         "Chlorination"
       ]
@@ -307,46 +445,12 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Excess tertiary-treated wastewater may be dechlorinated and discharged to an onsite pond",
-      "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Drain"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "flow from HARRF to the SEOO is monitored from the effluent pump station (continuous discharge)",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis",
-        "MembraneProcess"
-      ],
-      "Role": [
-        "Feed"
-      ],
       "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "The increased recycled water use includes the addition of the proposed MFRO Facility",
+      "Location": "on-site",
+      "Sentence": "constructing a new ... dechlorination system",
       "trigger_process": [
-        "Reverse Osmosis"
+        "Dechlorination"
       ]
     }
   ]

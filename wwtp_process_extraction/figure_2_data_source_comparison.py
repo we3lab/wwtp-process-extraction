@@ -38,8 +38,6 @@ def build_category_facility_sets(
 
     for col in process_cols:
         category = leaf_to_category.get(col, col)
-        # print("category:", category)
-        # print("col:", col)
         if col in sd_common.columns:
             for _, row in sd_common.iterrows():
                 if is_present(row.get(col, "")):
@@ -59,7 +57,6 @@ def build_category_facility_sets(
 def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
     """Build summary rows for ground-truth comparison plotting from per-category facility sets."""
     all_cats = sorted(set(list(sd_fac.keys()) + list(npdes_fac.keys()) + list(cwns_fac.keys())))
-    print(all_cats)
     rows = []
     for cat in all_cats:
         supplemental_data = len(sd_fac[cat])
@@ -226,12 +223,6 @@ def main():
         cwns_row = cwns_rows_match.iloc[0]
         npdes = supplemental_data_row["NPDES No."]
         facility_name = supplemental_data_row["Facility Name"]
-
-        # TODO: create a categorical plot
-        # all_cats = 
-        # sd_cat_set = {
-            
-        # }
 
         sd_set = {
             col

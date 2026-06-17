@@ -13,8 +13,6 @@ It reports three useful families of metrics for this sparse multi-label setup:
 - Exact-state accuracy: among truth-positive cells only, the fraction where the
   model predicts the correct state (PRESENT, FUTURE, PAST, OFFSITE).
 
-The workbook includes one malformed Healdsburg PDF name in one row; that is
-normalized here so the full evaluation set is used.
 """
 
 from __future__ import annotations
@@ -31,11 +29,10 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from step6_postprocess_llm_output import process_json_to_unit_process_dict
+from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison
 from helpers.utils import get_leaf_names
 
 
-DEFAULT_WORKBOOK = Path("wwtp_process_extraction/output/llm_extraction/model_comparison_all.csv")
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
 DEFAULT_OUTPUT = Path("wwtp_process_extraction/output/final/table_1.csv")
 MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_extraction")
@@ -65,6 +62,7 @@ MODEL_COST_MAP = {
     "claude-haiku": "Claude 3 Haiku",
 }
 
+# malformed PDF names
 BAD_TO_GOOD_PDF_NAMES = {
     "22_0017_Hea+CB8+C1:C8+C2:C8+C3:C8+C4:C+C3:C8": "22_0017_Healdsburg_WWTF_NPDES.pdf",
 }
@@ -72,7 +70,6 @@ BAD_TO_GOOD_PDF_NAMES = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--workbook", type=Path, default=DEFAULT_WORKBOOK, help="Path to the model comparison CSV")
     parser.add_argument("--keywords", type=Path, default=DEFAULT_KEYWORDS, help="Path to unitprocess_keywords.json")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Optional CSV output path")
     return parser.parse_args()
@@ -191,8 +188,8 @@ def exact_state_accuracy(truth_row: pd.Series, pred_row: pd.Series, label_cols: 
     return correct / total if total else float("nan")
 
 
-def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
-    df = pd.read_csv(workbook, dtype=str)
+def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataFrame:
+    df = comparison.copy()
     df["PDF_File"] = df["PDF_File"].replace(BAD_TO_GOOD_PDF_NAMES)
 
     # Match manual readings to predictions by Place ID (a single PDF can cover
@@ -216,6 +213,7 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
         subset = subset.drop_duplicates("Place ID").set_index("Place ID").reindex(manual.index)
 
         per_pdf_label_f1: list[float] = []
+        per_pdf_overlap: list[float] = []
         per_pdf_family_f1: list[float] = []
         per_pdf_state_acc: list[float] = []
 
@@ -223,11 +221,12 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
             manual_row = manual.loc[place_id, label_cols]
             pred_row = subset.loc[place_id, label_cols]
 
-            _, _, label_f1, _ = label_presence_f1(manual_row, pred_row, unit_cols)
+            _, _, label_f1, label_overlap = label_presence_f1(manual_row, pred_row, unit_cols)
             _, _, family_f1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
             state_acc = exact_state_accuracy(manual_row, pred_row, unit_cols)
 
             per_pdf_label_f1.append(label_f1)
+            per_pdf_overlap.append(label_overlap)
             per_pdf_family_f1.append(family_f1)
             per_pdf_state_acc.append(state_acc)
 
@@ -236,6 +235,9 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
                 "Method": method,
                 "Model": model,
                 "Macro Unit Process F1": pd.Series(per_pdf_label_f1).mean(),
+                # Jaccard overlap as a percent — of all processes truly present or predicted,
+                # the share both agree on. More intuitive companion to F1.
+                "Unit Process Accuracy (%)": pd.Series(per_pdf_overlap).mean() * 100,
                 "Macro Category F1": pd.Series(per_pdf_family_f1).mean(),
                 "State Accuracy": pd.Series(per_pdf_state_acc).mean(),
             }
@@ -244,12 +246,13 @@ def evaluate_workbook(workbook: Path, keywords_path: Path) -> pd.DataFrame:
     return pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
 
 
-def load_price_per_pdf() -> pd.DataFrame:
+def load_price_per_pdf(benchmark_ids=None) -> pd.DataFrame:
     """Read token_usage_summary.csv from each model comparison dir.
 
     For web runs (cost_usd column present): uses reported cost directly.
     For API Playground runs: computes cost from prompt/completion tokens using model_costs.csv.
-    Returns a DataFrame with columns Method, Model, Price per PDF.
+    Restricted to benchmark_ids (the manual-read facilities) so a model like gpt-5-mini that
+    accumulates every CA facility isn't averaged over its full set. Returns Method, Model, Price per PDF.
     """
     costs_df = pd.read_csv(MODEL_COSTS_CSV, skiprows=1)
     costs_df.columns = ["model_name", "input_per_m", "output_per_m"]
@@ -270,6 +273,8 @@ def load_price_per_pdf() -> pd.DataFrame:
         if not usage_path.exists():
             continue
         usage_df = pd.read_csv(usage_path)
+        if benchmark_ids is not None:
+            usage_df = usage_df[usage_df["place_id"].astype(str).str.strip().isin(benchmark_ids)]
         # If a precomputed cost column exists and has values, use it. Otherwise
         # compute cost from token counts using MODEL_COSTS_CSV.
         if "cost_usd" in usage_df.columns and usage_df["cost_usd"].notna().any():
@@ -277,23 +282,20 @@ def load_price_per_pdf() -> pd.DataFrame:
         else:
             cost_name = MODEL_COST_MAP.get(model_label)
             cost_row = costs_df[costs_df["model_name"] == cost_name]
-            if cost_row.empty or cost_name is None:
-                cost = float("nan")
-            else:
-                input_per_m = cost_row["input_per_m"].iloc[0]
-                output_per_m = cost_row["output_per_m"].iloc[0]
-                # column is "prompt_toke" (typo in source files)
-                prompt_col = "prompt_toke" if "prompt_toke" in usage_df.columns else "prompt_token"
-                # Ensure numeric conversion; missing values will become NaN
-                prompt_vals = pd.to_numeric(usage_df.get(prompt_col, pd.Series(dtype=float)), errors="coerce")
-                comp_vals = pd.to_numeric(usage_df.get("completion_token", pd.Series(dtype=float)), errors="coerce")
-                per_row_cost = (prompt_vals / 1_000_000 * input_per_m) + (comp_vals / 1_000_000 * output_per_m)
-                cost = per_row_cost.mean()
+            input_per_m = cost_row["input_per_m"].iloc[0]
+            output_per_m = cost_row["output_per_m"].iloc[0]
+            # column is "prompt_toke" (typo in source files)
+            prompt_col = "prompt_toke" if "prompt_toke" in usage_df.columns else "prompt_token"
+            # Ensure numeric conversion; missing values will become NaN
+            prompt_vals = pd.to_numeric(usage_df.get(prompt_col, pd.Series(dtype=float)), errors="coerce")
+            comp_vals = pd.to_numeric(usage_df.get("completion_token", pd.Series(dtype=float)), errors="coerce")
+            per_row_cost = (prompt_vals / 1_000_000 * input_per_m) + (comp_vals / 1_000_000 * output_per_m)
+            cost = per_row_cost.mean()
         rows.append({"Method": method_label, "Model": model_label, "Price per PDF": cost})
     return pd.DataFrame(rows)
 
 
-def load_structured_output_rates() -> pd.DataFrame:
+def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
     """Fraction of raw model outputs that matched the schema before any coercion.
 
     The saved JSON is coerced to the {"items": [...]} shape before writing, so it
@@ -315,6 +317,8 @@ def load_structured_output_rates() -> pd.DataFrame:
         if not usage_path.exists():
             continue
         usage = pd.read_csv(usage_path, dtype=str).fillna("")
+        if benchmark_ids is not None:
+            usage = usage[usage["place_id"].str.strip().isin(benchmark_ids)]
         if "structured_output" not in usage.columns:
             continue
         flags = usage["structured_output"].str.strip().str.lower()
@@ -353,29 +357,31 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols=None):
     if unit_cols is None:
         unit_cols = label_cols
     pred = pred_df.reindex(manual.index)  # missing facilities -> all-NaN (counts as no prediction)
-    label_f1, family_f1, state_acc = [], [], []
+    label_f1, overlap, family_f1, state_acc = [], [], [], []
     for place_id in manual.index:
         truth_row = manual.loc[place_id, label_cols]
         pred_row = pred.loc[place_id, label_cols]
-        _, _, f1, _ = label_presence_f1(truth_row, pred_row, unit_cols)
+        _, _, f1, jac = label_presence_f1(truth_row, pred_row, unit_cols)
         _, _, ff1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
         label_f1.append(f1)
+        overlap.append(jac)
         family_f1.append(ff1)
         state_acc.append(exact_state_accuracy(truth_row, pred_row, unit_cols))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
+        "Unit Process Accuracy (%)": pd.Series(overlap).mean() * 100,
         "Macro Category F1": pd.Series(family_f1).mean(),
         "State Accuracy": pd.Series(state_acc).mean(),
     }
 
 def main() -> None:
     args = parse_args()
-    metrics = evaluate_workbook(args.workbook, args.keywords)
+    comparison = build_model_comparison()
+    metrics = evaluate_workbook(comparison, args.keywords)
 
     # Add keyword-search baseline metrics (NPDES keyword method) computed on the
-    # same manual facilities used by the workbook (same n=50 baseline).
-    wb = pd.read_csv(args.workbook, dtype=str)
-    manual_ids = set(wb.loc[wb["Method"].eq("Manual Read"), "Place ID"].dropna())
+    # same manual facilities (same n=50 baseline).
+    manual_ids = set(comparison.loc[comparison["Method"].eq("Manual Read"), "Place ID"].dropna().astype(str).str.strip())
     # Empty cells must stay NaN, not "". pd.notna("") is True, so fillna("") would
     # treat every blank truth cell as a positive label: false positives become
     # impossible and missed labels are massively overcounted. Match the LLM path.
@@ -411,28 +417,29 @@ def main() -> None:
     }
     metrics = pd.concat([metrics, pd.DataFrame([kw_row])], ignore_index=True, sort=False)
 
-    # Spot-check the keyword method per process so we can audit unitprocess_keywords.json.
-    # FP = keyword fired but truth absent (keyword too broad / wrong alt_name).
-    # FN = truth present but keyword missed (keyword missing or too narrow).
-    audit_rows = []
-    for col in label_cols:
-        truth_pos = manual[col].notna()
-        pred_pos = kw_df[col].notna()
-        fp = int((pred_pos & ~truth_pos).sum())
-        fn = int((truth_pos & ~pred_pos).sum())
-        tp = int((truth_pos & pred_pos).sum())
-        if fp or fn:
-            audit_rows.append({"Process": col, "TP": tp, "FP": fp, "FN": fn, "Errors": fp + fn})
-    audit = pd.DataFrame(audit_rows).sort_values(["Errors", "FP", "Process"], ascending=[False, False, True])
-    print(f"\nKeyword spot-check: per-process disagreement with manual truth (n={len(manual)} facilities)")
-    print("  FP = keyword fired, truth absent (keyword likely too broad)")
-    print("  FN = truth present, keyword missed (keyword likely missing/too narrow)")
-    print(audit.to_string(index=False))
-    print(f"\n  Top false positives: {', '.join(audit.sort_values('FP', ascending=False).head(5)['Process'])}")
-    print(f"  Top false negatives: {', '.join(audit.sort_values('FN', ascending=False).head(5)['Process'])}")
+    # Spot-check the keyword and LLM ontology gpt-5 methods per process
+    llm_df = pd.read_csv("wwtp_process_extraction/output/unit_processes_by_facility_llm.csv", dtype=str).fillna("")
+    llm_df["Place ID"] = llm_df["Place ID"].str.strip()
+    llm_df = llm_df.set_index("Place ID").reindex(manual.index)
+    # empty strings -> NaN so absence counts as no prediction
+    llm_df = llm_df.replace("", np.nan)
+    for method, model, df in [("Keyword", "NPDES Keyword", kw_df), ("Ontology", "gpt-5", llm_df)]:
+        audit_rows = []
+        for col in unit_cols:  # leaf-level only; unspecified catch-alls aren't scored in Unit Process F1
+            truth_pos = manual[col].notna()
+            pred_pos = df[col].notna()
+            fp = int((pred_pos & ~truth_pos).sum())
+            fn = int((truth_pos & ~pred_pos).sum())
+            tp = int((truth_pos & pred_pos).sum())
+            if fp or fn:
+                audit_rows.append({"Process": col, "TP": tp, "FP": fp, "FN": fn, "Errors": fp + fn})
+        audit = pd.DataFrame(audit_rows).sort_values(["Errors", "FP", "Process"], ascending=[False, False, True])
+        print(f"\n{method} spot-check: per-process disagreement with manual truth (n={len(manual)} facilities)")
+        print(audit.to_string(index=False))
 
-    cost_df = load_price_per_pdf()
-    structured_df = load_structured_output_rates()
+    benchmark_ids = {str(x).strip() for x in manual_ids}
+    cost_df = load_price_per_pdf(benchmark_ids)
+    structured_df = load_structured_output_rates(benchmark_ids)
     metrics = metrics.merge(cost_df, on=["Method", "Model"], how="left")
     metrics = metrics.merge(structured_df, on=["Method", "Model"], how="left")
     metrics["Unit Process F1 / Price per PDF"] = np.where(
@@ -441,6 +448,7 @@ def main() -> None:
         np.nan,
     ).round(2)
     metrics = metrics.round(3)
+    metrics["Unit Process Accuracy (%)"] = metrics["Unit Process Accuracy (%)"].round(1)
 
     # Reorder rows to the user's requested display order and add placeholders.
     desired_order = [
@@ -481,16 +489,9 @@ def main() -> None:
     metrics = pd.DataFrame(ordered_rows)[cols]
 
     print(metrics.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
-    print()
-    print("Metric guide:")
-    print("- Macro Unit Process F1: label-presence F1 averaged over the facilities so each facility has equal weight.")
-    print("- Macro Category F1: same idea, but with labels collapsed to top-level ontology families for partial credit.")
-    print("- State Accuracy: on cells that are true labels, how often the model chose the exact state (PRESENT / FUTURE / PAST / OFFSITE).")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(args.output, index=False)
-    print(f"\nSaved metrics to {args.output}")
-
 
     # ADDITIONAL RUNS VARIANCE
     manual_full = pd.read_csv(MANUAL_PATH, dtype=str)  # empty cells -> NaN, like table_1
@@ -528,11 +529,7 @@ def main() -> None:
 
     OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(OUTPUT_CSV, index=False)
-    print()
-    print(out.to_string(index=False))
-    print(f"\nSaved {OUTPUT_CSV}")
-    if len(run_dirs) < 2:
-        print("\nNote: only the main run was found — run step5 --repeat_runs N for variance.")
+    # print(out.to_string(index=False))
 
 if __name__ == "__main__":
     main()

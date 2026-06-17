@@ -256,7 +256,7 @@ def ontology_to_txt():
             if eq.get('def'):
                 parts.append(eq['def'])
             if eq.get('SubEquipmentOf'):
-                parts.append(f"SubEquip: {', '.join(name for name in eq['SubEquipmentOf'])}")
+                parts.append(f"SubEquipOf: {', '.join(name for name in eq['SubEquipmentOf'])}")
             if eq.get('UnitProcess'):
                 parts.append(f"Process: {', '.join(name for name in eq['UnitProcess'])}")
             f.write(" | ".join(parts) + "\n")

@@ -268,7 +268,7 @@ def ontology_to_txt():
             if proc.get('def'):
                 parts.append(proc['def'])
             if proc.get('subProcessOf'):
-                parts.append(f"SubProcess: {', '.join(normalize(name) for name in proc['subProcessOf'])}")
+                parts.append(f"SubProcessOf: {', '.join(normalize(name) for name in proc['subProcessOf'])}")
             f.write(" | ".join(parts) + "\n")
         
         f.write("\n########################\n")
@@ -276,7 +276,7 @@ def ontology_to_txt():
         for role in roles:
             parts = [normalize(role['id'])]
             if role.get('SubRoleOf'):
-                parts.append(f"SubRole: {', '.join(normalize(name) for name in role['SubRoleOf'])}")
+                parts.append(f"SubRoleOf: {', '.join(normalize(name) for name in role['SubRoleOf'])}")
             f.write(" | ".join(parts) + "\n")
 
         f.write("\n########################\n")

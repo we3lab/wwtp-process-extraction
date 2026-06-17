@@ -5,9 +5,10 @@ import re
 import sys
 from pathlib import Path
 from collections import Counter
-from rdflib import Graph, Namespace, RDFS
+from rdflib import Graph, Namespace, RDF, RDFS
 
 WATR = Namespace("urn:nawi-water-ontology#")
+SH = Namespace("http://www.w3.org/ns/shacl#")
 ontology = Graph()
 
 GITHUB_BASE = (
@@ -15,7 +16,7 @@ GITHUB_BASE = (
 )
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 # Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
@@ -70,21 +71,16 @@ for name, details, group_id, _ in leaves:
     trigger_rules.append((name, clauses, priority, group_id))
 trigger_rules.sort(key=lambda r: r[2])
 
-# ontology_triggers_multi rules: sorted by priority
-multi_rules = []
-for name, details, group_id, _ in leaves:
+# ontology_triggers_multi: role counts aggregated facility-wide across matching items, so a
+# config split across separate basins still fires. List specific reactor classes (not generic
+# Reactor/Tank) so an AnaerobicDigester never matches and can't leak its Anaerobic role.
+facility_multi_rules = []
+for name, details, _, _ in leaves:
     me = details.get("ontology_triggers_multi")
     if me:
         for rule in (me if isinstance(me, list) else [me]):
-            multi_rules.append((name, rule, group_id))
-multi_rules.sort(key=lambda r: r[1]["priority"])
-
-# Pre-group multi rules once; applied per-item below.
-multi_rules_by_group = {}
-for col, rule, group_id in multi_rules:
-    if not group_id:
-        continue
-    multi_rules_by_group.setdefault(group_id, []).append((col, rule))
+            facility_multi_rules.append((name, rule))
+facility_multi_rules.sort(key=lambda r: r[1].get("priority", 1))
 
 # Load ontology from GitHub
 for filename in [
@@ -98,6 +94,26 @@ for filename in [
         ontology.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
     except Exception as e:
         print(f"Could not download {filename} from GitHub")
+
+# Direct (own-class only) hasProcess fragments, keyed by equipment class fragment.
+equipment_own_processes = {
+    cls.fragment: fragments
+    for cls in ontology.subjects(RDF.type, WATR.Class)
+    if cls.fragment and (fragments := hasprocess_fragments(ontology, cls, WATR, SH))
+}
+
+
+def equipment_hasprocess_closure(equipment_fragment):
+    """Own + rdfs:subClassOf-inherited hasProcess fragments for an equipment class."""
+    classes = {equipment_fragment} | {
+        a.fragment for a in ontology.transitive_objects(WATR[equipment_fragment], RDFS.subClassOf)
+        if a.fragment
+    }
+    procs = set()
+    for cls in classes:
+        procs |= equipment_own_processes.get(cls, set())
+    return procs
+
 
 def _norm_pdf(s):
     return s.lower().replace(" ", "_")
@@ -254,6 +270,14 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
                 )
             components[component_type] = expanded
 
+        # Inject each equipment's own + inherited hasProcess (per the ontology's SHACL
+        # shapes), then expand those Process fragments' own ancestry too.
+        implied_processes = set()
+        for equipment_name in components["Equipment"]:
+            implied_processes |= equipment_hasprocess_closure(equipment_name)
+        for proc_fragment in implied_processes:
+            components["Process"].update(ontology_labels("Process", proc_fragment))
+
         item_components.append((item_idx, components, item_role_counts, impl_value, impl_location))
 
     for item_idx, components, role_counts, impl_value, impl_location in item_components:
@@ -284,42 +308,6 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
                 continue
             if any(matches_item(token, components) for token in exclusion_tokens):
                 item_result[col] = ""
-
-        for group_id, grouped_rules in multi_rules_by_group.items():
-            match_col = None
-            for col, rule in grouped_rules:
-                if rule.get("Equipment") and not any(
-                    eq in components["Equipment"] for eq in rule["Equipment"]
-                ):
-                    continue
-                if rule.get("Role") and not all(r in components["Role"] for r in rule["Role"]):
-                    continue
-                if not all(
-                    role_counts.get(r, 0) >= b.get("min", 0)
-                    and role_counts.get(r, 0) <= b.get("max", float("inf"))
-                    for r, b in rule.get("role_counts", {}).items()
-                ):
-                    continue
-                match_col = col
-                break
-
-            if match_col:
-                sibling_cols = group_to_columns.get(group_id, [])
-                existing_present = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
-                if existing_present:
-                    best_existing_priority = min(
-                        column_priority.get(c, 1) for c in existing_present
-                    )
-                    if (
-                        best_existing_priority <= column_priority.get(match_col, 1)
-                        and match_col not in existing_present
-                    ):
-                        continue
-
-                for sibling_col in sibling_cols:
-                    if sibling_col in item_result:
-                        item_result[sibling_col] = ""
-                item_result[match_col] = "PRESENT"
 
         for group_id, sibling_cols in group_to_columns.items():
             present_cols = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
@@ -378,6 +366,32 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         for col, value in item_result.items():
             if value == "PRESENT":
                 result[col] = apply_implementation(result.get(col, ""), impl_value, impl_location)
+
+    # Full facility-scoped multi-matching rules aggregate the role counts across matching items
+    rank = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
+    for col, rule in facility_multi_rules:
+        if col not in result:
+            continue
+        eq_set = set(rule.get("Equipment", []))
+        matching = [
+            (components, role_counts, impl_value, impl_location)
+            for _, components, role_counts, impl_value, impl_location in item_components
+            if not eq_set or (components["Equipment"] & eq_set)
+        ]
+        excl = column_exclude_if_any.get(col, [])
+        if any(any(matches_item(tok, comps) for tok in excl) for comps, _, _, _ in matching):
+            continue
+        agg = Counter()
+        status = ""
+        for comps, role_counts, impl_value, impl_location in matching:
+            agg.update(role_counts)
+            status = apply_implementation(status, impl_value, impl_location)
+        ok = all(
+            agg.get(r, 0) >= b.get("min", 0) and agg.get(r, 0) <= b.get("max", float("inf"))
+            for r, b in rule.get("role_counts", {}).items()
+        )
+        if ok and rank.get(status, 0) > rank.get(result.get(col, ""), 0):
+            result[col] = status
 
     if output_json_data is not None and output_json_path is not None:
         with open(output_json_path, "w") as f:
@@ -477,12 +491,13 @@ def main():
         for f in sorted(unmatched_files):
             print(f"  {f}")
 
-    # ── Model comparison CSV ──────────────────────────────────────────────────────
-    # Manual rows come from the manual-read workbook;
-    # predictions are generated fresh from all JSON dirs.
-    # Output is model_comparison_all.csv which table_1 loads.
 
-    wb_df = pd.read_csv(MANUAL_PATH, dtype=str).fillna("")
+def build_model_comparison():
+    """Manual-vs-prediction long table built in memory from raw JSONs + manual CSV.
+
+    Benchmark facilities = the manual CSV's Place IDs; predictions are regenerated
+    fresh from every model dir. Replaces the model_comparison_all.csv intermediate."""
+    wb_df = pd.read_csv(MANUAL_PATH, dtype=str)
     manual_rows = wb_df.copy()
     manual_rows["Method"] = "Manual Read"
     up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
@@ -511,7 +526,6 @@ def main():
         # {txt_stem}_{place_id}.json (a single PDF can cover multiple facilities, so the
         # PDF name alone isn't enough). Parse the trailing _<id> off the filename.
         postprocess_dir = dir_path / "ontology_postprocess"
-        print(f"\nProcessing {dir_name} ({method_label} / {model_label})...")
         for json_file in sorted(dir_path.glob("*.json")):
             m = re.search(r"_(\d+)\.json$", json_file.name)
             place_id = m.group(1) if m else ""
@@ -531,9 +545,8 @@ def main():
             row = {"Method": method_label, "Model": model_label, "Place ID": place_id}
             for col in proc_columns:
                 val = unit_process_result.get(col, "")
-                row[col] = val if val else None
+                row[col] = val if val else float("nan")
             prediction_rows.append(row)
-            print(f"  Processed {json_file.name} → Place ID {place_id}")
 
     pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model"] + up_columns + ["PDF_File"])
 
@@ -545,9 +558,7 @@ def main():
     pred_df[backfill_cols] = meta_by_pid.reindex(pred_df["Place ID"]).values
 
     combined_df = pd.concat([manual_rows, pred_df], ignore_index=True)
-    model_comparison_csv = MODEL_COMPARISON_DIR / "model_comparison_all.csv"
-    combined_df.to_csv(model_comparison_csv, index=False)
-    print(f"\nSaved {model_comparison_csv}")
+    return combined_df
 
 
 if __name__ == "__main__":

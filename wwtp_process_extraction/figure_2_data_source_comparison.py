@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -64,8 +65,8 @@ def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
         if supplemental_data == 0 and npdes == 0 and cwns == 0:
             continue
         if supplemental_data > 0:
-            npdes_str = f"{(npdes - supplemental_data) / supplemental_data * 100:+.0f}%"
-            cwns_str = f"{(cwns - supplemental_data) / supplemental_data * 100:+.0f}%"
+            npdes_str = f"{(npdes - supplemental_data) / supplemental_data :+.0f}%"
+            cwns_str = f"{(cwns - supplemental_data) / supplemental_data :+.0f}%"
         else:
             npdes_str = f"+{npdes}" if npdes > 0 else "0"
             cwns_str = f"+{cwns}" if cwns > 0 else "0"
@@ -96,12 +97,20 @@ def main():
 
     ca_cwns_data = pd.read_csv(CWNS_CA_CSV, dtype=str, low_memory=False)
     ca_cwns_data["CWNS_ID"] = ca_cwns_data["CWNS_ID"].str.strip()
+
     # Build leaf → top-level category mapping
     leaf_to_category = {
         leaf: cat_name
         for cat_name, cat_value in unitprocess_keywords.items()
-        for leaf in get_leaf_names(cat_name, cat_value)
+        for leaf in get_leaf_names(cat_name, cat_value, exclude_categories=[])
     }
+
+    # remove facilities with no data in CWNS
+    print(
+        "Total CWNS facilities excluded due to lack of data:",
+        sum((ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1))
+    )
+    ca_cwns_data = ca_cwns_data[~(ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1)]
 
     # Load Google Sheets
     supplemental_data_df = pd.read_csv("wwtp_process_extraction/data/supplemental_data_unit_processes_by_facility.csv", dtype=str).fillna("")
@@ -109,7 +118,7 @@ def main():
     npdes_text_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()
 
-    print(f"GroundTruth sheet: {len(supplemental_data_df)} facilities")
+    print(f"Ground Truth sheet: {len(supplemental_data_df)} facilities")
     print(f"NPDES Text sheet: {len(npdes_text_df)} facilities")
 
     meta_cols = [
@@ -137,6 +146,9 @@ def main():
         ca_cwns_data, target_facilities=common_facilities
     )
 
+    # remove facilities that were inadvertently added back but have no CWNS data
+    common_facilities = common_facilities & set(cwns_common["Place ID"])
+
     # print facilities from the ground truth dataNOT in common_facilities
     sd_not_common = set(supplemental_data_df["Place ID"]) - common_facilities
     if sd_not_common:
@@ -144,7 +156,9 @@ def main():
         for pid in sd_not_common:
             name = supplemental_data_df.loc[supplemental_data_df["Place ID"] == pid, "Facility Name"].iloc[0]
             print(f"  {pid}: {name}")
-    sd_fac, npdes_fac, cwns_fac = build_category_facility_sets(
+    # remove 'Unspecified' columns for unit-process-level analysis
+    cols_no_unspec = [col for col in all_sheet_process_cols if "Unspecified" not in col]
+    sd_cat, npdes_cat, cwns_cat = build_category_facility_sets(
         all_sheet_process_cols,
         supplemental_data_common,
         text_common,
@@ -152,7 +166,7 @@ def main():
         leaf_to_category,
     )
 
-    sd_simple_rows = build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities)
+    sd_simple_rows = build_sd_rows(sd_cat, npdes_cat, cwns_cat, common_facilities)
 
     tick_fontsize = 12
     label_fontsize = 14
@@ -165,11 +179,8 @@ def main():
         fp_col = f"{source}_FP"
         fn_col = f"{source}_FN"
         total_err_col = f"{source}_Error_Total"
+        #  Error rates normalized by total GT occurrences in the category (per-GT)
         sd_plot_df[total_err_col] = sd_plot_df[fp_col] + sd_plot_df[fn_col]
-        sd_plot_df[f"{source}_Error_Rate"] = sd_plot_df[total_err_col] / n_facilities
-        sd_plot_df[f"{source}_Missed_Rate"] = sd_plot_df[fn_col] / n_facilities
-        sd_plot_df[f"{source}_Extra_Rate"] = sd_plot_df[fp_col] / n_facilities
-        # Error rates normalized by total GT occurrences in the category (per-GT)
         sd_plot_df[f"{source}_Error_Rate_perGT"] = sd_plot_df.apply(
             lambda r: (r[fp_col] + r[fn_col]) / r["GroundTruth"] if r["GroundTruth"] else 0,
             axis=1,
@@ -182,7 +193,6 @@ def main():
             lambda r: r[fp_col] / r["GroundTruth"] if r["GroundTruth"] else 0,
             axis=1,
         )
-        sd_plot_df[f"{source}_Accuracy_Like"] = 1 - sd_plot_df[f"{source}_Error_Rate"]
         denom = sd_plot_df[total_err_col].where(sd_plot_df[total_err_col] > 0, 1)
         sd_plot_df[f"{source}_Missed_Share"] = sd_plot_df[fn_col] / denom
         sd_plot_df[f"{source}_Extra_Share"] = sd_plot_df[fp_col] / denom
@@ -211,18 +221,19 @@ def main():
 
         sd_set = {
             col
-            for col in all_sheet_process_cols
+            for col in cols_no_unspec
             if col in supplemental_data_common.columns and is_present(supplemental_data_row.get(col, ""))
         }
+
         npdes_set = {
             col
-            for col in all_sheet_process_cols
+            for col in cols_no_unspec
             if col in text_common.columns and is_present(text_row.get(col, ""))
         }
 
         cwns_set = {
             col
-            for col in all_sheet_process_cols
+            for col in cols_no_unspec
             if col in cwns_common.columns
             and build_cwns_presence_mask(pd.Series([cwns_row.get(col, "")])).iloc[0]
         }
@@ -257,7 +268,7 @@ def main():
 
     sd_comparison_df = pd.DataFrame(facility_rows)
     sd_comparison_csv = (
-        f"wwtp_process_extraction/output/supplemental_data_comparison_by_facility.csv"
+        "wwtp_process_extraction/output/supplemental_data_comparison_by_facility.csv"
     )
     sd_comparison_df.to_csv(sd_comparison_csv, index=False)
 
@@ -274,16 +285,18 @@ def main():
             try:
                 fp = int(fp)
                 fn = int(fn)
-                Supplemental_Data_Count = int(Supplemental_Data_Count)
+                sd_count = int(Supplemental_Data_Count)
+                cols_to_ignore = {"Agency", "Facility Name", "Place ID", "NPDES No.", "PDF_File"} 
+                num_cols = len(set(cols_no_unspec) - cols_to_ignore)
             except Exception:
                 continue
             facility_metrics.append(
                 {
                     "Source": src,
-                    "key": key,
-                    "False_Positive_Rate": fp / Supplemental_Data_Count if Supplemental_Data_Count else None,
-                    "False_Negative_Rate": fn / Supplemental_Data_Count if Supplemental_Data_Count else None,
-                    "Error_Rate": (fp + fn) / Supplemental_Data_Count if Supplemental_Data_Count else None,
+                    "Key": key,
+                    "False Positive (FP) Rate": fp / (num_cols - sd_count),
+                    "False Positive (FN) Rate": fn / sd_count,
+                    "Error Rate": (fp + fn) / num_cols,
                 }
             )
 
@@ -292,12 +305,12 @@ def main():
     # Create two-panel figure: A=split violin per facility, B=category-level stacked FP/FN counts
     fig, (axA, axB) = plt.subplots(2, 1, figsize=(12, 10), gridspec_kw={"height_ratios": [1, 1]})
 
-    # Panel A: split violin similar to figure_s2 comparing NPDES vs CWNS
-    violin_cols = ["False_Positive_Rate", "False_Negative_Rate", "Error_Rate"]
+    # Panel A: boxplot comparing NPDES vs CWNS
+    boxplot_cols = ["False Positive (FP) Rate", "False Positive (FN) Rate", "Error Rate"]
     plot_df = (
-        fac_metrics_df.melt(id_vars=["Source", "key"], value_vars=violin_cols, var_name="Metric", value_name="Value")
+        fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=boxplot_cols, var_name="Metric", value_name="Value")
     )
-    palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["cwns"]}
+    palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["Clean Watershed Needs Survey"]}
     sns.boxplot(
         data=plot_df,
         x="Metric",
@@ -327,13 +340,21 @@ def main():
         except Exception:
             pass
     axA.set_ylim(0, 1)
-    axA.set_ylabel(f"Facility-level rate\n(N={int(fac_metrics_df['key'].nunique())})", fontsize=label_fontsize)
-    axA.set_xticks(range(len(violin_cols)))
-    axA.set_xticklabels([c.replace("_", " ") for c in violin_cols], fontsize=12)
+    axA.set_ylabel(f"Facility-level rate\n(N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
+    axA.set_xticks(range(len(boxplot_cols)))
+    axA.set_xticklabels([c.replace("_", " ") for c in boxplot_cols], fontsize=12)
     axA.tick_params(axis="y", labelsize=12)
-    axA.legend(loc="upper right", bbox_to_anchor=(1.02, 1.18), ncol=2, frameon=False, fontsize=11)
-    # capture handles/labels from top legend to duplicate on bottom subplot
-    _axA_handles, _axA_labels = axA.get_legend_handles_labels()
+    axA.legend(
+        handles=[
+            Patch(facecolor=to_rgba(COLORS["npdes_kw"]), edgecolor="black", label="Facility Permit"),
+            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"]), edgecolor="black", label="CWNS"),
+        ],
+        loc="upper right", 
+        bbox_to_anchor=(1.02, 1.18), 
+        ncol=2, 
+        frameon=False, 
+        fontsize=11
+    )
     axA.text(-0.12, 1.05, "A.", transform=axA.transAxes, ha="left", va="top", fontsize=16)
     set_thick_spines(axA, linewidth=1.6)
 
@@ -344,10 +365,10 @@ def main():
         npdes_x = i - w / 2
         cwns_x = i + w / 2
         # Use rates normalized by total GT occurrences in the category (per-GT)
-        npdes_fn_rate = row.get("NPDES_Missed_Rate_perGT", 0) * 100
-        npdes_fp_rate = row.get("NPDES_Extra_Rate_perGT", 0) * 100
-        cwns_fn_rate = row.get("CWNS_Missed_Rate_perGT", 0) * 100
-        cwns_fp_rate = row.get("CWNS_Extra_Rate_perGT", 0) * 100
+        npdes_fn_rate = row.get("NPDES_Missed_Rate_perGT", 0)
+        npdes_fp_rate = row.get("NPDES_Extra_Rate_perGT", 0)
+        cwns_fn_rate = row.get("CWNS_Missed_Rate_perGT", 0)
+        cwns_fp_rate = row.get("CWNS_Extra_Rate_perGT", 0)
         axB.bar(
             npdes_x,
             npdes_fn_rate,
@@ -378,51 +399,21 @@ def main():
         ha="right",
         fontsize=tick_fontsize,
     )
-    axB.set_ylabel(f"Error Rate (%)\n(N={n_facilities})", fontsize=label_fontsize)
+    axB.set_ylabel(f"Categorical error rate", fontsize=label_fontsize)
     axB.tick_params(axis="both", which="major", labelsize=tick_fontsize)
     set_thick_spines(axB, linewidth=1.6)
     axB.text(-0.12, 1.05, "B.", transform=axB.transAxes, ha="left", va="top", fontsize=16)
-    # average error lines (solid, percent) drawn behind the bars
-    axB.axhline(npdes_avg, color=COLORS["npdes_kw"], linewidth=1.6, linestyle="-", zorder=0)
-    axB.axhline(cwns_avg, color=COLORS["Clean Watershed Needs Survey"], linewidth=1.6, linestyle="-", zorder=0)
-    # label the average lines directly near the left edge (no background box)
-    try:
-        # place labels on far left (axes fraction) aligned with the average line heights
-        y_frac_npdes = npdes_avg / 100.0
-        y_frac_cwns = cwns_avg / 100.0
-        axB.text(
-            0.01,
-            y_frac_npdes,
-            "NPDES Average",
-            color=COLORS["npdes_kw"],
-            fontsize=9,
-            va="bottom",
-            ha="left",
-            transform=axB.transAxes,
-        )
-        axB.text(
-            0.01,
-            y_frac_cwns,
-            "CWNS Average",
-            color=COLORS["Clean Watershed Needs Survey"],
-            fontsize=9,
-            va="bottom",
-            ha="left",
-            transform=axB.transAxes,
-        )
-    except Exception:
-        pass
-    axB.set_ylim(0, 100)
-    pct_ticks = [i * 20 for i in range(6)]
+    axB.set_ylim(0, 1.0)
+    pct_ticks = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
     axB.set_yticks(pct_ticks)
-    axB.set_yticklabels([f"{p}%" for p in pct_ticks], fontsize=tick_fontsize)
+    axB.set_yticklabels([f"{p}" for p in pct_ticks], fontsize=tick_fontsize)
 
     axB.legend(
         handles=[
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", label="Facility Permit False Positive"),
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.9), edgecolor="black", hatch="....", label="Facility Permit False Negative"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.45), edgecolor="black", label="CWNS False Positive"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS False Negative"),
+            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", label="Facility Permit FP"),
+            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.9), edgecolor="black", hatch="....", label="Facility Permit FN"),
+            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.45), edgecolor="black", label="CWNS FP"),
+            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS FN"),
         ],
         loc="upper center",
         bbox_to_anchor=(0.5, 1.18),

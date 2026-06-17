@@ -105,8 +105,8 @@ def build_ontology_graph():
                 parts = [p.strip() for p in line.split('|')]
                 name = parts[0]
                 for part in parts[1:]:
-                    if part.startswith('SubProcess:'):
-                        parents = [p.strip() for p in part[len('SubProcess:'):].split(',')]
+                    if part.startswith('SubProcessOf:'):
+                        parents = [p.strip() for p in part[len('SubProcessOf:'):].split(',')]
                         proc_parents[name] = parents
             elif section == 'equip':
                 parts = [p.strip() for p in line.split('|')]

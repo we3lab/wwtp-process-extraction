@@ -8,12 +8,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Particles"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... screening, grit removal, primary clarification, and secondary treatment with activated sludge aeration and secondary clarification."
+      "Sentence": "screening"
     },
     {
       "Equipment": "GritChamber",
@@ -23,12 +21,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Particles"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... screening, grit removal, primary clarification..."
+      "Sentence": "grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -38,12 +34,10 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... primary clarification..."
+      "Sentence": "primary clarification"
     },
     {
       "Equipment": "AerationBasin",
@@ -55,12 +49,10 @@
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... secondary treatment with activated sludge aeration..."
+      "Sentence": "secondary treatment with activated sludge aeration"
     },
     {
       "Equipment": "SedimentationTank",
@@ -70,28 +62,23 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... secondary treatment with activated sludge aeration and secondary clarification."
+      "Sentence": "secondary clarification"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes filtration and chlorination."
+      "Sentence": "tertiary treatment, which includes filtration"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -100,15 +87,12 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes filtration and chlorination."
+      "Sentence": "tertiary treatment, which includes ... chlorination"
     },
     {
       "Equipment": "Thickener",
@@ -123,7 +107,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing includes thickening, two-stage anaerobic digestion, centrifuge dewatering..."
+      "Sentence": "Sludge processing includes thickening"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -132,20 +116,21 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Settled primary sludge and skimmings are pumped to a two-stage anaerobic digestion process."
+      "Sentence": "Settled primary sludge and skimmings are pumped to a two-stage anaerobic digestion process"
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -155,22 +140,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing includes ... centrifuge dewatering, and transported to a sanitary landfill for disposal or trucked to contractor-operated composting facilities."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered biosolids ... transported to a sanitary landfill for disposal."
+      "Sentence": "centrifuge dewatering"
     },
     {
       "Equipment": null,
@@ -185,7 +155,36 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered biosolids ... trucked to contractor-operated composting facilities."
+      "Sentence": "truck(ed) to contractor-operated composting facilities"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "transported to a sanitary landfill for disposal"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings are hauled to a sanitary landfill"
     }
   ]
 }

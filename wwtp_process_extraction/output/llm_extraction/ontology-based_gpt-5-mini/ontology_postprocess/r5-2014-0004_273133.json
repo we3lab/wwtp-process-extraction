@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Screenings and grit from the headworks screens are hauled to the local landfill for disposal.",
+      "Sentence": "headworks screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber, two primary clarifiers...",
+      "Sentence": "grit chamber",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber, two primary clarifiers, an activated sludge unit, secondary clarifiers...",
+      "Sentence": "two primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -54,12 +54,13 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber, two primary clarifiers, an activated sludge unit, secondary clarifiers...",
+      "Sentence": "an activated sludge unit",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -75,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber, two primary clarifiers, an activated sludge unit, secondary clarifiers...",
+      "Sentence": "secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -87,7 +88,7 @@
       ],
       "Role": null,
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
       "Sentence": "The disinfection system is currently not in use.",
       "trigger_process": [
@@ -96,14 +97,16 @@
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber, two primary clarifiers, an activated sludge unit, secondary clarifiers, disinfection system, sludge thickener, anaerobic sludge digester, and a sludge holding tank.",
+      "Sentence": "sludge thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -114,8 +117,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "Anaerobic",
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -123,7 +126,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of ... sludge thickener, anaerobic sludge digester, and a sludge holding tank.",
+      "Sentence": "anaerobic sludge digester",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -132,19 +135,18 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber, two primary clarifiers, an activated sludge unit, secondary clarifiers, disinfection system, sludge thickener, anaerobic sludge digester, and a sludge holding tank.",
+      "Sentence": "sludge holding tank",
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -154,11 +156,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is mechanically dewatered using a centrifuge, and dried onsite in lined, paved, drying beds equipped with underdrains.",
+      "Sentence": "mechanically dewatered using a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -174,24 +175,22 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is mechanically dewatered using a centrifuge, and dried onsite in lined, paved, drying beds equipped with underdrains.",
+      "Sentence": "dried onsite in lined, paved, drying beds equipped with underdrains",
       "trigger_process": [
         "Drying"
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment"
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
       ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A 20-inch PVC pipeline conveys the effluent from the WWTF to the Lincoln Ponds.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
+      "Location": "on-site",
+      "Sentence": "Decant is returned to either of the WWTFs for further treatment.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -202,7 +201,7 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "off-site",
@@ -227,6 +226,18 @@
       "Sentence": "Sludge dried in the 14 paved drying beds is hauled offsite for land application at a permitted facility.",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Three of the ponds are used for effluent disposal",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     }
   ]

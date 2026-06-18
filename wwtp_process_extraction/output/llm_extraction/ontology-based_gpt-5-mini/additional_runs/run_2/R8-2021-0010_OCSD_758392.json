@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment includes grit and screenings removal."
+      "Sentence": "preliminary treatment includes grit and screenings removal."
     },
     {
       "Equipment": "GritChamber",
@@ -24,39 +24,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment includes grit and screenings removal."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Coagulation",
-        "Flocculation",
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Coagulant-FerricChloride",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment."
+      "Sentence": "preliminary treatment includes grit and screenings removal."
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "pHAdjuster-Lime"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities."
+      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities... waste streams (e.g., microfiltration backwash, sump waste, and lime waste) are recycled back into the OC San's primary treatment facility."
     },
     {
       "Equipment": "TricklingFilter",
@@ -88,17 +72,86 @@
       "Equipment": null,
       "Process": [
         "ChemicalAddition",
-        "Oxidation"
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite has been used as oxidant chemical to treat foul air (i.e., H2S control) in scrubbers at primary treatment process and to control the bulking from filamentous organisms in the return activated sludge (RAS)."
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration..."
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes ... reverse osmosis ..."
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes ... advance oxidation (ultraviolet/peroxide)."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "GAP can divert up to 7.5 MGD of the Discharger’s secondary treated wastewater for tertiary treatment, disinfection, and reuse for landscaped irrigation and industrial uses."
     }
   ]
 }

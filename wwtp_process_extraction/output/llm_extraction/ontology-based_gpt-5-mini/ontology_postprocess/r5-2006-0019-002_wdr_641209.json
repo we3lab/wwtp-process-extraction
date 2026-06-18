@@ -9,67 +9,52 @@
         "Pretreatment"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All off-site waste ... is prescreened for solid and inert material ... using ... bar screen.",
+      "Sentence": "All off-site waste ... is prescreened for solid and inert material ... using automatic equipment or a manually racked bar screen.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "discharged into one of two aerobic digesters via an automatically controlled wet well utilizing a lead and lag pump system.",
+      "Sentence": "off-site waste is discharged into one of two aerobic digesters via an automatically controlled wet well utilizing a lead and lag pump system.",
       "trigger_process": []
     },
     {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion",
-        "Aeration",
-        "Sedimentation"
+        "Aeration"
       ],
       "Role": [
         "Aerobic",
-        "SolidsHandling"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each digester is a complete mix system that is kept in a homogenous state by an aeration diffuser system utilizing blowers.",
+      "Sentence": "The WWTF consists of aerobic digesters ... Each digester is a complete mix system that is kept in a homogenous state by an aeration diffuser system utilizing blowers.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Supernatant from the digesters is decanted to the effluent storage tank using gravity or pumps...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -79,27 +64,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge from each aerobic digester is pumped to one of two centrifuges for solids processing.",
+      "Sentence": "two sludge centrifuges ... Digested sludge from each aerobic digester is pumped to one of two centrifuges for solids processing.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The processed solids from each centrifuge are deposited into temporary storage bins...",
-      "trigger_process": []
     },
     {
       "Equipment": "Tank",
@@ -139,7 +108,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dosing as effluent is applied to the spray-fields...",
+      "Sentence": "dosing as effluent is applied to the spray-fields",
       "trigger_process": [
         "Land Application"
       ]
@@ -155,7 +124,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transported to the on-site Class II landfill for disposal",
+      "Sentence": "processed solids ... are transported to the on-site Class II landfill for disposal",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -165,25 +134,13 @@
       "Process": [
         "BiosolidsDisposal"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "transported off-site to a permitted facility.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
+      "Role": [
+        "SolidsHandling"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The Discharger obtained a permit to discharge to the El Dorado Irrigation District (EID) Deer Creek Wastewater Treatment Plant (WWTP).",
+      "Sentence": "processed solids ... transported off-site to a permitted facility.",
       "trigger_process": [
         "Unspecified Disposal"
       ]

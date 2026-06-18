@@ -8,10 +8,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks, screening",
+      "Sentence": "two new influent bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -25,10 +27,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal, an aerated grit chamber",
+      "Sentence": "screening, grit removal, an aerated grit chamber",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -41,7 +45,9 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "three primary clarifiers",
@@ -50,19 +56,19 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "TricklingFilter",
       "Process": [
-        "BiologicallyActiveFiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
       "Sentence": "two biofilters",
       "trigger_process": [
-        "Biologically Active Filtration"
+        "Trickling Filter"
       ]
     },
     {
@@ -93,24 +99,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three secondary clarifiers",
+      "Sentence": "a total of five secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "effluent pump station",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -131,6 +129,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -147,6 +146,7 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
+        "Storage",
         "Aerobic",
         "SolidsHandling"
       ],
@@ -159,7 +159,7 @@
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -172,11 +172,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the sludge holding tanks, sludge passes through the centrifuge facility",
+      "Sentence": "centrifuge facilities",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -201,8 +200,7 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Retention"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -213,12 +211,66 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Pretreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "septage receiving station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two new influent pump",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "effluent pump station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings removed at the headworks are deposited into a bin and hauled to a properly permitted landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
       "Role": [
-        "Posttreatment",
         "SolidsHandling"
       ],
       "Substance": [
@@ -226,23 +278,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "apply biosolids generated at the WWTF to approximately 61 acres of City owned land",
+      "Sentence": "submitted a Notice of Intent to apply biosolids generated at the WWTF to approximately 61 acres of City owned land",
       "trigger_process": [
         "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Screenings removed at the headworks are deposited into a bin and hauled to a properly permitted landfill",
-      "trigger_process": [
-        "Biosolids Landfill"
       ]
     }
   ]

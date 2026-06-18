@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "bar screen, fine bar screens",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarifiers",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... primary clarifiers...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -57,13 +57,14 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aeration basins; upgrading the mechanical surface aerators to more efficient diffused aerators in its aeration basins",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... aeration basins...; two of the ammonia violations occurred when the Richmond Plant\u2019s ability to convert ammonia to nitrate declined.",
       "trigger_process": [
         "Nitrification",
         "Unspecified Nutrient Removal"
@@ -80,7 +81,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarifiers",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... secondary clarifiers...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -89,18 +90,28 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine contact basins. The dechlorination system for both plants is located at the Richmond Plant",
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... chlorine contact basins.",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The dechlorination system for both plants is located at the Richmond Plant and is jointly owned by the Dischargers. The Dischargers upgraded the dechlorination system in 2023.",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
@@ -117,7 +128,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary activated sludge is sent to the dissolved air flotation thickener",
+      "Sentence": "secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge...",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -126,7 +137,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Process-Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -136,7 +147,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "plans to replace the dissolved air flotation thickener with a rotary drum thickener",
+      "Sentence": "the Richmond Municipal Sewer District plans to replace the dissolved air flotation thickener with a rotary drum thickener by November 2024 as part of the Critical Improvement Project.",
       "trigger_process": [
         "Thickening"
       ]
@@ -148,22 +159,38 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "combined with primary sludge, anaerobically digested",
+      "Sentence": "secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge, anaerobically digested, and pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "Tank",
       "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary-treated wastewater flows above 20.0 MGD are bypassed around biological treatment when necessary and stored in equalization basins.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -171,9 +198,11 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pumped via a shared sludge and leachate line to the West County Plant",
-      "trigger_process": []
+      "Location": "off-site",
+      "Sentence": "pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
     }
   ]
 }

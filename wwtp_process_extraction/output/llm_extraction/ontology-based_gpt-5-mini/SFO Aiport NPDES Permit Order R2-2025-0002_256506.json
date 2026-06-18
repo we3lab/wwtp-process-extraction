@@ -1,15 +1,30 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
       "Role": [
-        "Equalization"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All water entering these basins is pumped to the Industrial Plant for treatment."
+      "Sentence": "punched plate screens"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "grit removal"
     },
     {
       "Equipment": "Tank",
@@ -20,107 +35,67 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "In addition to the flow equalization tank at the start of the industrial wastewater treatment process..."
+      "Sentence": "flow equalization"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "SequencingBatchReactor",
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "ActivatedSludge"
       ],
       "Role": [
-        "Pretreatment"
+        "Secondary"
       ],
-      "Substance": [
-        "Coagulant",
-        "Flocculant-Polymer"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After equalization, the Discharger adds coagulants and polymers to flocculate the combined industrial wastewater..."
+      "Sentence": "biological treatment using sequencing batch reactors"
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "Flocculation"
+        "Chlorination"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Flocculant-Polymer"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Industrial Plant treatment operations consist of flow equalization, flocculation, dissolved air flotation..."
+      "Sentence": "chlorination"
     },
     {
-      "Equipment": "DissolvedAirFlotationThickener",
+      "Equipment": "GravityBeltThickener",
       "Process": [
-        "Flotation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids from the industrial wastewater treatment process are collected from the dissolved air flotation unit..."
+      "Sentence": "thickened by gravity belt thickeners"
     },
     {
-      "Equipment": null,
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "pHAdjustment"
+        "AnaerobicDigestion"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Industrial Plant treatment operations consist of ... pH adjustment (as needed) ..."
-    },
-    {
-      "Equipment": "OzonationUnit",
-      "Process": [
-        "Ozonation"
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Role": null,
       "Substance": [
-        "Disinfectant-Ozone"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Industrial Plant treatment operations consist of ... ozone, BAF (Biologically Active Filtration), and chlorination."
+      "Sentence": "treated with anaerobic digestion"
     },
     {
-      "Equipment": "BiologicalAeratedFilter",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "BiologicallyActiveFiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Industrial Plant treatment operations consist of ... BAF (Biologically Active Filtration) ..."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Industrial Plant treatment operations consist of ... chlorination."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -131,7 +106,127 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids from the industrial wastewater treatment process are collected from the dissolved air flotation unit and dewatered with a centrifuge or drying beds before being hauled offsite for disposal."
+      "Sentence": "primarily dewatered with centrifuges before being hauled offsite"
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The facility also has a belt filter press"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "drying beds that can be used for additional dewatering"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the flow equalization tank at the start of the industrial wastewater treatment process"
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flocculation"
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After equalization, the Discharger adds coagulants and polymers to flocculate the combined industrial wastewater"
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dissolved air flotation"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pH adjustment (as needed)"
+    },
+    {
+      "Equipment": "OzonationUnit",
+      "Process": [
+        "Ozonation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "ozone"
+    },
+    {
+      "Equipment": "BiologicalAeratedFilter",
+      "Process": [
+        "BiologicallyActiveFiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "BAF (Biologically Active Filtration)"
     },
     {
       "Equipment": null,
@@ -142,10 +237,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "transport(s) treated wastewater to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination using sodium bisulfite prior to discharge to Lower San Francisco Bay"
+      "Sentence": "transport treated wastewater to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination using sodium bisulfite"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "PhosphorusRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "add an aerobic granular sludge process to its sequencing batch reactors ... enhance nitrification, denitrification, and biological phosphorus uptake"
+    },
+    {
+      "Equipment": null,
       "Process": [
         "MembraneProcess"
       ],
@@ -153,7 +265,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the Discharger plans to begin construction in 2024 on an Advanced Water Treatment Plant that will include membrane filtration..."
+      "Sentence": "Advanced Water Treatment Plant that will include membrane filtration"
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
@@ -164,7 +276,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the Discharger plans to begin construction in 2024 on an Advanced Water Treatment Plant that will include ... reverse osmosis ..."
+      "Sentence": "reverse osmosis"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -175,7 +287,29 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the Discharger plans to begin construction in 2024 on an Advanced Water Treatment Plant that will include ... UV disinfection ..."
+      "Sentence": "UV disinfection"
+    },
+    {
+      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Process": [
+        "GranularActivatedCarbon"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "test PFAS removal by treating combined effluent ... with granular activated carbon"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "IonExchange"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "if necessary, ion exchange resins"
     }
   ]
 }

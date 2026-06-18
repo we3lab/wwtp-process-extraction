@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two parallel comminutors grind large solids.",
+      "Sentence": "Flow is divided over two parallel comminutors ... designed to grind large solids",
       "trigger_process": [
         "Comminution"
       ]
@@ -27,17 +27,38 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system is composed of ... solids screening ... manual bar screen.",
+      "Sentence": "bypass channel containing a manual bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flow over a slide gate into a bypass channel",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "conveyance piping, lift stations",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "Sedimentation",
-        "BiologicalProcess"
+        "Sedimentation"
       ],
       "Role": [
         "Primary",
@@ -47,42 +68,57 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Aerated ponds provide both primary and secondary treatment.",
+      "Sentence": "Aerated ponds provide both primary and secondary treatment",
       "trigger_process": [
-        "Aerated Lagoon",
         "Primary Clarification",
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "Pump",
       "Process": [
-        "Chlorination",
-        "Disinfection",
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Off spec water is recirculated back into the treatment ponds",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
         "Mixing"
       ],
       "Role": [
         "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A chlorine solution is injected into the mixing chamber and mixed with an air sparger",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A chlorine solution is injected into the mixing chamber and mixed with an air sparger.",
+      "Sentence": "two chlorine contact basins designed for a minimum of 20 minutes contact time ... for disinfection",
       "trigger_process": [
         "Chlorination"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is pumped to a lined effluent storage pond.",
-      "trigger_process": []
     },
     {
       "Equipment": "Pond",
@@ -93,28 +129,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent is pumped to a lined effluent storage pond and used as irrigation for the adjacent golf course.",
+      "Sentence": "an effluent storage pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Off spec water is recirculated back into the treatment ponds.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -124,11 +148,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is dewatered onsite with a portable centrifuge and the biosolids are hauled offsite to Liberty Composting, Inc.",
+      "Sentence": "Sludge is dewatered onsite with a portable centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -137,12 +160,14 @@
         "Composting"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The biosolids are hauled offsite to Liberty Composting, Inc., in Lost Hills, CA.",
+      "Sentence": "the biosolids are hauled offsite to Liberty Composting, Inc., in Lost Hills, CA.",
       "trigger_process": [
         "Composting"
       ]

@@ -8,24 +8,28 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All off-site waste ... is prescreened for solid and inert material ... using automatic equipment or a manually racked bar screen.",
+      "Sentence": "All off-site waste ... is prescreened for solid and inert material (i.e., rags, rocks, grit, etc.) using automatic equipment or a manually racked bar screen.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After solids screening, off-site waste is discharged into one of two aerobic digesters via an automatically controlled wet well utilizing a lead and lag pump system.",
+      "Sentence": "discharged into one of two aerobic digesters via an automatically controlled wet well utilizing a lead and lag pump system.",
       "trigger_process": []
     },
     {
@@ -33,13 +37,12 @@
       "Process": [
         "AerobicDigestion",
         "Aeration",
-        "Mixing",
         "Sedimentation"
       ],
       "Role": [
-        "Aerobic",
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -52,10 +55,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -68,8 +71,7 @@
       "Sentence": "Digested sludge from each aerobic digester is pumped to one of two centrifuges for solids processing.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -98,7 +100,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved ... through chlorine contact chambers with sodium hypochlorite or other approved disinfectant.",
+      "Sentence": "Disinfection is achieved by dosing the effluent stored in the effluent storage tanks or dosing as effluent is applied to the spray-fields through chlorine contact chambers with sodium hypochlorite or other approved disinfectant.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -109,12 +111,13 @@
         "LandApplication"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "LandApplication"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved by dosing the effluent ... as effluent is applied to the spray-fields through chlorine contact chambers.",
+      "Sentence": "...as effluent is applied to the spray-fields through chlorine contact chambers...",
       "trigger_process": [
         "Land Application"
       ]
@@ -127,7 +130,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The processed solids from each centrifuge are deposited into temporary storage bins that are transported to the on-site Class II landfill for disposal.",
@@ -138,17 +143,19 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The processed solids ... are transported off-site to a permitted facility.",
+      "Sentence": "The processed solids from each centrifuge are ... transported off-site to a permitted facility.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Biosolids Landfill"
       ]
     }
   ]

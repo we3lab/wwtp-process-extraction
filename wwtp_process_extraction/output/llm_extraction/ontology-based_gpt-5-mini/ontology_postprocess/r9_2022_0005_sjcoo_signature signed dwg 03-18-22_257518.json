@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: screening, grit removal...",
+      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: screening, grit removal, primary clarification...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: screening, grit removal...",
+      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: screening, grit removal, primary clarification...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Chiquita WRP provides ... primary clarification (9.0-MGD capacity)...",
+      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: ... primary clarification (9.0-MGD capacity)...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -134,7 +134,7 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": null,
       "Process": [
         "ChemicalAddition",
         "Mixing"
@@ -145,7 +145,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing...",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
@@ -161,7 +161,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through ... tertiary filtration...",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -180,14 +180,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through ... and chlorination disinfection.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -207,22 +209,22 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered...",
       "trigger_process": [
         "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -236,6 +238,54 @@
       "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill...",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the remaining biosolids are trucked to contract composting operations.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley.",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

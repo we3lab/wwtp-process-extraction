@@ -9,7 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process at the West County Plant includes equalization basins",
+      "Sentence": "equalization basins",
       "trigger_process": [
         "Equalization"
       ]
@@ -25,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process at the West County Plant includes ... bar screens",
+      "Sentence": "bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -41,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process at the West County Plant includes ... grit removal",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -57,7 +57,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process at the West County Plant includes ... primary clarifiers",
+      "Sentence": "primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -65,24 +65,21 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "MLE",
         "ActivatedSludge",
+        "MLE",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
-        "Secondary",
         "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Anaerobic",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "aeration basins with anaerobic chambers (for nutrient removal using a Modified Ludzack-Ettinger [MLE] biological nutrient removal [BNR] process)",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "MLE",
         "Nitrification"
@@ -99,7 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process at the West County Plant includes ... secondary clarifiers",
+      "Sentence": "secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -110,43 +107,15 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process at the West County Plant includes ... chlorine contact chambers",
+      "Sentence": "chlorine contact chambers",
       "trigger_process": [
         "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "It pumps the remainder of its treated wastewater to the Richmond Plant to be combined with the Richmond Plant effluent",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The dechlorination system for both plants is located at the Richmond Plant and is jointly owned by the Dischargers.",
-      "trigger_process": [
-        "Dechlorination"
       ]
     },
     {
@@ -162,7 +131,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarifier sludge is combined with secondary clarifier sludge that has been thickened using dissolved air flotation",
+      "Sentence": "secondary clarifier sludge that has been thickened using dissolved air flotation",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -171,6 +140,7 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
+        "Dewatering",
         "Filtration"
       ],
       "Role": [
@@ -181,44 +151,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and then dewatered via a belt press.",
+      "Sentence": "then dewatered via a belt press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Landfill",
-        "Composting"
-      ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The West County Plant\u2019s biosolids are land-applied at a landfill or sent to a composting facility for further treatment.",
-      "trigger_process": [
-        "Biosolids Landfill",
-        "Composting"
-      ]
-    },
-    {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The West County Wastewater District plans to complete construction of a thermal dryer for biosolids from both plants by the end of 2024.",
+      "Sentence": "plans to complete construction of a thermal dryer for biosolids from both plants by the end of 2024",
       "trigger_process": [
         "Drying"
       ]
@@ -229,12 +180,10 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Anaerobic"
+        "Anaerobic",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "The West County Wastewater District demolished its anaerobic digesters during the previous order term",
@@ -243,133 +192,15 @@
       ]
     },
     {
-      "Equipment": "CentrifugalDewateringUnit",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Install new centrifuges",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Install new chemical carbon redirection to divert organic load from secondary system to digesters (enhance gas production)",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Install new biosolids belt drier to allow repurposing of the sludge lagoons property and to provide Class A biosolids",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "RotaryDrumThickener",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Replace dissolved air flotation thickener with rotary drum thickeners",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Install new primary sludge pumps and grinders to reduce impacts from rags",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Install new primary sludge pumps and grinders to reduce impacts from rags",
-      "trigger_process": [
-        "Comminution"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Install new grit removal system",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Anaerobic"
+        "Anaerobic",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Install new anaerobic digesters and rehabilitate the digested sludge storage system",
@@ -382,9 +213,7 @@
       "Process": [
         "Combustion"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -407,46 +236,122 @@
       ]
     },
     {
-      "Equipment": "Battery",
-      "Process": null,
-      "Role": [
-        "Storage"
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
       ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Install new centrifuges",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "New battery energy storage system to provide microgrid capabilities and two hours of emergency power for the West County Plant by late 2025",
-      "trigger_process": []
+      "Sentence": "Install new primary sludge pumps and grinders to reduce impacts from rags",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Install new grit removal system",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "RotaryDrumThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Replace dissolved air flotation thickener with rotary drum thickeners",
+      "trigger_process": [
+        "Thickening"
+      ]
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Secondary clarifier upgrades by 2027",
       "trigger_process": [
-        "Secondary Clarification"
+        "Unspecified Clarification"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": null,
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Recirculation"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Rehabilitation of the return activated sludge system by 2027",
       "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Install new chemical carbon redirection to divert organic load from secondary system to digesters (enhance gas production)",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dechlorination system for both plants is located at the Richmond Plant and is jointly owned by the Dischargers",
+      "trigger_process": [
+        "Dechlorination"
+      ]
     }
   ]
 }

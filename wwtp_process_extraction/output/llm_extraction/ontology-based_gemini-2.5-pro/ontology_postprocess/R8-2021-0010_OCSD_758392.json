@@ -101,21 +101,177 @@
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "MicrofiltrationUnit",
       "Process": [
-        "Chlorination",
-        "Dechlorination"
+        "Microfiltration"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
+      "Role": [
+        "Tertiary"
       ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "OC San has ceased continuous chlorination/dechlorination since May 2015.",
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide).",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide).",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide).",
+      "trigger_process": [
+        "Oxidation",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "GAP can divert up to 7.5 MGD of the Discharger\u2019s secondary treated wastewater for tertiary treatment, disinfection, and reuse for landscaped irrigation and industrial uses.",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Recirculation",
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": [
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The GAP and part of the GWRS generates waste streams (e.g., microfiltration backwash, sump waste, and lime waste) are recycled back into the OC San\u2019s primary treatment facility",
+      "trigger_process": [
+        "Lime Treatment"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "Boiler",
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

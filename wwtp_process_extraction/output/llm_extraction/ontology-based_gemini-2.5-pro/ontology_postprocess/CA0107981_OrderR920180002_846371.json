@@ -10,40 +10,14 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A membrane filtration influent tank",
+      "Sentence": "A membrane filtration influent tank;",
       "trigger_process": []
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "A surge tank and supporting compressed air system to control pressure surges",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "A feed pump system to convey influent from the influent tank to the microfiltration/ultrafiltration (MF/UF) system",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
+      "Equipment": "Screen",
       "Process": [
-        "Microfiltration",
-        "Ultrafiltration"
+        "Screening",
+        "Backwashing"
       ],
       "Role": [
         "Pretreatment"
@@ -51,29 +25,32 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A MF/UF membrane filtration system",
+      "Sentence": "Strainer backwash flows,",
       "trigger_process": [
-        "Microfiltration",
-        "Ultrafiltration"
+        "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "MicrofiltrationUnit",
       "Process": [
+        "Microfiltration",
+        "Ultrafiltration",
         "ChemicalAddition",
         "Backwashing",
-        "Cleaning"
+        "Cleaning",
+        "Neutralization"
       ],
       "Role": [
-        "Backwash"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes",
+      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes;",
       "trigger_process": [
         "Microfiltration",
-        "Unspecified Chemical Addition"
+        "Neutralization",
+        "Ultrafiltration"
       ]
     },
     {
@@ -86,22 +63,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "An inter-process storage tank to equalize flows between the MF/UF and reverse osmosis (RO) systems",
+      "Sentence": "An inter-process storage tank to equalize flows between the MF/UF and reverse osmosis (RO) systems;",
       "trigger_process": [
         "Equalization"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps",
-      "trigger_process": []
     },
     {
       "Equipment": "CartridgeFiltrationUnit",
@@ -114,69 +79,28 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps",
+      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps;",
       "trigger_process": [
         "Unspecified Filtration"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "A RO feed pump station",
-      "trigger_process": []
-    },
-    {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "RO treatment trains with associated chemical addition, backwash, chemical cleaning, and membrane conditioning processes",
-      "trigger_process": [
-        "Reverse Osmosis"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
+        "ReverseOsmosis",
         "ChemicalAddition",
         "Backwashing",
         "Cleaning"
-      ],
-      "Role": [
-        "Backwash"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "RO treatment trains with associated chemical addition, backwash, chemical cleaning, and membrane conditioning processes",
-      "trigger_process": [
-        "Reverse Osmosis",
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Purging"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "An RO flush system",
-      "trigger_process": []
+      "Sentence": "RO treatment trains with associated chemical addition, backwash, chemical cleaning, and membrane conditioning processes;",
+      "trigger_process": [
+        "Reverse Osmosis",
+        "Unspecified Chemical Addition"
+      ]
     },
     {
       "Equipment": "Tank",
@@ -189,35 +113,8 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A product water blending and storage tank",
+      "Sentence": "A product water blending and storage tank;",
       "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "A pump system to convey blended MFRO product water to agricultural reuse sites via Hogback Reservoir.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening",
-        "Backwashing"
-      ],
-      "Role": [
-        "Backwash"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Strainer backwash flows",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
     },
     {
       "Equipment": "Tank",
@@ -229,7 +126,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The following low-flow MFRO waste or residuals streams will be discharged to an on-site waste equalization wet well",
+      "Sentence": "The following low-flow MFRO waste or residuals streams will be discharged to an on-site waste equalization wet well prior to discharge to the sanitary sewer for treatment at HARRF:",
       "trigger_process": [
         "Equalization"
       ]

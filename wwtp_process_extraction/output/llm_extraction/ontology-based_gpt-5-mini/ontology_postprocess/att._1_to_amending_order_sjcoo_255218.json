@@ -8,9 +8,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The San Clemente WRP has ... screening, grit removal, primary clarification...",
@@ -26,9 +24,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The San Clemente WRP has ... screening, grit removal, primary clarification...",
@@ -59,8 +55,7 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -87,9 +82,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -99,7 +94,7 @@
       "Location": "on-site",
       "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes filtration and chlorination.",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
@@ -138,26 +133,13 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Settled primary sludge and skimmings are pumped to a two-stage anaerobic digestion process.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -183,7 +165,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing includes thickening, two-stage anaerobic digestion, centrifuge dewatering...",
+      "Sentence": "Sludge processing includes ... centrifuge dewatering, and transported to a sanitary landfill or trucked to contractor-operated composting facilities.",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
@@ -198,7 +180,7 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
@@ -220,9 +202,27 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "trucked to contractor-operated composting facilities",
+      "Sentence": "trucked to contractor-operated composting facilities.",
       "trigger_process": [
         "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings are hauled to a sanitary landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

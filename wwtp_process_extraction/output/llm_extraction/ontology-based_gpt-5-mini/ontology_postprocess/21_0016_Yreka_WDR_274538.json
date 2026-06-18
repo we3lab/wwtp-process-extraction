@@ -3,7 +3,9 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -29,15 +31,14 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge secondary treatment",
@@ -70,27 +71,31 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "clarification",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "filtration",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -99,7 +104,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -111,8 +118,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -123,39 +131,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to a centrifuge for mechanical dewatering",
+      "Sentence": "aerobically digested sludge is pumped to a centrifuge for mechanical dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four percolation ponds",
+      "Sentence": "four percolation ponds are used primarily during high flow periods to accommodate larger effluent flows",
       "trigger_process": [
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "final disposal at a permitted landfill",
-      "trigger_process": [
-        "Biosolids Landfill"
       ]
     }
   ]

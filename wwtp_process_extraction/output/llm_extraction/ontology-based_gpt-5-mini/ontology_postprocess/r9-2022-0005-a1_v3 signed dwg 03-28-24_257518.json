@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification (9.0-MGD capacity)",
+      "Sentence": "The Chiquita WRP provides secondary-treatment with the following wastewater treatment unit operations and processes: ... primary clarification (9.0-MGD capacity) ...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -60,7 +60,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a combination of (1) high-rate trickling filtration and recirculation (6.0-MGD capacity)",
+      "Sentence": "a combination of (1) high-rate trickling filtration and recirculation (6.0-MGD capacity)...",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -78,7 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and (2) activated sludge aeration and secondary clarification (6.0-MGD capacity)",
+      "Sentence": "activated sludge aeration and secondary clarification (6.0-MGD capacity).",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -94,49 +94,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and (2) activated sludge aeration and secondary clarification (6.0-MGD capacity)",
+      "Sentence": "activated sludge aeration and secondary clarification (6.0-MGD capacity).",
       "trigger_process": [
         "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SMWD was in the process of installing another secondary clarifier (at the time, the design was done and out for bid)",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration",
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SMWD also planned to add new aeration basins... will increase the aeration basin from 6 MGD to 9 MGD",
-      "trigger_process": [
-        "Unspecified AS"
       ]
     },
     {
       "Equipment": "CoagulationBasin",
       "Process": [
-        "ChemicalAddition",
         "Coagulation",
         "Mixing"
       ],
@@ -146,7 +111,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -163,7 +128,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through... tertiary filtration",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -175,28 +140,31 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through... chlorination disinfection",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
       "trigger_process": [
         "Thickening"
       ]
@@ -215,13 +183,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is... digested",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
       "trigger_process": [
         "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -233,7 +201,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is... dewatered, using belt filter press",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -246,10 +214,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill",
+      "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill...",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -262,10 +232,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the remaining biosolids are trucked to contract composting operations",
+      "Sentence": "...the remaining biosolids are trucked to contract composting operations.",
       "trigger_process": [
         "Composting"
       ]
@@ -276,14 +248,47 @@
         "Landfill"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley",
+      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley.",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD was in the process of installing another secondary clarifier (at the time, the design was done and out for bid).",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD also planned to add new aeration basins... will increase the aeration basin from 6 MGD to 9 MGD.",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     }
   ]

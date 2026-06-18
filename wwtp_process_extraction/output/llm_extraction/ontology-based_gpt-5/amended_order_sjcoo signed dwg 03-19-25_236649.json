@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aerated grit removal"
+      "Sentence": "processes for both treatment trains include... aerated grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sedimentation"
+      "Sentence": "processes for both treatment trains include... primary sedimentation"
     },
     {
       "Equipment": "AerationBasin",
@@ -45,7 +45,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -63,11 +64,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sedimentation"
+      "Sentence": "secondary... secondary sedimentation"
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -76,7 +79,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes thickening (secondary sludge)"
+      "Sentence": "Solids processing... includes thickening (secondary sludge)"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -84,26 +87,32 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "anaerobic digestion"
+      "Sentence": "Solids processing... includes... anaerobic digestion"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "centrifuge dewatering"
+      "Sentence": "Solids processing... includes... centrifuge dewatering"
     },
     {
       "Equipment": null,
@@ -113,10 +122,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings ... are hauled to a sanitary landfill"
+      "Sentence": "Grit and screenings... are hauled to a sanitary landfill"
     },
     {
       "Equipment": null,
@@ -126,10 +137,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dewatered biosolids ... are hauled to either a sanitary landfill"
+      "Sentence": "dewatered biosolids... are hauled to either a sanitary landfill"
     },
     {
       "Equipment": null,
@@ -139,10 +152,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "or a contractor-operated compost site"
+      "Sentence": "dewatered biosolids... are hauled to... a contractor-operated compost site"
     }
   ]
 }

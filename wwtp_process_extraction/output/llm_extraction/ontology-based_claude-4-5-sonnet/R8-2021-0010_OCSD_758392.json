@@ -29,14 +29,16 @@
     {
       "Equipment": "Reactor",
       "Process": [
-        "ChemicalAddition"
+        "ChemicalAddition",
+        "Coagulation"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": [
         "Coagulant-FerricChloride",
-        "Flocculant-Polymer"
+        "Flocculant-Polymer",
+        "pHAdjuster"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -85,26 +87,178 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent disinfection with chlorine bleach followed by de-chlorination with sodium bisulfite occurs at the other two discharge points 002 and 003."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The disinfection program initiated in 2002 was based on using sodium hypochlorite (bleach) for disinfection and sodium bisulfite for dechlorination."
+      "Sentence": "The use of continuous disinfection prior to discharge through Discharge Point No. 001 (120\" outfall) has been ceased since May 2015."
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Dechlorination"
+        "Dewatering"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The disinfection program initiated in 2002 was based on using sodium hypochlorite (bleach) for disinfection and sodium bisulfite for dechlorination."
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide)."
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide)."
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide)."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Build a 6 MG equalization storage tank at Plant No. 2 to store secondary effluent during peak day flows and be returned to the system during low flow periods to maintain a constant flow to the GWRS."
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Organics"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An organic waste receiving facility will be constructed to receive, store, and feed approximately 150 tons of pre-processed food waste slurry to the digester complex at Plant No. 2 (by Digester M) to generate additional digester gas per recommendations of the Biosolids Master Plan."
     }
   ]
 }

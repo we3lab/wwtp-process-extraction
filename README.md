@@ -72,3 +72,5 @@ Meagan Mauter - mauter@stanford.edu
 This work is funded in part by:
 Stanford SURGE program
 National Alliance for Water Innovation
+
+We acknowledge the use of Claude Code and Anthropic LLMs for drafting and refining elements of web scraping, data manipulation, and visualization code throughout the codebase.

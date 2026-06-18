@@ -86,6 +86,7 @@ MIN_CHANGES_VOCAB = 2      # min vocab hits in 1000 chars after "planned changes
 MAX_CLUSTER_DISTANCE = 10000  # max chars from first cluster; cuts off distant general-order boilerplate
 CONTIG_GAP = 2500          # max gap between consecutive qualifying clusters to treat as one description
 DIVERSITY_MIN = 6          # a cluster naming >= this many distinct processes qualifies as a description
+FRAGMENT_GAP = 1000        # absorb a low-diversity raw cluster trailing a qualifying one if this close
 
 
 
@@ -113,7 +114,7 @@ def cluster_score(cluster, text_length):
     return diversity / (1 + cluster[0].start() / text_length)
 
 
-def find_desc_clusters(text):
+def find_desc_clusters(text, multi_facility=False):
     """Find all vocab clusters that have a description signal nearby.
 
     Returns a list of (start, end) char positions — one per qualifying cluster.
@@ -168,7 +169,26 @@ def find_desc_clusters(text):
         # its start_pos anchors MAX_CLUSTER_DISTANCE, so nearby multi-facility clusters are
         # still included in order.
         desc_clusters.sort(key=lambda cluster: -cluster_score(cluster, text_length))
-        return [(cluster[0].start(), cluster[-1].end()) for cluster in desc_clusters]
+        if not multi_facility:
+            return [(cluster[0].start(), cluster[-1].end()) for cluster in desc_clusters]
+        # multi-facility permits describe each plant in a single dense paragraph that often
+        # has a low-diversity tail (disinfection/disposal-routing sentences) which individually
+        # falls below DIVERSITY_MIN — absorb a trailing raw cluster within FRAGMENT_GAP rather
+        # than drop it, but never swallow another already-qualifying cluster (that one gets its
+        # own section, or merges via the normal CONTIG_GAP path in extract_from_pdf).
+        desc_cluster_ids = {id(cluster) for cluster in desc_clusters}
+        clusters_by_start = sorted(clusters, key=lambda cluster: cluster[0].start())
+        spans = []
+        for cluster in desc_clusters:
+            start, end = cluster[0].start(), cluster[-1].end()
+            next_index = clusters_by_start.index(cluster) + 1
+            while (next_index < len(clusters_by_start)
+                   and id(clusters_by_start[next_index]) not in desc_cluster_ids
+                   and clusters_by_start[next_index][0].start() - end <= FRAGMENT_GAP):
+                end = clusters_by_start[next_index][-1].end()
+                next_index += 1
+            spans.append((start, end))
+        return spans
     # fallback: densest cluster by the same score
     densest_cluster = max(clusters, key=lambda cluster: cluster_score(cluster, text_length))
     return [(densest_cluster[0].start(), densest_cluster[-1].end())]
@@ -316,7 +336,7 @@ def extract_from_pdf(pdf_path, mode, multi_facility=False):
     else:
         text = clean_excerpt(raw)
 
-    clusters = find_desc_clusters(text) if text is not None else []
+    clusters = find_desc_clusters(text, multi_facility=multi_facility) if text is not None else []
     if clusters:
         # clusters are score-sorted; anchor on the best, then take a run of qualifying clusters
         # around it (document order). Asymmetric: extend BACKWARD only through contiguous clusters

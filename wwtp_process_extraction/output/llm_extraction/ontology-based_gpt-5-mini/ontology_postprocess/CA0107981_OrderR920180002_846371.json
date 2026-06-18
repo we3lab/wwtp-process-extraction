@@ -4,7 +4,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Feed"
+        "Feed",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -16,7 +17,7 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Detention"
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -37,17 +38,16 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MicrofiltrationUnit",
       "Process": [
         "Microfiltration",
-        "Ultrafiltration",
         "ChemicalAddition",
         "Backwashing",
         "Cleaning"
       ],
       "Role": [
-        "Tertiary",
-        "Pretreatment"
+        "Pretreatment",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -55,6 +55,26 @@
       "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes;",
       "trigger_process": [
         "Microfiltration",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration",
+        "ChemicalAddition",
+        "Backwashing",
+        "Cleaning"
+      ],
+      "Role": [
+        "Pretreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes;",
+      "trigger_process": [
         "Ultrafiltration",
         "Unspecified Chemical Addition"
       ]
@@ -63,7 +83,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -72,6 +93,18 @@
       "trigger_process": [
         "Equalization"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps;",
+      "trigger_process": []
     },
     {
       "Equipment": "CartridgeFiltrationUnit",
@@ -98,7 +131,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "RO transfer pumps and ... RO feed pump station;",
+      "Sentence": "A RO feed pump station;",
       "trigger_process": []
     },
     {
@@ -107,12 +140,10 @@
         "ReverseOsmosis",
         "ChemicalAddition",
         "Backwashing",
-        "Cleaning",
-        "Purging"
+        "Cleaning"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Water-Brackish"
@@ -126,11 +157,25 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "Purging"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An RO flush system;",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Mixing"
+      ],
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Permeate",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -142,7 +187,7 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed"
+        "MakeUp"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -154,7 +199,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -162,6 +208,51 @@
       "Sentence": "The following low-flow MFRO waste or residuals streams will be discharged to an on-site waste equalization wet well prior to discharge to the sanitary sewer for treatment at HARRF:",
       "trigger_process": [
         "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Strainer backwash flows,",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Cleaning",
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Periodic MF/UF neutralized \"clean in place\" membrane cleaning and conditioning flows,",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Purging",
+        "Cleaning",
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO flush flows, and periodic RO \"clean in place\" membrane cleaning and conditioning flows.",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
       ]
     }
   ]

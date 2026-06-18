@@ -8,12 +8,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Particles"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... screening, grit removal, primary clarification, and secondary treatment with activated sludge aeration and secondary clarification.",
+      "Sentence": "screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -26,12 +24,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Particles"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... screening, grit removal, primary clarification...",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -44,12 +40,10 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... primary clarification...",
+      "Sentence": "primary clarification",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -64,12 +58,10 @@
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... secondary treatment with activated sludge aeration...",
+      "Sentence": "secondary treatment with activated sludge aeration",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -82,33 +74,28 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The San Clemente WRP has ... secondary treatment with activated sludge aeration and secondary clarification.",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes filtration and chlorination.",
+      "Sentence": "tertiary treatment, which includes filtration",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -118,15 +105,12 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes filtration and chlorination.",
+      "Sentence": "tertiary treatment, which includes ... chlorination",
       "trigger_process": [
         "Chlorination"
       ]
@@ -144,7 +128,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing includes thickening, two-stage anaerobic digestion, centrifuge dewatering...",
+      "Sentence": "Sludge processing includes thickening",
       "trigger_process": [
         "Thickening"
       ]
@@ -156,15 +140,15 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Settled primary sludge and skimmings are pumped to a two-stage anaerobic digestion process.",
+      "Sentence": "Settled primary sludge and skimmings are pumped to a two-stage anaerobic digestion process",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -172,7 +156,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -182,10 +167,28 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing includes ... centrifuge dewatering, and transported to a sanitary landfill for disposal or trucked to contractor-operated composting facilities.",
+      "Sentence": "centrifuge dewatering",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "truck(ed) to contractor-operated composting facilities",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -201,7 +204,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered biosolids ... transported to a sanitary landfill for disposal.",
+      "Sentence": "transported to a sanitary landfill for disposal",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -209,19 +212,18 @@
     {
       "Equipment": null,
       "Process": [
-        "Composting"
+        "Landfill"
       ],
       "Role": [
+        "Pretreatment",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered biosolids ... trucked to contractor-operated composting facilities.",
+      "Sentence": "Grit and screenings are hauled to a sanitary landfill",
       "trigger_process": [
-        "Composting"
+        "Biosolids Landfill"
       ]
     }
   ]

@@ -17,6 +17,22 @@
       ]
     },
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New mechanical bar screens 6 mm size (will become primary flow pattern)",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -28,6 +44,22 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The treatment consists of conventional screening and grit removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Grit Removal \t62\t69 Vortex chambers in parallel.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,14 +77,26 @@
       "trigger_process": []
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Lift station with a capacity of greater than 4 MGD \t64 pumps in parallel.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Primary",
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -63,111 +107,19 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "two circular clarifiers that further treat the wastewater",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "discharging the effluent into on-site percolation basins",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "The previously constructed micro-media plant ... was not operational",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Influent head works will consist of three trains, ... New mechanical bar screens 6 mm size (will become primary flow pattern)",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "(b) Grit Removal \u2013 (2) Vortex chambers in parallel.",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "(c) Lift station with a capacity of greater than 4 MGD \u2013 (4) pumps in parallel.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Primary",
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "(d) Primary/Secondary treatment - Biolac Basins \u2013 (2) in parallel, repurposed with an increased capacity",
+      "Sentence": "Primary/Secondary treatment - Biolac Basins \t62 in parallel, repurposed with an increased capacity by increasing the pond operational depth",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -181,9 +133,25 @@
         "Secondary"
       ],
       "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two circular clarifiers that further treat the wastewater prior to discharging the effluent into on-site percolation basins",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "(e) Secondary Clarifiers \u2013 (2) 70 foot diameter clarifiers that will operate in parallel.",
+      "Sentence": "Secondary Clarifiers \t62 70 foot diameter clarifiers that will operate in parallel.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -191,7 +159,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -201,16 +169,15 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "(f) Sludge Thickening \u2013 (2) existing former clarifiers reconfigured as sludge thickeners.",
+      "Sentence": "Sludge Thickening \t62 existing former clarifiers reconfigured as sludge thickeners.",
       "trigger_process": [
         "Thickening"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -220,11 +187,10 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "(g) Sludge Dewatering \u2013 (2) centrifugal units.",
+      "Sentence": "Sludge Dewatering \t62 centrifugal units.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -235,12 +201,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "(h) Sludge Disposal \u2013 Temporarily stored onsite in bins for offsite composting disposal.",
+      "Sentence": "Temporarily stored onsite in bins for offsite composting disposal.",
       "trigger_process": [
         "Composting"
       ]
@@ -252,9 +216,9 @@
         "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "(i) Disposal \u2013 (4) percolation ponds (Nos. 1, 4, 5, and 9) with a portion of the effluent to be used for onsite industrial processes.",
+      "Sentence": "discharging the effluent into on-site percolation basins",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -271,7 +235,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "(j) Filtration \u2013 (12) currently unused two-stage Dynasand filters ... will remain onsite for potential future use to remove nitrogen from the effluent if needed.",
+      "Sentence": "Filtration \t62 currently unused two-stage Dynasand filters ... will remain onsite for potential future use to remove nitrogen from the effluent if needed.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -283,15 +247,14 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "(k) Disinfection \u2013 (1) chlorine contact basin with a current capacity of 3.5 MGD",
+      "Sentence": "Disinfection \t62 chlorine contact basin with a current capacity of 3.5 MGD",
       "trigger_process": [
         "Chlorination"
       ]
@@ -300,16 +263,28 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Containment",
-        "Equalization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "convert percolation pond Nos. 2 and 3 into a single emergency storage pond",
       "trigger_process": [
-        "Equalization"
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The previously constructed micro-media plant ... was not operational because it could not meet effluent requirements and was never considered operational.",
+      "trigger_process": [
+        "Media Filtration"
       ]
     }
   ]

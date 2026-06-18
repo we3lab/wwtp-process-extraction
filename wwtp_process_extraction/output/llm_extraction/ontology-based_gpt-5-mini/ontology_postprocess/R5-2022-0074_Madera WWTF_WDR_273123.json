@@ -1,18 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "influent lift station",
-      "trigger_process": []
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -23,24 +11,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three primary clarifiers",
+      "Sentence": "Influent is treated between three parallel primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "primary effluent is mixed with return activated sludge and pumped to the oxidation ditch structure",
-      "trigger_process": []
     },
     {
       "Equipment": "OxidationDitch",
@@ -59,7 +33,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the oxidation ditches ... provide biological treatment where aerobic and anoxic zones provide nitrification and denitrification for nitrogen removal",
+      "Sentence": "The oxidation ditches operate in parallel and provide biological treatment where aerobic and anoxic zones provide nitrification and denitrification for nitrogen removal",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -89,8 +63,7 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -106,12 +79,9 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a secondary anaerobic digester",
@@ -120,10 +90,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -133,30 +102,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two centrifuges",
+      "Sentence": "Treated sludge is then dewatered using two skid mounted centrifuges",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
       "Process": [
-        "Composting"
+        "Recirculation"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "Feed"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "dewatered cake is deposited into trailers which are hauled off by Synagro for composting",
-      "trigger_process": [
-        "Composting"
-      ]
+      "Location": "on-site",
+      "Sentence": "primary effluent is mixed with return activated sludge and pumped to the oxidation ditch structure",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Centrate from the digester is returned to the headworks of the treatment plant",
+      "trigger_process": []
     },
     {
       "Equipment": "Pond",
@@ -176,15 +154,30 @@
     },
     {
       "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "In the past, the Facility utilized 14 evaporation/percolation ponds for effluent disposal",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an unlined emergency disposal pond ... can be used to hold raw wastewater and/or primary effluent",
+      "Sentence": "the emergency holding pond can be used to hold raw wastewater and/or primary effluent",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -192,30 +185,20 @@
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
+        "Composting"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Centrate from the digester is returned to the headworks of the treatment plant",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Raw wastewater is pumped back into the headworks once operators have corrected the operational issue",
-      "trigger_process": []
+      "Location": "off-site",
+      "Sentence": "dewatered cake is deposited into trailers which are hauled off by Synagro for composting",
+      "trigger_process": [
+        "Composting"
+      ]
     }
   ]
 }

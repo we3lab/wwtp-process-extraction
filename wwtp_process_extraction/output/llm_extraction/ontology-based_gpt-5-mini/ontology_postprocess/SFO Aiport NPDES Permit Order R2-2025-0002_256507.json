@@ -63,32 +63,11 @@
       ]
     },
     {
-      "Equipment": "SequencingBatchReactor",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "PhosphorusRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Over the next permit term, the Discharger will add an aerobic granular sludge process to its sequencing batch reactors at the Sanitary Plant",
-      "trigger_process": [
-        "Denitrification",
-        "Nitrification",
-        "SBR"
-      ]
-    },
-    {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -105,12 +84,13 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Sanitary Plant treatment operations consist of ... and chlorination",
+      "Sentence": "The Sanitary Plant treatment operations consist of ... chlorination",
       "trigger_process": [
         "Chlorination"
       ]
@@ -118,7 +98,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -140,21 +120,23 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids ... treated with anaerobic digestion",
+      "Sentence": "treated with anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -167,11 +149,31 @@
       "Location": "on-site",
       "Sentence": "primarily dewatered with centrifuges before being hauled offsite for reuse",
       "trigger_process": [
+        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The facility also has a belt filter press ... that can be used for additional dewatering",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
@@ -183,11 +185,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facility also has a belt filter press and drying beds that can be used for additional dewatering",
+      "Sentence": "drying beds that can be used for additional dewatering",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
+        "Drying"
       ]
     },
     {
@@ -199,7 +199,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the stormwater collection system ... is routed to one of four detention basins",
+      "Sentence": "one of four detention basins: the North Field Detention Basin ... the West Field Detention Basin ... All water entering these basins is pumped to the Industrial Plant for treatment",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "In addition to the flow equalization tank at the start of the industrial wastewater treatment process",
       "trigger_process": [
         "Equalization"
       ]
@@ -234,11 +248,10 @@
         "Flotation"
       ],
       "Role": [
+        "SolidsHandling",
         "Pretreatment"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Industrial Plant treatment operations consist of ... dissolved air flotation",
@@ -248,7 +261,7 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": null,
       "Process": [
         "pHAdjustment"
       ],
@@ -264,13 +277,12 @@
     {
       "Equipment": "OzonationUnit",
       "Process": [
-        "Ozonation",
-        "Oxidation"
+        "Ozonation"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Ozone"
+      "Role": [
+        "Tertiary"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Industrial Plant treatment operations consist of ... ozone",
@@ -284,7 +296,10 @@
       "Process": [
         "BiologicallyActiveFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -294,13 +309,70 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The chlorinated effluent from both plants is combined at a pumping station",
+      "Sentence": "The Industrial Plant treatment operations consist of ... chlorination",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids from the industrial wastewater treatment process are ... dewatered with a centrifuge",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids from the industrial wastewater treatment process are ... dewatered with ... drying beds",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The chlorinated effluent from both plants is combined at a pumping station and discharged to the NBSU pipeline",
       "trigger_process": []
     },
     {
@@ -312,25 +384,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "transported ... to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination using sodium bisulfite prior to discharge",
+      "Sentence": "transported ... for dechlorination using sodium bisulfite prior to discharge to Lower San Francisco Bay",
       "trigger_process": [
         "Dechlorination"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "SequencingBatchReactor",
       "Process": [
-        "Landfill"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "PhosphorusRemoval",
+        "Aerobic"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The dried industrial waste sludge is trucked offsite and used as daily cover at a landfill",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Over the next permit term, the Discharger will add an aerobic granular sludge process to its sequencing batch reactors at the Sanitary Plant",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Denitrification",
+        "Nitrification",
+        "SBR"
       ]
     },
     {
@@ -339,12 +419,13 @@
         "MembraneProcess"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary",
+        "MakeUp"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will include membrane filtration ... to treat combined effluent from the Industrial and Sanitary Plants",
+      "Sentence": "construction in 2024 on an Advanced Water Treatment Plant that will include membrane filtration",
       "trigger_process": [
         "Unspecified Membrane Process"
       ]
@@ -355,12 +436,13 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary",
+        "MakeUp"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will include ... reverse osmosis ... to treat combined effluent from the Industrial and Sanitary Plants",
+      "Sentence": "Advanced Water Treatment Plant that will include ... reverse osmosis",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -371,15 +453,45 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Posttreatment",
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will include ... UV disinfection to treat combined effluent from the Industrial and Sanitary Plants",
+      "Sentence": "Advanced Water Treatment Plant that will include ... UV disinfection",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Process": [
+        "GranularActivatedCarbon"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "plans to test PFAS removal by treating combined effluent ... with granular activated carbon",
+      "trigger_process": [
+        "Activated Carbon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "IonExchange"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "and, if necessary, ion exchange resins",
+      "trigger_process": [
+        "Ion Exchange"
       ]
     }
   ]

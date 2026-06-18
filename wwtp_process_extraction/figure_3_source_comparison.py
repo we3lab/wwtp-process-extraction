@@ -35,6 +35,11 @@ from helpers.utils import (
     no_cwns_pids,
     build_cwns_facility_processes,
     add_county_and_sort,
+    SITE_DATA_RELEVANT_CSV,
+    SITE_DATA_ALL_CSV,
+    CWNS_TABLE_CSV,
+    CIWQS_TO_CWNS_CSV,
+    CIWQS_TO_CWNS_COLUMNS,
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_and_close, set_thick_spines
 
@@ -407,18 +412,6 @@ process_counts_df = pd.DataFrame(_count_rows)
 process_counts_df.to_csv(f"{DATA_DIR}/process_counts_cwns_vs_llm.csv", index=False)
 print(f"\nSaved process counts: {f'{DATA_DIR}/process_counts_cwns_vs_llm.csv'} ({len(process_counts_df)} processes)")
 
-# TODO: denitrification filter — no dedicated leaf yet in unitprocess_keywords.json.
-# "Media Filtration" is too broad (catches sand/cloth/disc filters).
-# Proxy: facilities with BOTH Media Filtration PRESENT and Denitrification PRESENT.
-# Better fix: load llm_extraction/ontology-based_gpt-5-mini/ontology_postprocess JSONs and find items where trigger_process
-# contains BOTH "Media Filtration" and "Denitrification" on the same extracted item
-# (same equipment row) — then add a "Denitrification Filter" leaf to keywords JSON.
-_mf_present = set(_llm_common.loc[_llm_common["Media Filtration"].isin(PRESENT_STATUSES), "Place ID"])
-_dn_present = set(_llm_common.loc[_llm_common["Denitrification"].isin(PRESENT_STATUSES), "Place ID"])
-_denif_filter_proxy = len(_mf_present & _dn_present)
-_cwns_dn_c = get_facility_counts(_cwns_common, ["Denitrification"])
-print(f"  {'Denitrif. Filter (proxy: MF+DN both present)':<40} {'n/a':>14} {_denif_filter_proxy:>12}")
-
 # ── Treatment-stage groupings for per-category plots ─────────────────────────
 # Each entry: plot_title → [list of top-level JSON category names to combine]
 # Leaf processes from all listed categories are shown together on one plot,
@@ -585,18 +578,6 @@ for comparison_type in ["llm", "kw"]:
     print(f"    Saved {os.path.basename(path)}")
 
 
-SITE_DATA = f"wwtp_process_extraction/output/site_data_relevant.csv"
-FACILITIES_JSON = f"wwtp_process_extraction/output/facilities.json"
-ALL_NPDES = f"wwtp_process_extraction/output/site_data_all.csv"
-CWNS_TABLE = "wwtp_process_extraction/output/unit_processes_by_facility_cwns.csv"
-CIWQS_MAP = "wwtp_process_extraction/data/ciwqs_to_cwns.csv"
-
-ciwqs_cols = [
-    "WDID", "Place ID", "Facility Name", "NPDES No.", "Region",
-    "Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS",
-    "CWNS_ID", "FACILITY_ID", "CWNS Facility Name",
-]
-
 def normalize(s):
     return str(s).strip().upper() if pd.notna(s) else ""
 
@@ -605,12 +586,12 @@ def coalesce_blank(left, right):
     return left.replace("", pd.NA).fillna(right).fillna("")
 
 
-site = pd.read_csv(SITE_DATA, dtype=str).fillna("")
-cwns = pd.read_csv(CWNS_TABLE, dtype=str).fillna("")
-ciwqs = pd.read_csv(CIWQS_MAP, dtype=str, keep_default_na=False).fillna("").rename(
+site = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
+cwns = pd.read_csv(CWNS_TABLE_CSV, dtype=str).fillna("")
+ciwqs = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False).fillna("").rename(
     columns={"Latitude": "Latitude_CIWQS", "Longitude": "Longitude_CIWQS"}
 )
-all_npdes = pd.read_csv(ALL_NPDES, dtype=str).fillna("").rename(
+all_npdes = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str).fillna("").rename(
     columns={"Latitude": "Latitude_CIWQS_from_npdes", "Longitude": "Longitude_CIWQS_from_npdes"}
 )
 cwns_fac_tp = ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME", "STATE_CODE", "LATITUDE", "LONGITUDE"]].rename(columns={"FACILITY_NAME": "CWNS Facility Name"}).copy()
@@ -714,13 +695,13 @@ for dest, src in [("Latitude_CWNS", "Latitude_CWNS_from_cwns"), ("Longitude_CWNS
         ciwqs[dest] = coalesce_blank(ciwqs[src], ciwqs[dest])
         ciwqs = ciwqs.drop(columns=[src])
 
-for col in ciwqs_cols:
+for col in CIWQS_TO_CWNS_COLUMNS:
     if col not in ciwqs.columns:
         ciwqs[col] = ""
-ciwqs_out = ciwqs[ciwqs_cols]
+ciwqs_out = ciwqs[CIWQS_TO_CWNS_COLUMNS]
 
 if new_rows:
-    new_df = pd.DataFrame(new_rows, columns=ciwqs_cols)
+    new_df = pd.DataFrame(new_rows, columns=CIWQS_TO_CWNS_COLUMNS)
     combined = pd.concat([ciwqs_out, new_df], ignore_index=True)
     print(f"\nAdded {len(new_rows)} rows. ciwqs_to_cwns.csv now has {len(combined)} rows.")
 else:
@@ -734,8 +715,8 @@ _save["_npdes_empty"] = _save["NPDES No."].eq("")
     _save.sort_values(["_npdes_empty", "_orig_order"])
     .drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first")
     .sort_values("_orig_order")
-    [ciwqs_cols]
-    .to_csv(CIWQS_MAP, index=False)
+    [CIWQS_TO_CWNS_COLUMNS]
+    .to_csv(CIWQS_TO_CWNS_CSV, index=False)
 )
 
 coord_cols = ["Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS"]

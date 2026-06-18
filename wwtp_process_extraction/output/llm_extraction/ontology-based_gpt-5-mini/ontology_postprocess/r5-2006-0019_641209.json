@@ -11,10 +11,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "prescreened for solid and inert material ... using ... a manually racked bar screen",
+      "Sentence": "prescreened for solid and inert material ... using automatic equipment or a manually racked bar screen.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "discharged into one of two aerobic digesters via an automatically controlled wet well utilizing a lead and lag pump system.",
+      "trigger_process": []
     },
     {
       "Equipment": "AerobicDigester",
@@ -29,18 +41,20 @@
         "Stabilization"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "each digester is a complete mix system that is kept in a homogenous state by an aeration diffuser system utilizing blowers ... the digester aeration blower is shut down to allow the solids and liquid to separate",
+      "Sentence": "Each digester is a complete mix system ... kept in a homogenous state by an aeration diffuser system utilizing blowers.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -51,11 +65,54 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge from each aerobic digester is pumped to one of two centrifuges for solids processing",
+      "Sentence": "Digested sludge from each aerobic digester is pumped to one of two centrifuges for solids processing.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent is stored in a two million gallon above ground storage tank.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the Discharger will install an addition two million gallon above ground storage tank ... will be installed by January 2006.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Disinfection is achieved by dosing the effluent stored in the effluent storage tanks with sodium hypochlorite.",
+      "trigger_process": [
+        "Chlorination"
       ]
     },
     {
@@ -71,50 +128,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "processed solids ... are transported to the on-site Class II landfill for disposal",
+      "Sentence": "The processed solids from each centrifuge are deposited into temporary storage bins that are transported to the on-site Class II landfill for disposal.",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is stored in a two million gallon above ground storage tank",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the Discharger will install an additional two million gallon above ground storage tank ... will be installed by January 2006",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Disinfection is achieved by dosing the effluent stored in the effluent storage tanks with sodium hypochlorite",
-      "trigger_process": [
-        "Chlorination"
       ]
     }
   ]

@@ -1,9 +1,9 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "MixingBasin",
       "Process": [
-        "Aeration"
+        "Mixing"
       ],
       "Role": [
         "Equalization"
@@ -11,11 +11,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "Treatment consists of flow equalization and aeration,",
       "trigger_process": [
         "Equalization"
       ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treatment consists of flow equalization and aeration,",
+      "trigger_process": []
     },
     {
       "Equipment": "Screen",
@@ -28,8 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... micro-screening and grit removal,",
+      "Sentence": "micro-screening and grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -45,16 +57,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment consists of ... micro-screening and grit removal,",
+      "Sentence": "micro-screening and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Microfiltration"
       ],
       "Role": [
         "Secondary",
@@ -64,28 +76,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The secondary treatment system consists of four parallel biological treatment trains, each providing anoxic and aerobic biological treatment,",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "MembraneProcess"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
       "Sentence": "The secondary treatment system consists of four parallel biological treatment trains, each providing anoxic and aerobic biological treatment, and membrane filtration.",
       "trigger_process": [
-        "Membrane Bioreactor"
+        "AO (anoxic/oxic)",
+        "Membrane Bioreactor",
+        "Unspecified AS"
       ]
     },
     {
@@ -94,12 +89,12 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Treated wastewater discharges are disinfected by ultraviolet light (UV).",
       "trigger_process": [
         "UV Disinfection"
@@ -111,7 +106,6 @@
         "Chlorination"
       ],
       "Role": [
-        "Tertiary",
         "Posttreatment"
       ],
       "Substance": [
@@ -119,14 +113,43 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Recycled water is disinfected using chlorine (see \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000.).",
+      "Sentence": "Recycled water is disinfected using chlorine",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The plant\u2019s recycling facilities include a separate chlorine contact basin used only to disinfect recycled water",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a one-million-gallon storage tank, and a recently constructed 1.5-million-gallon storage tank",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
       "Process": [
         "Aeration"
       ],
@@ -136,7 +159,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
       "Sentence": "and, for discharges at Discharge Point 001, post-discharge aeration.",
       "trigger_process": []
     }

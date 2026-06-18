@@ -68,9 +68,7 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -163,17 +161,19 @@
       "Sentence": "The tertiary treatment trains consist of ... chlorination, and dechlorination"
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "Dewatering"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Storm water flows generated on site at RP-1 are collected and pumped to the liquid treatment process of RP-1 for treatment"
+      "Sentence": "Digested sludge is dewatered with belt presses"
     },
     {
       "Equipment": "GravityThickener",
@@ -212,8 +212,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -236,8 +236,9 @@
       "Sentence": "Solids treatment at RP-1 includes ... digester gas utilization"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -249,21 +250,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes ... centrifuge dewatering"
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge is dewatered with belt presses"
     }
   ]
 }

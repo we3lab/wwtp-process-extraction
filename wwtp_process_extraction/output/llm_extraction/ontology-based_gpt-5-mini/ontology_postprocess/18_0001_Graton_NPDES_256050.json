@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Rags and other large items are removed manually from the bar screen.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks was designed and built with a grit chamber...",
+      "Sentence": "The headworks was designed and built with a grit chamber ... The grit chamber requires manual removal of collected solids.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The headworks was designed and built with ... a solids comminutor ...",
+      "Sentence": "The headworks was designed and built with ... a solids comminutor with a parallel channel for bypass during comminutor maintenance.",
       "trigger_process": [
         "Comminution"
       ]
@@ -54,7 +51,9 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "BiologicalProcess",
+        "AnaerobicDigestion"
       ],
       "Role": [
         "Secondary",
@@ -63,46 +62,46 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Two aerated ponds provide secondary treatment of the screened sewage...",
+      "Sentence": "Two aerated ponds provide secondary treatment of the screened sewage ... each pond is mixed and aerated by two surface aerators.",
       "trigger_process": [
-        "Aerated Lagoon"
+        "Aerated Lagoon",
+        "Anaerobic Digestion"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation",
+        "AnaerobicDigestion"
       ],
-      "Role": [
-        "Secondary",
-        "Retention"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The settling pond is a 10-foot deep clay-lined ... that receives effluent from the two aerated ponds.",
+      "Sentence": "The settling pond ... provides for a volume of 1.2 million gallons. Effluent flows from the settling pond to the transfer wet well through a floating surface outlet ... Settling pond water can be recirculated to the headworks ... to dilute incoming wastewater and reseed with good nitrifying bacteria.",
       "trigger_process": [
-        "Secondary Clarification"
+        "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "Recirculation"
+        "Coagulation",
+        "Flocculation",
+        "Mixing"
       ],
       "Role": [
-        "Equalization",
-        "NitrogenRemoval"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "Settling pond water can be recirculated to the headworks through Control Structure No. 1 to dilute incoming wastewater and reseed with good nitrifying bacteria.",
+      "Sentence": "The influent water is coagulated and flocculated in a 3,500-gallon chemical mixing tank.",
       "trigger_process": [
-        "Equalization"
+        "Coagulation",
+        "Flocculation",
+        "Unspecified Chemical Addition"
       ]
     },
     {
@@ -111,38 +110,77 @@
         "Flotation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Pretreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Wastewater from the transfer wet well is pumped into the Suspended Air Flotation (SAF) system.",
+      "Sentence": "Flocculated solids are skimmed off the surface and removed by the SAF.",
       "trigger_process": [
         "Flotation",
         "Thickening"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "SAF effluent water flows into a 5,000-gallon surge tank, where it is pumped through the filters.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Coagulation",
-        "Flocculation",
-        "ChemicalAddition"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
-        "Pretreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The influent water is coagulated and flocculated in a 3,500-gallon chemical mixing tank.",
+      "Sentence": "The Permittee utilizes a Fuzzy Filter (FF) compressible media deep bed filtration system to achieve tertiary treated effluent ... the filters automatically go offline and into backwash if effluent reaches 2 NTU turbidity, or the pressure reaches 7 psi.",
       "trigger_process": [
-        "Coagulation",
-        "Flocculation",
-        "Unspecified Chemical Addition"
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Purging",
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following the filtration system, water flows into a 3,000-gallon tank, referred to as the 'purge tank.' Water from this tank is used to purge the filters after their backwash cycle and acts as a flow equalization tank between the filters and the pasteurization disinfection system.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "ThermalDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The minimum required pasteurization temperature is 162.4\u00b0F for 10 seconds ... the Permittee generally operates at 165\u00b0F.",
+      "trigger_process": [
+        "Thermal Disinfection"
       ]
     },
     {
@@ -153,99 +191,37 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Flocculated solids are skimmed off the surface and removed by the SAF. The solids dewater in bins before being transferred to the on-site compost facility.",
+      "Sentence": "The solids dewater in bins before being transferred to the on-site compost facility.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "SAF effluent water flows into a 5,000-gallon surge tank, where it is pumped through the filters.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": null,
       "Process": [
-        "MediaFiltration"
+        "Composting"
       ],
       "Role": [
-        "Tertiary"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Permittee utilizes a Fuzzy Filter (FF) compressible media deep bed filtration system to achieve tertiary treated effluent.",
+      "Sentence": "The solids are composted using static aeration to meet or exceed title 14 standards, and the composted solids are used on site.",
       "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "Backwashing"
-      ],
-      "Role": [
-        "Backwash"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The filters automatically go offline and into backwash if effluent reaches 2 NTU turbidity, or the pressure reaches 7 psi.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Purging"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Following the filtration system, water flows into a 3,000-gallon tank, referred to as the \"purge tank.\" Water from this tank is used to purge the filters after their backwash cycle and acts as a flow equalization tank...",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "ThermalDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment operations at the Facility include ... a pasteurization disinfection system.",
-      "trigger_process": [
-        "Thermal Disinfection"
+        "Composting"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Sedimentation"
+      ],
       "Role": [
         "Storage",
         "Retention"
@@ -253,49 +229,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Following disinfection, tertiary treated wastewater flows to either of the two effluent storage ponds.",
+      "Sentence": "The two on-site storage ponds have a combined capacity of 23.14 million gallons. This results in a 165-day retention time in the ponds under average dry weather flow conditions.",
       "trigger_process": [
+        "Unspecified Clarification",
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Biosolids generated during the treatment process accumulate in the aeration and settling ponds, where they undergo anaerobic digestion and compaction.",
-      "trigger_process": [
-        "Anaerobic Digestion",
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal",
-        "AerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Dewatered solids from the SAF are transferred to the compost area. The solids are composted using static aeration to meet or exceed title 14 standards...",
-      "trigger_process": [
-        "Aerobic Digestion"
       ]
     },
     {
@@ -306,32 +243,15 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.85,
       "Sentence": "The Permittee plans to mine sludge from the bottom of the ponds during periods of low flow and remove it through the SAF system to mitigate future sludge blanket accumulation.",
       "trigger_process": [
         "Flotation",
         "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Sludge that collects in the aeration and settling ponds was removed most recently in 2007.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
       ]
     }
   ]

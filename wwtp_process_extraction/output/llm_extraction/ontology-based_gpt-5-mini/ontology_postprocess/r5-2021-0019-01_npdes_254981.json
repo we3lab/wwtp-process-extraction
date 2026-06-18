@@ -3,12 +3,25 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "liquid treatment process consists of influent pumps",
+      "Sentence": "influent pumps",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a septage receiving station",
       "trigger_process": []
     },
     {
@@ -22,7 +35,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "mechanical bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -39,7 +51,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "aerated grit handling",
       "trigger_process": [
         "Grit Removal"
@@ -53,10 +64,11 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "grit classifiers that wash and dewater grit",
       "trigger_process": [
         "Mechanical Dewatering"
@@ -73,7 +85,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "covered primary sedimentation tanks",
       "trigger_process": [
         "Primary Clarification"
@@ -92,7 +103,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
       "Sentence": "air biological treatment by activated sludge",
       "trigger_process": [
         "Unspecified AS"
@@ -109,14 +119,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": null,
       "Process": [
         "Nitrification"
       ],
@@ -126,10 +135,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "nitrifying sidestream treatment for ammonia removal",
       "trigger_process": [
-        "Nitrification"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -140,14 +149,13 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "disinfection with sodium hypochlorite, and dechlorination with sodium bisulfite",
       "trigger_process": [
         "Chlorination",
@@ -155,49 +163,34 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "NutrientRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "partially-... partially-operating ... Biological Nutrient Removal facilities",
-      "trigger_process": [
-        "Unspecified AS",
-        "Unspecified Nutrient Removal"
-      ]
-    },
-    {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage",
-        "Containment"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Effluent can be diverted to lined emergency storage basins (ESB\u2019s)",
-      "trigger_process": []
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
-      "Equipment": null,
+      "Equipment": "BiologicallyActiveFiltration",
       "Process": [
-        "Stripping"
+        "Biofiltration"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Odors are controlled through stripping towers",
-      "trigger_process": []
+      "Sentence": "Odors are to be controlled through biological fixed media scrubbers",
+      "trigger_process": [
+        "Unspecified FFR",
+        "Unspecified Filtration"
+      ]
     },
     {
       "Equipment": "GranularActivatedCarbonAdsorber",
@@ -210,31 +203,66 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Odors are controlled through ... carbon treatment",
+      "Sentence": "carbon treatment towers",
       "trigger_process": [
         "Activated Carbon"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Flotation"
       ],
       "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "replacement of the existing air biological treatment facilities with BNR air activated treatment facilities capable of removing ammonia and nitrate nitrogen",
+      "Sentence": "Solids are thickened by dissolved air flotation",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are thickened by ... gravity belt thickeners",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "mixed waste is sent to anaerobic digesters for approximately 15 days or more",
+      "trigger_process": [
+        "Anaerobic Digestion"
       ]
     },
     {
@@ -248,89 +276,98 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "addition of tertiary treatment in the form of filtration with granular media filters",
+      "Sentence": "tertiary treatment in the form of filtration with granular media filters",
       "trigger_process": [
         "Media Filtration"
       ]
     },
     {
-      "Equipment": "Reservoir",
-      "Process": null,
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "Nitrification",
+        "ActivatedSludge"
+      ],
       "Role": [
-        "Storage",
-        "Containment"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "an increase in lined ESB facilities",
+      "Sentence": "nitrifying sequencing batch reactor for treating high ammonia concentration waste streams",
+      "trigger_process": [
+        "Nitrification",
+        "SBR",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "filter influent pumping station",
       "trigger_process": []
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Screen",
       "Process": [
-        "Equalization"
+        "Screening"
       ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "secondary effluent screen",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "flow equalization",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "disinfection chemical storage",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
-        "ActivatedSludge"
+        "LandApplication"
       ],
-      "Role": [
-        "NutrientRemoval"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "biological nutrient removal (phase I and phase II)",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Some biosolids are recycled with the Synagro Organic Fertilizer Company",
       "trigger_process": [
-        "Unspecified AS",
-        "Unspecified Nutrient Removal"
+        "Land Application"
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": null,
       "Process": [
-        "Nitrification"
+        "Landfill"
       ],
-      "Role": [
-        "NitrogenRemoval"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Construction of the side stream ammonia treatment is complete",
+      "Location": "off-site",
+      "Sentence": "the Discharger can dispose of biosolids at the Keifer Landfill as an emergency disposal option",
       "trigger_process": [
-        "Nitrification"
+        "Biosolids Landfill"
       ]
     }
   ]

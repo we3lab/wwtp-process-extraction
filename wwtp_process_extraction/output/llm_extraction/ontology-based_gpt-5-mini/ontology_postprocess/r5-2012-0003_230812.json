@@ -5,15 +5,11 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "concrete-lined oxidation ditch",
+      "Sentence": "the newly-constructed wastewater treatment system consists of a concrete-lined oxidation ditch",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -23,16 +19,13 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "two new concrete clarifiers",
       "trigger_process": [
-        "Secondary Clarification"
+        "Unspecified Clarification"
       ]
     },
     {
@@ -40,16 +33,29 @@
       "Process": [
         "Dewatering"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
       "Sentence": "an indoor filter press sludge dewatering system",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "previous wastewater treatment plant consisted of ... a sludge dewatering press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -59,32 +65,54 @@
       "Process": [
         "Drying"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The uncovered sludge drying beds have been left intact and will be used for backup if the indoor filter press is inoperable.",
+      "Sentence": "three uncovered sludge drying beds ... have been left intact and will be used for backup if the indoor filter press is inoperable",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "previous wastewater treatment plant consisted of a headworks, an aeration tank, a secondary clarifier...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Since 2003, the Discharger has been disinfecting the treated wastewater with sodium hypochlorite prior to disposal to nine rapid infiltration disposal ponds",
+      "trigger_process": [
+        "Chlorination"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Treated wastewater from the new system is discharged to one of five rapid infiltration disposal ponds (Ponds 1 through 3, 1W, and 2W) throughout the year.",
+      "Sentence": "Treated wastewater from the new system is discharged to one of five rapid infiltration disposal ponds (Ponds 1 through 3, 1W, and 2W) throughout the year",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -96,64 +124,40 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The pipeline leading to Ponds 5 through 10 has been plugged with cement so the ponds cannot be used in the future.",
+      "Sentence": "The pipeline leading to Ponds 5 through 10 has been plugged with cement so the ponds cannot be used in the future",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Aeration"
+        "Flotation"
       ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The previous headworks, aeration tank, secondary clarifier, and sludge dewatering press have been abandoned and destroyed.",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The previous headworks, aeration tank, secondary clarifier, and sludge dewatering press have been abandoned and destroyed.",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-SuspendedSolids"
       ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The previous headworks, aeration tank, secondary clarifier, and sludge dewatering press have been abandoned and destroyed.",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Installing a dissolved air flotation unit to reduce BOD and TSS discharged to the sewer",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Replacing the water softener supplying water to the boiler with a reverse osmosis (RO) system",
+      "trigger_process": [
+        "Reverse Osmosis"
       ]
     }
   ]

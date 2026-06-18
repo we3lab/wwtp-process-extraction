@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Treatment will consist of screening, biological oxidation and solids settling in aerated and facultative ponds, and chlorine disinfection.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -21,18 +20,19 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "Sedimentation",
-        "BiologicalProcess"
+        "BiologicalProcess",
+        "Sedimentation"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Treatment will consist of ... biological oxidation and solids settling in aerated and facultative ponds...",
+      "Sentence": "Treatment will consist of ... biological oxidation and solids settling in aerated and facultative ponds",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -40,18 +40,22 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation",
-        "BiologicalProcess"
+        "BiologicalProcess",
+        "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Treatment will consist of ... biological oxidation and solids settling in aerated and facultative ponds...",
+      "Sentence": "Treatment will consist of ... biological oxidation and solids settling in aerated and facultative ponds",
       "trigger_process": [
+        "Facultative Lagoon",
         "Secondary Clarification"
       ]
     },
@@ -70,27 +74,22 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treatment will consist of screening, biological oxidation and solids settling in aerated and facultative ponds, and chlorine disinfection.",
+      "Sentence": "Treatment will consist of ... and chlorine disinfection.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Secondary treated effluent will be conveyed alternately to two percolation ponds.",
       "trigger_process": [
-        "Unspecified Clarification",
         "Unspecified Lagoon"
       ]
     }

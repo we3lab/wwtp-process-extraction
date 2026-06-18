@@ -6,7 +6,8 @@
         "Screening"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -19,7 +20,8 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -33,8 +35,7 @@
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -45,12 +46,11 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "Nitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -60,7 +60,8 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Filtration"
+        "Biofiltration",
+        "Separation"
       ],
       "Role": [
         "Tertiary"
@@ -89,7 +90,9 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank."
@@ -100,10 +103,99 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II, as described in section II.E of this Fact Sheet."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Hydrolysis"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Detention"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids."
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days."
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility."
     }
   ]
 }

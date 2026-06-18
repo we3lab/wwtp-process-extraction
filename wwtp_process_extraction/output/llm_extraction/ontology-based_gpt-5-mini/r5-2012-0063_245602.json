@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Raw wastewater is pumped from the collection system to the headworks where it is screened and degritted."
+      "Sentence": "headworks where it is screened and degritted"
     },
     {
       "Equipment": "GritChamber",
@@ -24,25 +24,30 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Raw wastewater is pumped from the collection system to the headworks where it is screened and degritted."
+      "Sentence": "headworks where it is screened and degritted"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
+        "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "ActivatedSludge"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Nitrate",
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The aeration supply of the basins is designed to provide aerobic and anoxic zones to achieve nitrification and denitrification."
+      "Sentence": "Screened wastewater is aerobically treated in the West Aeration Basin and East Aeration Basin... designed to provide aerobic and anoxic zones to achieve nitrification and denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -55,7 +60,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 120-foot diameter secondary clarifier was constructed in addition to the existing clarifier."
+      "Sentence": "A 120-foot diameter secondary clarifier was constructed in addition to the existing clarifier"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -65,29 +70,80 @@
       "Role": [
         "Tertiary"
       ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent from the secondary clarifier is pumped through cloth media filters...to remove suspended solids"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent from the secondary clarifier is pumped through cloth media filters prior to UV disinfection."
+      "Sentence": "The pumps used for filtration are housed in a low-lift pump station"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
       ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the UV disinfection system...designed for a minimum UV dose of 100 millijoules per square centimeter (mJ/cm2)"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Disinfected effluent is discharged to eleven rapid infiltration ponds"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "rapid infiltration Ponds 3, 6, and 7 are no longer used due to their close proximity to the Stanislaus River"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
       "Substance": [
-        "Constituent-Bacteria"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Cloth media filters and a ultraviolet light (UV) disinfection system were installed to protect shallow groundwater from coliform organism contamination."
+      "Sentence": "The sludge storage tank is used for emergency storage of wasted sludge in-case of dewatering system failure"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
+        "Drying",
         "Dewatering"
       ],
       "Role": [
@@ -98,7 +154,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "As part of the WWTP upgrades, an additional screw press was added and both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed under a permanent canopy structure."
+      "Sentence": "The sludge drying beds are uncovered and may be used in the summer for additional drying or for backup dewatering"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "In 2008, a screw press was added for year-round mechanical sludge dewatering...both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -113,61 +185,21 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "As part of the WWTP upgrades, an additional screw press was added and both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed under a permanent canopy structure."
+      "Sentence": "both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pump",
       "Process": [
-        "Drying"
+        "Recirculation"
       ],
       "Role": [
+        "Feed",
         "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The sludge drying beds are uncovered and may be used in the summer for additional drying or for backup dewatering."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The sludge storage tank is used for emergency storage of wasted sludge in-case of dewatering system failure."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered sludge is disposed by hauling to a local landfill."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfected effluent is discharged to eleven rapid infiltration ponds (Ponds 1, 2, 4, 5, and 8 through 14)."
+      "Sentence": "auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed"
     }
   ]
 }

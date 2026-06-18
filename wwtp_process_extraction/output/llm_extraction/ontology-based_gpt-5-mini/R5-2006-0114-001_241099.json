@@ -11,111 +11,144 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The treatment system consists of screening, SBR, flow equalization, sand filtration, disinfection, effluent pumping, and land application."
+      "Sentence": "Influent wastewater will be screened with a fine mesh self-cleaning gravity screen to remove larger solids and grit"
     },
     {
       "Equipment": "SequencingBatchReactor",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration",
+        "Mixing",
+        "Denitrification"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment plant will provide tertiary treatment and disinfection using a sequential batch reactor (SBR) system."
+      "Sentence": "Screened wastewater will be treated using an SBR process. The SBR will consist of a 200,000 gallon lined basin that will be aerated and mixed using floating aerators. The aerators will be cycled on and off to create anoxic conditions to facilitate denitrification."
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "The treatment system consists of screening, SBR, flow equalization, sand filtration, disinfection, effluent pumping, and land application."
+      "Sentence": "Flow from the SBR will be equalized in a secondary effluent storage basin with a storage capacity of approximately 49,000 gallons."
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "RapidSandFiltration"
+        "MediaFiltration",
+        "Coagulation",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Coagulant-PolyaluminumChloride",
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system consists of screening, SBR, flow equalization, sand filtration, disinfection, effluent pumping, and land application."
+      "Sentence": "Duplex sand filters will be used to remove suspended solids... A polymer (polyaluminum chloride) will be added to the discharge to increase the efficiency of the sand filters. Solids removed by the filters will be flushed in backwash water and returned to the SBR basin."
     },
     {
-      "Equipment": "DisinfectionUnit",
+      "Equipment": "ChlorinationUnit",
       "Process": [
+        "Chlorination",
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Disinfection will be performed by addition of hypochlorite to the sand filter effluent. Duplex hypochlorite feed units will be used for redundancy."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment plant will provide tertiary treatment and disinfection using a sequential batch reactor (SBR) system."
+      "Sentence": "Disinfected wastewater will flow by gravity to the effluent storage basin."
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "Reservoir",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system consists of screening, SBR, flow equalization, sand filtration, disinfection, effluent pumping, and land application."
+      "Sentence": "From the effluent storage basin the treated wastewater will be pumped to lined recycled water storage reservoirs."
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion",
+        "Dewatering",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Sludge will discharged to the sludge storage basin for digestion and thickening. Decant water from the basin will be returned to the SBR pond. Sludge will be hauled off-site for disposal."
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Containment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An emergency storage reservoir will be available for storage of wastewater during a malfunction of the treatment plant and when effluent doesn’t meet effluent requirements."
     },
     {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
+      "Role": [
+        "LandApplication",
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment system consists of screening, SBR, flow equalization, sand filtration, disinfection, effluent pumping, and land application."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Land application areas and recycled water storage ponds will be constructed in phases."
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sludge will be digested and stored on-site pending off-site disposal."
     }
   ]
 }

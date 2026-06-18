@@ -1,31 +1,107 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Storage"
+        "Feed"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "effluent discharged to percolation ponds"
+      "Sentence": "influent pump station and pumps"
     },
     {
-      "Equipment": "ReverseOsmosisMembrane",
+      "Equipment": "Screen",
       "Process": [
-        "ReverseOsmosis"
+        "Screening"
       ],
       "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "fine screens"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "grit removal"
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "MembraneProcess",
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Tertiary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "membrane bioreactor (MBR) technology"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "when RO technology is added to the treatment process"
+      "Sentence": "ultraviolet disinfection"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Collected solids from the fine screens and grit removal will be transported offsite to an authorized solid waste disposal facility."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Biosolids from the aerobic treatment, anoxic treatment, and membrane bioreactor filtration system are discharged to the community sewage collection system where they will be treated at the regional plant."
     }
   ]
 }

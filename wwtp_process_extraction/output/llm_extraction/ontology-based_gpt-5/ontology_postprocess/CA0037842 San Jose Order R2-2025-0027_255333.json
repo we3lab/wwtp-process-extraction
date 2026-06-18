@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of screens followed by grit removal.",
+      "Sentence": "treatment consisting of influent screening and grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of screens followed by grit removal.",
+      "Sentence": "treatment consisting of influent screening and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -70,23 +70,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -95,19 +80,6 @@
       "trigger_process": [
         "Equalization"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Retention"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A 10-million-gallon overflow basin is also available for any overflows from the 16-million-gallon equalization basin.",
-      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -119,16 +91,18 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anaerobic",
         "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A modified biological nutrient removal (BNR) process is employed... The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions.",
+      "Sentence": "advanced secondary treatment with an activated sludge process configured and operated for biological nutrient removal (BNR)",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -152,7 +126,8 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary"
@@ -169,14 +144,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Backwash",
         "Storage",
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage,",
+      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage",
       "trigger_process": [
         "Equalization"
       ]
@@ -187,7 +161,6 @@
         "Flocculation"
       ],
       "Role": [
-        "Backwash",
         "Posttreatment"
       ],
       "Substance": null,
@@ -204,7 +177,6 @@
         "Sedimentation"
       ],
       "Role": [
-        "Backwash",
         "Posttreatment"
       ],
       "Substance": null,
@@ -218,11 +190,10 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Disinfection",
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
-        "Backwash",
         "Posttreatment"
       ],
       "Substance": [
@@ -230,7 +201,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
+      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge",
       "trigger_process": [
         "Chlorination"
       ]
@@ -238,58 +209,28 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Disinfection",
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Disinfectant-Chlorine",
+        "ReducingAgent"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent... an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered... to produce a solution of chloramines for disinfection... sodium bisulfite is added to neutralize the hypochlorite.",
       "trigger_process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Reduction"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Disinfection",
-        "Chlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The portion of the effluent diverted for recycled water use is not neutralized with sodium bisulfite.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Stabilization",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The channel provides additional stabilization of the treated effluent",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
@@ -299,7 +240,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "backup aeration if low dissolved oxygen levels are detected",
+      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected",
       "trigger_process": []
     },
     {
@@ -313,7 +254,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and a backup dechlorination system",
+      "Sentence": "and a backup dechlorination system in case upstream meters indicate there is remaining residual chlorine.",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -331,7 +272,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
+      "Sentence": "The process consists of primary sludge screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -362,15 +303,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series.",
+      "Sentence": "Sludge ... is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -390,7 +330,7 @@
       "Sentence": "Digested sludge then undergoes either lagoon stabilization",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Lagoon"
+        "Stabilization Pond"
       ]
     },
     {
@@ -408,14 +348,14 @@
       "Location": "on-site",
       "Sentence": "dewatering using open air drying beds",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "ChemicalAddition"
       ],
       "Role": [
         "SolidsHandling"
@@ -426,11 +366,11 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "This project will build a new digested sludge dewatering facility, including a new building, centrifuges, conveyors, truck bays, and polymer storage and dosing equipment is underway.",
+      "Sentence": "a new digested sludge dewatering facility, including ... centrifuges ... and polymer storage and dosing equipment is underway.",
       "trigger_process": [
         "Centrifuge",
-        "Polymer Addition",
-        "Thickening"
+        "Mechanical Dewatering",
+        "Polymer Addition"
       ]
     },
     {
@@ -439,12 +379,9 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill",
@@ -458,17 +395,79 @@
         "LandApplication"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "land applied as a soil amendment",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "processed further into a compost or fertilizer.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treating up to 10 MGD of the Facility\u2019s secondary effluent using microfiltration",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treating up to 10 MGD ... using ... reverse osmosis",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treating up to 10 MGD ... using ... ultraviolent light disinfection",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     }
   ]

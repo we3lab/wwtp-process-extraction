@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "A single mechanical bar screen captures large debris from the raw wastewater in the headworks.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,13 +27,10 @@
         "Aerobic",
         "Anoxic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Anoxic zones constitute approximately 12 percent of each oxidation ditch, with mechanical aerators providing aeration to the remaining 88 percent.",
+      "Sentence": "From the headworks, the influent flows to a splitter box where it is divided between two oxidation ditches.",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Oxidation Ditch"
@@ -43,15 +39,17 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Effluent from the oxidation ditches passes through a mixed liquor splitter box and is split evenly between the two secondary clarifiers.",
       "trigger_process": [
         "Secondary Clarification"
@@ -73,7 +71,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Effluent from the secondary clarifiers is disinfected with chlorine and then dechlorinated with sodium bisulfite prior to discharge.",
       "trigger_process": [
         "Chlorination",
@@ -93,7 +90,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids from the secondary clarifier are returned to the oxidation ditches or wasted to the dissolved air flotation thickener.",
       "trigger_process": [
         "Flotation",
@@ -112,7 +108,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Thickened biosolids are collected and pumped to a sludge holding tank until dewatered in the belt filter press.",
       "trigger_process": []
     },
@@ -129,7 +124,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Thickened biosolids are collected and pumped to a sludge holding tank until dewatered in the belt filter press.",
       "trigger_process": [
         "Mechanical Dewatering"
@@ -138,7 +132,7 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -148,10 +142,9 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Dewatered biosolids are hauled to a composting facility.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     }
   ]

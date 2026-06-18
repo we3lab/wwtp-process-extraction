@@ -26,7 +26,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal...",
+      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation...",
       "Source": "permit_text",
       "Website": null
     },
@@ -41,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal...",
+      "Sentence": "...pre-aeration/grit removal, primary sedimentation, biological filtration (trickling filters)...",
       "Source": "permit_text",
       "Website": null
     },
@@ -56,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary sedimentation, biological filtration (trickling filters)...",
+      "Sentence": "...primary sedimentation, biological filtration (trickling filters), odor control...",
       "Source": "permit_text",
       "Website": null
     },
@@ -77,7 +77,7 @@
       "Website": null
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Reactor",
       "Process": [
         "ActivatedSludge"
       ],
@@ -112,7 +112,9 @@
       "Process": [
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
@@ -133,7 +135,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids...are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
+      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
       "Source": "permit_text",
       "Website": null
     },
@@ -144,38 +146,22 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids...are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
+      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites.",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids...are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "BeltThickener",
-      "Process": [
-        "Filtration",
+        "Drying",
         "Dewatering"
       ],
       "Role": [
@@ -186,24 +172,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...belt filter press dewatering, and are land-applied at various sites.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "...are land-applied at various sites.",
+      "Sentence": "...drying beds, and belt filter press dewatering, and are land-applied at various sites.",
       "Source": "permit_text",
       "Website": null
     },
@@ -212,8 +181,12 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat, which are then used at the facility.",
@@ -221,51 +194,36 @@
       "Website": null
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "SepticTank",
       "Process": [
-        "Coagulation"
+        "Sedimentation"
       ],
       "Role": [
-        "Tertiary"
+        "Pretreatment"
       ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation, flocculation and sedimentation after Alum (Aluminum Sulfate) and polymers are added",
-      "Source": "web_search",
-      "Website": "https://www.watsonville.gov/812/Wastewater-Division"
+      "Sentence": "The leachate is hauled to the facility via trucks and is discharged into the septic receiving station and from there is directed into the headworks.",
+      "Source": "permit_text",
+      "Website": null
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": "CoagulationBasin",
       "Process": [
+        "Coagulation",
         "Flocculation"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
+        "Coagulant-Alum",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation, flocculation and sedimentation after Alum (Aluminum Sulfate) and polymers are added",
-      "Source": "web_search",
-      "Website": "https://www.watsonville.gov/812/Wastewater-Division"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "coagulation, flocculation and sedimentation after Alum (Aluminum Sulfate) and polymers are added",
+      "Sentence": "Tertiary/Recycled Water Facility: Moves secondary treated wastewater through the water recycling facility where coagulation, flocculation and sedimentation occurs after Alum and polymers are added",
       "Source": "web_search",
       "Website": "https://www.watsonville.gov/812/Wastewater-Division"
     },
@@ -280,23 +238,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "1,620 filters that provide a physical barrier to filter out most microorganisms, sediment and viruses, with filter pore sizes of 10 microns",
-      "Source": "web_search",
-      "Website": "https://www.watsonville.gov/812/Wastewater-Division"
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Disinfection is completed with 600 Ultra Violet (UV) light bulbs.",
+      "Sentence": "...next cloth media filtration occurs with 1,620 filters that provide a physical barrier to filter out most microorganisms, sediment and viruses, with a pore size of 10 microns.",
       "Source": "web_search",
       "Website": "https://www.watsonville.gov/812/Wastewater-Division"
     }

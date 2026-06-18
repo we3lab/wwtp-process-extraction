@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,55 +27,39 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary treatment consists of ... a vortex grit removal mechanism",
+      "Sentence": "a bypass channel/bar with screens and a vortex grit removal mechanism",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Mixing",
+        "ActivatedSludge",
+        "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Each bioreactor train consists of two anoxic zones",
-      "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration",
-        "ActivatedSludge",
-        "Nitrification"
-      ],
-      "Role": [
-        "Secondary",
         "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by one aerobic zone with two aeration grids",
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids",
       "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
         "Nitrification"
       ]
     },
     {
-      "Equipment": "UltrafiltrationUnit",
+      "Equipment": "MicrofiltrationUnit",
       "Process": [
-        "Ultrafiltration"
+        "Microfiltration"
       ],
       "Role": [
         "Tertiary"
@@ -85,17 +69,17 @@
       "Location": "on-site",
       "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment",
       "trigger_process": [
-        "Ultrafiltration"
+        "Microfiltration"
       ]
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -114,7 +98,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank",
+      "Sentence": "disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank",
       "trigger_process": []
     },
     {
@@ -128,6 +112,118 @@
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the reduced solids are purged into the digester, which holds the solids for 10 to 15 days",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering equipment, which includes a centrifuge",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "the biosolids could be hauled to a Class B Solids land application facility",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "the biosolids could be hauled to ... a composting facility.",
+      "trigger_process": [
+        "Composting"
+      ]
     }
   ]
 }

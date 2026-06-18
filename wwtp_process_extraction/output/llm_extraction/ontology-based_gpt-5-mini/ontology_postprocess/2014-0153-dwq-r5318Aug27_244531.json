@@ -1,26 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "MembraneProcess",
-        "BiologicallyActiveFiltration"
-      ],
-      "Role": [
-        "Secondary",
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The Facility will consist of a membrane bioreactor (MBR) system, manufactured by Cloacina,",
-      "trigger_process": [
-        "Biologically Active Filtration",
-        "Membrane Bioreactor"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -31,8 +11,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "fine screening",
+      "Sentence": "The wastewater treatment system will include fine screening,",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -46,27 +25,39 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "equalization",
+      "Sentence": "The wastewater treatment system will include ... equalization,",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification",
+        "Denitrification",
+        "BiologicallyActiveFiltration"
       ],
       "Role": [
-        "Anoxic"
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "activated sludge treatment with an anoxic zone",
+      "Sentence": "The Facility will consist of a membrane bioreactor (MBR) system ... activated sludge treatment with an anoxic zone,",
       "trigger_process": [
-        "Unspecified AS"
+        "AO (anoxic/oxic)",
+        "Biologically Active Filtration",
+        "Denitrification",
+        "Membrane Bioreactor",
+        "Nitrification"
       ]
     },
     {
@@ -80,8 +71,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "ultrafiltration",
+      "Sentence": "The wastewater treatment system will include ... ultrafiltration,",
       "trigger_process": [
         "Ultrafiltration"
       ]
@@ -92,13 +82,13 @@
         "UVDisinfection"
       ],
       "Role": [
+        "Disinfection",
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "ultraviolet light (UV) disinfection",
+      "Sentence": "The wastewater treatment system will include ... ultraviolet light (UV) disinfection,",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -118,8 +108,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "post-UV chlorine dosing",
+      "Sentence": "Sodium hypochlorite shall be dosed upstream of the recycled water pump station.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -130,18 +119,60 @@
         "Dewatering"
       ],
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "sludge thickening and storage",
+      "Sentence": "The wastewater treatment system will include ... sludge thickening and storage.",
       "trigger_process": [
         "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The wastewater treatment system will include ... sludge thickening and storage.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Phase One of the system will include three reclaimed water ponds",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Containment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "lined on-site emergency storage pond.",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     }
   ]

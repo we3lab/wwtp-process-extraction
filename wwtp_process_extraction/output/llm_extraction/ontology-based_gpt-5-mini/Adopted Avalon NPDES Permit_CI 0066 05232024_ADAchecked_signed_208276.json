@@ -8,11 +8,14 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Seawater",
+        "Water-Freshwater",
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment at the Facility consists of a rotating screen for removal of large particles,"
+      "Sentence": "a rotating screen for removal of large particles"
     },
     {
       "Equipment": "GritChamber",
@@ -22,11 +25,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment at the Facility consists of ... an aerated grit unit,"
+      "Sentence": "an aerated grit unit"
     },
     {
       "Equipment": "TricklingFilter",
@@ -36,30 +40,30 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-OrganicCarbon",
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The trickling filter is typically only used during the summer."
+      "Sentence": "The trickling filter is typically only used during the summer"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
       "Substance": [
-        "Water-Seawater",
-        "Water-Freshwater"
+        "Constituent-OrganicCarbon",
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "When the trickling filter is online, approximately twenty percent of the influent flow is diverted ... before combining with the remaining influent flow from the aerated grit unit and entering the aeration tanks."
+      "Sentence": "activated sludge reactors for removal of organics"
     },
     {
       "Equipment": "SedimentationTank",
@@ -69,11 +73,12 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment at the Facility consists of ... clarifiers for separation of solids,"
+      "Sentence": "clarifiers for separation of solids"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -82,38 +87,33 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The effluent is partially chlorinated with the addition of sodium hypochlorite solution to maintain consistent compliance with the receiving water bacterial standards."
+      "Sentence": "The effluent is partially chlorinated with the addition of sodium hypochlorite solution"
     },
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion",
-        "Digestion"
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste sludge from activated sludge reactors is aerobically digested, dewatered in a centrifuge, and dried in sludge drying beds before being hauled to the Pebbly Beach Landfill."
+      "Sentence": "Waste sludge from activated sludge reactors is aerobically digested"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -126,14 +126,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste sludge from activated sludge reactors is aerobically digested, dewatered in a centrifuge, and dried in sludge drying beds before being hauled to the Pebbly Beach Landfill."
+      "Sentence": "dewatered in a centrifuge"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -143,24 +141,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Waste sludge from activated sludge reactors is aerobically digested, dewatered in a centrifuge, and dried in sludge drying beds before being hauled to the Pebbly Beach Landfill."
+      "Sentence": "dried in sludge drying beds"
     },
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids separated at the rotating screen are sent to the Pebbly Beach Landfill, regulated separately under Order No. R4-2016-0140."
+      "Sentence": "sent to the Pebbly Beach Landfill"
     }
   ]
 }

@@ -1,6 +1,87 @@
 {
   "items": [
     {
+      "Equipment": "Filter",
+      "Process": [
+        "MembraneProcess"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "minor wastewater flows of 300 gpd to 500 gpd include membrane backwash from potable water treatment system consisting of a membrane filtration system",
+      "trigger_process": [
+        "Unspecified Membrane Process"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "potable water treatment system consisting of ... ultraviolet disinfection units",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "potable water treatment system consisting of ... hypochlorite injection",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Separation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "vehicle wash water, which is treated by an oil/dust separator prior to discharging to a septic tank",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "SepticTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The existing septic tank will remain onsite and provide primary solids removal prior to treatment in the biofiltration unit.",
+      "trigger_process": [
+        "Primary Clarification",
+        "Septic Tank"
+      ]
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -8,13 +89,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
+      "Substance": null,
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater is screened and adjusted for pH before being intermittently sprinkled over the surface of the bed.",
+      "Sentence": "Wastewater is screened ... before being intermittently sprinkled over the surface of the bed.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,9 +106,8 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Wastewater is screened and adjusted for pH before being intermittently sprinkled over the surface of the bed.",
       "trigger_process": [
         "Neutralization"
@@ -39,60 +116,27 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "BiologicallyActiveFiltration",
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Aerobic",
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "PhosphorusRemoval"
       ],
       "Substance": [
+        "Constituent-Ammonia",
         "Constituent-SuspendedSolids"
       ],
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The process, shown in Attachment 3, is similar to a recirculating gravel filter.",
+      "Sentence": "The expansion to the OWTS will use a biofiltration system ... The process ... is similar to a recirculating gravel filter.",
       "trigger_process": [
-        "Trickling Filter"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing septic tank will remain onsite and provide primary solids removal prior to treatment in the biofiltration unit.",
-      "trigger_process": [
-        "Secondary Filtration",
-        "Unspecified FFR"
-      ]
-    },
-    {
-      "Equipment": "SepticTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing septic tank will remain onsite and provide primary solids removal prior to treatment in the biofiltration unit.",
-      "trigger_process": [
-        "Primary Clarification",
-        "Septic Tank"
+        "Biologically Active Filtration",
+        "Trickling Filter",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -104,10 +148,9 @@
         "Storage"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The treated wastewater will be conveyed to an adjacent evaporation pond.",
+      "Sentence": "The Discharger plans to expand the onsite wastewater treatment system (OWTS) with an advanced onsite wastewater treatment facility and an evaporation pond.",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -120,12 +163,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
+      "Substance": null,
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Sludge and solid waste from the treatment facility will be periodically hauled away.",
       "trigger_process": [
         "Unspecified Disposal"

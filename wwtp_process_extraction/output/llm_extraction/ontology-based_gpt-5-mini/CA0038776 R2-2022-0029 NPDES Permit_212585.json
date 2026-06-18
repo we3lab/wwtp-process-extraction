@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The screening occurs at two of the Discharger’s pump stations."
     },
     {
@@ -25,7 +24,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection."
     },
     {
@@ -39,7 +37,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection."
     },
     {
@@ -53,7 +50,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
       "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection."
     },
     {
@@ -67,7 +63,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment process consists of screening, grit removal, sequencing batch reactors, sand filtration, and ultraviolet (UV) disinfection."
     },
     {
@@ -75,11 +70,12 @@
       "Process": [
         "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "By late fall of 2024, the Discharger plans to design and construct a new UV disinfection system that will include two channels, replacing the existing one-channel system."
     },
     {
@@ -96,50 +92,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "During construction of this project, the Discharger may use a temporary UV disinfection system or a temporary chlorination and dechlorination disinfection system."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "the headworks improvement project that will include ... decommissioning the Discharger’s hypochlorite tank."
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the headworks improvement project that will include ... installing bar screens at the treatment plant"
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the headworks improvement project that will include replacing its grit removal system"
     },
     {
       "Equipment": "Tank",
@@ -149,29 +102,37 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
+      "Location": "off-site",
       "Sentence": "In 2019, the Discharger built a 2.1 million gallon equalization basin near its Linda Mar pump station."
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "SolidsHandling",
-        "Aerobic"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Sludge from the sequencing batch reactors is aerated and contained in waste activated sludge tanks..."
+      "Sentence": "The Discharger either diverts its effluent to its cascade aerator, where the effluent discharges into Calera Creek..."
     },
     {
-      "Equipment": "GravityBeltThickener",
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the effluent discharges into Calera Creek and travels to the Discharger’s constructed wetlands to the Pacific Ocean."
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": [
-        "Dewatering"
+        "Aeration"
       ],
       "Role": [
         "SolidsHandling"
@@ -181,8 +142,22 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "before being diverted to the gravity belt thickeners."
+      "Sentence": "Sludge from the sequencing batch reactors is aerated and contained in waste activated sludge tanks before being diverted to the gravity belt thickeners."
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from the sequencing batch reactors is aerated and contained in waste activated sludge tanks before being diverted to the gravity belt thickeners."
     },
     {
       "Equipment": "AerobicDigester",
@@ -191,19 +166,18 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Next, thickened solids are digested in autothermal thermophilic aerobic digesters and dewatered with centrifuges."
+      "Sentence": "Next, thickened solids are digested in autothermal thermophilic aerobic digesters..."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -216,13 +190,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and dewatered with centrifuges."
+      "Sentence": "Next, thickened solids are digested in autothermal thermophilic aerobic digesters and dewatered with centrifuges."
     },
     {
       "Equipment": null,
       "Process": [
         "LandApplication",
+        "Composting",
         "Landfill"
       ],
       "Role": [
@@ -233,36 +207,59 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The Discharger hires a contractor to pick up the sludge for land application, composting, or landfill disposal."
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "By June 30, 2027, the Discharger also anticipates completing a headworks improvement project that will include ... installing bar screens at the treatment plant ..."
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "By June 30, 2027, the Discharger also anticipates completing a headworks improvement project that will include replacing its grit removal system..."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "By June 30, 2027, the Discharger also anticipates completing a headworks improvement project ... decommissioning the Discharger’s hypochlorite tank."
     },
     {
       "Equipment": null,
       "Process": [
         "Disinfection"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "or routes it to the North Coast County Water District, where it receives additional disinfection and distribution for recycled water use."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Discharger either diverts its effluent to its cascade aerator, where the effluent discharges into Calera Creek..."
     }
   ]
 }

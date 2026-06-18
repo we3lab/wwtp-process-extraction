@@ -11,13 +11,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "mechanical bar screening"
+      "Sentence": "preliminary treatment by mechanical bar screening"
     },
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
         "Pretreatment"
@@ -25,7 +25,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "aerated grit removal"
     },
     {
@@ -39,8 +38,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary sedimentation"
+      "Sentence": "primary sedimentation and scum removal"
     },
     {
       "Equipment": "AerationBasin",
@@ -48,13 +46,11 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "biological treatment using activated sludge"
     },
     {
@@ -68,8 +64,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "secondary clarification"
+      "Sentence": "followed by secondary clarification"
     },
     {
       "Equipment": "CoagulationBasin",
@@ -82,7 +77,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "tertiary treatment consisting of coagulation"
     },
     {
@@ -96,14 +90,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "single-media anthracite filter"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -113,20 +107,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "chlorine disinfection"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Dechlorination of chlorinated effluent is accomplished with sodium bisulfite"
+      "Sentence": "chlorine disinfection. Dechlorination of chlorinated effluent is accomplished with sodium bisulfite"
     },
     {
       "Equipment": null,
@@ -138,8 +119,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
+      "Location": "off-site",
       "Sentence": "hauled to a local landfill for disposal"
     },
     {
@@ -149,21 +129,21 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "sludge from the secondary treatment processes at the Fallbrook WRP is aerobically digested"
+      "Sentence": "Sludge from the secondary treatment processes at the Fallbrook WRP is aerobically digested"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -173,7 +153,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "then dewatered by a centrifuge"
     },
     {
@@ -182,27 +161,13 @@
         "Drying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Dewatered sludge is fed to a thermal dryer to meet Class A biosolids requirements"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Class A biosolids are utilized as fertilizer by local farmers"
     },
     {
       "Equipment": "Pond",
@@ -215,12 +180,41 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "sent to one of twelve drying beds for a minimum of three months"
     },
     {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Class A biosolids are utilized as fertilizer by local farmers"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Denali Solid Solutions for transporting Class B biosolids for land application in Yuma, Arizona"
+    },
+    {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization",
+        "Storage"
+      ],
       "Role": [
         "Equalization",
         "Storage"
@@ -228,75 +222,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "a 1.2-million-gallon (MG) secondary effluent equalization basin is available for temporary storage"
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "Reservoir",
+      "Process": [
+        "Storage"
+      ],
       "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "the Fallbrook WRP has a 1.0-MG recycled water storage basin"
-    },
-    {
-      "Equipment": "SeparationTank",
-      "Process": [
-        "Separation"
-      ],
-      "Role": [
-        "Pretreatment",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "reclaim tanks for solids separation"
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.8,
-      "Sentence": "returned to the start of the iron and manganese filters for treatment"
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.8,
-      "Sentence": "to maximize the RO treatment process efficiency and achieve a product water with a total dissolved solids (TDS) of 500 mg/L"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "plans to discharge the brine waste to its Fallbrook WRP, chlorine contact basin wet well"
     }
   ]
 }

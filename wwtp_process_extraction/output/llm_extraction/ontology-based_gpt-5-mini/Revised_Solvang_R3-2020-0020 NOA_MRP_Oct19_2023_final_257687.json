@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Mechanical bar screen, screenings grinder, compactor/washer and vortex grit separator."
     },
     {
@@ -25,7 +24,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Mechanical bar screen, screenings grinder, compactor/washer and vortex grit separator."
     },
     {
@@ -39,7 +37,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Mechanical bar screen, screenings grinder, compactor/washer and vortex grit separator."
     },
     {
@@ -48,8 +45,7 @@
         "ActivatedSludge",
         "Aeration",
         "Denitrification",
-        "Sedimentation",
-        "BiologicalProcess"
+        "Sedimentation"
       ],
       "Role": [
         "Secondary",
@@ -59,12 +55,12 @@
         "NitrogenRemoval"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Sludge-MixedLiquor",
+        "Constituent-DissolvedOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The facility uses a sequencing batch reactor performing activated sludge secondary treatment."
+      "Sentence": "The facility uses a sequencing batch reactor performing activated sludge secondary treatment. There are three seperate reactors working is sequence performing equalization, biological treatment, and secondary clarification."
     },
     {
       "Equipment": "AerobicDigester",
@@ -73,15 +69,13 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids are sent to an aerobic digester."
     },
     {
@@ -93,40 +87,65 @@
         "SolidsHandling"
       ],
       "Substance": [
+        "Fluid-Sludge",
         "Flocculant-Polymer",
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Approximately 150,000 gallons of digestate is dewatered three days a week primarily on a three belt two meter Ashbrook Belt Filter Press. A cationic polymer is added to the digestate onto the belt press."
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "Drying",
+        "Dewatering"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Filtrate is captured under the press drains back to the facility influent sump pit."
+      "Sentence": "2. Drying Beds"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent is discharged into a 1-acre-foot lined polishing pond"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Retention"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Treated effluent is discharged into a 1-acre-foot lined polishing pond and then flows into one of two percolation basins."
+      "Sentence": "then flows into one of two percolation basins."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The cake is loaded into roll off bins and is trucked to Engel and Gray in Santa Maria where it is composted"
     }
   ]
 }

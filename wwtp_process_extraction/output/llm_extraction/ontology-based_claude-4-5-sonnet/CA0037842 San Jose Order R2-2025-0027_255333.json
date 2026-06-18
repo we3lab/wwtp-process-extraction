@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal, primary clarification..."
+      "Sentence": "Preliminary treatment consists of screens followed by grit removal."
     },
     {
       "Equipment": "GritChamber",
@@ -24,37 +24,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal..."
+      "Sentence": "Preliminary treatment consists of screens followed by grit removal."
     },
     {
       "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks, along with an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A 10-million-gallon overflow basin is also available for any overflows from the 16-million-gallon equalization basin."
-    },
-    {
-      "Equipment": null,
       "Process": [
         "ChemicalAddition"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": [
         "Coagulant-FerricChloride"
       ],
@@ -84,8 +63,9 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
         "Anoxic",
+        "Aerobic",
+        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -120,7 +100,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following the secondary clarifiers, the wastewater undergoes filtration. There are 16 separate mono media filters..."
+      "Sentence": "There are 16 separate mono media filters, 4 of which are dedicated to producing Title 22 unrestricted-use non-potable recycled water and 12 of which produce water suitable for discharge to San Francisco Bay."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -137,10 +117,12 @@
     },
     {
       "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
+      "Process": [
         "Equalization"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -175,7 +157,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -201,7 +185,7 @@
       "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection. As the effluent leaves the contact channels, its chlorine residual is measured, and an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite."
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "Aeration"
       ],
@@ -233,7 +217,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -273,7 +258,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges..."
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete)."
     },
     {
       "Equipment": "DewateringUnit",
@@ -288,12 +273,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges..."
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete)."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -308,9 +294,11 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -319,13 +307,67 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "LandApplication"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer."
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When operating at full capacity, it is capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection, producing approximately 8 MGD of high-quality recycled water."
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When operating at full capacity, it is capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection, producing approximately 8 MGD of high-quality recycled water."
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When operating at full capacity, it is capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection, producing approximately 8 MGD of high-quality recycled water."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -355,9 +397,10 @@
       "Sentence": "In addition to the mesophilic digester upgrades, the project will construct a new fats, oil and grease receiving facility, including storage tanks and connections to existing facilities."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"

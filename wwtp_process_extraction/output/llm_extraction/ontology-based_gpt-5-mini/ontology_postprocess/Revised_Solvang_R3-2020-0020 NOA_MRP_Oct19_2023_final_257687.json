@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Mechanical bar screen, screenings grinder, compactor/washer and vortex grit separator.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Mechanical bar screen, screenings grinder, compactor/washer and vortex grit separator.",
       "trigger_process": [
         "Comminution"
@@ -45,7 +43,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Mechanical bar screen, screenings grinder, compactor/washer and vortex grit separator.",
       "trigger_process": [
         "Grit Removal"
@@ -57,8 +54,7 @@
         "ActivatedSludge",
         "Aeration",
         "Denitrification",
-        "Sedimentation",
-        "BiologicalProcess"
+        "Sedimentation"
       ],
       "Role": [
         "Secondary",
@@ -68,12 +64,12 @@
         "NitrogenRemoval"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Sludge-MixedLiquor",
+        "Constituent-DissolvedOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The facility uses a sequencing batch reactor performing activated sludge secondary treatment.",
+      "Sentence": "The facility uses a sequencing batch reactor performing activated sludge secondary treatment. There are three seperate reactors working is sequence performing equalization, biological treatment, and secondary clarification.",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -89,15 +85,13 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids are sent to an aerobic digester.",
       "trigger_process": [
         "Aerobic Digestion"
@@ -112,12 +106,12 @@
         "SolidsHandling"
       ],
       "Substance": [
+        "Fluid-Sludge",
         "Flocculant-Polymer",
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Approximately 150,000 gallons of digestate is dewatered three days a week primarily on a three belt two meter Ashbrook Belt Filter Press. A cationic polymer is added to the digestate onto the belt press.",
       "trigger_process": [
         "Mechanical Dewatering",
@@ -125,34 +119,68 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "Drying",
+        "Dewatering"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Filtrate is captured under the press drains back to the facility influent sump pit.",
-      "trigger_process": []
+      "Sentence": "2. Drying Beds",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent is discharged into a 1-acre-foot lined polishing pond",
+      "trigger_process": [
+        "Unspecified Clarification",
+        "Unspecified Lagoon"
+      ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Retention"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Treated effluent is discharged into a 1-acre-foot lined polishing pond and then flows into one of two percolation basins.",
+      "Sentence": "then flows into one of two percolation basins.",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The cake is loaded into roll off bins and is trucked to Engel and Gray in Santa Maria where it is composted",
+      "trigger_process": [
+        "Composting"
       ]
     }
   ]

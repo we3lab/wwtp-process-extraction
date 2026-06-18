@@ -7,34 +7,52 @@
       ],
       "Role": [
         "Primary",
-        "Pretreatment"
+        "Pretreatment",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids",
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Septic Tanks",
+      "Sentence": "Treatment Solid removal from the septic tank",
       "trigger_process": [
         "Primary Clarification",
         "Septic Tank"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "SolidsHandling",
+        "Drain"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.6,
-      "Sentence": "Dual Leach Field System",
+      "Sentence": "Sludge is pumped from the concrete septic tanks",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled off to a biosolids composting facility on a semiannual basis",
       "trigger_process": [
-        "Land Application"
+        "Composting"
       ]
     }
   ]

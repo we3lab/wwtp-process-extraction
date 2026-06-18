@@ -1,6 +1,18 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wastewater from the community is pumped from seven lift stations to a final lift station",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -8,13 +20,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "preliminary treatment, where solids are removed by an automatic bar screen.",
+      "Sentence": "preliminary treatment, where solids are removed by an automatic bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -23,7 +32,7 @@
       "Equipment": null,
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "ChemicalAddition"
       ],
       "Role": [
         "Pretreatment"
@@ -34,12 +43,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals from the wastewater.",
+      "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals from the wastewater",
       "trigger_process": [
         "Coagulation",
         "Ferric Chloride Addition",
-        "Flocculation",
         "Polymer Addition"
       ]
     },
@@ -54,8 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater is then directed through the plant\u0019s primary clarifiers.",
+      "Sentence": "Wastewater is then directed through the plant\u2019s primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -73,7 +79,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Secondary treatment is achieved through biological treatment via six aeration basins",
       "trigger_process": [
         "Unspecified AS"
@@ -90,8 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and secondary clarification through four final clarifiers.",
+      "Sentence": "secondary clarification through four final clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -102,13 +106,13 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged to Central Main Drain.",
+      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged to Central Main Drain",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -120,7 +124,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -128,8 +131,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary sludge generated from the primary clarifiers is pumped to anaerobic digesters.",
+      "Sentence": "Primary sludge generated from the primary clarifiers is pumped to anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -147,7 +149,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Secondary sludge generated from the secondary clarifiers is processed through a gravity belt thickener",
       "trigger_process": [
         "Thickening"
@@ -156,7 +157,24 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following anaerobic digestion, sludge is directed through a belt press",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
         "Drying"
       ],
       "Role": [
@@ -167,11 +185,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Following anaerobic digestion, sludge is directed through a belt press, dried to approximately 90 percent solids in drying beds",
+      "Sentence": "dried to approximately 90 percent solids in drying beds",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
@@ -180,7 +196,6 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication",
         "SolidsHandling"
       ],
       "Substance": [
@@ -188,8 +203,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "and then land-applied at locations in Arizona.",
+      "Sentence": "then land-applied at locations in Arizona",
       "trigger_process": [
         "Land Application"
       ]
@@ -200,61 +214,12 @@
         "Evaporation"
       ],
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Collected wastewater in the emergency storage basin can be pumped to the primary clarifiers if necessary; however, it is typically allowed to evaporate.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "replacement of UV units",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "replacement of secondary clarifiers",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "replacement of aeration blowers",
+      "Sentence": "The Facility maintains an emergency storage basin ... however, it is typically allowed to evaporate",
       "trigger_process": []
     }
   ]

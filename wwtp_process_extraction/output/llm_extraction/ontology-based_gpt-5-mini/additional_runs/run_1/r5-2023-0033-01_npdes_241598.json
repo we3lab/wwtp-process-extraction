@@ -22,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "new ultra-fine screening ... fine screening"
+      "Sentence": "new ultra-fine screening"
     },
     {
       "Equipment": "GritChamber",
@@ -35,13 +35,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ultra-fine screening and grit removal headworks"
+      "Sentence": "grit removal headworks"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "Filtration"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -49,7 +48,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs) for biological treatment and filtration"
+      "Sentence": "MBRs for biological treatment and filtration"
+    },
+    {
+      "Equipment": "SequencingBatchReactor",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "replacing the sequencing batch reactors (SBRs)"
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "replacing ... disk filters with membrane bioreactors (MBRs)"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -65,18 +90,28 @@
       "Sentence": "upgrading the UV disinfection system"
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "effluent pumping"
+    },
+    {
       "Equipment": "Reservoir",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Storage",
-        "Detention"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two lined, aerated storage reservoirs ... provide automatic short-term emergency storage"
+      "Sentence": "two lined, aerated storage reservoirs"
     },
     {
       "Equipment": "AerobicDigester",
@@ -85,14 +120,15 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling at the Facility includes two stage aerobic digesters"
+      "Sentence": "two stage aerobic digesters"
     },
     {
       "Equipment": "RotaryDrumThickener",
@@ -107,13 +143,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling at the Facility includes ... a drum thickener"
+      "Sentence": "a drum thickener"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -123,7 +158,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling at the Facility includes ... a centrifuge"
+      "Sentence": "a centrifuge"
     },
     {
       "Equipment": "Reactor",
@@ -131,53 +166,30 @@
         "Recirculation"
       ],
       "Role": [
-        "Anoxic",
-        "Pretreatment"
+        "Recirculation",
+        "Anoxic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge supernatant is returned to the anoxic reactor headworks prior to proceeding to the fine screens"
+      "Sentence": "Sludge supernatant is returned to the anoxic reactor headworks"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "Drain"
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
       ],
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "effluent pumping, effluent disposal"
-    },
-    {
-      "Equipment": "SequencingBatchReactor",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "replacing the sequencing batch reactors (SBRs) ... with membrane bioreactors (MBRs)"
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "replacing the ... disk filters with membrane bioreactors (MBRs)"
+      "Location": "off-site",
+      "Sentence": "removed by a hauler (currently Synagro) for disposal at a licensed biosolids facility"
     }
   ]
 }

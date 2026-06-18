@@ -12,8 +12,25 @@ PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
 
 SEP = "\n\n===PLANNED CHANGES===\n\n"
 
+# Canonical project paths, resolved from this file so they survive any os.chdir.
+PACKAGE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = PACKAGE_DIR / "data"
+OUTPUT_DIR = PACKAGE_DIR / "output"
+CIWQS_TO_CWNS_CSV = DATA_DIR / "ciwqs_to_cwns.csv"
+KEYWORDS_JSON = DATA_DIR / "unitprocess_keywords.json"
+SITE_DATA_ALL_CSV = OUTPUT_DIR / "site_data_all.csv"
+SITE_DATA_RELEVANT_CSV = OUTPUT_DIR / "site_data_relevant.csv"
+FACILITIES_JSON = OUTPUT_DIR / "facilities.json"
+CWNS_TABLE_CSV = OUTPUT_DIR / "unit_processes_by_facility_cwns.csv"
+# Output column order for rewriting ciwqs_to_cwns.csv (figure_3)
+CIWQS_TO_CWNS_COLUMNS = [
+    "WDID", "Place ID", "Facility Name", "NPDES No.", "Region",
+    "Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS",
+    "CWNS_ID", "FACILITY_ID", "CWNS Facility Name",
+]
+
 mapping_df = pd.read_csv(
-    "wwtp_process_extraction/data/ciwqs_to_cwns.csv", dtype=str, keep_default_na=False
+    CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False
 ).fillna("")
 
 for c in mapping_df.columns:
@@ -29,7 +46,7 @@ cwns_mapping = mapping_df[
 
 no_cwns_pids: set[str] = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq("NA"), "Place ID"])
 
-with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
+with open(KEYWORDS_JSON, "r") as f:
     unitprocess_keywords = json.load(f)
 
 
@@ -55,19 +72,35 @@ def package_sub_readers(reader):
         return
     
 
-def normalize_text(s: str) -> str:
-    """Normalize text by removing special whitespace characters and lowercasing."""
-    if not s:
-        return ""
-    # Normalize Unicode form
-    s = unicodedata.normalize("NFKC", s)
-    s = re.sub(r"[­​‌‍﻿]", "", s)
-    s = re.sub(r"[  ᠎ -   　]", "", s)
-    # Lowercase everything
-    return s.lower()
+def hasprocess_fragments(graph, cls, watr_ns, sh_ns):
+    """Process fragments declared by a class's own SHACL hasProcess shape(s).
+
+    The ontology declares "this equipment implies this process" two equivalent ways:
+    `sh:hasValue watr:Process-X` or `sh:qualifiedValueShape [ sh:class watr:Process-X ]`.
+    """
+    fragments = set()
+    for prop in graph.objects(cls, sh_ns.property):
+        for path in graph.objects(prop, sh_ns.path):
+            if path != watr_ns.hasProcess:
+                continue
+            for val in graph.objects(prop, sh_ns.hasValue):
+                if val.fragment:
+                    fragments.add(val.fragment)
+            for qualified_shape in graph.objects(prop, sh_ns.qualifiedValueShape):
+                for val in graph.objects(qualified_shape, sh_ns["class"]):
+                    if val.fragment:
+                        fragments.add(val.fragment)
+    return fragments
+
 
 def normalize_text(text):
-    return re.sub(r"\s+", " ", (text or "").replace("\n", " ").replace("\r", " ")).strip()
+    """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase."""
+    if not text:
+        return ""
+    text = unicodedata.normalize("NFKC", text)
+    text = re.sub(r"[­​‌‍﻿]", "", text)  # zero-width chars
+    text = re.sub(r"\s+", " ", text).strip()
+    return text.lower()
 
 def parse_status(val) -> str:
     """Normalize any status cell to a canonical token.
@@ -102,6 +135,33 @@ def is_present(val) -> bool:
 def build_cwns_presence_mask(series):
     """Return boolean mask for CWNS presence values (any detectable status, including FUTURE/PAST)."""
     return series.map(parse_status).isin({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
+
+
+def precision_recall_f1(tp, fp, fn, empty=float("nan")):
+    """Precision, recall, F1, and Jaccard overlap from TP/FP/FN counts.
+
+    empty is returned for any metric whose denominator is zero: pass 0 for plots
+    that should show no error, leave the nan default to drop that PDF from a macro-average.
+    """
+    precision = tp / (tp + fp) if (tp + fp) else empty
+    recall = tp / (tp + fn) if (tp + fn) else empty
+    f1 = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else empty
+    jaccard = tp / (tp + fp + fn) if (tp + fp + fn) else empty
+    return precision, recall, f1, jaccard
+
+
+def f1_error_parts(tp, fp, fn, empty=0):
+    """Split F1 error (1 - F1) into missed (FN) and extra (FP) shares, plus their total.
+
+    All three divide by 2*tp+fp+fn (= |truth| + |prediction|, the F1/Dice denominator), so
+    missed + extra equals the total error 1 - F1, bounded in [0, 1] — figure_2's error is
+    exactly the complement of table_1's F1. empty is returned when the denominator is zero.
+    Returns (missed, extra, total).
+    """
+    denom = 2 * tp + fp + fn
+    if not denom:
+        return empty, empty, empty
+    return fn / denom, fp / denom, (fp + fn) / denom
 
 
 def extract_leaves(processes_dict, group_id=None, exclude_keys=()):
@@ -160,6 +220,7 @@ def apply_secondary_category_backfill(
     column_global_priority,
     column_priority,
     ontology_resolve_fn=None,
+    excluded_cols=(),
 ):
     """Backfill secondary categories: if a PRESENT process requests a secondary category
     that has no PRESENT process, mark the best fallback (unspecified-first) as PRESENT.
@@ -167,6 +228,8 @@ def apply_secondary_category_backfill(
     ontology_resolve_fn(source_col, sec_cat, sec_cols) -> str | None: optional hook for
     ontology-based selection (used by step4). Returns the chosen column name, or None to
     fall back to unspecified-first heuristic.
+    excluded_cols: columns cleared by exclude_if_any for this item — never backfilled,
+    so the backfill can't resurrect a column an exclusion just removed.
     """
     present_cols = [c for c, v in status_dict.items() if v in PRESENT_STATUSES]
     for source_col in present_cols:
@@ -174,7 +237,7 @@ def apply_secondary_category_backfill(
             sec_cols = top_category_to_columns.get(sec_cat, [])
             if not sec_cols or any(status_dict.get(c) in PRESENT_STATUSES for c in sec_cols):
                 continue
-            available = [c for c in sec_cols if c in status_dict]
+            available = [c for c in sec_cols if c in status_dict and c not in excluded_cols]
             if not available:
                 continue
             chosen = ontology_resolve_fn(source_col, sec_cat, sec_cols) if ontology_resolve_fn else None
@@ -248,6 +311,48 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
     ).drop(columns=["CWNS_ID", "FACILITY_ID", "_cwns_merge"], errors="ignore").fillna("")
     return cwns_by_facility, merged
 
+
+def normalize_id(value):
+    # Place IDs / CWNS_IDs show up as both "219530" and "219530.0" across files
+    text = str(value).strip()
+    return text[:-2] if text.endswith(".0") else text
+
+
+def add_county_and_sort(df, name_col, place_id_col=None, wdid_col=None, cwns_id_col=None):
+    """Insert a 'County' column (right after name_col) and sort by (County, name_col).
+
+    County comes from site_data_all (keyed on WDID); mapping_df bridges WDID to
+    Place ID and CWNS_ID so any of the three keys can resolve a county. Rows with no
+    county sort last.
+    """
+    site = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str, keep_default_na=False).fillna("")
+    county_by_wdid = {}
+    for wdid, county in zip(site["WDID"].str.strip(), site["County"].str.strip()):
+        if wdid and county and wdid not in county_by_wdid:
+            county_by_wdid[wdid] = county
+
+    county_by_place_id, county_by_cwns_id = {}, {}
+    for _, row in mapping_df.iterrows():
+        county = county_by_wdid.get(row["WDID"], "")
+        place_id, cwns_id = normalize_id(row["Place ID"]), normalize_id(row["CWNS_ID"])
+        if county and place_id:
+            county_by_place_id.setdefault(place_id, county)
+        if county and cwns_id:
+            county_by_cwns_id.setdefault(cwns_id, county)
+
+    def county_for(row):
+        place_id = normalize_id(row[place_id_col]) if place_id_col else ""
+        wdid = row[wdid_col].strip() if wdid_col else ""
+        cwns_id = normalize_id(row[cwns_id_col]) if cwns_id_col else ""
+        return county_by_place_id.get(place_id) or county_by_wdid.get(wdid) or county_by_cwns_id.get(cwns_id) or ""
+
+    df.insert(df.columns.get_loc(name_col) + 1, "County", df.apply(county_for, axis=1))
+    n_missing = (df["County"].str.strip() == "").sum()
+    print(f"  add_county_and_sort: {len(df) - n_missing}/{len(df)} rows got a county ({n_missing} blank)")
+    sort_key = lambda col: col.map(lambda v: "￿" if not str(v).strip() else str(v).lower())
+    return df.sort_values(by=["County", name_col], key=sort_key).reset_index(drop=True)
+
+
 def build_txt_jobs(txt_folder: str, facilities_information: str):
     txt_folder_path = Path(txt_folder)
     facilities_path = Path(facilities_information)
@@ -272,12 +377,11 @@ def build_txt_jobs(txt_folder: str, facilities_information: str):
 
         txt_path = Path(pdf_file_value)
         if not txt_path.is_absolute():
-            txt_path = txt_folder_path / txt_file_value_to_txt_name(pdf_file_value)
+            path_value = Path(pdf_file_value)
+            path_value = txt_folder_path / path_value
+            txt_name = path_value.with_suffix(".txt").name
+            txt_path = txt_folder_path / txt_name
 
-        # if txt_path.suffix.lower() != ".txt":
-        #     raise ValueError(
-        #         f"PDF_File value is not mapped to a .txt for facility '{facility_name}': {pdf_file_value}"
-        #     )
         if not txt_path.exists() or not txt_path.is_file():
             print(f"No txt for '{facility_name}': {txt_path.name}, skipping.")
             continue
@@ -285,11 +389,3 @@ def build_txt_jobs(txt_folder: str, facilities_information: str):
         jobs.append((row_idx, txt_path, txt_path.name, facility_name))
 
     return jobs
-
-
-def txt_file_value_to_txt_name(file_value: str) -> str:
-    path_value = Path(file_value)
-    return path_value.with_suffix(".txt").name
-
-
-

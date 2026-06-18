@@ -5,7 +5,7 @@
 import pandas as pd
 import os
 # WE3Lab additions
-from helpers.utils import extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords
+from helpers.utils import extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords, add_county_and_sort
 
 # Change working directory to `data` folder
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -291,6 +291,7 @@ ca_consolidated = ca_consolidated.merge(
     cwns_phys[['CWNS_ID', 'FACILITY_ID', 'LATITUDE', 'LONGITUDE']].drop_duplicates(),
     on=['CWNS_ID', 'FACILITY_ID'], how='left'
 )
+ca_consolidated = add_county_and_sort(ca_consolidated, "FACILITY_NAME", cwns_id_col="CWNS_ID")
 ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility_cwns.csv"), index=False)
 print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")
 

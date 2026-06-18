@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The wastewater treatment process consists of screening, grit removal, primary clarification, secondary biological treatment, secondary clarification, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The wastewater treatment process consists of screening, grit removal, primary clarification, secondary biological treatment, secondary clarification, and ultraviolet (UV) disinfection.",
       "trigger_process": [
         "Grit Removal"
@@ -45,7 +43,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The wastewater treatment process consists of ... primary clarification ...",
       "trigger_process": [
         "Primary Clarification"
@@ -57,13 +54,11 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The wastewater treatment process consists of ... secondary biological treatment ...",
       "trigger_process": [
         "Unspecified AS"
@@ -80,7 +75,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The wastewater treatment process consists of ... secondary clarification ...",
       "trigger_process": [
         "Secondary Clarification"
@@ -89,41 +83,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of ... ultraviolet (UV) disinfection.",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility also has holding basins with a combined capacity of 168 million gallons. The Discharger uses these holding basins to temporarily store peak wet weather flows ... routes stored wastewater back to the headworks for full primary and secondary treatment.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -131,7 +91,37 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
+      "Sentence": "The wastewater treatment process consists of ... ultraviolet (UV) disinfection.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility also has holding basins with a combined capacity of 168 million gallons.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "RapidSandFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
       "Sentence": "The Recycling Plant further treats the UV-disinfected effluent with sand/anthracite filtration ...",
       "trigger_process": [
         "Media Filtration"
@@ -140,19 +130,18 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Recycling Plant further treats the UV-disinfected effluent with sand/anthracite filtration and sodium hypochlorite disinfection ...",
+      "Sentence": "The Recycling Plant further treats the UV-disinfected effluent with ... sodium hypochlorite disinfection ...",
       "trigger_process": [
         "Chlorination"
       ]
@@ -166,7 +155,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "stores recycled water in a covered seven-million-gallon reservoir prior to distribution.",
       "trigger_process": []
     },
@@ -183,18 +171,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger thickens secondary sludge with a dissolved air flotation unit ...",
+      "Sentence": "The Discharger thickens secondary sludge with a dissolved air flotation unit",
       "trigger_process": [
         "Flotation",
         "Thickening"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
-        "pHAdjustment",
-        "ChemicalAddition"
+        "pHAdjustment"
       ],
       "Role": [
         "SolidsHandling",
@@ -205,17 +191,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "combines secondary sludge with primary sludge that it treats with lime",
       "trigger_process": [
-        "Lime Addition"
+        "Lime Stabilization",
+        "Neutralization"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -225,29 +210,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and dewaters the combined sludge with centrifuges.",
+      "Sentence": "dewaters the combined sludge with centrifuges.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Incineration"
+        "Combustion"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The Discharger incinerates the final dewatered sludge onsite, which produces ash.",
-      "trigger_process": [
-        "Unspecified Incineration"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -260,7 +243,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The Discharger hires a contractor to truck the ash to an offsite recycling facility for use as a soil amendment.",
       "trigger_process": [
         "Land Application"
@@ -277,8 +259,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "If Facility incinerators are inoperable, the Discharger may haul biosolids to a landfill, an organic materials recovery facility, or the East Bay Municipal Utility District wastewater treatment plant.",
+      "Sentence": "If Facility incinerators are inoperable, the Discharger may haul biosolids to a landfill ...",
       "trigger_process": [
         "Biosolids Landfill"
       ]

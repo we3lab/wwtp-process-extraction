@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment..."
+      "Sentence": "Preliminary treatment includes grit and screenings removal."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment..."
+      "Sentence": "Preliminary treatment includes grit and screenings removal."
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "ChemicalAddition",
+        "Coagulation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride",
+        "Flocculant-Polymer",
+        "pHAdjuster"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment."
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,7 +55,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment..."
+      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities."
     },
     {
       "Equipment": "TricklingFilter",
@@ -50,16 +68,170 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment before being pumped to GWRS."
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment."
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Build a Plant 2 effluent pump station that will convey approximately 50-85 MGD of secondary effluent from Plant No. 2 trickling filter solids contact process to the GWRS Facility."
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent disinfection with chlorine bleach followed by de-chlorination with sodium bisulfite occurs at the other two discharge points 002 and 003."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The use of continuous disinfection prior to discharge through Discharge Point No. 001 (120\" outfall) has been ceased since May 2015."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities."
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide)."
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide)."
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide)."
     },
     {
       "Equipment": "Tank",
@@ -74,17 +246,19 @@
       "Sentence": "Build a 6 MG equalization storage tank at Plant No. 2 to store secondary effluent during peak day flows and be returned to the system during low flow periods to maintain a constant flow to the GWRS."
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Digester",
       "Process": [
-        "ActivatedSludge"
+        "Digestion"
       ],
       "Role": [
-        "Secondary"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Organics"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "After the GWRS Final Expansion, the activated sludge treatment process will treat only SARI and side-stream flows."
+      "Sentence": "An organic waste receiving facility will be constructed to receive, store, and feed approximately 150 tons of pre-processed food waste slurry to the digester complex at Plant No. 2 (by Digester M) to generate additional digester gas per recommendations of the Biosolids Master Plan."
     }
   ]
 }

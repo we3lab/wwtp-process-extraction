@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "primary treatment with... grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -85,7 +85,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary",
@@ -96,9 +97,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection",
+      "Sentence": "chlorine disinfection... the chlorinated effluent is stored in a holding pond then dechlorinated",
       "trigger_process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
@@ -106,11 +108,9 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Retention"
+        "Posttreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The chlorinated effluent is stored in a holding pond",
@@ -119,34 +119,16 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
+      "Equipment": "Wetland",
+      "Process": null,
       "Role": [
-        "Posttreatment"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then dechlorinated",
-      "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "directed to the 13-acre freshwater holding marsh (Overflow Marsh)",
+      "Sentence": "excess treated wastewater... can be directed to the 13-acre freshwater holding marsh (Overflow Marsh)",
       "trigger_process": [
         "Equalization",
         "Wetland"
@@ -157,12 +139,16 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Equalization"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "and pumped back to the effluent holding pond once flows subside",
-      "trigger_process": []
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -184,7 +170,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -199,7 +185,7 @@
       "Sentence": "may be processed on site using a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -217,6 +203,20 @@
       "Sentence": "stored in one of two facultative sludge lagoons",
       "trigger_process": [
         "Biosolids Lagoon",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "bypassing secondary treatment... and blending primary treated effluent with secondary treated effluent in the storage pond",
+      "trigger_process": [
         "Unspecified Lagoon"
       ]
     }

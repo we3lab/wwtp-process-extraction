@@ -1,6 +1,32 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "When completed, the plant will provide preliminary screening, grit removal, fine screening"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "When completed, the plant will provide preliminary screening, grit removal, fine screening"
+    },
+    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -11,8 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant treatment process consists of primary clarification..."
+      "Sentence": "The plant treatment process consists of primary clarification"
     },
     {
       "Equipment": "AerationBasin",
@@ -27,8 +52,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant treatment process consists of ... activated sludge aeration ..."
+      "Sentence": "The plant treatment process consists of ... activated sludge aeration"
     },
     {
       "Equipment": "SedimentationTank",
@@ -41,14 +65,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant treatment process consists of ... secondary clarification ..."
+      "Sentence": "The plant treatment process consists of ... secondary clarification"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -58,55 +82,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant treatment process consists of ... sodium hypochlorite disinfection."
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "When completed, the plant will provide preliminary screening, grit removal, fine screening..."
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "When completed, the plant will provide preliminary screening, grit removal, fine screening..."
+      "Sentence": "The plant treatment process consists of ... sodium hypochlorite disinfection"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "MembraneProcess"
+        "Biofiltration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Tertiary"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "When completed, the plant will provide ... filtration with activated sludge treatment (through a membrane bioreactor)..."
+      "Sentence": "When completed, the plant will provide ... biological nutrient removal, filtration with activated sludge treatment (through a membrane bioreactor)"
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge"
       ],
@@ -116,14 +110,13 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "the portion of flows above the membrane bioreactor capacity will be routed to a separate biological treatment process consisting of a biological contact tank containing activated sludge..."
+      "Sentence": "routed to a separate biological treatment process consisting of a biological contact tank containing activated sludge"
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation",
-        "Flocculation"
+        "Flocculation",
+        "Sedimentation"
       ],
       "Role": [
         "Secondary"
@@ -131,8 +124,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the portion of flows above the membrane bioreactor capacity will be routed to a separate biological treatment process consisting of ... a high-rate clarifier that uses flocculation to increase the solids settling rate."
+      "Sentence": "a high-rate clarifier that uses flocculation to increase the solids settling rate"
     },
     {
       "Equipment": "Tank",
@@ -143,13 +135,12 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The Discharger will be able to manage peak wet weather flows of up to 78 MGD by storing screened wastewater in onsite equalization basins."
+      "Sentence": "storing screened wastewater in onsite equalization basins"
     },
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -159,8 +150,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger thickens primary sludge with gravity thickeners ..."
+      "Sentence": "thickens primary sludge with gravity thickeners"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -175,8 +165,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Discharger thickens ... waste-activated sludge through dissolved air flotation ..."
+      "Sentence": "waste-activated sludge through dissolved air flotation"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -185,22 +174,20 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "treats the thickened sludge with anaerobic digestion..."
+      "Sentence": "treats the thickened sludge with anaerobic digestion"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -210,8 +197,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "dewaters the digested sludge with a centrifuge..."
+      "Sentence": "dewaters the digested sludge with a centrifuge"
     },
     {
       "Equipment": null,
@@ -224,59 +210,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "hauls the dewatered, treated biosolids offsite for disposal."
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "When completed, the plant will provide ... biological nutrient removal..."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "When completed, the plant will provide ... filtration with activated sludge treatment (through a membrane bioreactor), and chlorine disinfection."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Wastewater routed through this separate wet weather treatment process will also be disinfected."
+      "Sentence": "hauls the dewatered, treated biosolids offsite for disposal"
     }
   ]
 }

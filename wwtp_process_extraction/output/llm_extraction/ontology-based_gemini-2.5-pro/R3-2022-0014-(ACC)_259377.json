@@ -35,7 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...a flow equalization basin..."
+      "Sentence": "...a flow equalization basin, primary clarifier..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -48,7 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarifier..."
+      "Sentence": "...primary clarifier, two activated sludge aeration basins..."
     },
     {
       "Equipment": "AerationBasin",
@@ -63,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...two activated sludge aeration basins..."
+      "Sentence": "...two activated sludge aeration basins, two secondary clarifiers..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -76,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...two secondary clarifiers..."
+      "Sentence": "...two secondary clarifiers, a chlorine contact chamber..."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -89,37 +89,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...anthracite bed filter..."
+      "Sentence": "...a chlorine contact chamber, anthracite bed filter, and dechlorination."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...a chlorine contact chamber..."
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and dechlorination."
+      "Sentence": "...a chlorine contact chamber, anthracite bed filter, and dechlorination."
     },
     {
       "Equipment": "AerobicDigester",
@@ -135,13 +120,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are managed in two aerobic digesters..."
+      "Sentence": "Biosolids are managed in two aerobic digesters, dewatered by a two-meter belt press..."
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -151,32 +135,45 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...dewatered by a two-meter belt press..."
+      "Sentence": "Biosolids are managed in two aerobic digesters, dewatered by a two-meter belt press..."
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
         "Storage",
-        "Containment"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and stockpiled in a sludge holding bed. The holding bed contains drains which permit leachate to flow back to the head of the liquid treatment train for treatment."
+      "Sentence": "...and stockpiled in a sludge holding bed."
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Drain"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The holding bed contains drains which permit leachate to flow back to the head of the liquid treatment train for treatment."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "BiosolidsDisposal"
       ],
       "Substance": [
         "Fluid-Sludge"

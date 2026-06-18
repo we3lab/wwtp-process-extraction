@@ -56,8 +56,7 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "NutrientRemoval"
+        "Aerobic"
       ],
       "Substance": [
         "HighPurityOxygen"
@@ -96,7 +95,8 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Disinfectant-Chlorine",
+        "pHAdjuster-SodiumBisulfite"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -104,6 +104,78 @@
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalThickener",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "MembraneAeratedBiofilmReactor",
+      "Process": [
+        "Biofiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger is conducting a multi-year pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal. If the pilot is successful, the Discharger could implement changes ranging from simple process updates to equipment upgrades and/or new facilities for supplemental treatment.",
+      "trigger_process": [
+        "Unspecified FFR",
+        "Unspecified Filtration"
       ]
     }
   ]

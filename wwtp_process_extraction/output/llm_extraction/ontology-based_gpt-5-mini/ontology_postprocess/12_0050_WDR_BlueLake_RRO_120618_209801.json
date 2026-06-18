@@ -1,6 +1,18 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the collection system consists of ... two lift stations, which pump wastewater to a headworks facility.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Grinder",
       "Process": [
         "Comminution"
@@ -13,8 +25,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "processed through the comminuter,",
+      "Sentence": "wastewater is processed through the comminuter",
       "trigger_process": [
         "Comminution"
       ]
@@ -33,24 +44,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "an inclined screening unit that grinds, washes, dewaters, and removes inert solids",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "two lift stations, which pump wastewater to a headworks facility",
-      "trigger_process": []
     },
     {
       "Equipment": "Pond",
@@ -60,35 +57,19 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Pond No. 1 ... contains three surface aerators.",
-      "trigger_process": [
-        "Aerated Lagoon",
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary",
+        "Aerobic",
         "Stabilization",
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Pond Nos. 2 - 4 are stabilization ponds ... provide treatment including sedimentation, solids stabilization, and storage.",
+      "Sentence": "The treatment facility consists of four oxidation ponds ... contains three surface aerators ... stabilization ponds ... provide treatment including sedimentation, solids stabilization, and storage.",
       "trigger_process": [
-        "Secondary Clarification"
+        "Secondary Clarification",
+        "Stabilization Pond"
       ]
     },
     {
@@ -98,16 +79,14 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treated effluent discharged from Pond No. 4 is disinfected with chlorine",
+      "Sentence": "Treated effluent discharged from Pond No. 4 is disinfected with chlorine ... The chlorine contact chamber is a 400 foot long, 18-inch diameter pipe",
       "trigger_process": [
         "Chlorination"
       ]
@@ -123,7 +102,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The rock filter consists of 2.5 feet of pea gravel ... The filter is utilized during the summer months to remove algae.",
       "trigger_process": [
         "Media Filtration"
@@ -138,7 +116,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Effluent from the treatment facility is discharged to three rapid infiltration basins.",
       "trigger_process": [
         "Unspecified Lagoon"

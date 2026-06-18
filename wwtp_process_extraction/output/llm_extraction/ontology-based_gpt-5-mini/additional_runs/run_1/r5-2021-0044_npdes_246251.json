@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "inflow screening"
+      "Sentence": "influent screening"
     },
     {
       "Equipment": "GritChamber",
@@ -45,8 +45,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -67,9 +66,9 @@
       "Sentence": "secondary clarification"
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -83,8 +82,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -94,20 +92,34 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection...and dechlorination"
+      "Sentence": "replacing the chlorine disinfection with UV disinfection"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
       "Role": [
-        "Storage",
-        "Equalization",
-        "Detention"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "lined emergency storage basins located onsite"
+      "Sentence": "dechlorination"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "lined emergency storage basins located onsite and returned to the treatment system when flows decrease"
     },
     {
       "Equipment": "AerobicDigester",
@@ -116,8 +128,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -127,19 +138,20 @@
       "Sentence": "Primary and secondary solids are aerobically digested"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Tank",
       "Process": [
         "Dewatering"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then dewatered using storage basins"
+      "Sentence": "dewatered using storage basins"
     },
     {
       "Equipment": null,
@@ -149,7 +161,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are hauled to a landfill"
@@ -166,29 +180,16 @@
       "Sentence": "replace the current influent pump station for larger capacity during wet weather flows"
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "upgrades to the existing grit removal system"
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
-        "NitrogenRemoval",
         "NutrientRemoval",
-        "Anoxic",
-        "Aerobic"
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -208,32 +209,6 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "replacing the chlorine disinfection with UV disinfection"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "adding capacity to the existing secondary clarifiers"
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "adding capacity to the existing ... filters"
     }
   ]
 }

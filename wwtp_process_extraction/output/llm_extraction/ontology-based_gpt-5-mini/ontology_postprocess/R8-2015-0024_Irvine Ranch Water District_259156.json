@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary Plate screens",
+      "Sentence": "Plate screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Vortex-type grit chambers",
       "trigger_process": [
         "Grit Removal"
@@ -45,44 +43,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary clarifiers",
+      "Sentence": "primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Detention"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "flow equalization basins",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "followed by secondary clarification",
-      "trigger_process": [
-        "Secondary Clarification"
       ]
     },
     {
@@ -102,7 +65,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Activated sludge (AS) process operated in nitrification/denitrification",
       "trigger_process": [
         "AO (anoxic/oxic)",
@@ -111,62 +73,38 @@
       ]
     },
     {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary clarification",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "Microfiltration",
-        "Nitrification",
-        "Denitrification"
+        "Biofiltration",
+        "Microfiltration"
       ],
       "Role": [
         "Secondary",
-        "Tertiary",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Membrane bioreactor (MBR) as separate treatment train with nutrient removal",
+      "Sentence": "Membrane bioreactor (MBR) process with nutrient removal",
       "trigger_process": [
-        "Denitrification",
         "Membrane Bioreactor",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Microfiltration membrane technology that is part of the MBR treatment train",
-      "trigger_process": [
-        "Microfiltration"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "followed by UV disinfection",
-      "trigger_process": [
-        "UV Disinfection"
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -180,30 +118,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Conventional down flow dual media filters",
       "trigger_process": [
         "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disinfection by chlorination",
-      "trigger_process": [
-        "Chlorination"
       ]
     },
     {
@@ -219,11 +136,26 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Addition of Alum prior to filtration",
       "trigger_process": [
         "Alum Addition",
         "Coagulation"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "21-mgd UV disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     },
     {
@@ -237,7 +169,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Potassium hydroxide pH adjustment capability is provided to regulate pH as needed",
       "trigger_process": [
         "Neutralization"
@@ -250,30 +181,48 @@
       ],
       "Role": [
         "Anoxic",
-        "Denitrification"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "may use methanol augmentation in the anoxic zone at the head of each aeration basin",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "Thickener",
+      "Equipment": null,
       "Process": [
-        "Dewatering"
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sludge and scum are collected and pumped into an OCSD sewer line, then to OCSD's Reclamation Plant No. 1 for treatment and disposal",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "includes the construction and/or installation of sludge thickening equipment",
+      "Sentence": "sludge thickening equipment",
       "trigger_process": [
         "Thickening"
       ]
@@ -288,17 +237,18 @@
         "Stabilization",
         "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -306,65 +256,48 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "centrifuges for sludge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "sludge drying equipment",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Feed",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "anaerobically digestable material receiving station",
-      "trigger_process": []
     },
     {
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
       ],
-      "Role": [
-        "EnergyRecovery"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "microturbines for generation of electricity and heat",
       "trigger_process": [
         "Cogeneration",
-        "Unspecified Incineration"
+        "Heat Recovery"
       ]
     }
   ]

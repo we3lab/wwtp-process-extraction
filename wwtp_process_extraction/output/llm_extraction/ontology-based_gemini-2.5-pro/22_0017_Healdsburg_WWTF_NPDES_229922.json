@@ -29,9 +29,39 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "Aeration",
+        "Mixing"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Recirculation"
       ],
       "Role": [
         "Secondary",
@@ -48,19 +78,18 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Ultrafiltration",
-        "Separation"
+        "Biofiltration",
+        "Microfiltration",
+        "Ultrafiltration"
       ],
       "Role": [
         "Secondary",
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The immersed membrane filtration process separates suspended solids from the wastewater using a very fine filter (i.e., ultrafilter)."
+      "Sentence": "microfiltration through a membrane bioreactor (MBR)"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -74,117 +103,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved in an open channel UV disinfection system"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system"
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "followed by a proprietary sludge digestion process"
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Dewatering",
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatering via centrifuge"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "disposal to a Class III solid waste landfill"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a 3.35 million gallon equalization basin, which provides equalization storage capacity for extended wet weather flows and plant return flows"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "divert inadequately treated wastewater from downstream of the UV disinfection system and return it to the headworks for re-treatment"
+      "Sentence": "ultraviolet (UV) light disinfection"
     },
     {
       "Equipment": "Pond",
@@ -196,6 +115,82 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Facility has two recycled water storage ponds, 25 million gallon and 15 million gallon capacity"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "wastewater may be discharged to Basalt Pond at Discharge Point 001"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All solids transferred from the biological process to the interchange tanks are first passed through a 250 micron rotary drum screen to remove inert non-biodegradable material"
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion",
+        "AerobicDigestion",
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Permittee uses a proprietary solids removal and digestion process that combines aerobic and anaerobic processes."
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation",
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill",
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "All solids are then transported for disposal at Redwood Landfill in Marin County or Hay Road Landfill in Solano County."
     }
   ]
 }

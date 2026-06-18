@@ -7,12 +7,12 @@ from collections import Counter, defaultdict
 from PyPDF2 import PdfReader
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers
+from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers, normalize_text
 
 
 def clean_excerpt(text):
     # keep page boundaries as [Page N] so source pages are traceable in excerpts
-    text = re.compile(r"===PAGE (\d+)===\n?").sub(r"[Page \1]\n", text)
+    text = re.sub(r"===PAGE (\d+)===\n?", r"[Page \1]\n", text)
     text = re.sub(r"[^\S\n]+", " ", text)
     text = "\n".join(line.rstrip() for line in text.split("\n"))
     return text.strip()
@@ -30,7 +30,8 @@ WASTEWATER_VOCAB_RE = re.compile(
     re.IGNORECASE,
 )
 DESC_PRIORITY_RE = re.compile(
-    r"treatment process|consists of|leach\s*field|comprised of|upgraded",
+    r"treatment process|consists of|leach\s*field|comprised of|upgraded"
+    r"|headworks|preliminary treatment|primary treatment|secondary treatment",
     re.IGNORECASE,
 )
 # compliance/regulatory boilerplate signals — these don't appear in factual facility descriptions
@@ -41,6 +42,10 @@ BOILERPLATE_RE = re.compile(
     r"|133\.10|Construction, Operation, and Maintenance Specifications",
     re.IGNORECASE,
 )
+# strong structural description signals: a sentence enumerating what a system "consists of" is a
+# real description even when enrollment/compliance boilerplate follows it (common in small General
+# Order permits, e.g. "the community system consists of septic tanks ... a community leachfield").
+STRONG_DESC_RE = re.compile(r"consists? of|consisting of|comprised of|comprising", re.IGNORECASE)
 # "pond" is a search-only clustering term (not a keyword-match alt_name — it was removed from
 # Unspecified Lagoon). Pond-heavy paragraphs (e.g. capacity/freeboard tables) otherwise have no
 # vocab hits, creating a gap that truncates the description before solids/biosolids sections.
@@ -50,6 +55,17 @@ VOCAB_COMBINED_RE = re.compile(
 )
 # section headers: uppercase or digit start, ≤80 chars (lowercase starts match sentence wraps too often)
 RAW_HEADER_RE = re.compile(r"(?:^|\n)([A-Z\d][^\n]{2,79})(?=\n)", re.MULTILINE)
+SECTION_NUM_RE = re.compile(r"(?:^|\n)((?:\d+|[IVX]{2,5})\.\s+[A-Z])", re.MULTILINE)
+# recurring CA fact-sheet regulatory section headers — everything after one of these is
+# compliance boilerplate (40 CFR, TBELs, 303(d), Ocean Plan), not facility description. Keyed on
+# the section header, not inline phrases like "secondary treatment standards" which appear in real
+# descriptions (e.g. r5-2024-0009's biosolids/percolation-pond text).
+REG_HEADER_RE = re.compile(
+    r"applicable plans,?\s+policies"
+    r"|other plans,?\s+policies\s+and\s+regulations"
+    r"|secondary treatment regulations",
+    re.IGNORECASE,
+)
 LOOKBACK_PAGES = 2
 LOOKBACK_CHARS = 100
 
@@ -68,27 +84,37 @@ LOOKBACK_HEADER = 600      # boilerplate/desc-signal check window around each cl
 SNAP_BACK_CHARS = 2000     # how far back from cluster start to look for a section header
 MIN_CHANGES_VOCAB = 2      # min vocab hits in 1000 chars after "planned changes" phrase
 MAX_CLUSTER_DISTANCE = 10000  # max chars from first cluster; cuts off distant general-order boilerplate
+CONTIG_GAP = 2500          # max gap between consecutive qualifying clusters to treat as one description
+DIVERSITY_MIN = 6          # a cluster naming >= this many distinct processes qualifies as a description
+FRAGMENT_GAP = 1000        # absorb a low-diversity raw cluster trailing a qualifying one if this close
 
 
 
 def find_attachment_f_page(raw):
-    """Find Attachment F page in delimited full text. Returns (lookback_char_pos, page_num+1) or (None, None).
+    """Return the char position to start Attachment F extraction at, or None.
     Starts a few pages early (LOOKBACK_PAGES) to capture any preamble before the title page."""
     page_re = re.compile(r"===PAGE (\d+)===\n")
     pages = list(page_re.finditer(raw))
-    for i, page_match in enumerate(pages):
+    for page_index, page_match in enumerate(pages):
         page_num = int(page_match.group(1))
         if page_num < 10:
             continue
-        next_start = pages[i + 1].start() if i + 1 < len(pages) else len(raw)
+        next_start = pages[page_index + 1].start() if page_index + 1 < len(pages) else len(raw)
         page_text = raw[page_match.end():next_start]
         if ATTACHMENT_F_RE.search(page_text) and len(DOT_RE.findall(page_text)) < 3:
-            lookback_idx = max(0, i - LOOKBACK_PAGES)
-            return pages[lookback_idx].start(), page_num + 1
-    return None, None
+            lookback_index = max(0, page_index - LOOKBACK_PAGES)
+            return pages[lookback_index].start()
+    return None
 
 
-def find_desc_clusters(text):
+def cluster_score(cluster, text_length):
+    # unique-term diversity discounted by position — deprioritizes single-category clusters
+    # (e.g. "chlorination × 5") and late sections over rich early descriptions
+    diversity = len(set(hit.group().lower() for hit in cluster))
+    return diversity / (1 + cluster[0].start() / text_length)
+
+
+def find_desc_clusters(text, multi_facility=False):
     """Find all vocab clusters that have a description signal nearby.
 
     Returns a list of (start, end) char positions — one per qualifying cluster.
@@ -99,13 +125,13 @@ def find_desc_clusters(text):
         return []
     clusters = []
     current = [hits[0]]
-    for h in hits[1:]:
-        if h.start() - current[-1].end() <= CLUSTER_GAP:
-            current.append(h)
+    for hit in hits[1:]:
+        if hit.start() - current[-1].end() <= CLUSTER_GAP:
+            current.append(hit)
         else:
             if len(current) >= 2:
                 clusters.append(current)
-            current = [h]
+            current = [hit]
     if len(current) >= 2:
         clusters.append(current)
     if not clusters:
@@ -113,34 +139,59 @@ def find_desc_clusters(text):
     # prefer clusters with a description signal; exclude clusters that look like
     # O&M/compliance boilerplate (>=2 boilerplate markers in the window)
     desc_clusters = []
-    for c in clusters:
-        window = text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end()]
-        if not DESC_PRIORITY_RE.search(window):
-            continue
+    for cluster in clusters:
+        window = text[max(0, cluster[0].start() - LOOKBACK_HEADER):cluster[-1].end()]
         # skip table-of-contents clusters (dot leaders like "......")
         if len(DOT_RE.findall(window)) >= 3:
             continue
+        # A process-dense cluster (many distinct processes) is a description regardless of nearby
+        # phrasing — it qualifies even without a description signal in the lookback window (header
+        # across a page break) and even if compliance language trips the boilerplate filter (a
+        # real treatment description that also references a Cease and Desist Order, etc.). A strong
+        # structural signal ("consists of") qualifies the same way: it marks a real description even
+        # when enrollment boilerplate follows, which would otherwise trip the boilerplate filter.
+        if len(set(hit.group().lower() for hit in cluster)) >= DIVERSITY_MIN or STRONG_DESC_RE.search(window):
+            desc_clusters.append(cluster)
+            continue
+        # otherwise: require a description signal and reject compliance/O&M boilerplate. Admin
+        # tables ("Facility Information") name few processes and fall here, staying excluded.
+        if not DESC_PRIORITY_RE.search(window):
+            continue
         # extend boilerplate check past the cluster — compliance phrases often
         # follow the vocab hits in the same paragraph
-        bpl_window = text[max(0, c[0].start() - LOOKBACK_HEADER):c[-1].end() + LOOKBACK_HEADER]
-        if len(BOILERPLATE_RE.findall(bpl_window)) >= 2:
+        boilerplate_window = text[max(0, cluster[0].start() - LOOKBACK_HEADER):cluster[-1].end() + LOOKBACK_HEADER]
+        if len(BOILERPLATE_RE.findall(boilerplate_window)) >= 2:
             continue
-        desc_clusters.append(c)
+        desc_clusters.append(cluster)
+    text_length = len(text)
     if desc_clusters:
-        n = len(text)
-        # sort by unique-term diversity / position — deprioritizes single-category clusters
-        # (e.g. "chlorination × 5") and late general-order sections over rich early descriptions.
-        # extract_from_pdf processes best cluster first; its start_pos anchors MAX_CLUSTER_DISTANCE,
-        # so nearby multi-facility clusters are still included in order.
-        desc_clusters.sort(key=lambda c: -len(set(h.group().lower() for h in c)) / (1 + c[0].start() / n))
-        return [(c[0].start(), c[-1].end()) for c in desc_clusters]
-    # fallback: same score — unique-term diversity / position
-    n = len(text)
-    best = max(clusters, key=lambda c: len(set(h.group().lower() for h in c)) / (1 + c[0].start() / n))
-    return [(best[0].start(), best[-1].end())]
-
-
-SECTION_NUM_RE = re.compile(r"(?:^|\n)((?:\d+|[IVX]{2,5})\.\s+[A-Z])", re.MULTILINE)
+        # sort best-first by cluster_score — extract_from_pdf processes the best cluster first;
+        # its start_pos anchors MAX_CLUSTER_DISTANCE, so nearby multi-facility clusters are
+        # still included in order.
+        desc_clusters.sort(key=lambda cluster: -cluster_score(cluster, text_length))
+        if not multi_facility:
+            return [(cluster[0].start(), cluster[-1].end()) for cluster in desc_clusters]
+        # multi-facility permits describe each plant in a single dense paragraph that often
+        # has a low-diversity tail (disinfection/disposal-routing sentences) which individually
+        # falls below DIVERSITY_MIN — absorb a trailing raw cluster within FRAGMENT_GAP rather
+        # than drop it, but never swallow another already-qualifying cluster (that one gets its
+        # own section, or merges via the normal CONTIG_GAP path in extract_from_pdf).
+        desc_cluster_ids = {id(cluster) for cluster in desc_clusters}
+        clusters_by_start = sorted(clusters, key=lambda cluster: cluster[0].start())
+        spans = []
+        for cluster in desc_clusters:
+            start, end = cluster[0].start(), cluster[-1].end()
+            next_index = clusters_by_start.index(cluster) + 1
+            while (next_index < len(clusters_by_start)
+                   and id(clusters_by_start[next_index]) not in desc_cluster_ids
+                   and clusters_by_start[next_index][0].start() - end <= FRAGMENT_GAP):
+                end = clusters_by_start[next_index][-1].end()
+                next_index += 1
+            spans.append((start, end))
+        return spans
+    # fallback: densest cluster by the same score
+    densest_cluster = max(clusters, key=lambda cluster: cluster_score(cluster, text_length))
+    return [(densest_cluster[0].start(), densest_cluster[-1].end())]
 
 
 def snap_back_to_header(text, cluster_start):
@@ -168,17 +219,24 @@ def find_changes_start(text, search_start, search_end):
     """Find first 'planned changes/upgrade' match with vocab hits nearby.
     Requires phrase at a line/sentence boundary; skips negated 'no planned changes'."""
     for match in CHANGES_RE.finditer(text, search_start, search_end):
-        pre = text[max(0, match.start() - 10):match.start()].lower()
-        if re.search(r'\bno\s+$', pre):
+        preceding = text[max(0, match.start() - 10):match.start()].lower()
+        if re.search(r'\bno\s+$', preceding):
             continue
         # must start on a new line or after sentence punctuation, not mid-sentence
-        pre2 = text[max(0, match.start() - 2):match.start()]
-        if pre2 and not re.search(r'[\n.:( ]$', pre2):
+        preceding_two = text[max(0, match.start() - 2):match.start()]
+        if preceding_two and not re.search(r'[\n.:( ]$', preceding_two):
             continue
         window = text[match.start():match.start() + 1000]
         if len(VOCAB_COMBINED_RE.findall(window)) >= MIN_CHANGES_VOCAB:
             return match.start(), match.group(0).strip()
     return -1, None
+
+
+def extend_to_paragraph_break(text, pos):
+    """Extend pos to the next paragraph break (\\n\\n), capped at CLUSTER_TRAIL chars."""
+    trail_end = min(pos + CLUSTER_TRAIL, len(text))
+    next_para = text.find("\n\n", pos, trail_end)
+    return next_para + 2 if next_para != -1 else trail_end
 
 
 def find_changes_cluster_end(text, changes_pos):
@@ -187,21 +245,20 @@ def find_changes_cluster_end(text, changes_pos):
     if not hits:
         return min(changes_pos + CLUSTER_TRAIL, len(text))
     cluster_end = hits[0].end()
-    for h in hits[1:]:
-        if h.start() - cluster_end <= CLUSTER_GAP:
-            cluster_end = h.end()
+    for hit in hits[1:]:
+        if hit.start() - cluster_end <= CLUSTER_GAP:
+            cluster_end = hit.end()
         else:
             break
-    trail_end = min(cluster_end + CLUSTER_TRAIL, len(text))
-    next_para = text.find("\n\n", cluster_end, trail_end)
-    return next_para + 2 if next_para != -1 else trail_end
+    return extend_to_paragraph_break(text, cluster_end)
 
 
-def extract_section(text, start, cluster_end, attachment_page, spec, mode):
+def extract_section(text, start, cluster_end, end_cap=None):
     # Extend to next paragraph break after cluster end, capped at CLUSTER_TRAIL chars
-    trail_end = min(cluster_end + CLUSTER_TRAIL, len(text))
-    next_para = text.find("\n\n", cluster_end, trail_end)
-    end = next_para + 2 if next_para != -1 else trail_end
+    end = extend_to_paragraph_break(text, cluster_end)
+    # never let the excerpt bleed past a regulatory-section header
+    if end_cap is not None:
+        end = min(end, end_cap)
 
     changes_pos, changes_start_text = find_changes_start(text, start + LOOKBACK_CHARS, len(text))
     if changes_pos == -1:
@@ -227,19 +284,14 @@ def extract_section(text, start, cluster_end, attachment_page, spec, mode):
         "txt_changes": changes_text,
         "full_text": text,
         "metadata": {
-            "mode": mode,
-            "attachment_f_page": attachment_page,
             "start_pos": start,
             "end_pos": end,
-            "planned_changes_pos": changes_pos if changes_pos != -1 else None,
-            "txt_section_length": len(description),
-            **({"txt_changes_length": len(changes_text)} if changes_text else {}),
             "changes_start_phrase": changes_start_text,
         },
     }
 
 
-def extract_from_pdf(pdf_path, mode):
+def extract_from_pdf(pdf_path, mode, multi_facility=False):
     if not os.path.exists(pdf_path):
         return None
     spec = SPEC[mode]
@@ -251,8 +303,8 @@ def extract_from_pdf(pdf_path, mode):
     is_portfolio = '/Collection' in root
     page_parts = []
     if is_portfolio:
-        for r in package_sub_readers(reader):
-            for page_num, page in enumerate(r.pages):
+        for sub_reader in package_sub_readers(reader):
+            for page_num, page in enumerate(sub_reader.pages):
                 page_parts.append(f"===PAGE {page_num}===")
                 page_parts.append(page.extract_text() or "")
     else:
@@ -262,58 +314,88 @@ def extract_from_pdf(pdf_path, mode):
                 page_parts.append(page.extract_text() or "")
     raw = "\n".join(page_parts)
 
-    contexts = []
+    # Build the single text region to search. NPDES: the Attachment F fact sheet.
+    # NOA/WDR: the full document.
+    text = None
     if spec["context"] == "attachment":
-        att_pos, attachment_page = find_attachment_f_page(raw)
-        first_att = ATTACHMENT_F_RE.search(raw)
-        if first_att and first_att.start() < 500:
-            att_pos, attachment_page = 0, 0
-        elif att_pos is None and first_att:
-            att_pos, attachment_page = 0, 0
-        if att_pos is not None:
-            raw_att = raw[att_pos:]
-            if spec["strip_toc"] and att_pos > 0:
-                dot_hits = list(DOT_RE.finditer(raw_att[:20000]))
-                if len(dot_hits) >= 2 and not DOT_RE.search(raw_att[dot_hits[-1].end():dot_hits[-1].end() + 500]):
-                    raw_att = raw_att[dot_hits[-1].end():]
-                elif (j := raw_att.lower().find("attachment f", 1000)) != -1:
-                    raw_att = raw_att[j:]
-            contexts.append((clean_excerpt(raw_att), attachment_page))
-    if spec["context"] == "full":
-        contexts.append((clean_excerpt(raw), None))
+        attachment_pos = find_attachment_f_page(raw)
+        first_attachment_match = ATTACHMENT_F_RE.search(raw)
+        if first_attachment_match and first_attachment_match.start() < 500:
+            attachment_pos = 0
+        elif attachment_pos is None and first_attachment_match:
+            attachment_pos = 0
+        if attachment_pos is not None:
+            attachment_text = raw[attachment_pos:]
+            if spec["strip_toc"] and attachment_pos > 0:
+                dot_leader_hits = list(DOT_RE.finditer(attachment_text[:20000]))
+                if len(dot_leader_hits) >= 2 and not DOT_RE.search(attachment_text[dot_leader_hits[-1].end():dot_leader_hits[-1].end() + 500]):
+                    attachment_text = attachment_text[dot_leader_hits[-1].end():]
+                elif (toc_restart := attachment_text.lower().find("attachment f", 1000)) != -1:
+                    attachment_text = attachment_text[toc_restart:]
+            text = clean_excerpt(attachment_text)
+    else:
+        text = clean_excerpt(raw)
 
-    for text, attachment_page in contexts:
-        clusters = find_desc_clusters(text)
-        if not clusters:
-            # no vocab clusters found — likely image-only or no treatment description text
-            continue
-        # clusters are score-sorted; anchor on the best, then process all clusters within
-        # MAX_CLUSTER_DISTANCE of it in DOCUMENT order. This keeps multi-facility ordering while
-        # ensuring a description split across clusters starts at its earliest part, not the
-        # highest-scoring middle (e.g. a filter/backwash section out-scoring the headworks start).
-        anchor = clusters[0][0]
-        ordered = sorted(
-            (c for c in clusters if abs(c[0] - anchor) <= MAX_CLUSTER_DISTANCE),
-            key=lambda c: c[0],
-        )
+    clusters = find_desc_clusters(text, multi_facility=multi_facility) if text is not None else []
+    if clusters:
+        # clusters are score-sorted; anchor on the best, then take a run of qualifying clusters
+        # around it (document order). Asymmetric: extend BACKWARD only through contiguous clusters
+        # (gap <= CONTIG_GAP) so a split description starts at its earliest part (e.g. SJSC's
+        # headworks before the higher-scoring filters) while NOT pulling in a preceding
+        # "PERMIT INFORMATION" admin table sitting across a page gap. Extend FORWARD to all
+        # qualifying clusters within MAX_CLUSTER_DISTANCE of the anchor, capturing trailing
+        # solids / advanced-treatment sections (e.g. Palo Alto's MBR/RO); non-description tables
+        # (effluent limits, monitoring) lack a desc signal so they never qualify and aren't reached.
+        clusters_by_position = sorted(clusters, key=lambda cluster: cluster[0])
+        if multi_facility:
+            # A multi-facility permit describes several plants in separate regions, so
+            # the single-anchor window misses them — take every qualifying cluster.
+            ordered = clusters_by_position
+            reference_start = clusters_by_position[0][0]
+        else:
+            anchor = clusters[0]
+            anchor_index = clusters_by_position.index(anchor)
+            first_index = anchor_index
+            while first_index > 0 and clusters_by_position[first_index][0] - clusters_by_position[first_index - 1][1] <= CONTIG_GAP:
+                first_index -= 1
+            last_index = anchor_index
+            while last_index < len(clusters_by_position) - 1 and clusters_by_position[last_index + 1][0] - anchor[0] <= MAX_CLUSTER_DISTANCE:
+                last_index += 1
+            ordered = clusters_by_position[first_index:last_index + 1]
+            reference_start = anchor[0]
+        # Stop at the first regulatory-section header after the description start — everything
+        # after it is compliance boilerplate (40 CFR, TBELs, 303(d)), not facility description.
+        # Search past reference_start so the anchor itself is never dropped.
+        reg_match = REG_HEADER_RE.search(text, reference_start + 1)
+        reg_stop = reg_match.start() if reg_match else len(text)
+        ordered = [(cs, ce) for cs, ce in ordered if cs < reg_stop]
+        # merge clusters separated by <= CONTIG_GAP so contiguous description prose
+        # (low-vocab continuation of the same paragraph) is kept whole, not dropped in the gap
+        merged = []
+        for cluster_start, cluster_end in ordered:
+            if merged and cluster_start - merged[-1][1] <= CONTIG_GAP:
+                merged[-1] = (merged[-1][0], cluster_end)
+            else:
+                merged.append((cluster_start, cluster_end))
+        ordered = merged
         sections = []
         prev_end = 0
-        for cs, ce in ordered:
-            if cs < prev_end:
+        for cluster_start, cluster_end in ordered:
+            if cluster_start < prev_end:
                 continue
-            start = snap_back_to_header(text, cs)
-            result = extract_section(text, start, ce, attachment_page, spec, mode)
-            sections.append(result)
-            prev_end = result["metadata"]["end_pos"]
-        combined_txt = "\n\n".join(r["txt_section"] for r in sections if r["txt_section"])
-        changes = next((r["txt_changes"] for r in sections if r["txt_changes"]), "")
+            start = snap_back_to_header(text, cluster_start)
+            section = extract_section(text, start, cluster_end, end_cap=reg_stop)
+            sections.append(section)
+            prev_end = section["metadata"]["end_pos"]
+        combined_txt = "\n\n".join(section["txt_section"] for section in sections if section["txt_section"])
+        changes = next((section["txt_changes"] for section in sections if section["txt_changes"]), "")
         return {**sections[0], "txt_section": combined_txt, "txt_changes": changes}
 
-    full_text = contexts[-1][0] if contexts else ""
-    return {"txt_section": "", "txt_changes": "", "full_text": full_text, "metadata": {"mode": mode}}
+    # no vocab clusters found — likely image-only or no treatment description text
+    return {"txt_section": "", "txt_changes": "", "full_text": text or "", "metadata": {}}
 
 
-def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
+def extract_permit_sections(pdf_path):
     pdf_path = Path(pdf_path)
     site_data = next(
         (p / "site_data_relevant.csv" for p in [pdf_path.parent] + list(pdf_path.parents) if (p / "site_data_relevant.csv").exists()),
@@ -322,51 +404,40 @@ def extract_permit_sections(pdf_path, regenerate_text_excerpts=False):
     # Mode controls which part of the PDF to search and where to stop extraction.
     # NPDES: Attachment F fact sheet only. NOA/WDR: full document.
     mode_map = {
-        "NPDES PERMIT": "Facility Permit",
-        "CO-PERMITTEE": "Facility Permit",
+        "NPDES PERMIT": "NPDES",
+        "CO-PERMITTEE": "NPDES",
         "ENROLLEE - NPDES": "NOA",
         "ENROLLEE - WDR": "NOA",
         "WDR": "WDR",
         "INDIVIDUAL MONITORING REQUIREM": "WDR",
     }
     with site_data.open("r", newline="", encoding="utf-8") as f:
-        mode = next(
-            (mode_map.get((row.get("Reg_Measure_Type") or "").strip().upper(), "Facility Permit")
-             for row in csv.DictReader(f)
-             if (row.get("PDF_File") or "").strip() == pdf_path.name),
-            "Facility Permit",
-        )
-    cache = Path(pdf_path).parent / "text" / f"{Path(pdf_path).stem}.txt"
-    if not regenerate_text_excerpts and cache.exists():
-        content = cache.read_text(encoding="utf-8")
-        section, changes = content.split(SEP, 1)
-        return {
-            "txt_section": section.strip(),
-            "txt_changes": changes.strip(),
-            "full_text": content,
-            "metadata": {},
-        }
-    out = extract_from_pdf(str(pdf_path), mode=mode)
-    if regenerate_text_excerpts and out and out.get("txt_section") is not None:
+        pdf_rows = [row for row in csv.DictReader(f) if (row.get("PDF_File") or "").strip() == pdf_path.name]
+    mode = next(
+        (mode_map.get((row.get("Reg_Measure_Type") or "").strip().upper(), "NPDES") for row in pdf_rows),
+        "NPDES",
+    )
+    # Multi-facility permit: one PDF covering several distinct Place IDs (e.g. OCSD, IEUA).
+    multi_facility = len({(row.get("Place ID") or "").strip() for row in pdf_rows} - {""}) > 1
+    out = extract_from_pdf(str(pdf_path), mode=mode, multi_facility=multi_facility)
+    if out:
+        cache = pdf_path.parent / "text" / f"{pdf_path.stem}.txt"
         cache.parent.mkdir(parents=True, exist_ok=True)
-        cache.write_text(
-            out["txt_section"] + SEP + out["txt_changes"],
-            encoding="utf-8",
-        )
+        cache.write_text(out["txt_section"] + SEP + out["txt_changes"], encoding="utf-8")
     return out
 
 
 def extract_one(args):
     directory, pdf_file = args
     path = os.path.join(directory, pdf_file)
-    return pdf_file, extract_permit_sections(path, regenerate_text_excerpts=True)
+    return pdf_file, extract_permit_sections(path)
 
 
 def main():
-    rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
-    directory = f"wwtp_process_extraction/output/npdes"
+    relevant_sites_csv = "wwtp_process_extraction/output/site_data_relevant.csv"
+    directory = "wwtp_process_extraction/output/permits"
 
-    site_data = pd.read_csv(rfr_data, dtype=str).fillna("")
+    site_data = pd.read_csv(relevant_sites_csv, dtype=str).fillna("")
     pdfs = site_data["PDF_File"].tolist()
 
     # Breakdown by Reg_Measure_Type (NPDES vs WDR) over facilities with ≥1 PDF
@@ -391,32 +462,31 @@ def main():
         flag_counts[reason] += 1
 
     with ProcessPoolExecutor(max_workers=20) as executor:
-        for pdf_file, r in executor.map(extract_one, args):
+        for pdf_file, result in executor.map(extract_one, args):
             print(f"Processed {pdf_file}")
-            if r is None:
+            if result is None:
                 continue
-            txt = r.get("txt_section", "")
-            full_text = r.get("full_text", "")
+            txt = result.get("txt_section", "")
+            full_text = result.get("full_text", "")
             # flag as unreadable if no description AND very little non-marker text
             # (these are scanned image PDFs with no text layer — needs OCR)
             if not txt and len(page_marker_re.sub("", full_text).strip()) < 100:
                 flag(pdf_file, "unreadable")
-            val = (r.get("metadata") or {}).get("changes_start_phrase")
+            val = (result.get("metadata") or {}).get("changes_start_phrase")
             if val:
-                phrase_counts["changes_start_phrase"][re.sub(r"\s+", " ", val.lower().strip())] += 1
+                phrase_counts["changes_start_phrase"][normalize_text(val)] += 1
 
-    norm = lambda s: re.sub(r"\s+", " ", s.lower().strip())
     ref_lists = {
         "changes_start_phrase": ("Planned changes start", CHANGES_PHRASES),
     }
     print(f"Non-machine-readable PDFs: {flag_counts['unreadable']}")
     print()
     for key, (label, ref) in ref_lists.items():
-        counts = Counter({norm(t): 0 for t in ref})
+        counts = Counter({normalize_text(t): 0 for t in ref})
         counts.update(phrase_counts[key])
         print(f"{label}:")
-        for term in sorted(ref, key=lambda t: -counts[norm(t)]):
-            print(f"  {counts[norm(term)]:4d}  {term!r}")
+        for term in sorted(ref, key=lambda t: -counts[normalize_text(t)]):
+            print(f"  {counts[normalize_text(term)]:4d}  {term!r}")
         print()
 
     txt_dir = Path(directory) / "text"

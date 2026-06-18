@@ -49,26 +49,10 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "two \"clarators\" with primary aerator and aeration chambers",
-      "trigger_process": [
-        "Primary Clarification"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -105,11 +89,10 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a chlorine contact tank",
@@ -130,7 +113,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge thickeners (Dissolved Air Flotation units)",
+      "Sentence": "two sludge thickeners (Dissolved Air Flotation units)",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -143,7 +126,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -158,47 +142,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Prior to 1987 sludge was stored in unlined sludge drying beds at the VWVTF",
-      "trigger_process": [
         "Drying",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "the sludge is stored in soil cement lined sludge drying beds",
-      "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -208,9 +153,45 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "digested sludge then ... is hauled to a composting facility for disposal.",
+      "Sentence": "transferred via a pipeline approximately 4.5 miles to about 11 acres of soil cement lined sludge drying beds on City owned land adjacent to the airport",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to 1995, the City discharged sludge to unlined sludge drying beds at the WVVTF",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "off-site",
+      "Sentence": "Dried sludge was then transported to San Joaquin Composting for disposal",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -219,54 +200,64 @@
         "LandApplication"
       ],
       "Role": [
-        "SolidsHandling",
-        "LandApplication"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "the Discharger submitted a Notice of Intent ... for coverage under the Boisolids General Order to land apply boisolids for use as a soil amendment on approximately 440 acres of land in the City's Reclamation Area.",
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The biosolids were spread and disked into select fields in November 2007",
       "trigger_process": [
         "Land Application"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
-        "Containment",
-        "Posttreatment"
+        "Storage"
       ],
-      "Substance": null,
-      "Implementation": "past",
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the treated effluent was discharged to 12-acres of percolation basins at the WWTF",
+      "Sentence": "discharged directly to about 60 acres of percolation basins",
       "trigger_process": [
-        "Unspecified Clarification",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
-        "Containment",
-        "Posttreatment"
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "past",
-      "Location": "off-site",
-      "Sentence": "In the past up to 75% of the total effluent was discharged to the 43-acre disposal field for percolation.",
+      "Location": "on-site",
+      "Sentence": "Prior to 1987, the treated effluent was discharged to 12-acres of percolation basins at the WWTF",
       "trigger_process": [
-        "Unspecified Clarification",
         "Unspecified Lagoon"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a biosolids transfer station",
+      "trigger_process": []
     }
   ]
 }

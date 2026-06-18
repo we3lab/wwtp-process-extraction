@@ -27,7 +27,7 @@
       "Sentence": "The treatment system consists of influent screening and grit removal"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Reactor",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
@@ -37,10 +37,11 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NutrogenRemoval"
+        "NitrogenRemoval"
       ],
       "Substance": [
-        "Constituent-Organics"
+        "Constituent-Ammonia",
+        "Constituent-Nitrate"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -49,19 +50,19 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Microfiltration",
-        "ActivatedSludge"
+        "Biofiltration",
+        "Ultrafiltration",
+        "Separation"
       ],
       "Role": [
-        "Secondary",
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": [
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration through a membrane bioreactor (MBR); ultraviolet (UV) light disinfection; and return activated sludge pumping from the MBR back to the aeration basins"
+      "Sentence": "microfiltration through a membrane bioreactor (MBR)... The immersed membrane filtration process separates suspended solids from the wastewater using a very fine filter (i.e., ultrafilter)"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -74,14 +75,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved in an open channel UV disinfection system with sufficient low pressure/high output lamps to disinfect a peak daily flow of 4.0 mgd"
+      "Sentence": "ultraviolet (UV) light disinfection... Disinfection is achieved in an open channel UV disinfection system"
     },
     {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -90,9 +93,10 @@
       "Sentence": "return activated sludge pumping from the MBR back to the aeration basins"
     },
     {
-      "Equipment": "Digester",
+      "Equipment": "Reactor",
       "Process": [
-        "Digestion"
+        "AnaerobicDigestion",
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -103,10 +107,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system, followed by a proprietary sludge digestion process"
+      "Sentence": "The Permittee uses a proprietary solids removal and digestion process that combines aerobic and anaerobic processes"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "RotaryDrumThickener",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All solids transferred from the biological process to the interchange tanks are first passed through a 250 micron rotary drum screen to remove inert non-biodegradable material"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -115,11 +134,12 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering via centrifuge, and disposal to a Class III solid waste landfill"
+      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge"
     },
     {
       "Equipment": null,
@@ -134,11 +154,12 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal to a Class III solid waste landfill"
+      "Sentence": "disposal to a Class III solid waste landfill... All solids are then transported for disposal at Redwood Landfill in Marin County or Hay Road Landfill in Solano County"
     },
     {
       "Equipment": "Tank",
       "Process": [
+        "Aeration",
         "Equalization"
       ],
       "Role": [
@@ -160,7 +181,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtered and UV disinfected wastewater flows by gravity to the 25 million gallon recycled water storage pond, 15 million gallon recycled water storage pond, or Basalt Pond"
+      "Sentence": "The Facility has two recycled water storage ponds, 25 million gallon and 15 million gallon capacity"
     }
   ]
 }

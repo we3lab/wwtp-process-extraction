@@ -1,44 +1,128 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Historical use of unlined treatment ponds has caused degradation in underlying groundwater at the WWTP.",
+      "Sentence": "The headworks screenings and grit accumulated in the aeration basin...",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks screenings and grit accumulated in the aeration basin...",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Extended"
+      ],
+      "Substance": [
+        "Constituent-Ammonia",
+        "Constituent-SuspendedSolids",
+        "Constituent-Nitrate"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "In 2011, the WWTP was updated ... to a Biolac extended aeration activated sludge treatment system.",
+      "trigger_process": [
+        "Extended Aeration"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater treatment and disposal facilities consist of ... an aeration basin with two integral clarifiers...",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Storage"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "All treatment ponds are now only used for emergency purpose.",
+      "Sentence": "The wastewater treatment and disposal facilities consist of ... a storage lagoon, a sludge lagoon, emergency Ponds 1 and 2...",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": [
-        "Constituent-Inorganics"
+      "Process": [
+        "Recirculation"
       ],
-      "Implementation": "future",
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Pond 1 will be lined that would minimize potential salinity impacts to groundwater.",
+      "Sentence": "Decant water was returned to the headworks via a leachate return pipe from the Sludge Lagoon.",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Unlined Ponds 1 and 2 were previously used as treatment ponds, but are now used as emergency storage ponds.",
+      "trigger_process": [
+        "Primary Clarification"
       ]
     },
     {
@@ -47,13 +131,10 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Constituent-Inorganics"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the blended effluent from the reservoir had an average TDS concentration of 306 mg/L",
+      "Substance": null,
+      "Implementation": "off-site",
+      "Location": "off-site",
+      "Sentence": "Undisinfected secondary treated effluent is discharged from the WWTP to Grinding Rock Reservoir to irrigate pasture land...",
       "trigger_process": []
     },
     {
@@ -64,15 +145,79 @@
       "Role": [
         "LandApplication"
       ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "land application areas (LAAs) at the Ranch.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
-        "Constituent-Inorganics"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Based on a comparison of groundwater data collected at the WWTP and the Ranch LAA sites, ... indicates that both the wastewater treatment process and land application likely contribute to groundwater degradation for salinity.",
+      "Sentence": "the last sludge removal occurred in July 2016 when approximately 75 dry tons of sludge was hauled offsite via a mobile dewatering truck by Synagro Inc.",
       "trigger_process": [
-        "Land Application"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The headworks screenings and grit accumulated in the aeration basin are disposed to an approved reuse/disposal site.",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "This project will replace the existing air lift pumps with a conventional suction pump to provide operational control of return activated sludge and waste activated sludge rates.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration",
+        "Mixing"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "This project will replace the existing brush aerators with floating aspirating aerators and add a solar mixer to improve mixing within the lagoon...",
+      "trigger_process": [
+        "Aerated Lagoon"
       ]
     }
   ]

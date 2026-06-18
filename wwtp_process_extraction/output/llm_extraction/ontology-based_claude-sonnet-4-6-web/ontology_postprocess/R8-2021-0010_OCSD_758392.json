@@ -11,9 +11,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks acts as a primary grit and foreign matter removal system for a wastewater treatment plant.",
-      "Source": "web_search",
-      "Website": "https://ocsan.gov/construction-project/fv/",
+      "Sentence": "Preliminary treatment includes grit and screenings removal.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -29,11 +29,35 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks acts as a primary grit and foreign matter removal system for a wastewater treatment plant.",
-      "Source": "web_search",
-      "Website": "https://ocsan.gov/construction-project/fv/",
+      "Sentence": "Preliminary treatment includes grit and screenings removal.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment",
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Coagulation",
+        "Flocculation",
+        "Polymer Addition"
       ]
     },
     {
@@ -47,43 +71,17 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary clarifiers, or primary sedimentation basins, are used to reduce suspended solids to the secondary treatment processes.",
-      "Source": "web_search",
-      "Website": "https://ocsan.gov/construction-project/fv/",
+      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "TricklingFilter",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "OCSD developed a 60 million gallons per day (mgd) activated sludge treatment train at Plant No. 1. The treatment approach includes biological nutrient removal.",
-      "Source": "web_search",
-      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district-water-reclamation-plant-no-1/",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -91,33 +89,72 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment stage comprises the activated sludge process and secondary separation.",
-      "Source": "web_search",
-      "Website": "https://ocsan.gov/construction-project/fv/",
+      "Sentence": "Trickling filter project at Reclamation Plant No. 1, completed in Spring 2006.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Secondary Clarification"
+        "Trickling Filter"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "ActivatedSludge"
       ],
       "Role": [
-        "SolidsHandling"
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "New activated sludge system at Reclamation Plant No. 1, completed in Fall 2012. The project added 60 MGD of secondary treatment capacity.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "disinfection program initiated in 2002 was based on using sodium hypochlorite (bleach) for disinfection and sodium bisulfite for dechlorination\u2026 OC San has ceased continuous chlorination/dechlorination since May 2015.",
+      "Source": "both",
+      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district-water-reclamation-plant-no-1/",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two new centrifuge systems were installed at both treatment plants (Fountain Valley and Huntington Beach) to replace aging equipment, improve efficiency and expand solids handling capacity. These facilities perform the critical step of removing water from the biosolids so that they can be transported for beneficial reuse.",
+      "Sentence": "sludge is pumped to one of two sludge blending facility tanks, where it is mixed before being pumped to anaerobic digesters at Reclamation Plant No. 1",
       "Source": "web_search",
-      "Website": "https://ocsan.gov/construction-project/fv/",
+      "Website": "https://www.waterandwastewater.com/orange-county-sanitation-district-water-reclamation-plant-no-1/",
       "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
+        "Anaerobic Digestion"
       ]
     }
   ]

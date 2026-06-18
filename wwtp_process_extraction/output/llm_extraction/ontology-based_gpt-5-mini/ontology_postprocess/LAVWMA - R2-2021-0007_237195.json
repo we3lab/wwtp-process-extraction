@@ -1,54 +1,104 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treated to secondary treatment standards though screening",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treated to secondary treatment standards though ... primary sedimentation",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treated to secondary treatment standards though ... activated sludge",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "treated to secondary treatment standards though ... secondary clarification",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "For the chlorination process (when chlorine is used for disinfection), at least daily average values for the following:",
+      "Location": "off-site",
+      "Sentence": "treated to secondary treatment standards though ... chlorination from the Dublin San Ramon Services District and City of Livermore wastewater treatment plants",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Total volume or mass of solids removed from each collection unit (e.g., grit, skimmings, undigested biosolids, or combination)",
-      "trigger_process": [
-        "Grit Removal"
+        "Chlorination"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Separation"
+        "Dechlorination"
       ],
       "Role": [
-        "SolidsHandling"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "For each treatment unit process that involves solids removal from the wastewater stream",
-      "trigger_process": []
+      "Sentence": "Prior to any discharge to San Lorenzo Creek or Alamo Canal, the wastewater is dechlorinated",
+      "trigger_process": [
+        "Dechlorination"
+      ]
     }
   ]
 }

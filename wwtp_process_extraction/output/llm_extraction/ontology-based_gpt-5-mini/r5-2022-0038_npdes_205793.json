@@ -5,24 +5,26 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks includes an ultrasonic flow meter, mechanical screening, and grit removal."
+      "Sentence": "The treatment system at the Facility consists of headworks screening...mechanical screening, and grit removal."
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks includes an ultrasonic flow meter, mechanical screening, and grit removal."
+      "Sentence": "The headworks includes...grit removal."
     },
     {
       "Equipment": "SequencingBatchReactor",
@@ -31,156 +33,202 @@
         "Nitrification",
         "Denitrification",
         "Aeration",
-        "Sedimentation",
-        "Recirculation"
+        "Sedimentation"
       ],
       "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of headworks screening, biological treatment with three sequencing batch reactors (SBR’s) that provide nitrification/denitrification,"
+      "Sentence": "biological treatment with three sequencing batch reactors (SBR’s) that provide nitrification/denitrification..."
     },
     {
       "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of headworks screening, biological treatment with three sequencing batch reactors (SBR’s) that provide nitrification/denitrification, coagulation and flocculation,"
+      "Sentence": "The treatment system...provide...coagulation and flocculation..."
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of headworks screening, biological treatment with three sequencing batch reactors (SBR’s) that provide nitrification/denitrification, coagulation and flocculation,"
+      "Sentence": "The treatment system...provide...coagulation and flocculation..."
     },
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration"
+        "RapidSandFiltration",
+        "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of ... recirculating sand filtration, and ultraviolet light (UV) disinfection."
+      "Sentence": "The decant from the SBR’s flows to the intermediate storage basin to equalize batch flows and provide continuous flow to the four recirculating Dynasand filters."
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of ... recirculating sand filtration, and ultraviolet light (UV) disinfection."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Recirculation"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Equalization"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "wastewater may bypass the mechanical screen and pass through a manual bar screen or be diverted to a 3 million gallon equalization basin and returned to the headworks as flows subside."
+      "Sentence": "The Facility uses a UV disinfection system consisting of two channels with three banks in each channel..."
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "Recirculation"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
-        "Equalization"
+        "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The decant from the SBR’s flows to the intermediate storage basin to equalize batch flows and provide continuous flow to the four recirculating Dynasand filters."
+      "Sentence": "Having previously used a chlorine disinfection system, the contact chamber is now maintained for use as emergency storage."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
+        "Equalization",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Having previously used a chlorine disinfection system, the contact chamber is now maintained for use as emergency storage."
+      "Sentence": "wastewater may bypass the mechanical screen and...be diverted to a 3 million gallon equalization basin and returned to the headworks as flows subside."
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
+      "Equipment": "SequencingBatchReactor",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "past",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Having previously used a chlorine disinfection system, the contact chamber is now maintained for use as emergency storage."
+      "Sentence": "The Facility has three SBR’s, a fourth being used as an intermediate storage basin, but can be converted to an SBR if necessary."
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge is aerobically digested in two digesters..."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Drying",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge is...dewatered by a belt filter press and sludge drying beds. Filtrate from the belt filter press is drained back to the headworks."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids are transported offsite for disposal as needed and a minimum of once per year."
     },
     {
       "Equipment": null,
       "Process": [
         "pHAdjustment"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": [
         "pHAdjuster-Lime"
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Until August 2016 the Discharger was adding hydrated lime slurry (calcium hydroxide) to the influent to increase the alkalinity and pH, to assist with the nitrification/denitrification process,"
+      "Sentence": "Until August 2016 the Discharger was adding hydrated lime slurry (calcium hydroxide) to the influent to increase the alkalinity and pH..."
     },
     {
       "Equipment": null,
       "Process": [
         "pHAdjustment"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "pHAdjuster"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "At the end of August 2016 the Discharger stopped using calcium hydroxide and started adding a caustic solution."
+      "Sentence": "At the end of August 2016 the Discharger stopped using calcium hydroxide and started adding a caustic solution...the Discharger is experimenting with other options as well and at the same time is working on developing an appropriate dosage caustic solution for the Facility."
     },
     {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "As allowed by WDR Order 98-110, the effluent is discharged to a 66 million gallon storage reservoir (Holman Reservoir) where it is used for spray irrigation of 61 acres of pastureland."
     }
   ]

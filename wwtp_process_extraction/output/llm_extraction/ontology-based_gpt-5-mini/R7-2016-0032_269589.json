@@ -11,58 +11,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater flow is split into two channels, one for bypass (normally closed) and the other with an automatic bar screen and compactor."
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "BiologicallyActiveFiltration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The headworks building has an active ventilation system that replaces the air in the room several times an hour and pushes the air through a biological air filter for odor removal."
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "Anaerobic",
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The fermentation pit allows for the accumulation and storage of biosolids in an anaerobic environment."
+      "Sentence": "the other with an automatic bar screen and compactor."
     },
     {
       "Equipment": "Pond",
       "Process": [
         "Sedimentation",
-        "BiologicalProcess",
-        "Aeration"
+        "AnaerobicDigestion",
+        "Aeration",
+        "BiologicalProcess"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "NutrientRemoval"
+        "Anaerobic",
+        "Stabilization",
+        "SolidsHandling",
+        "Detention"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids",
+        "Constituent-Ammonia",
+        "Constituent-Metals"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The remainder of Pond 1 outside the fermentation pit provides secondary biological treatment."
+      "Sentence": "Pond 1 is a 13-acre, 5-foot deep pond, with a 2.5-acre front-end, 13-foot deep fermentation pit... Solids settle out in the fermentation pit... Anaerobic bacteria decompose and stabilize the biosolids... Digestion gases are broken down in the aerobic water layer at the top of the pond where oxygen concentration is enhanced by mechanical aeration."
     },
     {
       "Equipment": "Pond",
@@ -71,33 +46,51 @@
         "BiologicalProcess"
       ],
       "Role": [
+        "Secondary",
         "Extended",
-        "Tertiary",
-        "Posttreatment"
+        "Detention",
+        "Storage"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond A is approximately 5 feet deep with a surface area of approximately 20 acres. The design detention time is approximately 18 days. Pond A ... provides only limited treatment; its primary purpose is settlement of algae."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Recirculation",
+        "Storage"
+      ],
+      "Role": [
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The other ponds provide extended secondary treatment and act as effluent polishing systems."
+      "Sentence": "When there is a need to store more water ... water can be pumped to Ponds C and D. Ponds C and D are used as additional storage ... The water from these ponds is pumped back to Pond A for inclusion in the treatment process."
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
+        "Coagulation",
         "Sedimentation",
-        "Coagulation"
+        "Recirculation"
       ],
       "Role": [
-        "Tertiary",
+        "Secondary",
         "SolidsHandling"
       ],
       "Substance": [
-        "Coagulant-PolyaluminumChloride"
+        "Coagulant-PolyaluminumChloride",
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Polyaluminum chloride (PAC) is added as a coagulant at the clarifiers."
+      "Sentence": "The clarifier influent pumps then supply the water to three clarifiers... Polyaluminum chloride (PAC) is added as a coagulant at the clarifiers. The sludge from the clarifiers is withdrawn using three sludge pumps and sent back to the fermentation pit in Pond 1 for digestion and treatment."
     },
     {
       "Equipment": "Pump",
@@ -105,14 +98,12 @@
         "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Recirculation"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The sludge from the clarifiers is withdrawn using three sludge pumps and sent back to the fermentation pit in Pond 1 for digestion and treatment."
     },
     {
@@ -126,8 +117,34 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The clarifier effluent is pumped by three filter influent pumps through the (non-operational) Lamella filters into the filter effluent pump Station wet well."
+      "Sentence": "the (non-operational) Lamella filters"
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "RapidSandFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the tertiary treatment sand filter is no longer part of the treatment process and tertiary treated wastewater can no longer be produced. The tertiary treatment sand filter has not been used in approximately eight years"
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": [
+        "Biofiltration"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the engineered wetlands described as part of the treatment process have been removed from operation and are no longer part of the treatment process."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -144,8 +161,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Chlorine is generated on-site by a hypochlorite generation and injection system that produces the chlorine equivalent of 150 pounds per day of 0.8-percent sodium hypochlorite (NaClO)."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger intends to use one of the de-commissioned wetland basins as a sludge drying basin."
     }
   ]
 }

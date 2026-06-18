@@ -6,7 +6,7 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Preliminary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -19,7 +19,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Preliminary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -53,7 +53,7 @@
       "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens, grit chambers, chemical addition, primary clarifiers, and flow equalization/emergency storage basins."
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Tank",
       "Process": null,
       "Role": [
         "Equalization",
@@ -95,9 +95,21 @@
       "Sentence": "Secondary treatment consists of aeration trains with oxic/anoxic zones and secondary clarifiers."
     },
     {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sedimentation, filtration, chlorination, and dechlorination."
+    },
+    {
       "Equipment": "FlocculationBasin",
       "Process": [
-        "Coagulation",
         "Flocculation"
       ],
       "Role": [
@@ -138,23 +150,11 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sedimentation, filtration, chlorination, and dechlorination."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -164,14 +164,13 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering."
@@ -179,14 +178,13 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
+        "Thickening",
         "Flotation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering."
@@ -197,12 +195,9 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering."
@@ -211,6 +206,18 @@
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids treatment at RP-1 includes ... digester gas utilization, and centrifuge dewatering."
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -221,20 +228,15 @@
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering."
     },
     {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering."
+      "Location": "off-site",
+      "Sentence": "Centrifuge concentrate is pumped to the Non-Reclaimable Waste System (NRWS) line and is ultimately treated by the County Sanitation Districts of Los Angeles County."
     }
   ]
 }

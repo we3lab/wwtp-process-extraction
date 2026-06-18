@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "mechanical bar screens"
+      "Sentence": "The headworks of the SLRWRF includes mechanical bar screens"
     },
     {
       "Equipment": "GritChamber",
@@ -25,8 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "aerated grit removal"
+      "Sentence": "The headworks of the SLRWRF includes ... aerated grit removal"
     },
     {
       "Equipment": "Tank",
@@ -37,8 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.8,
-      "Sentence": "flow equalization"
+      "Sentence": "Plant 1 consists of flow equalization"
     },
     {
       "Equipment": "SedimentationTank",
@@ -51,8 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "primary sedimentation/clarification"
+      "Sentence": "Plant 1 consists of ... primary sedimentation"
     },
     {
       "Equipment": "AerationBasin",
@@ -60,13 +56,11 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "biological secondary treatment by means of activated sludge"
     },
     {
@@ -80,13 +74,39 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "secondary sedimentation/clarification"
     },
     {
-      "Equipment": "DissolvedAirFlotationThickener",
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "Flotation"
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "At the effluent pump station wet well, the Discharger disinfects the secondary-treated wastewater with sodium hypochlorite"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "temporarily send the disinfected secondary-treated wastewater to the secondary effluent equalization pond (new emergency pond)"
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -96,8 +116,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "dissolved air floatation thickening for secondary sludge"
+      "Sentence": "The SLRWRF features gravity belt thickeners for thickening secondary sludge"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -106,7 +125,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -114,11 +132,10 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "anaerobic digestion of primary and secondary sludge"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering"
       ],
@@ -130,11 +147,36 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
+      "Sentence": "dewatering of digested sludge using centrifuges"
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The LSWTP features dissolved air floatation thickening for secondary sludge"
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
       "Sentence": "belt filter press dewatering of digested sludge"
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": null,
       "Process": [
         "ChemicalAddition"
       ],
@@ -144,8 +186,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "chemical pretreatment (hydrochloric acid and scale inhibitor)"
+      "Sentence": "Treatment at the MBGPF is comprised of chemical pretreatment (hydrochloric acid and scale inhibitor)"
     },
     {
       "Equipment": "CartridgeFiltrationUnit",
@@ -158,7 +199,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "cartridge filtration"
     },
     {
@@ -166,11 +206,12 @@
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "reverse osmosis (RO) membrane filtration (demineralization)"
     },
     {
@@ -179,28 +220,24 @@
         "GranularActivatedCarbon"
       ],
       "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Constituent-Organics"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "granular activated carbon (GAC) for removal and reduction of volatile organics"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Stripping"
-      ],
-      "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
+      "Sentence": "granular activated carbon (GAC) for removal and reduction of volatile organics"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Stripping"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
       "Sentence": "degasification (for removal of hydrogen sulfide and carbon dioxide gases)"
     },
     {
@@ -210,14 +247,13 @@
         "Disinfection"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "post-treatment disinfection by chloramination (sodium hypochlorite and ammonium hydroxide)"
     },
     {
@@ -228,12 +264,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Metals"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "manganese greensand filtration system (for iron and manganese removal)"
     },
     {
@@ -245,8 +278,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
       "Sentence": "Backwash waste waters produced by the GAC and manganese greensand filtration systems are discharged to an underground concrete holding basin"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "subsequently pumped to the SLRWRF via a 42-inch sewer force main"
     }
   ]
 }

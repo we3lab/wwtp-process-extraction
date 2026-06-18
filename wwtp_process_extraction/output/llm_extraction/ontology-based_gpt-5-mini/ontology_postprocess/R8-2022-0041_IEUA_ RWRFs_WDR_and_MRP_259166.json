@@ -3,7 +3,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -43,8 +43,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Anaerobic",
+        "SolidsHandling",
         "Stabilization"
       ],
       "Substance": [
@@ -63,8 +63,8 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Aerobic",
+        "SolidsHandling",
         "Stabilization"
       ],
       "Substance": [
@@ -78,7 +78,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -96,7 +96,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -111,7 +111,7 @@
       "Sentence": "The solids treatment system at RP-2 includes ... centrifuge dewatering.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -120,29 +120,15 @@
         "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Recirculation"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge treatment system wastewater from RP-2 is pumped back to headworks of RP-5.",
       "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered biosolids are hauled away to approved disposal sites.",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
     }
   ]
 }

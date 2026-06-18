@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal...",
+      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...influent screening, grit removal, primary clarification...",
+      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -47,7 +47,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...grit removal, primary clarification, biological treatment by activated sludge...",
+      "Sentence": "...primary clarification, biological treatment by activated sludge, secondary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -84,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, filtration, and dechlorination.",
+      "Sentence": "...biological treatment by activated sludge, secondary clarification, disinfection, filtration...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -102,9 +102,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...disinfection, filtration, and dechlorination.",
-      "Source": "both",
-      "Website": "https://www.scorca.gov/",
+      "Sentence": "...secondary clarification, disinfection, filtration, and dechlorination.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -136,8 +136,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Containment"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -171,7 +171,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
         "Drying"
       ],
@@ -183,12 +183,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins. Dried biosolids are hauled to a landfill.",
+      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
+        "Biosolids Lagoon",
         "Drying",
-        "Mechanical Dewatering"
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -210,24 +211,6 @@
       ]
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "upgrades to the existing grit removal system",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -236,8 +219,7 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -247,7 +229,6 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -255,8 +236,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"

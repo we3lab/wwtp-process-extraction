@@ -1,18 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "upgraded its WWTP from a conventional activated sludge treatment process to a membrane bioreactor (MBR) treatment process."
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -23,8 +11,31 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process includes influent screening,"
+      "Sentence": "influent wastewater is screened using an automatic fine screen with 1/8-inch perforations"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "remove larger solids and grit that could damage pumps"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wastewater is delivered to the treatment system via two influent pump stations (East Lift Station and Main Lift Station)"
     },
     {
       "Equipment": "Tank",
@@ -36,30 +47,30 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the treatment process includes ... equalization storage,"
+      "Sentence": "influent is routed into one of two equalization basins"
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Denitrification"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Anoxic",
-        "NitrogenRemoval"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "wastewater flows into four Anoxic Basins where it is denitrified."
+      "Sentence": "Emergency Storage Basin No. 1 65,000"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "MixingBasin",
       "Process": [
-        "Coagulation"
+        "Denitrification",
+        "Coagulation",
+        "ChemicalAddition"
       ],
       "Role": [
+        "Anoxic",
+        "NitrogenRemoval",
         "PhosphorusRemoval"
       ],
       "Substance": [
@@ -67,14 +78,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "“Alum” (i.e., the coagulant aluminum sulfate) and caustics are then added to the wastewater to remove phosphorus."
+      "Sentence": "wastewater flows into four Anoxic Basins where it is denitrified. \"Alum\" ... and caustics are then added to the wastewater to remove phosphorus"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
         "Aerobic"
@@ -82,14 +91,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "it is conveyed into the MBR treatment process, which includes two aeration basins,"
+      "Sentence": "the MBR treatment process, which includes two aeration basins"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess",
-        "ActivatedSludge"
+        "Biofiltration",
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary"
@@ -97,21 +105,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "upgraded its WWTP from a conventional activated sludge treatment process to a membrane bioreactor (MBR) treatment process. The upgraded wastewater treatment provides tertiary treatment and disinfection."
+      "Sentence": "the Discharger upgraded its WWTP ... to a membrane bioreactor (MBR) treatment process"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "Pump",
       "Process": [
-        "MembraneProcess",
-        "Filtration"
+        "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "it is conveyed into the MBR treatment process, which includes ... membrane basins, and membrane filtration facilities."
+      "Sentence": "the MBR treatment process ... includes ... recirculation pumps"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -127,26 +134,40 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Disinfection is performed by the addition of sodium hypochlorite to the MBR effluent."
+      "Sentence": "Disinfection is performed by the addition of sodium hypochlorite to the MBR effluent"
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
+      "Process": null,
+      "Role": [
+        "Drain"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "the MBR treatment process, which includes two aeration basins, recirculation pumps, ... and an effluent pump system,"
+      "Sentence": "Disinfected wastewater is pumped via an effluent pump station to the effluent disposal system"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "AerobicDigester",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste sludge from the MBR treatment process is accumulated and partially digested in an aerated solids holding tank"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -156,20 +177,18 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process includes ... centrifuge sludge dewatering system,"
+      "Sentence": "Sludge from the holding tank is dewatered using a centrifuge"
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
+      "Equipment": null,
+      "Process": [
+        "ActivatedSludge"
       ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Emergency Storage Basin No. 1 65,000"
+      "Sentence": "upgraded its WWTP from a conventional activated sludge treatment process to a membrane bioreactor (MBR) treatment process"
     }
   ]
 }

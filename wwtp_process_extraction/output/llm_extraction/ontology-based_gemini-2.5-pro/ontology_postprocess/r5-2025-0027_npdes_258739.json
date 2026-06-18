@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger has substantially completed upgrades to the treatment system on the east of the San Joaquin River, which includes screening, grit removal...",
+      "Sentence": "The upgraded Facility treatment includes fine screening, grit removal, primary clarification...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -35,17 +35,21 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and primary sedimentation, where settling is enhanced.",
+      "Sentence": "The upgraded Facility treatment includes... primary clarification... primary sludge thickening in the primary clarifiers with primary sludge pumping...",
       "trigger_process": [
-        "Primary Clarification"
+        "Primary Clarification",
+        "Thickening"
       ]
     },
     {
@@ -79,18 +83,51 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and further routed to secondary clarifiers.",
+      "Sentence": "Effluent from the secondary clarifiers is pumped to the new tertiary treatment facilities...",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection...",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection...",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
-        "Recirculation",
+        "Recirculation"
+      ],
+      "Role": [
         "Equalization"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -109,7 +146,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Additional secondary treatment and water storage is available in the facultative ponds.",
+      "Sentence": "...it can be pumped beneath the San Joaquin River to the facultative pond system and chlorination facilities on the west side of the San Joaquin River.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -131,28 +168,28 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "Nitrification",
-        "Biofiltration"
+        "Biofiltration",
+        "Nitrification"
       ],
       "Role": [
         "Tertiary",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Tertiary treatment on the west side of the San Joaquin River consists of a nitrifying biotower for ammonia removal...",
       "trigger_process": [
         "Nitrification",
-        "Unspecified FFR"
+        "Trickling Filter",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Tertiary"
@@ -163,7 +200,8 @@
       "Sentence": "...followed by dissolved air floatation units, where removal efficiencies are enhanced through chemical addition.",
       "trigger_process": [
         "Flotation",
-        "Thickening"
+        "Thickening",
+        "Unspecified Chemical Addition"
       ]
     },
     {
@@ -202,41 +240,9 @@
       ]
     },
     {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection...",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection...",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -246,7 +252,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...solids from the primary and secondary sedimentation processes are either routed to gravity thickeners...",
+      "Sentence": "solids from the primary and secondary sedimentation processes are either routed to gravity thickeners, gravity belt thickeners, or pumped to the anaerobic digesters directly.",
       "trigger_process": [
         "Thickening"
       ]
@@ -254,8 +260,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -265,7 +270,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids treatment includes... gravity belt thickening of waste activated sludge...",
+      "Sentence": "...gravity belt thickening of waste activated sludge, anaerobic digestion...",
       "trigger_process": [
         "Thickening"
       ]
@@ -304,10 +309,10 @@
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -320,14 +325,14 @@
       "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge or belt filter presses.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration",
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -339,35 +344,57 @@
       "Location": "on-site",
       "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge or belt filter presses.",
       "trigger_process": [
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication",
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered solids are hauled off-site by a private contractor and routinely recycled on agricultural lands as a source of nutrients and soil amendment.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered solids are hauled off-site by a private contractor and routinely recycled on agricultural lands as a source of nutrients and soil amendment.",
+      "Sentence": "In an emergency, solids can be used as daily cover for solid waste at a landfill.",
       "trigger_process": [
-        "Biosolids Landfill",
-        "Land Application"
+        "Biosolids Landfill"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side of the San Joaquin River to the upgraded facility on the east side... for retreatment.",
+      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side of the San Joaquin River to the upgraded facility on the east side of the San Joaquin River for retreatment.",
       "trigger_process": []
     }
   ]

@@ -1,6 +1,57 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "installing an in-channel screening (Aqua Guard\u00ae screens)",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "installing ... grit removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Extended",
+        "NitrogenRemoval",
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biolac\u00ae extended aeration system ... providing nitrogen removal",
+      "trigger_process": [
+        "Extended Aeration"
+      ]
+    },
+    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -11,7 +62,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The secondary treatment system consists of gravity settling.",
       "trigger_process": [
         "Secondary Clarification"
@@ -23,16 +73,14 @@
         "Dewatering"
       ],
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Waste sludge is dewatered using a belt press, stockpiled onsite, and hauled away to a licensed facility for composting.",
+      "Sentence": "Waste sludge is dewatered using a belt press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -40,20 +88,17 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "Waste sludge is dewatered using a belt press, stockpiled onsite, and hauled away to a licensed facility for composting.",
+      "Sentence": "hauled away to a licensed facility for composting",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     },
     {
@@ -61,14 +106,11 @@
       "Process": [
         "Evaporation"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Moorpark WRF currently discharges up to 5.0 MGD of undisinfected secondary-treated effluent to an array of 30 onsite unlined percolation/evaporation ponds...",
+      "Sentence": "discharges up to 5.0 MGD of undisinfected secondary-treated effluent to an array of 30 onsite unlined percolation/evaporation ponds",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -84,8 +126,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Undisinfected secondary-treated effluent is either discharged to percolation ponds or it can receive additional treatment (filtration and disinfection) so that it may be recycled or discharged to surface waters.",
+      "Sentence": "it can receive additional treatment (filtration and disinfection) so that it may be recycled",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -99,13 +140,28 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Undisinfected secondary-treated effluent is either discharged to percolation ponds or it can receive additional treatment (filtration and disinfection) so that it may be recycled or discharged to surface waters.",
+      "Sentence": "filtered and disinfected (using sodium hypochlorite)",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "to require disinfection prior to the discharge of secondary-treated effluent to the percolation ponds",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     },
     {
@@ -114,16 +170,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "past",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Unlike the effluent discharged to the percolation ponds, the effluent discharged to Arroyo Las Posas was filtered and disinfected (using sodium hypochlorite) prior to discharge.",
+      "Location": "on-site",
+      "Sentence": "the effluent discharged to Arroyo Las Posas was filtered and disinfected (using sodium hypochlorite) prior to discharge",
       "trigger_process": [
         "Chlorination"
       ]

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a grinder and bar screen at headworks",
+      "Sentence": "The treatment system consists of a grinder and bar screen at headworks",
       "trigger_process": [
         "Comminution"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a grinder and bar screen at headworks",
+      "Sentence": "grinder and bar screen at headworks",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -96,6 +96,25 @@
       ]
     },
     {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a chlorine contact chamber",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration"
@@ -112,23 +131,6 @@
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a chlorine contact chamber",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
         "Dechlorination"
@@ -139,7 +141,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and dechlorination.",
+      "Sentence": "and dechlorination",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -151,7 +153,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -185,38 +188,26 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
+        "SolidsHandling",
         "Storage",
-        "SolidsHandling"
+        "Drain"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "stockpiled in a sludge holding bed",
+      "Sentence": "stockpiled in a sludge holding bed. The holding bed contains drains",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
+        "Composting"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The holding bed contains drains which permit leachate to flow back to the head of the liquid treatment train",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Posttreatment"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -225,7 +216,7 @@
       "Location": "off-site",
       "Sentence": "hauled by Liberty Composting to its 162-acre composting facility in Kern County, California",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     }
   ]

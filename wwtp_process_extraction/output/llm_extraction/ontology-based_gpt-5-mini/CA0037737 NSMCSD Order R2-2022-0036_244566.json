@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "flows through two microscreens, where it is dispersed evenly to six primary basins."
+      "Sentence": "flows through two microscreens"
     },
     {
       "Equipment": "SedimentationTank",
@@ -25,34 +24,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of screening, compaction, primary clarification, flow equalization, pure oxygen activated sludge aeration, secondary clarification, chlorination by sodium hypochlorite, and dechlorination by sodium bisulfite."
+      "Sentence": "six primary basins...primary clarification"
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The other 30 percent is stored in equalization basins until late evening, when it is pumped back into the secondary system for treatment."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The primary effluent is then split, with 70 percent pumped to two pure oxygen activated sludge reactors..."
+      "Sentence": "The other 30 percent is stored in equalization basins"
     },
     {
       "Equipment": "AerationBasin",
@@ -67,8 +50,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of ... pure oxygen activated sludge aeration..."
+      "Sentence": "pure oxygen activated sludge aeration"
     },
     {
       "Equipment": "SedimentationTank",
@@ -81,59 +63,67 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Flows from the activated sludge reactors are then routed to three secondary clarifiers, operated in parallel, for settling."
+      "Sentence": "Flows from the activated sludge reactors are then routed to three secondary clarifiers"
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "effluent then flows over weirs into a chlorine contact mixing chamber"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of ... chlorination by sodium hypochlorite, and dechlorination by sodium bisulfite."
+      "Sentence": "chlorination by sodium hypochlorite"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": null,
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin."
+      "Sentence": "dechlorination by sodium bisulfite"
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": null,
       "Process": [
+        "Coagulation",
         "Flocculation"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
+        "Coagulant-Alum",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin."
+      "Sentence": "alum or polymer injection followed by sand filtration"
     },
     {
       "Equipment": "RapidSandFilter",
@@ -147,8 +137,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin."
+      "Sentence": "filtration through a Dina-sand filtration system"
     },
     {
       "Equipment": "DisinfectionUnit",
@@ -161,22 +150,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin."
+      "Sentence": "Title 22 disinfected tertiary via flocculation, filtration...and disinfection"
     },
     {
       "Equipment": "Reservoir",
@@ -187,8 +161,130 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes ... and a 1.4-million-gallon storage basin."
+      "Sentence": "a 1.4-million-gallon storage basin"
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solids are pumped to two gravity thickeners"
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary and secondary scum is pumped to an air flotation tank...and treated with a polymer"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The thickened solids are removed and pumped to two anaerobic digesters"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Digested solids are treated with polymer and centrifuged"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled offsite for disposal at either the Potrero Hills municipal landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled offsite...for land application at one of several farms"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the Discharger treated the return activated sludge with sodium hypochlorite"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the Discharger plans to rehabilitate and upgrade the aeration basin with...non-clogging aerators"
     }
   ]
 }

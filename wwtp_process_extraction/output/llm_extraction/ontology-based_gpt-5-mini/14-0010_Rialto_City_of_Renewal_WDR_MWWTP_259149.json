@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Bar Screens"
     },
     {
@@ -25,7 +24,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Aerated Grit Chamber"
     },
     {
@@ -37,7 +35,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Flow Equalization"
     },
     {
@@ -51,8 +48,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Primary Basins"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "activated sludge treatment"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "FourStageBardenpho"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "No.5 (Four-stage Bardenpho process)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -65,37 +87,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "activated sludge treatment"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "FourStageBardenpho",
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "No.5 (Four-stage Bardenpho process)"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -108,8 +100,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "receive tertiary treatment through filtration and disinfection"
+      "Sentence": "receive tertiary treatment through filtration"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "8 mgd UV disinfection system which never was put into operation"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -126,72 +130,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility currently uses chlorine contact chambers for disinfection using an aqueous sodium hypochlorite and sodium bisulfate for dichlorination."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "The Facility has an 8 mgd UV disinfection system which never was put into operation."
+      "Sentence": "chlorine contact chambers for disinfection using an aqueous sodium hypochlorite and sodium bisulfate for dichlorination"
     },
     {
       "Equipment": "GravityBeltThickener",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "pumped to a gravity belt thickener to reduce the water content prior to being pumped to an anaerobic digester for stabilization."
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Gravity Thickeners"
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "Stabilization",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Solids are stabilized by the anaerobic digestion process"
-    },
-    {
-      "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering"
       ],
@@ -203,39 +145,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "then dewatered by a belt press."
+      "Sentence": "pumped to a gravity belt thickener to reduce the water content"
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "ChemicalAddition",
-        "Flocculation"
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids are anaerobically digested"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
+        "Fluid-Sludge",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "a polymer is injected into the sludge as it is being pumped to the belt press."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The filtrate removed from the de-watered sludge is pumped back to the liquid process flow streams for further treatment."
+      "Sentence": "sludge is dewatered by a belt press...a polymer is injected into the sludge as it is being pumped to the belt press"
     },
     {
       "Equipment": "DewateringUnit",
@@ -250,13 +192,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The plant utilizes a concrete-lined sludge drying bed where dewatered solids from the belt press may be spread by tractor for further solar drying."
+      "Sentence": "concrete-lined sludge drying bed where dewatered solids...may be spread by tractor for further solar drying"
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -266,8 +207,18 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "de-watered solids from the belt press are placed directly into trucks and taken to a biosolids contractor where the solids are blended with greenwaste and composted"
+      "Sentence": "taken to a biosolids contractor where the solids are blended with greenwaste and composted"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The filtrate removed from the de-watered sludge is pumped back to the liquid process flow streams"
     }
   ]
 }

@@ -38,19 +38,16 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
-        "Recirculation"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of the Walker Process packaged activated sludge plant that includes an aeration basin with coarse bubble diffusers...Return activated sludge and waste activated sludge is pumped by airlift pump.",
+      "Sentence": "Secondary treatment consists of the Walker Process packaged activated sludge plant that includes an aeration basin with coarse bubble diffusers",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -66,10 +63,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of the Walker Process packaged activated sludge plant that includes...a secondary sedimentation basin.",
+      "Sentence": "Secondary treatment consists of the Walker Process packaged activated sludge plant that includes... a secondary sedimentation basin.",
       "trigger_process": [
         "Secondary Clarification"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge and waste activated sludge is pumped by airlift pump.",
+      "trigger_process": []
     },
     {
       "Equipment": "CoagulationBasin",
@@ -128,8 +139,7 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Disinfection"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -161,7 +171,8 @@
     {
       "Equipment": "CentrifugalThickener",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -173,7 +184,6 @@
       "Location": "on-site",
       "Sentence": "The waste activated sludge is aerobically digested and pumped to a centrifuge for partial thickening.",
       "trigger_process": [
-        "Centrifuge",
         "Thickening"
       ]
     },
@@ -213,14 +223,12 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "Microfiltration",
+        "Biofiltration",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Tertiary",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],

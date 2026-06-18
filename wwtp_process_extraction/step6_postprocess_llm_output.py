@@ -16,7 +16,7 @@ GITHUB_BASE = (
 )
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 # Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
@@ -303,11 +303,13 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
 
         # Optional keyword-level exclusion rules from unitprocess_keywords.json
         # Example: {"exclude_if_any": ["Equipment-GritChamber"]}
+        excluded_cols = set()
         for col, exclusion_tokens in column_exclude_if_any.items():
             if item_result.get(col) != "PRESENT":
                 continue
             if any(matches_item(token, components) for token in exclusion_tokens):
                 item_result[col] = ""
+                excluded_cols.add(col)
 
         for group_id, sibling_cols in group_to_columns.items():
             present_cols = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
@@ -343,7 +345,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         def _ontology_resolve(source_col, sec_cat, sec_cols):
             matching = [
                 c for c in sec_cols
-                if column_trigger_clauses.get(c) and any(
+                if c not in excluded_cols and column_trigger_clauses.get(c) and any(
                     all(matches_item(token, components) for token in clause)
                     for clause in column_trigger_clauses[c]
                 )
@@ -355,6 +357,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         apply_secondary_category_backfill(
             item_result, column_secondary_categories, top_category_to_columns,
             column_global_priority, column_priority, ontology_resolve_fn=_ontology_resolve,
+            excluded_cols=excluded_cols,
         )
 
         triggered = sorted(col for col, v in item_result.items() if v == "PRESENT")
@@ -484,8 +487,10 @@ def main():
         key_cols=["Place ID"],
         meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
     )
+    collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(output_fac_csv, index=False)
     print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
+    add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(output_csv, index=False)
     if unmatched_files:
         print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")
         for f in sorted(unmatched_files):

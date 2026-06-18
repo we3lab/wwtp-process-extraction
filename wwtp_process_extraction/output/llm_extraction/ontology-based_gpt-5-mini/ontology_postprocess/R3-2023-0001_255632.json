@@ -1,54 +1,215 @@
 {
   "items": [
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "Screen",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Screening"
       ],
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "from chlorine addition at the source water pump station to ozone, membrane filtration, reverse osmosis (RO), ultraviolet light advanced oxidation process (UV/AOP), post treatment stabilization,",
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treatment at the Facility is currently accomplished by screening",
       "trigger_process": [
-        "Chlorination"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "aerated grit removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary sedimentation",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological tower trickling filters",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solids contact stabilization",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary clarification",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "disinfection with ultraviolet light",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids are processed by anaerobic digestion",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "then centrifuge dewatering",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Stabilized solids are transported to Merced County and applied to land",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Cogenerator",
+      "Process": [
+        "Cogeneration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Methane gas produced by anaerobic digestion is used to generate power and heat the digesters",
+      "trigger_process": [
+        "Cogeneration",
+        "Heat Recovery"
       ]
     },
     {
       "Equipment": "OzonationUnit",
       "Process": [
-        "Ozonation",
-        "Oxidation"
+        "Ozonation"
       ],
       "Role": null,
-      "Substance": [
-        "Disinfectant-Ozone"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "from chlorine addition at the source water pump station to ozone, membrane filtration, reverse osmosis (RO),",
+      "Sentence": "AWPF treatment processes at the Chanticleer site will begin in 2024 and consist of ozone pre-treatment",
       "trigger_process": [
+        "Oxidation",
         "Ozonation"
       ]
     },
     {
       "Equipment": "MicrofiltrationUnit",
       "Process": [
-        "Microfiltration"
+        "Microfiltration",
+        "Backwashing"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "While the system is being commissioned, all treated water (e.g., MF filtrate) and waste residuals (e.g., MF backwash waste) will be combined in the ROC wet well",
+      "Sentence": "AWPF treatment processes ... membrane filtration (MF) ... MF backwash",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -62,33 +223,47 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "from ... membrane filtration, reverse osmosis (RO), ultraviolet light advanced oxidation process (UV/AOP),",
+      "Sentence": "AWPF treatment processes ... reverse osmosis (RO)",
       "trigger_process": [
         "Reverse Osmosis"
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": "UVH2O2Reactor",
       "Process": [
-        "AdvancedOxidation",
-        "UVDisinfection"
+        "AdvancedOxidation"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "ultraviolet light advanced oxidation process (UV/AOP),",
+      "Sentence": "AWPF treatment processes ... an ultraviolet (UV) light advanced oxidation process (AOP)",
       "trigger_process": [
-        "UV Disinfection",
+        "Oxidation",
         "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "from chlorine addition at the source water pump station",
+      "trigger_process": [
+        "Chlorination"
       ]
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary"
@@ -96,8 +271,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The NPR Project consists of cloth disk filtration, a break tank, UV disinfection, and chemical storage and feed facilities.",
+      "Sentence": "The NPR Project consists of cloth disk filtration ... Backwash waste from the cloth disk filtration system is returned to the headworks",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -111,15 +285,13 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The NPR Project consists of cloth disk filtration, a break tank, UV disinfection, and chemical storage and feed facilities.",
+      "Sentence": "The NPR Project consists of ... a break tank",
       "trigger_process": []
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -127,39 +299,26 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The NPR Project consists of cloth disk filtration, a break tank, UV disinfection, and chemical storage and feed facilities.",
+      "Sentence": "The NPR Project consists of ... UV disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The NPR Project consists of cloth disk filtration, a break tank, UV disinfection, and chemical storage and feed facilities.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Backwashing"
+        "ChemicalAddition"
       ],
       "Role": [
-        "Backwash"
+        "MakeUp"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Backwash waste from the cloth disk filtration system is returned to the headworks of the Facility.",
-      "trigger_process": []
+      "Sentence": "The NPR Project consists of ... chemical storage and feed facilities",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
     }
   ]
 }

@@ -10,9 +10,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Secondary treatment process at the LSWTP is accomplished by mechanical bar screens...",
+      "Location": "on-site",
+      "Sentence": "The headworks of the SLRWRF includes mechanical bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,9 +26,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "...aerated grit removal...",
+      "Location": "on-site",
+      "Sentence": "The headworks of the SLRWRF includes ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -42,9 +40,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.8,
-      "Sentence": "...flow equalization...",
+      "Location": "on-site",
+      "Sentence": "Plant 1 consists of flow equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -59,9 +56,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Secondary treatment process at the LSWTP is accomplished by ... primary sedimentation/clarification...",
+      "Location": "on-site",
+      "Sentence": "Plant 1 consists of ... primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -76,9 +72,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...biological secondary treatment by means of activated sludge...",
+      "Location": "on-site",
+      "Sentence": "biological secondary treatment by means of activated sludge",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -93,34 +88,49 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...and secondary sedimentation/clarification.",
+      "Location": "on-site",
+      "Sentence": "secondary sedimentation/clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "Landfill"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
-        "SolidsHandling"
+        "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Screenings from the headworks and solids from the grit removal are collected onsite and trucked out of state to Cooper Mountain Landfill in Welton, Arizona.",
+      "Location": "on-site",
+      "Sentence": "the Discharger disinfects the secondary-treated wastewater with sodium hypochlorite",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Chlorination"
       ]
     },
     {
-      "Equipment": "DissolvedAirFlotationThickener",
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the Discharger can also temporarily send the disinfected secondary-treated wastewater to the secondary effluent equalization pond (new emergency pond)",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
       "Process": [
-        "Flotation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -129,11 +139,9 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The LSWTP features dissolved air floatation thickening for secondary sludge...",
+      "Location": "on-site",
+      "Sentence": "The SLRWRF features gravity belt thickeners for thickening secondary sludge",
       "trigger_process": [
-        "Flotation",
         "Thickening"
       ]
     },
@@ -144,21 +152,21 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...anaerobic digestion of primary and secondary sludge...",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion of primary and secondary sludge",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering"
       ],
@@ -169,45 +177,61 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...and belt filter press dewatering of digested sludge.",
+      "Location": "on-site",
+      "Sentence": "dewatering of digested sludge using centrifuges",
       "trigger_process": [
+        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition"
+        "LandApplication"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Treatment at the MBGPF is comprised of chemical pretreatment (hydrochloric acid and scale inhibitor)...",
+      "Sentence": "Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
       "trigger_process": [
-        "Unspecified Chemical Addition"
+        "Land Application"
       ]
     },
     {
-      "Equipment": "CartridgeFiltrationUnit",
+      "Equipment": null,
       "Process": [
-        "Filtration"
+        "Landfill"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...cartridge filtration...",
+      "Sentence": "Screenings from the headworks and solids from the grit removal are collected onsite and trucked to a local landfill",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The AWPF treatment will include membrane filtration (MF)",
+      "trigger_process": [
+        "Microfiltration"
       ]
     },
     {
@@ -215,47 +239,33 @@
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": null,
-      "Substance": [
-        "Water-Brackish"
+      "Role": [
+        "Tertiary"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...reverse osmosis (RO) membrane filtration (demineralization)...",
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The AWPF treatment will include ... reverse osmosis (RO)",
       "trigger_process": [
         "Reverse Osmosis"
       ]
     },
     {
-      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Equipment": "UVH2O2Reactor",
       "Process": [
-        "GranularActivatedCarbon"
+        "AdvancedOxidation"
       ],
-      "Role": null,
-      "Substance": [
-        "Constituent-Organics"
+      "Role": [
+        "Tertiary"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...granular activated carbon (GAC) for removal and reduction of volatile organics...",
-      "trigger_process": [
-        "Activated Carbon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "GasTransfer"
-      ],
-      "Role": null,
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "..., degasification (for removal of hydrogen sulfide and carbon dioxide gases), ...",
-      "trigger_process": []
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The AWPF treatment will include ultraviolet advanced oxidization (UV/AOP)",
+      "trigger_process": [
+        "Oxidation",
+        "UV-AOP"
+      ]
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -264,47 +274,83 @@
         "Disinfection"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "...post-treatment disinfection by chloramination (sodium hypochlorite and ammonium hydroxide).",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The AWPF treatment will include ... free chlorine disinfection",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "MediaFiltration"
+        "Sedimentation"
       ],
-      "Role": null,
-      "Substance": [
-        "Constituent-Metals"
+      "Role": [
+        "Primary"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The RO permeate passes through the GAC system and then is blended with groundwater that is treated through a manganese greensand filtration system (for iron and manganese removal)...",
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include the addition of two primary clarifiers",
       "trigger_process": [
-        "Media Filtration"
+        "Primary Clarification"
       ]
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include the addition of ... two secondary clarifiers",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include the addition of ... two aeration basins; the Discharger is also upgrading Plant 2's secondary process ... to full nitrification-denitrification",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Backwash waste waters produced by the GAC and manganese greensand filtration systems are discharged to an underground concrete holding basin and subsequently pumped to the SLRWRF via a 42-inch sewer force main.",
+      "Location": "on-site",
+      "Sentence": "and pumps the disinfected secondary-treated wastewater to the OOO",
       "trigger_process": []
     }
   ]

@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Tapia WRF uses the following process sequence: Coarse screening, grit removal, primary sedimentation, ...",
+      "Sentence": "Coarse screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Bar screens mechanically remove approximately 4 wet tons of large debris per month from the waste stream and grit chambers remove approximately 11 wet tons per month of grit from the waste stream.",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary sedimentation: The main objective of primary sedimentation is to remove solids from the wastewater by gravity.",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -71,13 +68,29 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Tapia WRF uses the following process sequence: ... activated sludge biological treatment with nitrification and denitrification ...",
+      "Sentence": "activated sludge biological treatment with nitrification and denitrification",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "Mixing"
+      ],
+      "Role": [
+        "Aerobic",
+        "NitrogenRemoval",
+        "PhosphorusRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The return activated sludge (RAS) ... undergoes reaeration treatment to facilitate nitrogen and phosphorus removal",
+      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -90,14 +103,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Tapia WRF uses the following process sequence: ... secondary sedimentation, tertiary filtration, disinfection ...",
+      "Sentence": "Secondary sedimentation with coagulation",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation"
       ],
@@ -109,8 +121,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Aluminum sulfate (alum) is added prior to filtration to enhance solids removal.",
+      "Sentence": "Aluminum sulfate (alum) is added prior to filtration to enhance solids removal",
       "trigger_process": [
         "Alum Addition",
         "Coagulation"
@@ -127,8 +138,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Inert media filtration: The filtration process is used to remove or reduce suspended or colloidal matter from a liquid stream, by passing the water through a bed of graded granular material.",
+      "Sentence": "Inert media filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -137,57 +147,22 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Disinfection: Sodium hypochlorite and ammonia are added to the treated effluent prior to the filters to destroy bacteria, pathogens and viruses, and to minimize algal growth in the filters.",
+      "Sentence": "disinfection by chloramination, and dechlorination",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine.",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "NitrogenRemoval",
-        "PhosphorusRemoval",
-        "Anaerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The return activated sludge (RAS), prior to returning to the secondary treatment system, undergoes reaeration treatment to facilitate nitrogen and phosphorus removal as well as to provide favorable conditions for the development of a facultative anaerobic biomass.",
-      "trigger_process": []
     },
     {
       "Equipment": "Tank",
@@ -197,35 +172,31 @@
         "Sedimentation"
       ],
       "Role": [
-        "Equalization",
-        "Pretreatment",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "As of September 2009, Tapia WRF\u2019s centrate undergoes treatment provided by the Centrate Treatment Unit (CTU)... consists of two 800,000 gallon tanks connected to pumps and blowers, consists of aeration, mixing, settling, and decanting.",
+      "Sentence": "the Centrate Treatment Unit (CTU) ... consists of two 800,000 gallon tanks ... consists of aeration, mixing, settling",
       "trigger_process": [
-        "Equalization"
+        "Unspecified Clarification"
       ]
     },
     {
-      "Equipment": "AerobicDigester",
+      "Equipment": null,
       "Process": [
-        "AerobicDigestion"
+        "Landfill"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Prior to 1993 the principal solids treatment route was aerobic digestion at Tapia WRF and land application at the Rancho Las Virgenes Farm.",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "This material is sent to a landfill for disposal",
       "trigger_process": [
-        "Aerobic Digestion"
+        "Biosolids Landfill"
       ]
     },
     {
@@ -235,13 +206,13 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "At Rancho, the sludge is anaerobically digested, dewatered, mixed with small woodchips or sawdust, and composted.",
+      "Sentence": "At Rancho, the sludge is anaerobically digested",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -257,8 +228,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "At Rancho, the sludge is anaerobically digested, dewatered, mixed with small woodchips or sawdust, and composted.",
+      "Sentence": "At Rancho, the sludge is ... dewatered",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -266,25 +236,7 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "BiosolidsDisposal",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Upon completion of meeting 40 CFR 503 requirements, the compost is tested and given away or sold to consumers for land application as class \u201cA\u201d exceptional quality product.",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -292,10 +244,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "This material is sent to a landfill for disposal.",
+      "Sentence": "At Rancho, the sludge is ... mixed with small woodchips or sawdust, and composted",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Composting"
       ]
     },
     {
@@ -304,14 +255,12 @@
         "Microfiltration"
       ],
       "Role": [
-        "Advanced",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "This project will ... treat the tertiary-treated recycled water from the Tapia WRF through microfiltration, reverse osmosis, and advanced oxidation.",
+      "Sentence": "will treat the tertiary-treated recycled water from the Tapia WRF through microfiltration",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -322,14 +271,12 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Advanced",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "This project will ... treat the tertiary-treated recycled water from the Tapia WRF through microfiltration, reverse osmosis, and advanced oxidation.",
+      "Sentence": "will treat the tertiary-treated recycled water from the Tapia WRF through ... reverse osmosis",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -340,15 +287,14 @@
         "AdvancedOxidation"
       ],
       "Role": [
-        "Advanced",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "This project will ... treat the tertiary-treated recycled water from the Tapia WRF through microfiltration, reverse osmosis, and advanced oxidation.",
+      "Sentence": "will treat the tertiary-treated recycled water from the Tapia WRF through ... advanced oxidation",
       "trigger_process": [
+        "Oxidation",
         "UV-AOP"
       ]
     }

@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Bar screening;"
+      "Sentence": "Bar screening"
     },
     {
       "Equipment": "GritChamber",
@@ -25,8 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Aerated grit removal;"
+      "Sentence": "Aerated grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,24 +37,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary clarification;"
+      "Sentence": "Primary clarification"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "HighPurityOxygen"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Pure oxygen aeration;"
+      "Sentence": "Pure oxygen aeration"
     },
     {
       "Equipment": "SedimentationTank",
@@ -69,41 +65,69 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Secondary clarification;"
+      "Sentence": "Secondary clarification"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Chlorine gas disinfection;"
+      "Sentence": "Chlorine gas disinfection; and, Dechlorination (using sodium bisulfite prior to discharge to the Feather River)"
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": null,
       "Process": [
-        "Dechlorination"
+        "ChemicalAddition"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "NutrientRemoval"
       ],
       "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "A polyammonium phosphate dosing program was put in place to help balance the influent wastewater nutrient ratio... polyammonium phosphate was last used in October 2022"
+    },
+    {
+      "Equipment": "RotaryDrumThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Dechlorination (using sodium bisulfite prior to discharge to the Feather River at Discharge Points 001, 003, and 004)."
+      "Sentence": "Biosolids are thickened using rotary drum thickeners"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "anaerobically digested in two digesters"
     },
     {
       "Equipment": "DewateringUnit",
@@ -113,23 +137,73 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Facility also uses treated wastewater for multiple processes including the spray system on primary and secondary clarifiers and screw presses, makeup water for polymers..."
+      "Sentence": "Digested biosolids are dewatered by 3 screw presses"
     },
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition"
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "disposed of off-site as landfill cover material"
+    },
+    {
+      "Equipment": "BiologicalAeratedFilter",
+      "Process": [
+        "BiologicallyActiveFiltration"
       ],
       "Role": null,
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "A polyammonium phosphate dosing program was put in place to help balance the influent wastewater nutrient ratio... As of adoption of this Order, polyammonium phosphate was last used in October 2022."
+      "Sentence": "three composite bed biofilters that are used to control odors"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a series of six disposal ponds located within the Feather River levee"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "directed to an on-site storm, unlined water basin... where it can be directed to the headworks"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The drying beds are not used except to dry residue from the digesters when they are cleaned every five years"
     }
   ]
 }

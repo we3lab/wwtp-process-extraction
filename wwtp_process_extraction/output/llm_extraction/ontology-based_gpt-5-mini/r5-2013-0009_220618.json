@@ -1,78 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "MembraneProcess",
-        "Mixing",
-        "Recirculation",
-        "Separation"
-      ],
-      "Role": [
-        "Anoxic",
-        "Aerobic"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A typical MBR unit has three zones: anoxic, pre-aeration and membranes."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The new UV disinfection system consists of three banks of lights, with two banks scheduled for online operation and one bank provided as backup."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Solid waste from the fine screen and the waste activated sludge will be dewatered by the 0.7-meter belt filter press."
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The updated WWTF will consist of a grit removal unit..."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The existing 40,000- gallon Vallecito aeration tank will be used as a flow equalization basin."
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -83,38 +11,92 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The updated WWTF will consist of...two fine screens..."
+      "Sentence": "Raw wastewater will be mechanically screened"
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The updated WWTF will consist of a grit removal unit"
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The existing 40,000- gallon Vallecito aeration tank will be used as a flow equalization basin."
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification",
+        "Denitrification",
+        "BiologicallyActiveFiltration",
+        "Recirculation",
+        "Mixing",
+        "AirScouring"
+      ],
+      "Role": [
+        "Secondary",
+        "Anoxic",
+        "Aerobic",
+        "NutrientRemoval",
+        "Recirculation"
       ],
       "Substance": [
+        "Sludge-MixedLiquor",
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The updated WWTF will consist of...a sludge holding tank..."
+      "Sentence": "A typical MBR unit has three zones: anoxic, pre-aeration and membranes."
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
       "Role": [
-        "Storage",
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The new UV disinfection system consists of three banks of lights"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The updated WWTF will consist of...a dry sludge storage area..."
+      "Sentence": "Solid waste from the fine screen and the waste activated sludge will be dewatered by the 0.7-meter belt filter press."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Tank",
       "Process": null,
       "Role": [
         "Storage"
@@ -122,33 +104,60 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The updated WWTF will consist of...the existing storage pond..."
+      "Sentence": "The updated WWTF will consist of ... a sludge holding tank"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Containment"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The dewatered sludge will be tested and stored in a roofed dry sludge storage area on site"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The disinfected wastewater will be discharged into the storage pond"
     },
     {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The disinfected wastewater will be discharged into the storage pond and then applied to the LAAs."
+      "Sentence": "then applied to the LAAs"
     },
     {
-      "Equipment": null,
+      "Equipment": "Screen",
       "Process": [
-        "BiosolidsDisposal"
+        "Screening"
       ],
       "Role": [
+        "Pretreatment",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The dewatered sludge will be tested and stored in a roofed dry sludge storage area on site in order to meet the requirements for Class B biosolids, and then removed for off-site disposal."
+      "Location": "on-site",
+      "Sentence": "The updated WWTF will consist of ... two fine screens"
     }
   ]
 }

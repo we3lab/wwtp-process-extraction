@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "preliminary treatment (coarse and fine mechanical screening and grit removal at the Influent Lift Station)"
+      "Sentence": "coarse and fine mechanical screening"
     },
     {
       "Equipment": "GritChamber",
@@ -25,20 +24,17 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "preliminary treatment (coarse and fine mechanical screening and grit removal at the Influent Lift Station)"
+      "Sentence": "grit removal at the Influent Lift Station"
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "flow equalization (two flow equalization tanks)"
     },
     {
@@ -52,12 +48,12 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary treatment (three aeration tanks with nitrification and denitrification activated sludge)"
     },
     {
@@ -66,46 +62,58 @@
         "ActivatedSludge",
         "Nitrification",
         "Denitrification",
-        "MembraneProcess",
-        "Filtration"
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary",
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "tertiary treatment (six biomembrane bioreactors, providing further carbonaceous oxidation, nitrification/denitrification and solids removal to meet the limits of the WDRs)"
+      "Sentence": "tertiary treatment (six biomembrane bioreactors, providing further carbonaceous oxidation, nitrification/denitrification and solids removal)"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "disinfection (UV)"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treated and disinfected effluent is discharged to three percolation ponds"
+      "Sentence": "discharged to three percolation ponds"
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "thickened at two thickeners"
     },
     {
       "Equipment": "AerobicDigester",
@@ -122,22 +130,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The returned activated sludge is treated at two of three aerobic digesters (one aerobic digester is for backup)"
-    },
-    {
-      "Equipment": "Thickener",
-      "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "after being thickened at two thickeners"
+      "Sentence": "treated at two of three aerobic digesters"
     },
     {
       "Equipment": "DewateringUnit",
@@ -152,40 +145,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The solids generated at the aerobic digesters receive final dewatering at the screw dewatering press"
+      "Sentence": "final dewatering at the screw dewatering press"
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "Final solids are hauled by Synagro to their South Kern Compost Manufacturing Facility where they are composted to meeting the United States Environmental Protection Agency (USEPA) Class B A reuse standards"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "are sent to the Ventura County Regional Bio-Solids facility for agricultural reuse"
+      "Sentence": "hauled by Synagro to their South Kern Compost Manufacturing Facility where they are composted"
     },
     {
       "Equipment": "NanofiltrationUnit",
@@ -198,8 +171,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The RO system will consist of nanofiltration and RO units to reduce effluent chloride concentrations"
+      "Sentence": "the RO system will consist of nanofiltration and RO units"
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
@@ -209,27 +181,23 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-Inorganics"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "an advanced treatment system, consisting of reverse osmosis (RO), will be constructed at the SPWRF, which will be designed to reduce the chloride concentration in the effluent to 110 milligrams per liter (mg/L) or less"
+      "Sentence": "an advanced treatment system, consisting of reverse osmosis (RO), will be constructed at the SPWRF"
     },
     {
-      "Equipment": null,
+      "Equipment": "Evaporator",
       "Process": [
         "Evaporation"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.6,
-      "Sentence": "followed by a RO brine concentrator (Figure 4)"
+      "Sentence": "followed by a RO brine concentrator"
     }
   ]
 }

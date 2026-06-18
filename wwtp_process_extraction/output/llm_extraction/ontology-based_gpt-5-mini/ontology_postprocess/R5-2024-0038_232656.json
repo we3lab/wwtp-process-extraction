@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "preliminary influent coarse and fine screening",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "vortex grit removal",
       "trigger_process": [
         "Grit Removal"
@@ -38,17 +36,19 @@
       "Equipment": "MixingBasin",
       "Process": [
         "Denitrification",
-        "Mixing",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Mixing"
       ],
       "Role": [
-        "Anoxic"
+        "Secondary",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "anoxic basins and aeration basins including nitrification and denitrification",
+      "Sentence": "biological treatment using anoxic basins ... including nitrification and denitrification",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
@@ -58,32 +58,36 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "Nitrification",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification"
       ],
       "Role": [
-        "Aerobic"
+        "Secondary",
+        "Aerobic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "anoxic basins and aeration basins including nitrification and denitrification",
+      "Sentence": "biological treatment using ... aeration basins including nitrification and denitrification",
       "trigger_process": [
-        "Nitrification"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "MembraneProcess"
+        "MembraneProcess",
+        "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "a membrane bioreactor system",
       "trigger_process": [
         "Membrane Bioreactor"
@@ -95,14 +99,35 @@
         "UVDisinfection",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "ultraviolet light (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "ChemicalAddition",
+        "Mixing"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste sludge is mixed with a polymer",
+      "trigger_process": [
+        "Polymer Addition"
       ]
     },
     {
@@ -114,16 +139,29 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste sludge is mixed with a polymer and dewatered via two belt filter presses.",
+      "Sentence": "dewatered via two belt filter presses",
       "trigger_process": [
-        "Mechanical Dewatering",
-        "Polymer Addition"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sent for ... composting at the Synagro Central Valley Compost Facility",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -132,30 +170,14 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Additionally, biosolids are applied at the Facility.",
+      "Sentence": "biosolids are applied at the Facility",
       "trigger_process": [
         "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "biosolids are sent for land application or composting at the Synagro Central Valley Compost Facility.",
-      "trigger_process": [
-        "Unspecified Disposal"
       ]
     }
   ]

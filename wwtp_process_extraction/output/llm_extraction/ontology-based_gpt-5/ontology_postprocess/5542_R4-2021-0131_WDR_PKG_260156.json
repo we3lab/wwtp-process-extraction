@@ -3,9 +3,7 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -36,18 +34,14 @@
         "Denitrification"
       ],
       "Role": [
-        "Secondary",
         "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge biological treatment with nitrification/denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -73,13 +67,11 @@
       "Process": [
         "Coagulation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation, inert media filtration, chlorination for disinfection, and dechlorination.",
+      "Sentence": "coagulation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -90,9 +82,7 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -107,35 +97,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Bacteria"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The disinfecting agent is added to the treated effluent prior to the filters to destroy bacteria, pathogens and viruses, and to minimize algal growth in the filters.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Additional disinfectant may be dosed prior to the serpentine chlorine contact chamber.",
+      "Sentence": "chlorination for disinfection. Sodium hypochlorite is used as a disinfectant",
       "trigger_process": [
         "Chlorination"
       ]
@@ -145,15 +113,32 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine.",
       "trigger_process": [
+        "Chlorination",
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Sewage solids separated from the wastewater are returned to the trunk sewer for conveyance to JWPCP for treatment and disposal.",
+      "trigger_process": [
+        "Unspecified Disposal"
       ]
     }
   ]

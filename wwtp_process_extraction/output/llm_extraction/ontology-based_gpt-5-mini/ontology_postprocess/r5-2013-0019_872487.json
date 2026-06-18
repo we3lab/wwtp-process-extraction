@@ -1,81 +1,74 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "headworks with screening and grit removal;",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
+      "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Primary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "headworks with screening and grit removal;",
+      "Sentence": "Primary Clarifiers",
       "trigger_process": [
-        "Grit Removal"
+        "Primary Clarification"
       ]
     },
     {
-      "Equipment": "DissolvedAirFlotationThickener",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Flotation"
+        "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "fats, oils, and grease (FOG) removal by dissolved air flotation (DAF);",
+      "Sentence": "Secondary Clarifiers",
       "trigger_process": [
-        "Flotation",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "anaerobic digestion in the bulk volume fermenter (Fermenter);",
-      "trigger_process": [
-        "Anaerobic Digestion"
+        "Secondary Clarification"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge",
+        "Nitrification"
       ],
       "Role": [
-        "Equalization"
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "about 26 million gallons of flow equalization in five aerated basins;",
+      "Sentence": "Aeration Basins",
       "trigger_process": [
-        "Equalization"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Denitrification"
+      ],
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Anoxic Basins",
+      "trigger_process": [
+        "Denitrification",
+        "Unspecified AS"
       ]
     },
     {
@@ -83,30 +76,85 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "six sequencing batch reactors (SBRs);",
+      "Sentence": "Sequencing Batch Reactors",
       "trigger_process": [
         "SBR"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "TricklingFilter",
       "Process": [
-        "Denitrification"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "six denitrifying filters;",
+      "Sentence": "Biofiltration (Trickling Filters)",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Biofiltration",
+        "Denitrification"
+      ],
+      "Role": [
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Denitrifying Filters Methanol Feed",
       "trigger_process": [
         "Denitrification",
+        "Denitrification Filter",
         "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Grit Removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Gravity Belt Thickener (GBT)",
+      "trigger_process": [
+        "Thickening"
       ]
     },
     {
@@ -122,8 +170,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "two DAF units for thickening solids generated in the SBRs;",
+      "Sentence": "DAF (Sludge DAF) / DAF thickening",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -132,16 +179,20 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "three anaerobic digesters;",
+      "Sentence": "Anaerobic Digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -149,19 +200,222 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "approximately 25 acres of sludge drying beds.",
+      "Sentence": "Mechanical Sludge Dewatering",
       "trigger_process": [
-        "Drying",
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge Drying Beds",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Former Sludge Drying Beds",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Aerated Equalization Basins",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent Ponds",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Former Effluent Holding Pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Former Sludge Supernatant Pits",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Former Aeration Basins",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent Mixing Box",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "WAS Storage Tank",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "RAS",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "WAS (Offsite Land Application) / McCarthy Farms",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Bypass Line Landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Ammonia Feed",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
       ]
     }
   ]

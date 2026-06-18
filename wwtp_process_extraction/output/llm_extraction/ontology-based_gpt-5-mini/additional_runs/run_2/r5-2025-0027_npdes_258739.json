@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes screening"
+      "Sentence": "screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes ... grit removal"
+      "Sentence": "grit removal"
     },
     {
       "Equipment": "Pump",
@@ -66,12 +66,12 @@
       ],
       "Substance": [
         "Constituent-Ammonia",
-        "Constituent-Nitrite",
-        "Constituent-Nitrate"
+        "Constituent-Nitrate",
+        "Constituent-Nitrite"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the aeration basins for nitrification/de-nitrification"
+      "Sentence": "aeration basins for nitrification/de-nitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -84,23 +84,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "further routed to secondary clarifiers"
+      "Sentence": "secondary clarifiers"
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
         "Secondary",
-        "Storage",
-        "Equalization",
-        "Detention"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "facultative pond system and chlorination facilities"
+      "Sentence": "Additional secondary treatment and water storage is available in the facultative ponds"
     },
     {
       "Equipment": "Wetland",
@@ -108,12 +104,26 @@
         "Biofiltration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "engineered treatment wetlands on the west side"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "recirculation channel ... for flow equalization"
     },
     {
       "Equipment": "TricklingFilter",
@@ -130,12 +140,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treatment on the west side ... a nitrifying biotower for ammonia removal"
+      "Sentence": "nitrifying biotower for ammonia removal"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Tertiary"
@@ -143,7 +154,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by dissolved air floatation units"
+      "Sentence": "followed by dissolved air floatation units, where removal efficiencies are enhanced through chemical addition"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -166,11 +177,10 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "disinfected using chlorination/dechlorination prior to discharge"
@@ -186,7 +196,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treatment on the east side ... consists of disk filters"
+      "Sentence": "Tertiary treatment on the east side ... consists of disk filters"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -194,7 +204,8 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -204,7 +215,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -214,12 +225,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids ... are either routed to gravity thickeners"
+      "Sentence": "routed to gravity thickeners"
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -246,7 +257,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the anaerobic digesters"
+      "Sentence": "pumped to the anaerobic digesters directly"
     },
     {
       "Equipment": "Tank",
@@ -254,76 +265,74 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following anaerobic digestion, sludge is routed to a holding tank"
+      "Sentence": "sludge is routed to a holding tank"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Dewatering"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge"
+      "Sentence": "digested solids are ... dewatered using a centrifuge"
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Filtration"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Dewatering"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested solids are further conditioned and dewatered ... or belt filter presses"
+      "Sentence": "dewatered using ... belt filter presses"
     },
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition"
+        "LandApplication"
       ],
       "Role": [
-        "Tertiary"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "removal efficiencies are enhanced through chemical addition"
+      "Location": "off-site",
+      "Sentence": "routinely recycled on agricultural lands as a source of nutrients and soil amendment"
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
+        "Landfill"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "plans to build return flow facilities from the ponds and wetlands ... to the upgraded facility on the east side ... for retreatment"
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "flow diversion and storage"
+      "Location": "off-site",
+      "Sentence": "In an emergency, solids can be used as daily cover for solid waste at a landfill"
     }
   ]
 }

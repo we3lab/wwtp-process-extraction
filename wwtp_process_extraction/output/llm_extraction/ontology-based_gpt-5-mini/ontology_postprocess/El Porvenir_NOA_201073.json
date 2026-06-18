@@ -1,7 +1,7 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
@@ -11,44 +11,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Aerobic Treatment Unit requirements specified in Section B.3 of the General Order;",
+      "Sentence": "four lined treatment ponds (two aerated ponds and two settling ponds)",
       "trigger_process": [
-        "Unspecified AS"
+        "Aerated Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Evaporation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "treated effluent discharged to the evaporation/percolation ponds (i.e., disposal ponds).",
-      "trigger_process": [
-        "Evaporation Pond"
-      ]
-    },
-    {
-      "Equipment": "TricklingFilter",
-      "Process": [
-        "TricklingFiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater Pond of Trickling Filter (not including residential recirculating sand filters)",
-      "trigger_process": [
-        "Trickling Filter"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
       ],
@@ -58,10 +27,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "the Tulare Lake Basin Plan for BOD for advanced primary treatment.",
+      "Sentence": "four lined treatment ponds (two aerated ponds and two settling ponds)",
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Constituent-OrganicCarbon"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The limitations included in this table apply to the treated effluent discharged to the evaporation/percolation ponds (i.e., disposal ponds).",
+      "trigger_process": [
+        "Evaporation Pond"
       ]
     }
   ]

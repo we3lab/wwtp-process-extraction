@@ -94,9 +94,8 @@
   "Flotation": {
     "alt_names": ["flotation"],
     "alt_names_case_sensitive": [],
-    "cwns_processes": ["Flotation"],
+    "cwns_processes": ["Flotation", "Biosolids Thickening, Dissolved Air Flotation"],
     "ontology_triggers": ["Process-Flotation"],
-    "exclude_if_any": ["Role-SolidsHandling"],
     "priority": 1,
     "werf_codes": ["MOD_CHEM"]
   },
@@ -198,7 +197,6 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Pond, Stabilization"],
       "ontology_triggers": ["Equipment-Pond", "Role-Stabilization"],
-      "exclude_if_any": ["Role-SolidsHandling"],
       "werf_codes": ["STBL_POND"]
     },
     "Evaporation Pond": {
@@ -206,12 +204,13 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Evaporation", "Evapotranspiration Bed"],
       "ontology_triggers": [["Equipment-Pond", "Process-Evaporation"]],
+      "exclude_if_any": ["Role-SolidsHandling"],
       "werf_codes": []
     },
     "Unspecified Lagoon": {
       "alt_names": ["lagoon", "treatment pond"],
       "alt_names_case_sensitive": [],
-      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Lagoon, Natural (Large Area)", "Pond, Total Containment", "Storage (Lagoon)"],
+      "cwns_processes": ["Lagoon, Other", "Duckweed (Lemna)", "Pond, Total Containment", "Storage (Lagoon)"],
       "ontology_triggers": ["Equipment-Pond"],
       "priority": 1000,
       "global_priority": 1000,
@@ -293,7 +292,7 @@
       "Denitrification": {
         "alt_names": ["denitrif", "anoxic"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Biological Denitrification", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification", "Denitrification Filter", "Biological Denitrification, (Separate Stage)"],
+        "cwns_processes": ["Biological Denitrification", "Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Activated Sludge, With Biological Denitrification", "Biological Denitrification, (Separate Stage)"],
         "ontology_triggers": ["Process-Denitrification"],
         "secondary_category": ["Activated Sludge"],
         "werf_codes": ["BDENIT"]
@@ -315,7 +314,7 @@
       "Chemical N Removal": {
         "alt_names": ["chemical nitrogen removal", "ammonia stripping", "breakpoint chlorination"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Chemical N Removal", "Ammonia Stripping"],
+        "cwns_processes": ["Nitrogen Removal, Chemical", "Ammonia Stripping"],
         "ontology_triggers": [
           ["Role-NitrogenRemoval", "Equipment-IonExchangeMembrane"],
           ["Role-NutrientRemoval", "Process-Stripping"]
@@ -410,7 +409,7 @@
       "Denitrification Filter": {
         "alt_names": ["denitrification filt", "denitrifying filt"],
         "alt_names_case_sensitive": [],
-        "cwns_processes": ["Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media", "Denitrification Filter"],
+        "cwns_processes": ["Filter, Denitrification with Fine Media", "Filter, Denitrification with Coarse Media"],
         "ontology_triggers": [
           ["Process-Biofiltration", "Process-Denitrification"],
           ["Process-MediaFiltration", "Process-Denitrification"],

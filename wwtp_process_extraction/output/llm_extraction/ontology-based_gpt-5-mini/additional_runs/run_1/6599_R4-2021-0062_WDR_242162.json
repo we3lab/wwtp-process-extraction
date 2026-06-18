@@ -44,36 +44,6 @@
       "Sentence": "Walker Process packaged activated sludge plant that includes an aeration basin with coarse bubble diffusers"
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Return activated sludge and waste activated sludge is pumped by airlift pump"
-    },
-    {
-      "Equipment": "AerobicDigester",
-      "Process": [
-        "AerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The waste activated sludge is aerobically digested"
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -87,21 +57,41 @@
       "Sentence": "and a secondary sedimentation basin"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "AerobicDigester",
       "Process": [
-        "Coagulation"
+        "AerobicDigestion"
       ],
       "Role": [
-        "Tertiary"
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment is provided through coagulation"
+      "Sentence": "The waste activated sludge is aerobically digested"
     },
     {
-      "Equipment": "StaticMixer",
+      "Equipment": "Pump",
       "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge and waste activated sludge is pumped by airlift pump"
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation",
         "Mixing"
       ],
       "Role": [
@@ -110,12 +100,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rapid mix"
+      "Sentence": "Tertiary treatment is provided through coagulation, rapid mix"
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
-        "Flocculation"
+        "Flocculation",
+        "Mixing"
       ],
       "Role": [
         "Tertiary"
@@ -153,7 +144,7 @@
       "Sentence": "Disinfection is provided by four ultraviolet lamps in series"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -178,14 +169,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The thickened, digested sludge is stored in a 10,000-gallon underground storage tank"
+      "Sentence": "The thickened, digested sludge is stored in a 10,000-gallon underground storage tank prior to hauling"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "BiologicallyActiveFiltration"
+        "Biofiltration"
       ],
       "Role": [
+        "Secondary",
         "NitrogenRemoval"
       ],
       "Substance": [

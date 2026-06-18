@@ -11,20 +11,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP headworks consists of the coarse bar screens..."
+      "Sentence": "The SRTTP headworks consists of the coarse bar screens"
     },
     {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The SRTTP headworks consists of the coarse bar screens, influent pump station wet-well..."
+      "Sentence": "influent pump station wet-well"
     },
     {
       "Equipment": "Screen",
@@ -37,8 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP headworks consists of the coarse bar screens, influent pump station wet-well, flow meter, fine drum screens..."
+      "Sentence": "fine drum screens"
     },
     {
       "Equipment": "GritChamber",
@@ -51,8 +48,31 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP headworks consists of the coarse bar screens, influent pump station wet-well, flow meter, fine drum screens, grit collectors..."
+      "Sentence": "grit collectors"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Elutriation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "grit classifiers... grit and debris is washed to remove organics"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "drain pump station to receive the SRTTP return flows"
     },
     {
       "Equipment": null,
@@ -67,27 +87,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "(if necessary, to neutralize phosphorous) alum feed system."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.8,
-      "Sentence": "flow will automatically be diverted to the Lemon Grove Impoundment Basins for containment to prevent a spill."
+      "Sentence": "(if necessary, to neutralize phosphorous) alum feed system"
     },
     {
       "Equipment": "SequencingBatchReactor",
       "Process": [
         "ActivatedSludge",
         "Aeration",
-        "Sedimentation"
+        "Sedimentation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Secondary",
@@ -96,37 +104,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The effluent from the grit collectors gravity-flows into secondary treatment (sequencing batch reactors, SBR)."
+      "Sentence": "secondary treatment (sequencing batch reactors, SBR)... react/compressed air, settle, and decant. A methanol feed system is available"
     },
     {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Feed"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "A methanol feed system is available to provide supplemental carbon to the SBRs through a dedicated line at each SBR."
-    },
-    {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP’s tertiary treatment process includes three flow equalization basins (total storage capacity of one million gallons)..."
+      "Sentence": "three flow equalization basins (total storage capacity of one million gallons)"
     },
     {
       "Equipment": "Pump",
@@ -137,8 +126,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The SRTTP’s tertiary treatment process includes... filter feed pumps..."
+      "Sentence": "filter feed pumps"
     },
     {
       "Equipment": "Filter",
@@ -151,8 +139,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP’s tertiary treatment process includes... disk filters..."
+      "Sentence": "disk filters"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -168,8 +155,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP’s tertiary treatment process includes... sodium hypochlorite generation system..."
+      "Sentence": "sodium hypochlorite generation system"
     },
     {
       "Equipment": "DisinfectionUnit",
@@ -182,20 +168,92 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SRTTP’s tertiary treatment process includes... disinfection contact basins..."
+      "Sentence": "disinfection contact basins"
     },
     {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The SRTTP’s tertiary treatment process includes... recycled water pumps and metering facilities."
+      "Sentence": "recycled water pumps and metering facilities"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "waste activated sludge holding tank"
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three aerobic digesters for sludge stabilization"
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "gravity belt thickener for sludge thickening"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "centrifuges for sludge dewatering"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "onsite biosolids storage facility"
     },
     {
       "Equipment": null,
@@ -210,7 +268,6 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
       "Sentence": "If the sludge is non-hazardous, the Discharger send the biosolids to the municipal landfill."
     }
   ]

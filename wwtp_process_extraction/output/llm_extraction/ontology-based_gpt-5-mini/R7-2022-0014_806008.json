@@ -9,8 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WRP consists of an influent pump station, headworks, a membrane bioreactor (MBR), two ultraviolet (UV) disinfection units, solids handling, solids storage and dewatering facilities, recharge basins for effluent disposal, and an odor control system."
+      "Sentence": "influent pump station"
     },
     {
       "Equipment": "Screen",
@@ -23,8 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks system consists of mechanical bar screens, vortex grit removal, influent fine screenings and grit washers."
+      "Sentence": "mechanical bar screens"
     },
     {
       "Equipment": "GritChamber",
@@ -37,13 +35,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks system consists of mechanical bar screens, vortex grit removal, influent fine screenings and grit washers."
+      "Sentence": "vortex grit removal"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "BiologicallyActiveFiltration",
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
@@ -57,8 +54,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary and secondary treatment units consist of an MBR, nitrification, de-nitrification and include anoxic, aerobic, and swing zones."
+      "Sentence": "Primary and secondary treatment units consist of an MBR, nitrification, de-nitrification and include anoxic, aerobic, and swing zones"
     },
     {
       "Equipment": "Filter",
@@ -71,8 +67,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Further treatment is provided by membrane filtration basins, and UV disinfection (vessels) banks."
+      "Sentence": "membrane filtration basins"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -85,8 +80,38 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WRP consists of ... two ultraviolet (UV) disinfection units ..."
+      "Sentence": "two ultraviolet (UV) disinfection units"
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sodium hypochlorite will be used for process control ... and may be used in the final effluent"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Storage",
+        "SolidsHandling",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "WAS and foam from the MBR system are discharged to sludge storage tanks. The tanks are aerated by a blower system"
     },
     {
       "Equipment": "DewateringUnit",
@@ -97,56 +122,74 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WRP consists of ... solids handling, solids storage and dewatering facilities ..."
+      "Sentence": "Solids from the storage tanks are pumped to screw presses for dewatering"
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Drain"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The WRP consists of ... solids handling, solids storage and dewatering facilities ..."
+      "Sentence": "process drain pump station and pumped to the head of the plant upstream of the screens"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Storage",
+        "MakeUp"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Chemical storage and dosing facilities are provided for sodium hypochlorite, citric acid, dewatering polymer"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The WRP consists of ... recharge basins for effluent disposal ..."
+      "Sentence": "three spreading, surface impoundments (also known as recharge basins) for groundwater recharge"
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "Tank",
       "Process": [
-        "Chlorination"
+        "Recirculation"
       ],
       "Role": [
-        "Pretreatment",
-        "Posttreatment",
-        "Tertiary"
+        "Equalization"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sodium hypochlorite will be used for process control to remove excess biological growth or algae from the treatment units and may be used in the final effluent."
+      "Sentence": "one off-spec basin that returns to the equalization basin and reintroduced to the influent stream for treatment"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Adsorption"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an odor control system"
     }
   ]
 }

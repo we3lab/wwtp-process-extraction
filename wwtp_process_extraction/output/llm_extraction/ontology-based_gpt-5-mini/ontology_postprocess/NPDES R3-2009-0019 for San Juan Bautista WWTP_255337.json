@@ -5,11 +5,12 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "A comminutor and influent flow-metering;",
       "trigger_process": [
         "Comminution"
@@ -22,11 +23,13 @@
         "Aeration",
         "Mixing"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Pond 1 which includes 8 aerators and 2 mixers and is operated as a sequencing batch reactor (SBR);",
       "trigger_process": [
         "SBR"
@@ -41,7 +44,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Flow equalization using seven 10,000-gallon polyethylene tanks;",
       "trigger_process": [
         "Equalization"
@@ -52,11 +54,13 @@
       "Process": [
         "Denitrification"
       ],
-      "Role": null,
+      "Role": [
+        "NitrogenRemoval",
+        "Anoxic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Denitrification in Cell C of Pond 2;",
       "trigger_process": [
         "Denitrification",
@@ -67,14 +71,17 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Sludge storage in Cells A and B of Pond 2;",
       "trigger_process": [
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
     },
@@ -89,7 +96,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Coagulant addition;",
       "trigger_process": [
         "Alum Addition",
@@ -102,11 +108,12 @@
       "Process": [
         "RapidSandFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Pressure sand filtration;",
       "trigger_process": [
         "Media Filtration"
@@ -115,16 +122,14 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Ultraviolet light disinfection;",
       "trigger_process": [
         "UV Disinfection"
@@ -137,14 +142,13 @@
         "Disinfection"
       ],
       "Role": [
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Chlorine contact chamber;",
       "trigger_process": [
         "Chlorination"
@@ -154,14 +158,46 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Tertiary",
-        "Storage"
+        "Storage",
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "One 5,000-gallon Disinfected Tertiary Treated Water Storage Tank.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The treatment plant will be upgraded with chlorination capability to provide \u201cdisinfected tertiary recycled water,\u201d",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A 10,000-gallon storage tank will be placed adjacent to existing filters at the treatment facility for storage of reclaimed wastewater prior to distribution.",
       "trigger_process": []
     }
   ]

@@ -3,7 +3,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Adsorption"
+        "Process-Aeration"
       ],
       "Role": [
         "Pretreatment"
@@ -11,13 +11,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal...",
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
       "trigger_process": []
     },
     {
       "Equipment": "Screen",
       "Process": [
-        "Screening"
+        "Process-Screening"
       ],
       "Role": [
         "Pretreatment"
@@ -25,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal...",
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -33,7 +33,7 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Pretreatment"
@@ -49,7 +49,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Primary"
@@ -57,7 +57,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification...",
+      "Sentence": "The wastewater treatment process consists of odor control, screening, grit removal, primary clarification, high purity oxygen activated sludge...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -65,8 +65,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Process-ActivatedSludge",
+        "Process-Aeration"
       ],
       "Role": [
         "Secondary",
@@ -85,7 +85,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Process-Sedimentation"
       ],
       "Role": [
         "Secondary"
@@ -101,7 +101,7 @@
     {
       "Equipment": "DisinfectionUnit",
       "Process": [
-        "Disinfection"
+        "Process-Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -117,7 +117,7 @@
     {
       "Equipment": "DisinfectionUnit",
       "Process": [
-        "Dechlorination"
+        "Process-Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -143,55 +143,129 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Process-Thickening",
+        "Process-Filtration"
       ],
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "During peak wet weather flows, the plant can accept up to 425 MGD of influent by means of five 85 MGD influent pumps.",
-      "trigger_process": []
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "trigger_process": [
+        "Thickening"
+      ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Sedimentation"
+        "Process-AnaerobicDigestion"
       ],
       "Role": [
-        "Secondary"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": null,
-      "Implementation": "future",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
       "trigger_process": [
-        "Secondary Clarification"
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Process-Dewatering",
+        "Process-Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges. The digested sludge is then dewatered in one of five centrifuges.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Dewatering"
+        "Process-Composting"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Process-LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Process-Microfiltration"
       ],
       "Role": [
-        "Pretreatment"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project...",
       "trigger_process": [
-        "Unspecified Dewatering"
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Process-Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project...",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Process-ActivatedSludge",
+        "Process-Nitrification",
+        "Process-Denitrification"
       ],
       "Role": [
         "Secondary",

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening, aerated grit removal...",
+      "Sentence": "Treatment consists of screening, aerated grit removal, primary sedimentation...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -30,7 +30,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of screening, aerated grit removal...",
+      "Sentence": "...aerated grit removal, primary sedimentation by circular and rectangular clarifiers...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -48,7 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary sedimentation by circular and rectangular clarifiers...",
+      "Sentence": "primary sedimentation by circular and rectangular clarifiers, biological treatment by trickling filters...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -66,7 +66,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by trickling filters followed by activated sludge aeration basins...",
+      "Sentence": "biological treatment by trickling filters followed by activated sludge aeration basins...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -80,12 +80,13 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by trickling filters followed by activated sludge aeration basins...",
+      "Sentence": "...followed by activated sludge aeration basins, secondary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -125,7 +126,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...disinfection by chlorination, and dechlorination by sodium bisulfite.",
+      "Sentence": "disinfection by chlorination, and dechlorination by sodium bisulfite.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -134,29 +135,89 @@
       ]
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an 8.6 MG storage basin adjacent to the treatment plant to eliminate sanitary sewer overflows from the Ryder Street Pump Station...the Discharger operates the storage basin like an equalization basin",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger treats its biosolids by gravity thickening or co-settling, lime stabilization, and dewatering by belt-filter presses.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
       "Equipment": "Reactor",
       "Process": [
-        "ChemicalAddition"
+        "pHAdjustment"
       ],
       "Role": [
         "SolidsHandling",
         "Stabilization"
       ],
       "Substance": [
-        "pHAdjuster-Lime",
+        "Fluid-Sludge",
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...lime stabilization, and dewatering by belt-filter presses.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Lime Stabilization",
+        "Neutralization"
+      ]
+    },
+    {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The District operates a lime stabilized biosolids treatment and beneficial use program that treats sludge produced in the wastewater treatment with lime to reduce pathogens.",
-      "Source": "web_search",
-      "Website": "https://www.vallejowastewater.org/237/Biosolids",
+      "Sentence": "...and dewatering by belt-filter presses.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Lime Addition"
+        "Thickening"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "LandApplication"
       ],
@@ -168,11 +229,12 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids produced at the District's wastewater treatment plant are hauled by special truck to Tubbs Island and used as fertilizer to help crops.",
-      "Source": "web_search",
-      "Website": "https://www.vallejowastewater.org/237/Biosolids",
+      "Sentence": "The Discharger's stabilized, dewatered biosolids are hauled offsite for land application at the Discharger's Biosolids Utilization Project on Tubbs Island, Sonoma County.",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Land Application"
+        "Land Application",
+        "Mechanical Dewatering"
       ]
     }
   ]

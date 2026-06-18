@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment plant provides treatment consisting of influent screening and grit removal...",
+      "Sentence": "Preliminary treatment consists of screens followed by grit removal.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -99,7 +99,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins...This configuration achieves effective filament control and partial denitrification.",
+      "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins.",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -179,22 +179,21 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "Dechlorination"
+        "Aeration"
       ],
       "Role": [
         "Posttreatment",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-DissolvedOxygen"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system...",
-      "trigger_process": [
-        "Dechlorination"
-      ]
+      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected...",
+      "trigger_process": []
     },
     {
       "Equipment": "Screen",
@@ -209,7 +208,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of primary sludge screening...",
+      "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -217,6 +216,7 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
+        "Thickening",
         "Flotation"
       ],
       "Role": [
@@ -227,7 +227,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...dissolved air flotation (DAF) thickening of primary and secondary sludges...",
+      "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -255,41 +255,21 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Dewatering",
+        "Drying"
       ],
       "Role": [
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds...",
       "trigger_process": [
         "Biosolids Lagoon",
         "Drying",
-        "Evaporation Pond"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication",
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
-      "trigger_process": [
-        "Biosolids Landfill",
-        "Land Application"
+        "Stabilization Pond"
       ]
     },
     {
@@ -309,19 +289,7 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "...the project will construct a new fats, oil and grease receiving facility, including storage tanks and connections to existing facilities.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering",
         "Centrifugation"
@@ -330,7 +298,6 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge",
         "Flocculant-Polymer"
       ],
       "Implementation": "future",
@@ -338,26 +305,56 @@
       "Sentence": "This project will build a new digested sludge dewatering facility, including a new building, centrifuges, conveyors, truck bays, and polymer storage and dosing equipment is underway.",
       "trigger_process": [
         "Centrifuge",
-        "Polymer Addition",
-        "Thickening"
+        "Mechanical Dewatering",
+        "Polymer Addition"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "MicrofiltrationUnit",
       "Process": [
-        "Drying"
+        "Microfiltration"
       ],
       "Role": [
-        "SolidsHandling"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing.",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When operating at full capacity, it is capable of treating up to 10 MGD of the Facility\u2019s secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection, producing approximately 8 MGD of high-quality recycled water.",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Evaporation Pond"
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When operating at full capacity, it is capable of treating up to 10 MGD of the Facility\u2019s secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection, producing approximately 8 MGD of high-quality recycled water.",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When operating at full capacity, it is capable of treating up to 10 MGD of the Facility\u2019s secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection, producing approximately 8 MGD of high-quality recycled water.",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     }
   ]

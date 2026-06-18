@@ -1,67 +1,221 @@
 {
   "items": [
     {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis",
-        "MembraneProcess"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Feed",
-        "Permeate"
+        "Storage"
       ],
-      "Substance": [
-        "Constituent-Inorganics"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The proposed MFRO Facility would be sized to produce 2 MGD of MFRO product water..."
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "MembraneProcess"
-      ],
-      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "MEMBRANE FILTRATION/REVERSE OSMOSIS FACILITY"
+      "Sentence": "A membrane filtration influent tank;"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A surge tank and supporting compressed air system to control pressure surges;"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A feed pump system to convey influent from the influent tank to the microfiltration/ultrafiltration (MF/UF) system;"
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration",
+        "ChemicalAddition",
+        "Backwashing",
+        "Cleaning"
+      ],
+      "Role": [
+        "Pretreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes;"
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration",
+        "ChemicalAddition",
+        "Backwashing",
+        "Cleaning"
+      ],
+      "Role": [
+        "Pretreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes;"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An inter-process storage tank to equalize flows between the MF/UF and reverse osmosis (RO) systems;"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps;"
+    },
+    {
+      "Equipment": "CartridgeFiltrationUnit",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps;"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A RO feed pump station;"
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis",
+        "ChemicalAddition",
+        "Backwashing",
+        "Cleaning"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Water-Brackish"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO treatment trains with associated chemical addition, backwash, chemical cleaning, and membrane conditioning processes;"
     },
     {
       "Equipment": null,
       "Process": [
-        "Mixing"
+        "Purging"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "would be blended with a quantity of HARRF disinfected tertiary-treated recycled water to produce a final agricultural reuse supply"
+      "Sentence": "An RO flush system;"
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Tank",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Permeate",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A product water blending and storage tank;"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "MakeUp"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A pump system to convey blended MFRO product water to agricultural reuse sites via Hogback Reservoir."
+    },
+    {
+      "Equipment": "Tank",
       "Process": null,
       "Role": [
         "Equalization",
         "Storage"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "one 2-million gallon concrete storage reservoir for secondary effluent equalization storage"
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The following low-flow MFRO waste or residuals streams will be discharged to an on-site waste equalization wet well prior to discharge to the sanitary sewer for treatment at HARRF:"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
+      "Equipment": "Screen",
+      "Process": [
+        "Backwashing"
       ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "one 2-million gallon storage pond for secondary effluent and/or brine equalization storage"
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Strainer backwash flows,"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Cleaning",
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Periodic MF/UF neutralized \"clean in place\" membrane cleaning and conditioning flows,"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Purging",
+        "Cleaning",
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO flush flows, and periodic RO \"clean in place\" membrane cleaning and conditioning flows."
     }
   ]
 }

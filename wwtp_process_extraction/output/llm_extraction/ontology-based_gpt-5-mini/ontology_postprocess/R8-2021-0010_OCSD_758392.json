@@ -9,11 +9,45 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment...",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary treatment includes grit and screenings removal.",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary treatment includes grit and screenings removal.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Caustic soda shock, ferrous chloride, calcium nitrate, magnesium hydroxide and polymer can be added to reduce corrosion and odor and provide enhanced primary treatment.",
+      "trigger_process": [
+        "Polymer Addition"
       ]
     },
     {
@@ -25,9 +59,9 @@
         "Primary"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment...",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater then receives primary treatment in primary sedimentation facilities.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -41,9 +75,9 @@
         "Secondary"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Reclaimable flows will go through existing preliminary, primary, and secondary (trickling filter solids contact) treatment...",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -57,49 +91,159 @@
         "Secondary"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "After the GWRS Final Expansion, the activated sludge treatment process will treat only SARI and side-stream flows.",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The primary effluent is routed to either trickling filters or activated sludge facilities for secondary treatment.",
       "trigger_process": [
         "Unspecified AS"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
       ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Build a 6 MG equalization storage tank at Plant No. 2 to store secondary effluent during peak day flows...",
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
       "trigger_process": [
-        "Equalization"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
       "Role": [
-        "Feed"
+        "BiosolidsDisposal"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Build a Plant 2 effluent pump station that will convey approximately 50-85 MGD of secondary effluent from Plant No. 2 trickling filter solids contact process to the GWRS Facility.",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are shipped offsite to land application, composting, thermal conversion, or landfill facilities.",
       "trigger_process": []
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
       "Role": [
-        "Feed"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Relocate the existing plant water pump station to a location more suitable for receiving the trickling filter solids contact treatment processes.",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide).",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide).",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Advanced treatment for the GWRS includes microfiltration, reverse osmosis, and advance oxidation (ultraviolet/peroxide).",
+      "trigger_process": [
+        "Oxidation",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "GAP and part of the GWRS generates waste streams (e.g., microfiltration backwash, sump waste, and lime waste) are recycled back into the OC San's primary treatment facility.",
       "trigger_process": []
     }
   ]

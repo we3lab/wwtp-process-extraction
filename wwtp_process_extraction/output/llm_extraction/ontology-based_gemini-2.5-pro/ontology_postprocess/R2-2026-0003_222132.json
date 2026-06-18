@@ -43,9 +43,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... primary clarification, high purity oxygen activated sludge...",
+      "Sentence": "The wastewater treatment process consists of... grit removal, primary clarification, high purity oxygen activated sludge...",
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin and returned to the plant influent when flows subside.",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -54,14 +71,15 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": [
         "HighPurityOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... high purity oxygen activated sludge, secondary clarification...",
+      "Sentence": "The wastewater treatment process consists of... primary clarification, high purity oxygen activated sludge, secondary clarification...",
       "trigger_process": [
         "Pure Oxygen"
       ]
@@ -77,9 +95,133 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... secondary clarification, disinfection, and dechlorination.",
+      "Sentence": "...high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination.",
       "trigger_process": [
         "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...secondary clarification, disinfection, and dechlorination.",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening",
+        "Filtration",
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids handling process at the Facility includes gravity belt thickeners, eleven anaerobic digestors, and five dewatering centrifuges.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The digested sludge is then dewatered in one of five centrifuges.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The resulting material, referred to as biosolids, is hauled offsite by a contractor for beneficial reuse as soil amendment.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project...",
+      "trigger_process": [
+        "Microfiltration"
       ]
     },
     {
@@ -93,56 +235,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... disinfection, and dechlorination.",
+      "Sentence": "The Discharger generates tertiary-treated recycled water using microfiltration and disinfection as part of the East Bayshore Recycled Water Project...",
       "trigger_process": [
         "Unspecified Disinfection"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The \u201cblended\u201d wastewater is then dechlorinated prior to being discharged to Central San Francisco Bay through a deepwater outfall.",
-      "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...wet weather flows in excess of the primary treatment capacity are stored onsite in an 11-million-gallon wet weather concrete storage basin...",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
-      "trigger_process": [
-        "Mechanical Dewatering"
       ]
     },
     {
@@ -153,19 +248,16 @@
         "Denitrification"
       ],
       "Role": [
-        "Secondary",
-        "NutrientRemoval"
+        "NutrientRemoval",
+        "Secondary"
       ],
-      "Substance": [
-        "HighPurityOxygen"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The Discharger is conducting a multi-year pilot study to optimize and possibly modify its high purity oxygen activated sludge process to improve biological nutrient removal.",
       "trigger_process": [
         "Denitrification",
-        "Nitrification",
-        "Pure Oxygen"
+        "Nitrification"
       ]
     }
   ]

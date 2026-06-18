@@ -10,16 +10,75 @@
         "Primary",
         "Pretreatment",
         "Anoxic",
+        "NitrogenRemoval",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary sewage treatment is provided by an 80,000-gallon three-chambered cast-in-place septic tank."
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "Denitrification",
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization",
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After flow measurement, septic tank effluent is conveyed to a 40,000-gallon recirculation tank. The recirculation tank provides additional storage ... and an anoxic environment for continued denitrification."
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration",
+        "Aeration",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
         "NitrogenRemoval"
       ],
       "Substance": [
-        "Constituent-OrganicCarbon",
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary sewage treatment is provided by an 80,000-gallon three-chambered cast-in-place septic tank. In addition, the septic tank provides an anoxic environment for organic nitrogen conversion and denitrification."
+      "Sentence": "The effluent goes to two recirculating gravel filters ... The filters provide an aerobic environment which promotes nitrification as well as further BOD and TSS removal."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The recirculating gravel filters are dosed with wastewater from the recirculation tank using two recirculation pumps (one on duty and one on standby)."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wet well is equipped with two pumps (one in use and one on standby). Effluent pumped to the leach field will not be disinfected."
     },
     {
       "Equipment": null,
@@ -34,64 +93,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The solids in the septic tank will be periodically pumped and hauled to an appropriate offsite location for treatment and disposal."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The recirculation tank is equipped with a recirculating splitter valve."
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration",
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility is composed of an influent septic tank, a recirculating tank, two recirculating gravel filters, two leach fields, and support facilities."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wet well is equipped with two pumps (one in use and one on standby)."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Separation"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Drain"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "There are two leach fields for effluent distribution."
     }
   ]
 }

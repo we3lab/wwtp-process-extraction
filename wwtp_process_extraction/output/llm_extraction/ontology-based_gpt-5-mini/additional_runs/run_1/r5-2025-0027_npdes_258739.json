@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "upgrades to the treatment system ... which includes screening"
+      "Sentence": "screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "which includes ... grit removal"
+      "Sentence": "grit removal"
     },
     {
       "Equipment": "Pump",
@@ -35,7 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "which includes ... raw sewage pumps"
+      "Sentence": "raw sewage pumps"
     },
     {
       "Equipment": "SedimentationTank",
@@ -53,7 +53,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
@@ -64,10 +64,14 @@
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia",
+        "Constituent-Nitrate",
+        "Constituent-Nitrite"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the aeration basins for nitrification/de-nitrification"
+      "Sentence": "aeration basins for nitrification/de-nitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -80,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and further routed to secondary clarifiers"
+      "Sentence": "secondary clarifiers"
     },
     {
       "Equipment": "Pond",
@@ -92,18 +96,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the facultative pond system ... Additional secondary treatment and water storage is available in the facultative ponds"
+      "Sentence": "Additional secondary treatment and water storage is available in the facultative ponds"
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Biofiltration"
+      ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Additional treatment is also available through engineered treatment wetlands on the west side of the San Joaquin River"
+      "Sentence": "engineered treatment wetlands on the west side"
     },
     {
       "Equipment": null,
@@ -116,7 +123,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Optional flows enter the recirculation channel ... for flow equalization before entering the ponds and wetlands"
+      "Sentence": "recirculation channel ... for flow equalization"
     },
     {
       "Equipment": "TricklingFilter",
@@ -133,12 +140,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment on the west side ... consists of a nitrifying biotower for ammonia removal"
+      "Sentence": "nitrifying biotower for ammonia removal"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Tertiary"
@@ -169,17 +177,18 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and disinfected using chlorination/dechlorination prior to discharge to the San Joaquin River"
+      "Sentence": "disinfected using chlorination/dechlorination prior to discharge"
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -195,17 +204,18 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment on the east side ... and UV disinfection prior to discharge"
+      "Sentence": "disk filters and UV disinfection"
     },
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -215,13 +225,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids from the primary and secondary sedimentation processes are either routed to gravity thickeners"
+      "Sentence": "routed to gravity thickeners"
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -231,7 +240,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids ... are either routed to gravity thickeners, gravity belt thickeners"
+      "Sentence": "gravity belt thickeners"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -248,7 +257,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "or pumped to the anaerobic digesters directly"
+      "Sentence": "pumped to the anaerobic digesters directly"
     },
     {
       "Equipment": "Tank",
@@ -261,37 +270,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following anaerobic digestion, sludge is routed to a holding tank"
+      "Sentence": "sludge is routed to a holding tank"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge"
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
+        "SolidsHandling",
         "Dewatering"
       ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "digested solids are ... dewatered using a centrifuge"
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration"
+      ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Dewatering"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested solids are further conditioned and dewatered using ... belt filter presses"
+      "Sentence": "dewatered using ... belt filter presses"
     },
     {
       "Equipment": null,
@@ -301,10 +312,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered solids are hauled off-site by a private contractor and routinely recycled on agricultural lands"
+      "Sentence": "routinely recycled on agricultural lands as a source of nutrients and soil amendment"
     },
     {
       "Equipment": null,
@@ -314,32 +327,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "In an emergency, solids can be used as daily cover for solid waste at a landfill"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "removal efficiencies are enhanced through chemical addition"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side ... for retreatment"
     }
   ]
 }

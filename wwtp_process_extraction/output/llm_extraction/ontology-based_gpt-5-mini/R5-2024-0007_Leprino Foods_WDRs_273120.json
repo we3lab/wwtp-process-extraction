@@ -4,39 +4,47 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "combined in five equalization tanks with a combined capacity of 3.5 million gallons"
+      "Sentence": "Process water from Leprino’s two facilities is combined in five equalization tanks with a combined capacity of 3.5 million gallons..."
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Constituent-OrganicCarbon"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "The Leprino treatment system utilizes two High-Rate Activated Sludge (HRAS) reactors"
+      "Sentence": "The Leprino treatment system utilizes two High-Rate Activated Sludge (HRAS) reactors... the HRAS system is used to remove 70% or more of soluble chemical oxygen demand (COD)/biochemical oxygen demand (BOD)."
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
-      ],
-      "Role": [
+        "Flotation",
         "Recirculation"
       ],
-      "Substance": null,
+      "Role": [
+        "SolidsHandling",
+        "Recirculation"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "two Dissolved Air Flotation (DAF) units... The DAF units act as clarifiers to remove activated sludge from the effluent stream and pump it back into the HRAS reactors"
+      "Sentence": "The DAF units act as clarifiers to remove activated sludge from the effluent stream and pump it back into the HRAS reactors."
     },
     {
       "Equipment": "SequencingBatchReactor",
@@ -46,42 +54,47 @@
         "Denitrification"
       ],
       "Role": [
-        "NitrogenRemoval"
+        "Secondary",
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-OrganicCarbon",
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "three Sequencing Batch Reactors (SBRs)... The SBRs are used to remove additional BOD and provide partial nitrification and denitrification"
+      "Sentence": "three Sequencing Batch Reactors (SBRs)... are used to remove additional BOD and provide partial nitrification and denitrification."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.85,
-      "Sentence": "The wastewater then goes through a surge tank"
+      "Sentence": "The wastewater then goes through a surge tank and final filtration..."
     },
     {
       "Equipment": "Filter",
       "Process": [
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.98,
-      "Sentence": "final filtration using a hydrotech disc filter to remove excess suspended solids"
+      "Sentence": "final filtration using a hydrotech disc filter to remove excess suspended solids before it is discharged..."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltThickener",
       "Process": [
         "Dewatering"
       ],
@@ -93,20 +106,22 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "Solids from Leprino’s wastewater treatment system are removed from the wastewater following treatment, dewatered using a belt press"
+      "Sentence": "Solids from Leprino’s wastewater treatment system are removed from the wastewater following treatment, dewatered using a belt press..."
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Storage",
+        "SolidsHandling",
         "Recirculation"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Solids or off-spec wastewater may also be discharged to one of Leprino’s double-lined... facultative lagoons and recycled back into the system"
+      "Sentence": "Solids or off-spec wastewater may also be discharged to one of Leprino’s double-lined ... facultative lagoons and recycled back into the system..."
     },
     {
       "Equipment": "Pond",
@@ -114,18 +129,34 @@
         "Aeration"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Lemoore WWTF treatment process consists of two clay-lined aerated ponds (Ponds 1A and 1B)"
+      "Sentence": "The Lemoore WWTF treatment process consists of two clay-lined aerated ponds (Ponds 1A and 1B)..."
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration"
+        "Sedimentation"
+      ],
+      "Role": [
+        "Storage",
+        "Secondary",
+        "Aerobic",
+        "Anaerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and two partially aerated facultative/storage ponds (Ponds 2 and 3)."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
       ],
       "Role": [
         "Storage"
@@ -133,8 +164,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "two partially aerated facultative/storage ponds (Ponds 2 and 3)"
+      "Sentence": "Barley straw is added to the storage ponds to prevent algal blooms."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -142,14 +172,71 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "After leaving the ponds the City’s effluent is disinfected with chlorine gas before being combined with Leprino’s treated process water"
+      "Sentence": "After leaving the ponds the City’s effluent is disinfected with chlorine gas before being combined with Leprino’s treated process water..."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The City’s aerated treatment ponds are periodically dredged... the sludge removed from the ponds has been taken off site for disposal at a permitted facility..."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The City began implementation of a sludge reduction program including injection of a bio-stimulant (Bio Energizer®) around 2018..."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Stone Ranch Property is underlain by a tile drain system that collects subsurface drainage and directs it to an onsite evaporation basin."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dewatered using a belt press, and sent regularly to the Stone Ranch property or other permitted destination for temporary storage and land application."
     }
   ]
 }

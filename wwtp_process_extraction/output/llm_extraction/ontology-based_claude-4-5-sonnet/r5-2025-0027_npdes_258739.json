@@ -73,7 +73,9 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "BiologicalProcess"
+      ],
       "Role": [
         "Secondary",
         "Storage"
@@ -85,9 +87,11 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "BiologicalProcess"
+      ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -95,7 +99,7 @@
       "Sentence": "Additional treatment is also available through engineered treatment wetlands on the west side of the San Joaquin River"
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "Recirculation"
       ],
@@ -160,7 +164,9 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "disinfected using chlorination/dechlorination prior to discharge to the San Joaquin River at Discharge Point 001A"
@@ -195,6 +201,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
@@ -210,6 +217,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -253,10 +261,10 @@
       "Sentence": "Following anaerobic digestion, sludge is routed to a holding tank"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -269,9 +277,10 @@
       "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge or belt filter presses"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -289,7 +298,9 @@
         "LandApplication"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered solids are hauled off-site by a private contractor and routinely recycled on agricultural lands as a source of nutrients and soil amendment"
@@ -300,7 +311,9 @@
         "Landfill"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "In an emergency, solids can be used as daily cover for solid waste at a landfill"
@@ -316,7 +329,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded Facility treatment includes fine screening, grit removal, primary clarification, activated sludge with nutrient removal, secondary clarification, tertiary filtration with disk filters, and UV disinfection"
+      "Sentence": "The upgraded Facility treatment includes fine screening, grit removal, primary clarification, activated sludge with nutrient removal"
     },
     {
       "Equipment": "GritChamber",
@@ -347,7 +360,9 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -369,7 +384,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "activated sludge with nutrient removal, secondary clarification, tertiary filtration with disk filters"
+      "Sentence": "The upgraded Facility treatment includes fine screening, grit removal, primary clarification, activated sludge with nutrient removal, secondary clarification, tertiary filtration with disk filters"
     },
     {
       "Equipment": "Filter",
@@ -382,7 +397,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "secondary clarification, tertiary filtration with disk filters, and UV disinfection"
+      "Sentence": "tertiary filtration with disk filters, and UV disinfection"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -401,11 +416,11 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Primary"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -417,6 +432,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
@@ -432,6 +448,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -442,7 +459,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "gravity belt thickening of waste activated sludge, anaerobic digestion"
+      "Sentence": "gravity thickening of primary sludge, gravity belt thickening of waste activated sludge, anaerobic digestion"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -475,10 +492,10 @@
       "Sentence": "anaerobic digestion, digested sludge holding, centrifuge dewatering with belt filter press backup"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -491,9 +508,10 @@
       "Sentence": "centrifuge dewatering with belt filter press backup, and on-site storage and hauling of dewatered cake"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -504,28 +522,6 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "centrifuge dewatering with belt filter press backup, and on-site storage and hauling of dewatered cake"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the ponds and wetlands will only be used for emergency storage purposes"
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the ponds and wetlands will only be used for emergency storage purposes"
     }
   ]
 }

@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the headworks, which provides grit and screenings removal with an automatic bar screen and grit channels."
+      "Sentence": "headworks, which provides grit and screenings removal with an automatic bar screen"
     },
     {
       "Equipment": "GritChamber",
@@ -25,8 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the headworks, which provides grit and screenings removal with an automatic bar screen and grit channels."
+      "Sentence": "headworks, which provides grit and screenings removal with an automatic bar screen and grit channels"
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,23 +37,38 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Primary sedimentation in one of three circular primary clarifiers settles out heavier solids"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sludge collectors in the tanks sweep the sludge into a sludge hopper where it is pumped to the anaerobic digester or gravity belt sludge thickener"
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "sludge collectors in the tanks sweep the sludge into a sludge hopper where it is pumped to the anaerobic digester or gravity belt sludge thickener."
+      "Sentence": "pumped to the anaerobic digester or gravity belt sludge thickener"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -64,6 +77,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -71,25 +85,24 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "it is pumped to the anaerobic digester"
+      "Sentence": "pumped to the anaerobic digester"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Mixing",
+        "Aeration",
+        "Recirculation"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Secondary treatment includes mixing primary effluent with return-activated sludge (RAS) in the aeration basins."
+      "Sentence": "mixing primary effluent with return-activated sludge (RAS) in the aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -102,20 +115,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Mixed liquor from the aeration basins flows to two final clarifiers to settle out activated sludge."
+      "Sentence": "Mixed liquor from the aeration basins flows to two final clarifiers to settle out activated sludge"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
       ],
-      "Substance": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "sludge collectors in the tanks sweep the sludge into a sludge hopper where it is pumped to the anaerobic digester or gravity belt sludge thickener."
+      "Sentence": "Disinfection is achieved using chlorine gas and ammonia to form chloramines, followed by dechlorination"
     },
     {
       "Equipment": "Tank",
@@ -128,21 +146,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater in the equalization basins is returned for treatment during low flow periods."
+      "Sentence": "Wastewater in the equalization basins is returned for treatment during low flow periods"
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Containment",
         "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "When influent flows exceed 3 to 4 mgd, influent is partially diverted to an emergency overflow basin."
+      "Sentence": "When influent flows exceed 3 to 4 mgd, influent is partially diverted to an emergency overflow basin"
     },
     {
       "Equipment": "Pond",
@@ -153,47 +168,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "treated effluent is discharged through Discharge Point 003 into two parallel percolation ponds adjacent to the Eel River."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Disinfection is achieved using chlorine gas and ammonia to form chloramines, followed by dechlorination."
+      "Sentence": "treated effluent is discharged through Discharge Point 003 into two parallel percolation ponds"
     },
     {
       "Equipment": null,
       "Process": [
-        "ThermalDisinfection"
+        "Composting"
       ],
       "Role": [
+        "BiosolidsDisposal",
         "Stabilization",
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Bacteria",
-        "Constituent-Metals"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "Biosolids formed during the treatment process are composted for 15 days at temperatures in excess of 140 degrees Fahrenheit (°F) to destroy pathogens."
+      "Sentence": "Biosolids formed during the treatment process are composted for 15 days at temperatures in excess of 140 degrees Fahrenheit"
     }
   ]
 }

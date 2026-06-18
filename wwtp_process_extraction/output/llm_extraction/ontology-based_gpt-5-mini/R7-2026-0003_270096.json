@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Influent enters the main influent pumping station"
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,8 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Influent enters the main influent pumping station and is screened through mechanical bar screens."
+      "Sentence": "is screened through mechanical bar screens"
     },
     {
       "Equipment": "GritChamber",
@@ -25,8 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Screened influent is directed to the grit chamber..."
+      "Sentence": "Screened influent is directed to the grit chamber"
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,13 +48,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Screened influent is directed to the grit chamber and then to the primary clarifiers."
+      "Sentence": "and then to the primary clarifiers"
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": null,
       "Process": [
-        "Mixing"
+        "Denitrification"
       ],
       "Role": [
         "Anoxic"
@@ -53,23 +61,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The activated sludge treatment system consists of anoxic selectors..."
+      "Sentence": "The activated sludge treatment system consists of anoxic selectors"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Aeration",
-        "ActivatedSludge"
+        "Nitrification"
       ],
       "Role": [
+        "Aerobic",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "The activated sludge treatment system consists of ... aeration basins..."
+      "Sentence": "The activated sludge treatment system consists of ... aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -82,8 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The activated sludge treatment system consists of ... secondary clarifiers..."
+      "Sentence": "The activated sludge treatment system consists of ... secondary clarifiers"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -98,22 +105,18 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Treated effluent from each treatment system (i.e., activated sludge and oxidation pond system) is disinfected with sodium hypochlorite in separate chlorine contact tanks."
+      "Sentence": "Treated effluent from each treatment system ... is disinfected with sodium hypochlorite in separate chlorine contact tanks ... combined and dechlorinated with the addition of sodium bisulfite prior to discharge"
     },
     {
       "Equipment": "Pond",
       "Process": [
         "BiologicalProcess"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The wastewater treatment plant consists of two separate treatment systems: ... an oxidation pond system."
+      "Sentence": "The oxidation pond system consists of two oxidation ponds and two cells"
     },
     {
       "Equipment": "Grinder",
@@ -121,40 +124,35 @@
         "Comminution"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "Screenings are removed from the influent wastewater using mechanical bar screens and are sent to a grinder for washing and compaction..."
+      "Sentence": "Screenings are removed ... and are sent to a grinder for washing and compaction"
     },
     {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The screening and grit dumpster are hauled to a landfill weekly for disposal."
+      "Sentence": "The screening and grit dumpster are hauled to a landfill weekly for disposal"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Excess solids from the activated sludge treatment system are pumped to a pond system for stabilization."
+      "Sentence": "Excess solids from the activated sludge treatment system are pumped to a pond system for stabilization"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -165,11 +163,12 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Primary sludge from the primary clarifiers is pumped to the anaerobic digester."
+      "Sentence": "Primary sludge from the primary clarifiers is pumped to the anaerobic digester"
     },
     {
       "Equipment": "DewateringUnit",
@@ -179,11 +178,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Solids from the anaerobic digester and oxidation ponds are pumped to a belt press for dewatering."
+      "Sentence": "Solids ... are pumped to a belt press for dewatering"
     },
     {
       "Equipment": null,
@@ -193,25 +193,25 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Dewatered solids are placed on drying beds for further moisture reduction prior to disposal."
+      "Sentence": "Dewatered solids are placed on drying beds for further moisture reduction prior to disposal"
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Composting"
       ],
       "Role": [
-        "SolidsHandling"
+        "LandApplication"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "Biosolids are continuously removed from the facility site and are transported to Arizona for further treatment by composting to ensure Class A requirements are met prior to land application."
+      "Sentence": "Biosolids ... are transported to Arizona for further treatment by composting to ensure Class A requirements are met prior to land application"
     },
     {
       "Equipment": "Pump",
@@ -220,32 +220,33 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Rehabilitation of the Influent Pump Station."
+      "Sentence": "Rehabilitation of the Influent Pump Station"
     },
     {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Addition of mechanical Bar Screen at headworks."
+      "Sentence": "Addition of mechanical Bar Screen at headworks"
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Installation of a replacement grit chamber."
+      "Sentence": "Installation of a replacement grit chamber"
     },
     {
       "Equipment": "Thickener",
@@ -256,8 +257,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Installation of waste activated sludge thickener."
+      "Sentence": "Installation of waste activated sludge thickener"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -270,8 +270,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Addition of a second Digester and related systems (flare)."
+      "Sentence": "Addition of a second Digester and related systems (flare)"
     },
     {
       "Equipment": "Flare",
@@ -280,22 +279,18 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Addition of a second Digester and related systems (flare)."
+      "Sentence": "Addition of a second Digester and related systems (flare)"
     },
     {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Recirculation"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Addition of pump station to return sludge dewatering filtrate back to headworks."
+      "Sentence": "Addition of pump station to return sludge dewatering filtrate back to headworks"
     },
     {
       "Equipment": "Pond",
@@ -304,22 +299,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "Pond 2 and Pond 3 free water will drain and treated prior to discharge to the Coachella Valley Stormwater Channel."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Sludge from Pond 2 and Pond 3 will be dredged for solar drying."
+      "Sentence": "Pond 2 and Pond 3 free water will drain and treated prior to discharge to the Coachella Valley Stormwater Channel"
     },
     {
       "Equipment": null,
@@ -332,18 +312,20 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Construction of extension to sludge drying bed."
+      "Sentence": "Sludge from Pond 2 and Pond 3 will be dredged for solar drying"
     },
     {
-      "Equipment": "Conditioner",
-      "Process": null,
-      "Role": null,
+      "Equipment": null,
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.3,
-      "Sentence": "Installation of digester gas holding facility (optional)."
+      "Sentence": "Construction of extension to sludge drying bed"
     },
     {
       "Equipment": "Cogenerator",
@@ -354,8 +336,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Implementation of cogeneration with digester gas (optional)."
+      "Sentence": "Implementation of cogeneration with digester gas (optional)"
     }
   ]
 }

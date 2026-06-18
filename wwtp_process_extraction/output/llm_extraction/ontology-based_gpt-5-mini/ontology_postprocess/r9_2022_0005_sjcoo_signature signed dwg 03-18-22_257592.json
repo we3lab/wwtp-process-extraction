@@ -10,9 +10,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Location": "on-site",
+      "Sentence": "the J.B. Latham Wastewater Treatment Plant provides ... screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,9 +26,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Location": "on-site",
+      "Sentence": "wastewater treatment processes for both treatment trains include ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -44,9 +42,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Location": "on-site",
+      "Sentence": "wastewater treatment processes for both treatment trains include ... primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -58,13 +55,13 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Location": "on-site",
+      "Sentence": "secondary treatment with activated sludge aeration",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -79,16 +76,17 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Location": "on-site",
+      "Sentence": "secondary treatment with activated sludge aeration and secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -96,9 +94,8 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Location": "on-site",
+      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge)",
       "trigger_process": [
         "Thickening"
       ]
@@ -109,21 +106,21 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Location": "on-site",
+      "Sentence": "Sludge processing ... includes anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -135,36 +132,55 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Location": "on-site",
+      "Sentence": "Solids processing ... includes ... centrifuge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "BiosolidsDisposal",
-        "Landfill"
+        "Flotation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill",
+      "Location": "on-site",
+      "Sentence": "Biosolids are treated through dissolved air floatation, anaerobic digestion, and centrifuge dewatering",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Flotation",
+        "Thickening"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "ChemicalAddition",
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation",
         "Mixing"
       ],
       "Role": [
@@ -172,10 +188,10 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Location": "on-site",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing",
       "trigger_process": [
+        "Coagulation",
         "Unspecified Chemical Addition"
       ]
     },
@@ -189,9 +205,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Location": "on-site",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through ... tertiary filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -203,107 +218,126 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing, tertiary filtration, and chlorination disinfection.",
+      "Location": "on-site",
+      "Sentence": "disinfection (sodium hypochlorite)",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "Thickener",
-      "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Digester",
+      "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "Digestion"
+        "ReverseOsmosis"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge from the Chiquita WRP is thickened, digested, and dewatered, using belt filter press.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley.",
+      "Location": "on-site",
+      "Sentence": "Groundwater treatment includes ... RO treatment; The San Juan Capistrano Groundwater Treatment Plant discharges up to 2.2 MGD of the waste brine from the RO to the Chiquita Land Outfall",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Reverse Osmosis"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "CartridgeFiltrationUnit",
       "Process": [
-        "Aeration"
+        "Filtration"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Groundwater treatment includes ... cartridge filtration",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "CartridgeFiltrationUnit",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The filter backwash water from the treatment facility is discharged into the San Clemente WRP sewer collection system",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "SMWD also planned to add new aeration basins.",
+      "Location": "on-site",
+      "Sentence": "The treatment system will likely include pretreatment consisting of flocculation",
       "trigger_process": [
-        "Unspecified AS"
+        "Flocculation"
       ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The treatment system will likely include ... catalytic media filtration",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "post treatment conditioning, which will include UV disinfection",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a product water storage tank sized to provide necessary chlorine contact time",
+      "trigger_process": []
     }
   ]
 }

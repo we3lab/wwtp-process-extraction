@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment at the Regional WWTP includes screening",
+      "Sentence": "Wastewater treatment at the Regional WWTP includes screening, aerated grit removal...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "aerated grit removal",
+      "Sentence": "Wastewater treatment at the Regional WWTP includes screening, aerated grit removal...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary sedimentation",
+      "Sentence": "Wastewater treatment at the Regional WWTP includes ... primary sedimentation...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -63,16 +60,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary treatment through trickling filters",
       "trigger_process": [
         "Trickling Filter"
       ]
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": null,
       "Process": [
-        "Flocculation"
+        "Flocculation",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -80,8 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "solids contact (i.e., bio-flocculation)",
+      "Sentence": "secondary treatment through ... solids contact (i.e., bio-flocculation)",
       "trigger_process": [
         "Flocculation",
         "Primary Clarification",
@@ -99,7 +95,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
@@ -112,15 +107,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids are anaerobically digested",
       "trigger_process": [
         "Anaerobic Digestion"
@@ -139,7 +133,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "sent to two screw presses for dewatering",
       "trigger_process": [
         "Mechanical Dewatering"
@@ -151,19 +144,19 @@
         "Drying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Holding lagoons and drying beds located on site are utilized to dry sludge.",
+      "Sentence": "Holding lagoons and drying beds located on site are utilized to dry sludge",
       "trigger_process": [
         "Biosolids Lagoon",
         "Drying",
-        "Evaporation Pond"
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -172,17 +165,157 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "BiosolidsDisposal"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Dried solids are hauled to the ReGen Monterey (formerly Monterey Regional Waste Management District) landfill in Marina, located adjacent to the Regional WWTP, where they are mixed with refuse and buried each day.",
+      "Sentence": "Dried solids are hauled to the ReGen Monterey ... landfill in Marina",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "trigger_process": [
+        "Coagulation",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "trigger_process": [
+        "Flocculation"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treated wastewater is held in an 80-acre-foot storage pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A maximum of 1.78 MGD of RO concentrate from the AWPF will be discharged to the ocean",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Membrane filter backwash produced by the AWPF is sent to the Regional WWTP headworks for treatment",
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "SVWP also includes a seasonal Salinas River Diversion Facility, screening ... prior to combining with tertiary recycled water",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "SVWP also includes ... disinfection of river water prior to combining with tertiary recycled water",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     }
   ]

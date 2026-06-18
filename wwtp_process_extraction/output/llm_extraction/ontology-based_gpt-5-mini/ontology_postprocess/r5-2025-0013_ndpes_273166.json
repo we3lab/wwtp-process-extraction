@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment system at the Facility consists of mechanical screens;",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -21,12 +20,12 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed"
+        "Feed",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "an influent pump station;",
       "trigger_process": []
     },
@@ -41,8 +40,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "trickling filter treatment train consisting of two primary clarigesters, two trickling filters, and a recirculation pump station;",
+      "Sentence": "trickling filter treatment train consisting of two primary clarigesters,",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -53,13 +51,13 @@
         "TricklingFiltration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "trickling filter treatment train consisting of two primary clarigesters, two trickling filters, and a recirculation pump station;",
+      "Sentence": "trickling filter treatment train consisting of ... two trickling filters,",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -75,8 +73,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "trickling filter treatment train consisting of two primary clarigesters, two trickling filters, and a recirculation pump station;",
+      "Sentence": "a recirculation pump station;",
       "trigger_process": []
     },
     {
@@ -85,13 +82,13 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "an oxidation ditch treatment train consisting of an oxidation ditch, secondary clarifier, and return and waste activated sludge pump stations;",
+      "Sentence": "an oxidation ditch treatment train consisting of an oxidation ditch,",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -107,8 +104,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "an oxidation ditch treatment train consisting of an oxidation ditch, secondary clarifier, and return and waste activated sludge pump stations;",
+      "Sentence": "an oxidation ditch treatment train consisting of ... secondary clarifier,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -119,13 +115,24 @@
         "Recirculation"
       ],
       "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "return and waste activated sludge pump stations;",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "an oxidation ditch treatment train consisting of an oxidation ditch, secondary clarifier, and return and waste activated sludge pump stations;",
+      "Sentence": "return and waste activated sludge pump stations;",
       "trigger_process": []
     },
     {
@@ -134,13 +141,11 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "an ultraviolet light disinfection system;",
       "trigger_process": [
         "UV Disinfection"
@@ -150,12 +155,11 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "an effluent pump system;",
       "trigger_process": []
     },
@@ -165,32 +169,88 @@
         "Evaporation"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "two unlined treated wastewater ponds;",
+      "Sentence": "two unlined treated wastewater ponds allow for storage, percolation, and evaporation of treated effluent",
       "trigger_process": [
         "Evaporation Pond"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "LandApplication"
+        "Drying"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "the recycled water use area for application of treated wastewater.",
+      "Sentence": "four Deskins-lined sludge drying beds (constructed in 2010), two concrete-lined sludge drying beds (constructed in 2022)",
       "trigger_process": [
-        "Land Application"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Facility includes eight unlined sludge drying beds... The unlined drying beds and lagoons have not been used since construction was completed in 2022.",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The unlined drying beds and lagoons have not been used since construction was completed in 2022.",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried sludge is hauled off-site for disposal to a landfill or composting facility.",
+      "trigger_process": [
+        "Biosolids Landfill",
+        "Composting"
       ]
     },
     {
@@ -204,8 +264,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the addition of mechanical sludge dewatering.",
+      "Sentence": "The Discharger has expressed interest in modifying its sludge handling facilities, particularly the addition of mechanical sludge dewatering.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]

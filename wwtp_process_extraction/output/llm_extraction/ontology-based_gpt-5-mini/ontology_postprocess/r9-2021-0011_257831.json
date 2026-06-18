@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "influent screening using mechanical bar screens,",
+      "Sentence": "influent screening using mechanical bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "aerated grit chambers,",
+      "Sentence": "aerated grit chambers",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -45,25 +43,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary sedimentation tanks,",
+      "Sentence": "primary sedimentation tanks",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Tank",
       "Process": [
         "Mixing"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "primary flow equalization basins",
+      "Sentence": "1.5 million gallons of primary flow equalization basins",
       "trigger_process": [
         "Equalization"
       ]
@@ -72,7 +69,8 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -82,10 +80,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "air-activated sludge process and an anoxic selector zone",
       "trigger_process": [
         "AO (anoxic/oxic)",
+        "Denitrification",
         "Unspecified AS"
       ]
     },
@@ -100,8 +98,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "secondary clarifiers,",
+      "Sentence": "secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -117,8 +114,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "mono-media (anthracite) filters,",
+      "Sentence": "mono-media (anthracite) filters",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -129,16 +125,106 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "ultraviolet disinfection",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids removed through the screening and grit removal processes are hauled offsite and disposed of in a landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "directed to anaerobic digesters at the Point Loma Wastewater Treatment Plant for stabilization.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "After digestion, the solids are dewatered and thickened for reuse as a soil amendment or for disposal.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "After digestion, the solids are dewatered and thickened for reuse as a soil amendment or for disposal.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "After digestion, the solids are dewatered and thickened for reuse as a soil amendment or for disposal.",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

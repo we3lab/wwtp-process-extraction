@@ -4,7 +4,7 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Pretreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -45,25 +45,10 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "emergency storage, MBRs for biological treatment and filtration",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "Filtration"
+        "Biofiltration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
@@ -96,12 +81,12 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Discharge"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "UV disinfection, effluent pumping, effluent disposal",
+      "Sentence": "The Facility consists of the following unit operations: influent pumping, flow measurement, fine screening, grit removal, emergency storage, MBRs for biological treatment and filtration, UV disinfection, effluent pumping, effluent disposal",
       "trigger_process": []
     },
     {
@@ -110,7 +95,8 @@
         "Aeration"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -140,7 +126,8 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Filtration",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -156,9 +143,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -171,7 +159,7 @@
       "Sentence": "Sludge handling at the Facility includes two stage aerobic digesters, a drum thickener, and a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -182,7 +170,9 @@
       "Role": [
         "Anoxic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge supernatant is returned to the anoxic reactor headworks prior to proceeding to the fine screens",
@@ -218,22 +208,6 @@
       "Sentence": "replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs)",
       "trigger_process": [
         "SBR"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs)",
-      "trigger_process": [
-        "Unspecified Filtration"
       ]
     }
   ]

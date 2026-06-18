@@ -10,7 +10,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Preliminary and primary treatment at RP-5 includes mechanical bar screen, vortex type grit chamber, one storage basin, and primary clarifiers.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -27,14 +27,179 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
+      "Sentence": "Preliminary and primary treatment at RP-5 includes mechanical bar screen, vortex type grit chamber, one storage basin, and primary clarifiers.",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary and primary treatment at RP-5 includes mechanical bar screen, vortex type grit chamber, one storage basin, and primary clarifiers.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary and primary treatment at RP-5 includes mechanical bar screen, vortex type grit chamber, one storage basin, and primary clarifiers.",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary treatment consists of aeration trains with oxic/anoxic zones and secondary clarifiers.",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary treatment consists of aeration trains with oxic/anoxic zones and secondary clarifiers.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sand-media filtration, chlorination, dechlorination, and an emergency overflow pond.",
+      "trigger_process": [
+        "Coagulation",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sand-media filtration, chlorination, dechlorination, and an emergency overflow pond.",
+      "trigger_process": [
+        "Flocculation"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sand-media filtration, chlorination, dechlorination, and an emergency overflow pond.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sand-media filtration, chlorination, dechlorination, and an emergency overflow pond.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sand-media filtration, chlorination, dechlorination, and an emergency overflow pond.",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary treatment trains consist of coagulation/flocculation, sand-media filtration, chlorination, dechlorination, and an emergency overflow pond.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
       "Equipment": "GravityThickener",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
@@ -53,6 +218,7 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
+        "Thickening",
         "Flotation"
       ],
       "Role": [
@@ -108,9 +274,10 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -126,8 +293,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -141,20 +309,77 @@
       "Sentence": "The solids treatment system at RP-2 includes gravity thickeners; dissolved air flotation thickeners; anaerobic digestion; aerobic digestion; belt press, and centrifuge dewatering.",
       "trigger_process": [
         "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "By 2024, the Discharger plans to complete its treatment capacity expansion at RP-5 and will add a biosolids handling process, to RP-5, that will consist one (1) acid phase digester, three (3) gas phase digesters, one (1) digested sludge storage tank, and associated ancillary equipment.",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "By 2024, the Discharger plans to complete its treatment capacity expansion at RP-5 and will add a biosolids handling process, to RP-5, that will consist one (1) acid phase digester, three (3) gas phase digesters, one (1) digested sludge storage tank, and associated ancillary equipment.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Also, new solids-thickening and biosolids dewatering facilities equipped with odor control system will be built and food waste will be fed to the digesters.",
+      "trigger_process": [
         "Thickening"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Recirculation"
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge treatment system wastewater from RP-2 is pumped back to headworks of RP-5.",
-      "trigger_process": []
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Also, new solids-thickening and biosolids dewatering facilities equipped with odor control system will be built and food waste will be fed to the digesters.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of influent screening and grit removal;"
+      "Sentence": "influent screening and grit removal"
     },
     {
       "Equipment": "GritChamber",
@@ -24,42 +24,71 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of influent screening and grit removal;"
+      "Sentence": "influent screening and grit removal"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins;"
+      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins"
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Denitrification",
+        "Mixing"
+      ],
+      "Role": [
+        "Secondary",
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins"
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Denitrification",
+        "Mixing"
+      ],
+      "Role": [
+        "Secondary",
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pre-anoxic basins"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Ultrafiltration",
         "Microfiltration"
       ],
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration through a membrane bioreactor (MBR)... using a very fine filter (i.e., ultrafilter)."
+      "Sentence": "microfiltration through a membrane bioreactor (MBR)"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -73,7 +102,56 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ultraviolet (UV) light disinfection;"
+      "Sentence": "Ultraviolet (UV) light disinfection"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "5 million gallon aerated influent equalization basin"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "3.35 million gallon equalization basin"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "25 million gallon recycled water storage pond"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "15 million gallon recycled water storage pond"
     },
     {
       "Equipment": "Pump",
@@ -84,40 +162,75 @@
         "Secondary"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins."
+      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
       "Role": [
         "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system,"
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a proprietary sludge digestion process,"
+      "Sentence": "250 micron rotary drum screen"
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "proprietary solids removal and digestion process that combines aerobic and anaerobic processes"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "proprietary solids removal and digestion process that combines aerobic and anaerobic processes"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dosed with polymer for thickening"
     },
     {
       "Equipment": "DewateringUnit",
@@ -132,7 +245,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering via centrifuge,"
+      "Sentence": "dewatered in a centrifuge"
     },
     {
       "Equipment": null,
@@ -142,49 +255,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal to a Class III solid waste landfill."
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Equalization",
-        "Pretreatment",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a 5 million gallon aerated influent equalization basin"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a 3.35 million gallon equalization basin,"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "two recycled water storage ponds, 25 million gallon and 15 million gallon capacity, with synthetic liners to provide storage for the disinfected tertiary treated recycled water"
+      "Sentence": "disposal to a Class III solid waste landfill"
     },
     {
       "Equipment": null,
@@ -192,13 +268,13 @@
         "Recirculation"
       ],
       "Role": [
-        "Pretreatment",
-        "Posttreatment"
+        "Posttreatment",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Permittee has the ability to divert inadequately treated wastewater from downstream of the UV disinfection system and return it to the headworks for re-treatment."
+      "Sentence": "divert inadequately treated wastewater from downstream of the UV disinfection system and return it to the headworks"
     }
   ]
 }

@@ -2,33 +2,36 @@
   "items": [
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Stabilization"
+      "Process": [
+        "Sedimentation"
       ],
-      "Substance": null,
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing WWTF consists of a wet well lift station, eight wastewater stabilization ponds on approximately 20 acres and a 31.5-acre spreading basin.",
+      "Sentence": "Ponds 1 and 2 are the primary ponds and can be expected to accumulate sludge faster than the \u201cdownstream\u201d ponds.",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Primary Clarification"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "LandApplication"
+        "Sedimentation"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The remainder will continue to be used as land spreading area when needed.",
+      "Sentence": "the six \u201cdownstream\u201d ponds can also accumulate sludge",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Land Application",
+        "Unspecified Clarification",
         "Unspecified Lagoon"
       ]
     },
@@ -37,15 +40,92 @@
       "Process": [
         "Evaporation"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WWTF treatment and disposal capacity will be increased by converting part of the existing 31.5-acre land spreading area to two percolation/evaporation ponds (Ponds 9 and 10).",
+      "Sentence": "converting part of the existing 31.5-acre land spreading area to two percolation/evaporation ponds (Ponds 9 and 10).",
       "trigger_process": [
         "Evaporation Pond"
       ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The remainder will continue to be used as land spreading area when needed.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "proposes to use part of the spreading basin as a temporary sludge drying bed during the summer.",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "off-site",
+      "Sentence": "In 2002, 119 tons of sludge were removed from Pond 1 and disposed of at a local landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the lift station wet well ... provide a reserve storage capacity of approximately eight hours at current influent flows.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a standby generator and pump can be used to transfer sewage from the wet well to the primary ponds.",
+      "trigger_process": []
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification...",
+      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification, biological treatment by activated sludge, secondary clarification, disinfection, filtration, and dechlorination.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of influent screening, grit removal, primary clarification...",
+      "Sentence": "The treatment system at the Facility consists of...primary clarification, biological treatment by activated sludge...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -59,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment by activated sludge, secondary clarification, disinfection, filtration, and dechlorination.",
+      "Sentence": "The treatment system at the Facility consists of...biological treatment by activated sludge, secondary clarification...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -75,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment by activated sludge, secondary clarification, disinfection, filtration, and dechlorination.",
+      "Sentence": "The treatment system at the Facility consists of...secondary clarification, disinfection, filtration...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -84,8 +84,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Disinfection",
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ],
       "Role": [
         "Tertiary"
@@ -93,10 +92,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of... disinfection... and dechlorination.",
+      "Sentence": "The treatment system at the Facility consists of...disinfection, filtration, and dechlorination.",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ]
     },
     {
@@ -110,9 +108,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of... disinfection, filtration, and dechlorination.",
+      "Sentence": "The treatment system at the Facility consists of...disinfection, filtration, and dechlorination.",
       "trigger_process": [
         "Unspecified Filtration"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system at the Facility consists of...filtration, and dechlorination.",
+      "trigger_process": [
+        "Dechlorination"
       ]
     },
     {
@@ -136,7 +150,8 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -162,10 +177,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins. Dried biosolids are hauled to a landfill.",
+      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins.",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
@@ -185,16 +199,20 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
       "Role": [
-        "Feed"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "One project is to replace the current influent pump station for larger capacity during wet weather flows.",
-      "trigger_process": []
+      "Sentence": "The second project consists of upgrades to the existing grit removal system...",
+      "trigger_process": [
+        "Grit Removal"
+      ]
     },
     {
       "Equipment": "AerationBasin",
@@ -210,7 +228,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The second project consists of... retrofitting the existing aeration basins to provide nitrification and denitrification...",
+      "Sentence": "...retrofitting the existing aeration basins to provide nitrification and denitrification...",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -219,8 +237,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -231,6 +248,38 @@
       "Sentence": "...replacing the chlorine disinfection with UV disinfection...",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "...and adding capacity to the existing secondary clarifiers and filters.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "...and adding capacity to the existing secondary clarifiers and filters.",
+      "trigger_process": [
+        "Unspecified Filtration"
       ]
     }
   ]

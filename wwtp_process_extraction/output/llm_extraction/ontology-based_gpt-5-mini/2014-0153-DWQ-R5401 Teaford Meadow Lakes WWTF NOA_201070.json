@@ -8,26 +8,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the wastewater is screened by a manual bar"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
       "Substance": [
-        "Water-Freshwater"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The wastewater is gravity fed to the Facility’s wet well."
+      "Sentence": "the domestic wastewater gravity flows from the collection system through a manual bar screen into the aeration basin"
     },
     {
       "Equipment": "AerationBasin",
@@ -41,13 +27,22 @@
         "Extended"
       ],
       "Substance": [
-        "Water-Freshwater",
-        "Constituent-SuspendedSolids"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "conveyed to the extended aeration basin where solids are allowed to settle at the bottom of the basin."
+      "Sentence": "Wastewater is then treated in an extended aeration basin"
+    },
+    {
+      "Equipment": "Compressor",
+      "Process": [
+        "GasTransfer"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the secondary treatment occurs at the aeration basin with a positive displacement blower that supplies air to diffusers in the aeration basin"
     },
     {
       "Equipment": "SedimentationTank",
@@ -57,13 +52,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "From the extended aeration basin, wastewater is treated in a clarifier"
+      "Sentence": "After this, the wastewater is sent through a clarifier"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -76,26 +68,11 @@
         "Posttreatment"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Water-Freshwater"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "and then receives chlorine disinfection in a contact tank."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "emergency pond is still at the Facility and is only used when there is run off from the spray fields."
+      "Sentence": "then disinfected with 12.5% sodium hypochlorite in a contact tank"
     },
     {
       "Equipment": null,
@@ -105,13 +82,67 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "The effluent of the disinfection contact tank gets distributed to two spray fields (Spray Field Zones 1 and 2)."
+      "Sentence": "the treated wastewater is sent to two spray field zones, Spray Field Zones 1 and 2"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Containment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "There is an unlined emergency pond connected at the Facility that is primarily used to capture any runoff from the spray fields"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "This sludge is taken to the nearby Oakhurst Wastewater Treatment Plant for processing, dewatering, and disposal"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "This sludge is taken to the nearby Oakhurst Wastewater Treatment Plant for processing, dewatering, and disposal"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Once full, the container is disposed of at an approved landfill"
     }
   ]
 }

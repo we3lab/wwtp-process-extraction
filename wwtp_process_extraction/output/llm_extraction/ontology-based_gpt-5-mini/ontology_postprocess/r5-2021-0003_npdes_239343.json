@@ -1,12 +1,43 @@
 {
   "items": [
     {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Storage",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The food processing wastewater is stored and aerated in a lined pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -19,10 +50,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -43,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment ... primary sedimentation",
+      "Sentence": "Primary treatment ... consists of ... primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -53,9 +85,7 @@
       "Process": [
         "TricklingFiltration"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
@@ -73,9 +103,6 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -83,7 +110,6 @@
       "Location": "on-site",
       "Sentence": "The secondary treatment processes ... consisting of conventional activated sludge, including nitrification-denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -105,55 +131,8 @@
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "MixingBasin",
       "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "applied to agricultural fields",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation",
         "Mixing"
       ],
       "Role": [
@@ -162,11 +141,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary effluent ... undergoes tertiary treatment through rapid mixing",
-      "trigger_process": [
-        "Coagulation",
-        "Unspecified Chemical Addition"
-      ]
+      "Sentence": "undergoes tertiary treatment through rapid mixing",
+      "trigger_process": []
     },
     {
       "Equipment": "FlocculationBasin",
@@ -179,7 +155,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "... flocculation ...",
+      "Sentence": "undergoes tertiary treatment through ... flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -195,7 +171,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "... cloth media filtration ...",
+      "Sentence": "undergoes tertiary treatment through ... cloth media filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -203,8 +179,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -212,22 +187,65 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "... and ultraviolet (UV) disinfection",
+      "Sentence": "undergoes tertiary treatment through ... ultraviolet (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Recirculation"
+        "Flotation"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tailwater ... is collected in a sump and pumped back to the irrigation supply system",
-      "trigger_process": []
+      "Sentence": "sludge from secondary sedimentation is thickened by dissolved air flotation",
+      "trigger_process": [
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
     },
     {
       "Equipment": null,
@@ -242,9 +260,35 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings are hauled offsite to a landfill for disposal",
+      "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tailwater from the irrigation fields ... is recirculated into the irrigation system",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent ... blended with treated food processing wastewater and applied directly to agricultural fields",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

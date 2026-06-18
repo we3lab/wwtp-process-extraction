@@ -1,18 +1,19 @@
 {
   "items": [
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": "Screen",
       "Process": [
-        "TricklingFiltration"
+        "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The trickling filters were taken out of service but remain at the WWTF.",
+      "Sentence": "The current WWTF\u2019s treatment system consists of screening...",
       "trigger_process": [
-        "Trickling Filter"
+        "Screening/Microstrainer"
       ]
     },
     {
@@ -20,30 +21,25 @@
       "Process": [
         "ActivatedSludge",
         "Aeration",
+        "Denitrification",
         "Mixing"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The single 2.85-million-gallon aeration basin consists of concrete on the bottom and sides, six aerators, and two mixers.",
+      "Sentence": "secondary treatment (activated sludge treatment with the capability of providing denitrification)",
       "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
         "Unspecified AS"
       ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Replacement of the existing surface aerators for the activated sludge aeration basin with fine bubble diffusers;",
-      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -54,40 +50,42 @@
         "Secondary"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Addition of a new 65-foot diameter secondary clarifier for a total of three clarifiers at the WWTF;",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Addition of a fourth influent pump;",
-      "trigger_process": []
     },
     {
       "Equipment": "Pond",
       "Process": [
         "Evaporation"
       ],
-      "Role": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "In 2010, the Discharger added two more unlined evaporation/percolation ponds, Ponds 11 and 12.",
+      "Sentence": "The WWTF currently has twelve ponds... effluent is discharged to eleven evaporation/percolation ponds",
       "trigger_process": [
         "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "One additional pond, Pond 6, is used as an emergency wastewater storage basin.",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -96,13 +94,16 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the Discharger upgraded the WWTF\u2019s sludge management system by adding a high-density polyethylene (HDPE) lined aerobic digester, a screw press, and asphalt pavement for further drying, handling, and removal of the sludge.",
+      "Sentence": "Sludge handling includes aerobic digestion",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -115,11 +116,30 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the Discharger upgraded the WWTF\u2019s sludge management system by adding a high-density polyethylene (HDPE) lined aerobic digester, a screw press, and asphalt pavement for further drying, handling, and removal of the sludge.",
+      "Sentence": "sludge dewatering (a screw press and further sludge drying on asphalt pavement)",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Addition of a new screw press to the existing sludge dewatering facilities for redundancy.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -132,48 +152,116 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing unlined sludge drying beds remaining at the WWTF and are mostly not used. However, sludge drying beds (e.g., Sludge Beds 3, 4, 5, and 6) have been used in emergencies",
+      "Sentence": "further sludge drying on asphalt pavement",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The current plan is that biosolids will be hauled offsite and land applied by Jim Brisco Enterprises, Inc. at a land application area regulated by State Water Resources Control Board ... Order 2004-0012-DWQ.",
-      "trigger_process": [
-        "Land Application"
+        "Drying"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Addition of a new screw press to the existing sludge dewatering facilities for redundancy.",
+      "Sentence": "The existing unlined sludge drying beds remaining at the WWTF and are mostly not used.",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The trickling filters were taken out of service but remain at the WWTF.",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Order 95-200 described the WWTF as having... primary and secondary clarifiers",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Order 95-200 described the WWTF as having... primary and secondary sludge digesters",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Order 95-200 described the WWTF as having... three polishing ponds",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "Mixing"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The single 2.85-million-gallon aeration basin consists of ... six aerators, and two mixers.",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     }
   ]

@@ -1,150 +1,99 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
+      "Equipment": "OzonationUnit",
       "Process": [
-        "Screening"
+        "Ozonation",
+        "Disinfection",
+        "Oxidation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "bar screens",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Wastewater treatment unit operations and processes at the NCPWF will consist of ozone disinfection",
       "trigger_process": [
-        "Screening/Microstrainer"
+        "Ozonation"
       ]
     },
     {
-      "Equipment": "GritChamber",
+      "Equipment": "GranularActivatedCarbonAdsorber",
       "Process": [
-        "Sedimentation"
+        "GranularActivatedCarbon",
+        "BiologicallyActiveFiltration"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "grit removal",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Wastewater treatment unit operations and processes at the NCPWF will consist of ... biological activated carbon",
       "trigger_process": [
-        "Grit Removal"
+        "Activated Carbon",
+        "Biologically Active Filtration"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "UltrafiltrationUnit",
       "Process": [
-        "Sedimentation",
-        "Coagulation"
+        "Ultrafiltration"
       ],
-      "Role": [
-        "Primary"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "chemically enhanced primary sedimentation",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "membrane filtration using Toray ultrafiltration membranes",
       "trigger_process": [
-        "Coagulation",
-        "Primary Clarification",
-        "Unspecified Chemical Addition"
+        "Ultrafiltration"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
       ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.9,
-      "Sentence": "flow equalization",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "3-stage reverse osmosis (RO) treatment",
       "trigger_process": [
-        "Equalization"
+        "Reverse Osmosis"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "UltravioletLightUnit",
       "Process": [
-        "FourStageBardenpho",
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "UVDisinfection",
+        "AdvancedOxidation"
       ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "aeration/secondary clarification using a 4-stage Bardenpho process for enhanced nutrient removal",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "ultraviolet light/advanced oxidation (UV/AOP) using sodium hypochlorite as an oxidant",
       "trigger_process": [
-        "Denitrification",
-        "Four Stage Bardenpho",
-        "Nitrification"
+        "UV Disinfection",
+        "UV-AOP"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "MixingBasin",
       "Process": [
-        "Sedimentation"
+        "ChemicalAddition",
+        "pHAdjustment",
+        "Mixing"
       ],
-      "Role": [
-        "Secondary"
+      "Role": null,
+      "Substance": [
+        "pHAdjuster-Lime"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "aeration/secondary clarification",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "product-water conditioning using lime and carbon dioxide injection",
       "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "coagulation followed by deep-bed anthracite filtration",
-      "trigger_process": [
-        "Coagulation",
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "deep-bed anthracite filtration",
-      "trigger_process": [
-        "Media Filtration"
+        "Lime Treatment"
       ]
     },
     {
@@ -153,34 +102,43 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "chlorination for flows directed to non-potable use (primarily irrigation)",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "and chlorination to maintain a free chlorine residual in the Miramar Reservoir conveyance pipeline",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "The North City Pure Water Dechlorination Facility will achieve dechlorination by injecting sodium bisulfite into the conveyance pipeline",
+      "trigger_process": [
+        "Dechlorination"
       ]
     },
     {
       "Equipment": "OzonationUnit",
       "Process": [
         "Ozonation",
-        "Disinfection"
+        "Disinfection",
+        "Oxidation"
       ],
       "Role": null,
-      "Substance": [
-        "Disinfectant-Ozone"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "ozone disinfection",
+      "Sentence": "Treatment processes utilized at the WPDF include ozone disinfection",
       "trigger_process": [
         "Ozonation"
       ]
@@ -195,8 +153,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "biological activated carbon",
+      "Sentence": "Treatment processes utilized at the WPDF include ... biological activated carbon",
       "trigger_process": [
         "Activated Carbon",
         "Biologically Active Filtration"
@@ -211,8 +168,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "microfiltration",
+      "Sentence": "Treatment processes utilized at the WPDF include ... microfiltration",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -222,14 +178,11 @@
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "RO",
+      "Sentence": "Treatment processes utilized at the WPDF include ... RO",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -244,8 +197,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "ultraviolet disinfection/advanced oxidation processes",
+      "Sentence": "Treatment processes utilized at the WPDF include ... ultraviolet disinfection/advanced oxidation processes",
       "trigger_process": [
         "UV Disinfection",
         "UV-AOP"

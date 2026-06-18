@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening..."
+      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal..."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pre-aeration/grit removal"
+      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal..."
     },
     {
       "Equipment": "AerationBasin",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pre-aeration/grit removal"
+      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,12 +50,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sedimentation"
+      "Sentence": "Treatment facilities consist of...primary sedimentation..."
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -63,7 +64,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological filtration (trickling filters)"
+      "Sentence": "Treatment facilities consist of...biological filtration (trickling filters)..."
     },
     {
       "Equipment": "AerationBasin",
@@ -72,13 +73,12 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
         "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids contact stabilization (activated sludge)"
+      "Sentence": "Treatment facilities consist of...solids contact stabilization (activated sludge)..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -91,7 +91,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification"
+      "Sentence": "Treatment facilities consist of...secondary clarification."
     },
     {
       "Equipment": null,
@@ -117,7 +117,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using gravity thickening"
+      "Sentence": "Biosolids ... are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -126,15 +126,15 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using ... anaerobic digestion"
+      "Sentence": "Biosolids ... are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering..."
     },
     {
       "Equipment": "DewateringUnit",
@@ -149,7 +149,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "drying beds"
+      "Sentence": "Biosolids ... are treated on the site using ... drying beds ..."
     },
     {
       "Equipment": "DewateringUnit",
@@ -164,18 +164,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "belt filter press dewatering"
-    },
-    {
-      "Equipment": "Cogenerator",
-      "Process": [
-        "Cogeneration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat"
+      "Sentence": "Biosolids ... are treated on the site using ... belt filter press dewatering..."
     },
     {
       "Equipment": null,
@@ -183,14 +172,38 @@
         "LandApplication"
       ],
       "Role": [
-        "SolidsHandling"
+        "BiosolidsDisposal"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "and are land-applied at various sites."
+      "Sentence": "Biosolids ... are land-applied at various sites."
+    },
+    {
+      "Equipment": "Cogenerator",
+      "Process": [
+        "Cogeneration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat, which are then used at the facility."
+    },
+    {
+      "Equipment": "SepticTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The leachate ... is discharged into the septic receiving station and from there is directed into the headworks."
     }
   ]
 }

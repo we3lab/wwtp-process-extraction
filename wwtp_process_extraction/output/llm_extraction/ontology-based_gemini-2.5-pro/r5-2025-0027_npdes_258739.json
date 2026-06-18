@@ -24,20 +24,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger has substantially completed upgrades to the treatment system on the east of the San Joaquin River, which includes screening, grit removal..."
+      "Sentence": "The upgraded Facility treatment includes fine screening, grit removal, primary clarification..."
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and primary sedimentation, where settling is enhanced."
+      "Sentence": "The upgraded Facility treatment includes... primary clarification... primary sludge thickening in the primary clarifiers with primary sludge pumping..."
     },
     {
       "Equipment": "AerationBasin",
@@ -66,15 +69,42 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and further routed to secondary clarifiers."
+      "Sentence": "Effluent from the secondary clarifiers is pumped to the new tertiary treatment facilities..."
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection..."
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection..."
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation",
+        "Recirculation"
+      ],
+      "Role": [
         "Equalization"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -90,7 +120,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Additional secondary treatment and water storage is available in the facultative ponds."
+      "Sentence": "...it can be pumped beneath the San Joaquin River to the facultative pond system and chlorination facilities on the west side of the San Joaquin River."
     },
     {
       "Equipment": "Wetland",
@@ -106,16 +136,14 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "Nitrification",
-        "Biofiltration"
+        "Biofiltration",
+        "Nitrification"
       ],
       "Role": [
         "Tertiary",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Tertiary treatment on the west side of the San Joaquin River consists of a nitrifying biotower for ammonia removal..."
@@ -123,7 +151,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Tertiary"
@@ -162,35 +191,9 @@
       "Sentence": "...and disinfected using chlorination/dechlorination prior to discharge to the San Joaquin River at Discharge Point 001A."
     },
     {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection..."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary treatment on the east side of the San Joaquin River consists of disk filters and UV disinfection..."
-    },
-    {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -200,13 +203,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...solids from the primary and secondary sedimentation processes are either routed to gravity thickeners..."
+      "Sentence": "solids from the primary and secondary sedimentation processes are either routed to gravity thickeners, gravity belt thickeners, or pumped to the anaerobic digesters directly."
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -216,7 +218,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids treatment includes... gravity belt thickening of waste activated sludge..."
+      "Sentence": "...gravity belt thickening of waste activated sludge, anaerobic digestion..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -248,10 +250,10 @@
       "Sentence": "Following anaerobic digestion, sludge is routed to a holding tank."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -264,10 +266,10 @@
       "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge or belt filter presses."
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration",
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -282,25 +284,45 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication",
-        "Landfill"
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered solids are hauled off-site by a private contractor and routinely recycled on agricultural lands as a source of nutrients and soil amendment."
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "In an emergency, solids can be used as daily cover for solid waste at a landfill."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side of the San Joaquin River to the upgraded facility on the east side... for retreatment."
+      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side of the San Joaquin River to the upgraded facility on the east side of the San Joaquin River for retreatment."
     }
   ]
 }

@@ -32,29 +32,30 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The design capacity of Plant 1A is 5.5 MGD. Treatment processes consists of two rectangular primary sedimentation units;"
+      "Sentence": "two rectangular primary sedimentation units"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
         "NutrientRemoval",
         "Stepfeed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an activated sludge process with nutrient removal capabilities operated in a serpentine step-feed mode (three aeration basins),"
+      "Sentence": "an activated sludge process with nutrient removal capabilities operated in a serpentine step-feed mode (three aeration basins)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -65,17 +66,17 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and secondary clarification provided by six rectangular units."
+      "Sentence": "secondary clarification provided by six rectangular units"
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -85,7 +86,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of two parallel oxidation ditches with separate oxic and anoxic zones,"
+      "Sentence": "two parallel oxidation ditches with separate oxic and anoxic zones"
     },
     {
       "Equipment": "SedimentationTank",
@@ -96,10 +97,12 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and two circular secondary clarifier units with sludge recovery."
+      "Sentence": "two circular secondary clarifier units with sludge recovery"
     },
     {
       "Equipment": "Tank",
@@ -110,7 +113,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treated wastewater from Plants 1A and 1B is discharged to a flow equalization basin."
+      "Sentence": "discharged to a flow equalization basin"
     },
     {
       "Equipment": "CoagulationBasin",
@@ -123,7 +126,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment train consists of coagulation, continuous backwash sand filtration, and chlorination"
+      "Sentence": "The tertiary treatment train consists of coagulation"
     },
     {
       "Equipment": "RapidSandFilter",
@@ -136,13 +139,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment train consists of coagulation, continuous backwash sand filtration, and chlorination"
+      "Sentence": "continuous backwash sand filtration"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -152,12 +156,34 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorine is used for disinfection."
+      "Sentence": "chlorination with sodium hypochlorite in two serpentine chlorine contact tanks followed by dechlorination with sodium bisulfate"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "pumped to the three offsite percolation ponds"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an on-site four million gallon recycled water storage tank"
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -167,7 +193,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary sludge and waste activated sludge from Plant 1A and 1B is thickened with a gravity belt thickener"
+      "Sentence": "is thickened with a gravity belt thickener"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -176,20 +202,20 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "prior to being sent to one of three anaerobic digesters."
+      "Sentence": "prior to being sent to one of three anaerobic digesters"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -199,10 +225,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is dewatered with a belt press or centrifuge."
+      "Sentence": "Digested sludge is dewatered with a belt press"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -214,10 +240,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is dewatered with a belt press or centrifuge."
+      "Sentence": "Digested sludge is dewatered with ... centrifuge"
     },
     {
-      "Equipment": "OxidationDitch",
+      "Equipment": null,
       "Process": [
         "Recirculation"
       ],
@@ -230,7 +256,7 @@
       "Sentence": "All belt press filtrate is reintroduced to the oxidation ditches"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -247,26 +273,17 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "or is transported to an approved composting facility."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Disinfected tertiary water flows to an on-site four million gallon recycled water storage tank."
+      "Sentence": "sludge cake ... is transported to an approved composting facility"
     }
   ]
 }

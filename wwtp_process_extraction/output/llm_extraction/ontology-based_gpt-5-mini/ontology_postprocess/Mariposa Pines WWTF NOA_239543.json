@@ -7,12 +7,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The influent pump station has two pumps, each with a pumping capacity of 100 gallons per minute (gpm), which pump wastewater to the aeration pond.",
+      "Sentence": "influent pump station",
       "trigger_process": []
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
@@ -20,28 +19,38 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater is treated by a surface aerator within the aeration pond.",
-      "trigger_process": []
+      "Sentence": "aeration pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "Pond",
       "Process": [
-        "Sedimentation",
-        "Evaporation"
+        "Sedimentation"
       ],
       "Role": null,
-      "Substance": [
-        "Fluid-Sludge",
-        "Constituent-SuspendedSolids",
-        "Constituent-OrganicCarbon"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater flows from the aeration pond to the sediment pond for further break down of organic matter and settling of solids.",
+      "Sentence": "sediment pond",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Unspecified Clarification",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "leachfield system",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

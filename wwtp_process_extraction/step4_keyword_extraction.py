@@ -10,6 +10,7 @@ from helpers.utils import (
     PRESENT_STATUSES,
     build_secondary_category_lookup,
     apply_secondary_category_backfill,
+    add_county_and_sort,
 )
 
 
@@ -42,7 +43,7 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
 
 def main():
     rfr_data = f"wwtp_process_extraction/output/site_data_relevant.csv"
-    txt_folder = f"wwtp_process_extraction/output/npdes/text"
+    txt_folder = f"wwtp_process_extraction/output/permits/text"
     out_file = f"wwtp_process_extraction/output/unit_processes_by_pdf_kw.csv"
 
     with open("wwtp_process_extraction/data/unitprocess_keywords.json", "r") as f:
@@ -147,7 +148,9 @@ def main():
         key_cols=["Place ID"],
         meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"],
     )
+    collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(kw_by_fac_path, index=False)
+    add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(out_file, index=False)
     print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
 
 

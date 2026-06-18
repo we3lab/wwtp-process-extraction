@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "headworks equipped with grinders and magnetic influent flow meters, mechanical bar screening and a stacked plate grit separator.",
+      "Sentence": "headworks equipped with grinders",
       "trigger_process": [
         "Comminution"
       ]
@@ -28,8 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "headworks equipped with grinders and magnetic influent flow meters, mechanical bar screening and a stacked plate grit separator.",
+      "Sentence": "mechanical bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -45,8 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "headworks equipped with grinders and magnetic influent flow meters, mechanical bar screening and a stacked plate grit separator.",
+      "Sentence": "stacked plate grit separator",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -61,8 +58,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The new Emergency Equalization Basin, located within the Facility footprint, can be used to capture peak flows in excess of the Facility\u2019s peak design capacity of 4.9-mgd.",
+      "Sentence": "The new Emergency Equalization Basin ... can be used to capture peak flows",
       "trigger_process": [
         "Equalization"
       ]
@@ -70,9 +66,7 @@
     {
       "Equipment": "PlugFlowReactor",
       "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Recirculation"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
@@ -80,8 +74,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility\u2019s secondary treatment system uses an activated sludge process that is plug flow with sequential aeration followed by secondary clarifiers.",
+      "Sentence": "secondary treatment system uses an activated sludge process that is plug flow",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -89,18 +82,20 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
+        "Secondary",
         "Aerobic",
-        "Secondary"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The first stage and second stage aeration tanks are alternately aerated and unaerated without additional mixing.",
+      "Sentence": "The selector tank is aerated by coarse bubble diffusers...first stage and second stage aeration tanks are alternately aerated and unaerated",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Unspecified AS"
       ]
     },
@@ -115,8 +110,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Solids/liquid separation occurs in the clarifier tank over concrete wedges.",
+      "Sentence": "Solids/liquid separation occurs in the clarifier tank",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -128,13 +122,13 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste activated sludge (WAS) is transferred to the aerobic digesters.",
+      "Sentence": "one aerobic digester...WAS is transferred to the aerobic digesters",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -154,8 +148,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "There is a chlorine mixer upstream for sodium hypochlorite addition.",
+      "Sentence": "Disinfection occurs within the Chlorine Contact Basin...chlorine mixer upstream for sodium hypochlorite addition",
       "trigger_process": [
         "Chlorination"
       ]
@@ -164,18 +157,100 @@
       "Equipment": "MixingBasin",
       "Process": [
         "Dechlorination",
-        "Mixing"
+        "ChemicalAddition"
       ],
       "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Disinfected flow is dechlorinated through addition of sodium bisulfite in the sodium bisulfite (SBIS) Mixing Box, connected to the end of the CCB structure.",
+      "Sentence": "dechlorinated through addition of sodium bisulfite in the sodium bisulfite (SBIS) Mixing Box",
       "trigger_process": [
-        "Dechlorination"
+        "Dechlorination",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "concrete-lined sludge lagoon for storage",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Polymer is added to the incoming sludge prior to dewatering via screw press",
+      "trigger_process": [
+        "Mechanical Dewatering",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dewatered solids are conveyed to a common sludge drying bed for final solar drying",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Irrigation Pond is used to store recycled water before it is discharged to the pasture irrigation site",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried biosolids ... are hauled to a landfill for disposal",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

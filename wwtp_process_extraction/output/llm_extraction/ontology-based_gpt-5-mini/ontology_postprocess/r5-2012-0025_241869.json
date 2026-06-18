@@ -1,19 +1,100 @@
 {
   "items": [
     {
-      "Equipment": null,
+      "Equipment": "Screen",
       "Process": [
-        "Disinfection"
+        "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the WWTF is comprised of Lake County Assessor\u2019s Parcel Numbers 007-003-43, 007-003-46, and 005-035-06, -16 and -18. The location of the facility is shown on Attachment A, which is attached hereto and made part of this Order by reference.\n3. CLMSD owns and operates the WWTF, which includes collection, secondary wastewater\ntreatment and storage, disinfection and on-site land application areas (LAAs).",
+      "Sentence": "Wastewater is received at the headworks, which is equipped with a mechanical screen.",
       "trigger_process": [
-        "Unspecified Disinfection"
+        "Screening/Microstrainer"
       ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "Sedimentation",
+        "AnaerobicDigestion",
+        "Cleaning"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anaerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two 11.8-million gallon unlined aeration basins that provide secondary treatment... Settleable solids remain on the basin floor to be further decomposed by anaerobic processes. Removal of the solids is accomplished by dredging the ponds as needed.",
+      "trigger_process": [
+        "AO (anaerobic/oxic)",
+        "Anaerobic Digestion",
+        "Secondary Clarification",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The effluent pump station has a pumping capacity of approximately 3.5 mgd.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment facility includes ... a chlorine disinfection system... Effluent chlorine dosage rates range from 90 to 120 pounds per day in the summer and 100 to 150 pounds per day in the winter months.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the storage reservoir has a maximum capacity of approximately 650 ac-ft (212 MG)",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment facility includes ... an irrigation pump station",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -21,15 +102,80 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "3. CLMSD owns and operates the WWTF, which includes collection, secondary wastewater\ntreatment and storage, disinfection and on-site land application areas (LAAs).",
+      "Sentence": "on-site land application areas (LAAs)... Effluent application is by a sprinkler system.",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Recirculation",
+        "Storage"
+      ],
+      "Role": [
+        "Storage",
+        "Feed",
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tailwater runoff from the LAAs is collected in recapture basins and pumped back into the treatment facility",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed",
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Two additional tailwater pump stations were constructed as part of the 2007 Expansion Project to capture and return runoff from the expanded spray irrigation fields.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids at the headworks are disposed of at a permitted landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Sludge accumulated in the aeration basins is periodically removed and disposed of offsite.",
+      "trigger_process": [
+        "Unspecified Disposal"
       ]
     }
   ]

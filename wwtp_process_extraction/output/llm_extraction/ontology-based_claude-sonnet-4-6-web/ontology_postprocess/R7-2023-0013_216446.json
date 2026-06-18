@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel, grit pump, grit cyclone separator, and influent pump dry well with three influent pumps.",
+      "Sentence": "two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two grinder-washer compactors... The screenings are grinded, washed and then compacted and transferred to a roll off dumpster.",
+      "Sentence": "Screening solids removed from the headworks system are routed to a grinder-washer/compactor unit where the soft organics are separated from the screenings and returned to the process flow stream. The screenings are grinded, washed and then compacted",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -65,7 +65,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoons and two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds).",
+      "Sentence": "a lagoon treatment system rated at 7.0 million gallons per day (MGD)...Each of the four lagoon treatment modules are comprise of four lined aerated lagoons",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -83,7 +83,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds). The polishing ponds in the aeration lagoon system are dredged to remove accumulated solids at a rate of approximately one pond per year.",
+      "Sentence": "two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds)",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -101,7 +101,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a Biolac\u00ae activated sludge treatment system rated at 2.9 MGD... The activated sludge treatment system consists of two activated sludge basins, two secondary clarifiers and sludge handling facilities.",
+      "Sentence": "a Biolac\u00ae activated sludge treatment system rated at 2.9 MGD...two activated sludge basins",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -119,7 +119,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The activated sludge treatment system consists of two activated sludge basins, two secondary clarifiers and sludge handling facilities.",
+      "Sentence": "two secondary clarifiers and sludge handling facilities",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -130,6 +130,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
@@ -140,7 +141,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Combined secondary effluent from each lagoon system module and the Biolac\u00ae system is conveyed to the chlorine contact basin to be disinfected and de-chlorinated prior to discharge... using a chemical induction unit which employs a vacuum and gas system capable of dispersing the chlorine and sulfur dioxide gas... 3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination.",
+      "Sentence": "Combined secondary effluent...is conveyed to the chlorine contact basin to be disinfected and de-chlorinated...chlorine and sulfur dioxide gas...3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -151,8 +152,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -176,17 +176,20 @@
       "Process": null,
       "Role": [
         "SolidsHandling",
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank and is then pumped to a single 2-meter gravity belt filter press where it is dewatered.",
+      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank",
       "Source": "permit_text",
       "Website": null,
-      "trigger_process": []
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
       "Equipment": "DewateringUnit",
@@ -201,7 +204,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to a single 2-meter gravity belt filter press where it is dewatered. The dewatered sludge is discharged into a truck trailer before being hauled off site by a private hauler for composting.",
+      "Sentence": "a single 2-meter gravity belt filter press where it is dewatered. The dewatered sludge is discharged into a truck trailer",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -209,7 +212,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -221,30 +224,31 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total). The Discharger stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids.",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total). The solids are periodically transferred to a storage area for continued drying",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "sludge from the facility has been hauled away to the Synagro Arizona Soils Composting facility in Vicksburg, Arizona.",
+      "Sentence": "hauled off site by a private hauler for composting...Synagro Arizona Soils Composting facility in Vicksburg, Arizona",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     },
     {
@@ -256,7 +260,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "screenings are hauled off site for disposal at a County of Riverside landfill.",
+      "Sentence": "the screenings are hauled off site for disposal at a County of Riverside landfill",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -266,7 +270,7 @@
     {
       "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -274,11 +278,11 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase l is currently under design and includes... Tertiary Filters utilizing cloth disk filters",
-      "Source": "both",
-      "Website": "https://www.cvwd.org/640/WRP-4-Recycled-Water-Improvement-Project",
+      "Sentence": "Tertiary Filters utilizing cloth disk filters",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
@@ -292,7 +296,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase l is currently under design and includes a Filter Feed Pump Station, Tertiary Filters utilizing cloth disk filters, ultraviolet (UV) disinfection...",
+      "Sentence": "ultraviolet (UV) disinfection",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -312,26 +316,12 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase l is currently under design and includes... a chemical storage and feed system (sodium hypochlorite).",
+      "Sentence": "a chemical storage and feed system (sodium hypochlorite)",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Chlorination"
       ]
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Phase l is currently under design and includes... seasonal and operational storage.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": []
     }
   ]
 }

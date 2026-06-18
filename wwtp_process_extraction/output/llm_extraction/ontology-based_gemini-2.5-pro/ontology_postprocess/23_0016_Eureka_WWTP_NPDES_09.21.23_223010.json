@@ -6,8 +6,7 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -23,8 +22,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -86,8 +84,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": null,
       "Substance": [
@@ -95,17 +92,17 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection. The chlorinated effluent is stored in a holding pond then dechlorinated...",
+      "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection.",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -113,6 +110,22 @@
       "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged at Discharge Point 001 to Humboldt Bay in conjunction with ebb tide cycles.",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged...",
+      "trigger_process": [
+        "Dechlorination"
       ]
     },
     {
@@ -136,11 +149,10 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
@@ -149,9 +161,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -161,20 +174,18 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
+      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge...",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Digestion"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -184,7 +195,6 @@
       "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Digestion",
         "Unspecified Lagoon"
       ]
     }

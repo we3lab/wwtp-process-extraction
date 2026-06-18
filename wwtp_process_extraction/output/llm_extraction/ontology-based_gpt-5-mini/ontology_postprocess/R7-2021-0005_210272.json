@@ -1,19 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Facility consists of three raw water lift stations, a headworks facility, ...",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -24,39 +11,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Raw wastewater is directed through the plant headworks, which consists of a step screen, compactor, vortex grit pump, and a grit separator.",
+      "Sentence": "headworks facility, which consists of a step screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Raw wastewater is directed through the plant headworks, which consists of a step screen, compactor, vortex grit pump, and a grit separator.",
-      "trigger_process": [
-        "Comminution"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Raw wastewater is directed through the plant headworks, which consists of a step screen, compactor, vortex grit pump, and a grit separator.",
-      "trigger_process": []
     },
     {
       "Equipment": "GritChamber",
@@ -69,11 +27,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Raw wastewater is directed through the plant headworks, which consists of a step screen, compactor, vortex grit pump, and a grit separator.",
+      "Sentence": "headworks facility, which consists of ... a grit separator",
       "trigger_process": [
         "Grit Removal"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks facility, which consists of ... a vortex grit pump",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three raw water lift stations",
+      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -82,7 +63,6 @@
         "Aeration"
       ],
       "Role": [
-        "Extended",
         "Primary"
       ],
       "Substance": [
@@ -90,10 +70,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater receives extended aeration through the three Biolac\u00ae activated sludge treatment systems, which consists of the primary treatment for the wastewater.",
+      "Sentence": "three wave oxidation Biolac\u00ae activated sludge treatment units equipped with diffusers that provide extended aeration",
       "trigger_process": [
-        "Extended Aeration"
+        "Unspecified AS"
       ]
     },
     {
@@ -107,8 +86,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility consists of three raw water lift stations, a headworks facility, three wave oxidation Biolac\u00ae activated sludge treatment units equipped with diffusers that provide extended aeration, three secondary clarifiers, an activated sludge pumping station, an ultraviolet disinfection system, and solar greenhouse sludge drying structures.",
+      "Sentence": "three secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -120,39 +98,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Facility consists of ... an activated sludge pumping station, ...",
+      "Sentence": "an activated sludge pumping station",
       "trigger_process": []
     },
     {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility consists of ... an ultraviolet disinfection system, ...",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The Discharger converted one of the inactive primary clarifiers into a sludge thickening unit ...",
+      "Sentence": "converted one of the inactive primary clarifiers into a sludge thickening unit",
       "trigger_process": [
         "Thickening"
       ]
@@ -163,15 +125,16 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the other inactive primary clarifier into a sludge holding tank.",
+      "Sentence": "the other inactive primary clarifier into a sludge holding tank",
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -179,19 +142,18 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wasted activated sludge is thickened in a sludge thickening unit, dewatered in a centrifuge sludge dewatering unit, and then dried in two solar greenhouse sludge drying structures.",
+      "Sentence": "dewatered in a centrifuge sludge dewatering unit",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
@@ -199,14 +161,45 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Wasted activated sludge is thickened in a sludge thickening unit, dewatered in a centrifuge sludge dewatering unit, and then dried in two solar greenhouse sludge drying structures.",
+      "Sentence": "solar greenhouse sludge drying structures",
       "trigger_process": [
         "Drying"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an ultraviolet disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "inactive primary clarifiers",
+      "trigger_process": [
+        "Primary Clarification"
       ]
     }
   ]

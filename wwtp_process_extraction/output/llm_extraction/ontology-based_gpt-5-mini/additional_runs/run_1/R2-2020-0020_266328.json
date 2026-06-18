@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment with bar screening and grit removal"
+      "Sentence": "preliminary treatment with bar screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment with bar screening and grit removal"
+      "Sentence": "preliminary treatment with ... grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -63,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment with trickling filters and secondary sedimentation"
+      "Sentence": "secondary treatment with ... secondary sedimentation"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -73,7 +73,7 @@
         "Dechlorination"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -121,10 +121,9 @@
       "Sentence": "preliminary treatment, including screening and grit removal"
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "MembraneProcess"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
@@ -132,12 +131,27 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "secondary treatment by means of a membrane bioreactor (MBR), consisting of activated sludge biological process basins and submerged membrane filtration trains"
+      "Sentence": "activated sludge biological process basins"
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "MembraneProcess"
+      ],
+      "Role": [
+        "Secondary",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "membrane bioreactor (MBR) ... submerged membrane filtration trains"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -150,11 +164,10 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -165,7 +178,9 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Biofiltration"
+      ],
       "Role": [
         "Posttreatment"
       ],

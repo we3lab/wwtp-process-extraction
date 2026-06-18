@@ -1,20 +1,32 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater is collected in two lift stations",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of two aerated ponds",
+      "Sentence": "the treatment system at the Facility consists of two aerated ponds",
       "trigger_process": [
-        "Unspecified AS"
+        "Aerated Lagoon"
       ]
     },
     {
@@ -26,24 +38,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of ... five stabilization ponds",
+      "Sentence": "five stabilization ponds",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Stabilization Pond"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of ... a six-acre percolation/polishing pond",
+      "Sentence": "a six-acre percolation/polishing pond",
       "trigger_process": [
         "Polishing Lagoon"
       ]
@@ -57,7 +66,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "an adjacent wetland (1.4 acres) that discharges to the receiving water",
       "trigger_process": [
         "Wetland"
@@ -67,37 +75,80 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment system at the Facility consists of ... a liquid chlorine contact chamber, dechlorination with liquid sodium bisulfite",
+      "Sentence": "a liquid chlorine contact chamber",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
       ],
-      "Substance": null,
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "WastewaterTreatmentChemical"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "Wastewater is collected in two lift stations",
-      "trigger_process": []
+      "Sentence": "dechlorination with liquid sodium bisulfite",
+      "trigger_process": [
+        "Alum Addition",
+        "Dechlorination",
+        "Ferric Chloride Addition",
+        "Lime Treatment",
+        "Polymer Addition",
+        "Reduction"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "allowed to dry on site during the summer and fall months at the sludge storage area",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried biosolids are sampled and hauled to a permitted landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
     }
   ]
 }

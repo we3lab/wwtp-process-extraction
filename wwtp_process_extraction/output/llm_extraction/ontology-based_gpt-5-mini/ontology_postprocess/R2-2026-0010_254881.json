@@ -1,6 +1,206 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The influent flows through bar screens",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and two grit removal systems.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Coagulation",
+        "Flocculation",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "it is treated with ferric chloride and polymer for flocculation",
+      "trigger_process": [
+        "Coagulation",
+        "Ferric Chloride Addition",
+        "Flocculation",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pumped to a flow splitter for distribution to primary clarifiers, where grease, floating solids, and settable solids are removed.",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Flocculation",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Polymer is used during wet weather flows for Chemically Enhanced Primary Treatment (CEPT).",
+      "trigger_process": [
+        "Flocculation",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Four stand-by wet weather storage basins are available for use during increased wet weather flows.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The primary-treated wastewater typically flows by gravity to five aeration basins as two separate flow streams.",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "It then flows by gravity through the aeration basins to secondary clarifiers for sedimentation and floating solids removal.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "combined in the aeration basins with return activated sludge from secondary clarifiers.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flows by gravity to two chlorine contact basins where it is mixed with sodium hypochlorite for disinfection.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "it is then mixed with sodium bisulfite to neutralize the residual chlorine.",
+      "trigger_process": [
+        "Dechlorination",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
       "Equipment": "GravityThickener",
       "Process": [
         "Sedimentation"
@@ -13,25 +213,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of gravity and mechanical thickeners or waste activated sludge thickening, mesophilic anaerobic digesters, and belt filter presses for dewatering.",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Thickener",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The process consists of gravity and mechanical thickeners or waste activated sludge thickening, mesophilic anaerobic digesters, and belt filter presses for dewatering.",
+      "Sentence": "The process consists of gravity and mechanical thickeners or waste activated sludge thickening",
       "trigger_process": [
         "Thickening"
       ]
@@ -69,9 +251,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of gravity and mechanical thickeners or waste activated sludge thickening, mesophilic anaerobic digesters, and belt filter presses for dewatering.",
+      "Sentence": "belt filter presses for dewatering.",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ThermalHydrolysis"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hailed offsite to a permitted regional reuse site, where thermal hydrolysis is deployed to produce biofertilizer.",
+      "trigger_process": [
+        "Thermal Hydrolysis"
       ]
     }
   ]

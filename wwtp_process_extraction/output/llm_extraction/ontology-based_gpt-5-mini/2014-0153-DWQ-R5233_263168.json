@@ -11,38 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "In the headworks, wastewater is filtered through dual bar screens with 3-millimeter openings,"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1.0,
-      "Sentence": "Filtered material captured in the screens is disposed of at the Mariposa County Sanitary Landfill."
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids",
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Sludge separated from the effluent in the treatment process is dewatered using a centrifuge."
+      "Sentence": "In the headworks, wastewater is filtered through dual bar screens with 3-millimeter openings"
     },
     {
       "Equipment": "Tank",
@@ -56,8 +25,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "The filtered wastewater is collected in a 50,000 gallon underground fiberglass equalization tank with aeration to provide mixing."
+      "Sentence": "The filtered wastewater is collected in a 50,000 gallon underground fiberglass equalization tank with aeration to provide mixing"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "From the equalization tank, the wastewater is then pumped into the anoxic basin"
     },
     {
       "Equipment": "MixingBasin",
@@ -67,27 +46,13 @@
       ],
       "Role": [
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "The anoxic basin is sized for denitrification and has a mixer to maintain the solids in solution while not providing any air to the waste."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "From the equalization tank, the wastewater is then pumped into the anoxic basin inside the treatment plant building."
+      "Sentence": "The anoxic basin is sized for denitrification and has a mixer to maintain the solids in solution while not providing any air to the waste"
     },
     {
       "Equipment": "MembraneBioreactor",
@@ -97,30 +62,44 @@
         "Aeration"
       ],
       "Role": [
-        "Tertiary",
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "The flow is moved to the aerated membrane bioreactor (MBR) via pumps."
+      "Sentence": "The flow is moved to the aerated membrane bioreactor (MBR)... The current WWTF provides tertiary treatment that combines an activated sludge process, membranes to filter the wastewater, and ultraviolet (UV) disinfection"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1.0,
-      "Sentence": "Within this system is the UV treatment process which acts as a disinfectant and is the last treatment step prior to dispersal."
+      "Sentence": "Within this system is the UV treatment process which acts as a disinfectant and is the last treatment step prior to dispersal"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge separated from the effluent in the treatment process is dewatered using a centrifuge"
     },
     {
       "Equipment": "Tank",
@@ -133,22 +112,57 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 0.8,
-      "Sentence": "Additionally, an existing centrifuge is utilized, as well as an off-board waste activated sludge (WAS) storage."
+      "Sentence": "an existing centrifuge is utilized, as well as an off-board waste activated sludge (WAS) storage"
     },
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "Disinfection"
       ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
+      "Role": [
+        "Secondary"
       ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Order 99-086 allowed a discharge of up to 0.08 million gallons per day (mgd) of secondary disinfected domestic effluent"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "In the winter, effluent is discharged to three leachfields... In the summer... a subsurface drip disposal system is available for use"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "It is estimates that once the Explorer Cabins come on line, the WWTF will produce about 120 pounds of sludge per day which will be placed in a roll off bin for subsequent disposal at the Mariposa County Sanitary Landfill."
+      "Location": "on-site",
+      "Sentence": "The use of landscape irrigation for wastewater disposal shall not occur until the Title 22 Report has been approved"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "dual usage of the subsurface drip system along with a 150,000 gallon storage tank and the expanded leachfield should provide sufficient disposal capacity"
     }
   ]
 }

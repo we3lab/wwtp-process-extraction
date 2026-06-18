@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks include two parallel process trains, each consisting of six-millimeter fine screens...",
+      "Sentence": "the headworks include two parallel process trains, each consisting of six-millimeter fine screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -25,13 +24,32 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The headworks include two parallel process trains, each consisting of six-millimeter fine screens and a grit-removal vortex...",
+      "Sentence": "grit-removal vortex placed within the concrete channel structure...Accumulated grit is separated in the classifier",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Installation of the new dewatering by screw press is complete.",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -40,35 +58,18 @@
         "Recirculation"
       ],
       "Role": [
-        "Pretreatment"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the emergency storage basin will be evacuated using submersible non-clog pumps back to the lift station for screening/grit removal for reprocessing.",
+      "Sentence": "The newly constructed south process station facilitates RAS and WAS pumping",
       "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "lining Pond A (former emergency storage basin) with a 45-mil reinforced polypropylene liner to act as an emergency storage basin",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -79,13 +80,10 @@
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Two extended aeration activated sludge basins were constructed to provide secondary treatment at the Facility.",
+      "Sentence": "adding two lined extended aeration activated sludge basins...Aerobic and anoxic conditions within the extended aeration activated sludge basins provide biological treatment",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -105,25 +103,46 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Two new 65-foot diameter secondary clarifiers were constructed to remove suspended solids...",
+      "Sentence": "adding two concrete 65-foot diameter secondary clarifiers...to remove suspended solids",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": null,
       "Process": [
-        "MediaFiltration"
+        "Coagulation",
+        "ChemicalAddition"
       ],
       "Role": [
-        "Tertiary"
+        "PhosphorusRemoval"
+      ],
+      "Substance": [
+        "Coagulant-Alum"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "aluminum coagulant will automatically dose the effluent...a coagulant or alkaline addition will be provided upstream of the clarifiers to enhance settling, phosphorus removal",
+      "trigger_process": [
+        "Alum Addition",
+        "Chemical P Removal",
+        "Coagulation"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary",
+        "Backwash"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The upgraded Facility includes tertiary treatment consisting of... two Veolia Hydrotech\u2122 Disk Filters...",
+      "Sentence": "adding two media disk filters to achieve tertiary filtration...Filter backwash discharges to an overflow weir box connected to the emergency storage basin",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -142,10 +161,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Two chlorine contact basins provide a minimum of 90 minutes of modal contact time at minimum water level using a sodium hypochlorite solution.",
+      "Sentence": "Two chlorine contact basins provide a minimum of 90 minutes of modal contact time...using a sodium hypochlorite solution",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "lining Pond A (former emergency storage basin) with a 45-mil reinforced polypropylene liner to act as an emergency storage basin",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -161,8 +193,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "adding ... four digester thickeners",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "old anaerobic digesters are being converted to include a membrane thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -174,16 +221,12 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
+      "Substance": null,
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "converting the anaerobic digesters to aerobic digestion.",
+      "Sentence": "old anaerobic digesters are being converted to include ... two-stage aerobic digestion (two digesters)",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -195,58 +238,49 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic"
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "converting the anaerobic digesters to aerobic digestion.",
+      "Sentence": "converting the anaerobic digesters to aerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Coagulation",
-        "ChemicalAddition",
-        "pHAdjustment"
+        "Drying"
       ],
       "Role": [
-        "PhosphorusRemoval"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Coagulant-Alum",
-        "Coagulant"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "If turbidity is high ... aluminum coagulant will automatically dose the effluent for enhanced coagulation. As needed, a coagulant or alkaline addition will be provided upstream of the clarifiers...",
+      "Sentence": "Two concrete lined sludge drying beds remain onsite for emergency use",
       "trigger_process": [
-        "Alum Addition",
-        "Chemical P Removal",
-        "Coagulation",
-        "Ferric Chloride Addition"
+        "Drying"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Backwashing"
+        "Drying"
       ],
       "Role": [
-        "Backwash"
+        "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Filter backwash discharges to an overflow weir box connected to the emergency storage basin.",
-      "trigger_process": []
+      "Sentence": "Three sand drying beds were demolished.",
+      "trigger_process": [
+        "Drying"
+      ]
     }
   ]
 }

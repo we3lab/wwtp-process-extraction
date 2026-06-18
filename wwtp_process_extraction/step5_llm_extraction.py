@@ -18,7 +18,7 @@ from helpers.api_llm_search import (
     get_method_paths,
 )
 
-TXT_DIR = f"wwtp_process_extraction/output/npdes/text"
+TXT_DIR = f"wwtp_process_extraction/output/permits/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro, gemini-2.0-flash-001
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
 # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
@@ -293,6 +293,16 @@ def run_extraction(args, output_dir_override=None):
         pd.DataFrame([row], columns=columns).to_csv(
             path, mode="a", header=not path.exists(), index=False
         )
+        # keep one row per facility_name: prefer the latest non-FAILED row, else the latest row
+        df = pd.read_csv(path)
+
+        def keep_row(group):
+            non_failed = group[group["structured_output"].astype(str).str.upper() != "FAILED"]
+            return non_failed.iloc[[-1]] if len(non_failed) else group.iloc[[-1]]
+
+        deduped = df.groupby("facility_name", sort=False).apply(keep_row).reset_index(drop=True)
+        if len(deduped) != len(df):
+            deduped.to_csv(path, index=False)
 
     if args.max_facilities is not None:
         jobs = jobs[:args.max_facilities]
@@ -456,6 +466,8 @@ if __name__ == "__main__":
             run_extraction(args)
     else:
         run_extraction(args)
+
+
 
 # Terminal commands to run (uncommented)
 

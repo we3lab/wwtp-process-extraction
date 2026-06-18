@@ -1,40 +1,71 @@
 {
   "items": [
     {
-      "Equipment": "OxidationDitch",
+      "Equipment": "Screen",
       "Process": [
-        "ActivatedSludge"
+        "Screening"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The Facility consists of a secondary treatment plant with a headworks, pre-anoxic basins, oxidation ditches, and secondary clarifiers...",
+      "Sentence": "The Facility consists of a secondary treatment plant with a headworks...",
       "trigger_process": [
-        "Oxidation Ditch"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Grit and screenings are disposed of at the Monterey Regional Waste Management District landfill in Marina.",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
       "Equipment": "MixingBasin",
       "Process": [
-        "Denitrification",
-        "Mixing"
+        "Mixing",
+        "Denitrification"
       ],
       "Role": [
         "Anoxic",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The Facility consists of a secondary treatment plant with a headworks, pre-anoxic basins, oxidation ditches, and secondary clarifiers...",
+      "Sentence": "The Facility consists of a secondary treatment plant with ... pre-anoxic basins...",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "OxidationDitch",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility consists of a secondary treatment plant with ... oxidation ditches...",
+      "trigger_process": [
+        "Oxidation Ditch"
       ]
     },
     {
@@ -48,8 +79,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "The Facility consists of a secondary treatment plant with a headworks, pre-anoxic basins, oxidation ditches, and secondary clarifiers...",
+      "Sentence": "The Facility consists of a secondary treatment plant with ... secondary clarifiers...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -65,8 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility consists of a ... tertiary treatment plant with anthracite media filters, chlorine disinfection, and dechlorination.",
+      "Sentence": "The Facility consists of ... a tertiary treatment plant with anthracite media filters...",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -86,8 +115,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility consists of a tertiary treatment plant with anthracite media filters, chlorine disinfection, and dechlorination.",
+      "Sentence": "The Facility consists of ... a tertiary treatment plant with anthracite media filters, chlorine disinfection, and dechlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -96,8 +124,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -105,7 +132,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "An ultraviolet (UV) light disinfection system has been installed and approved for use by the Division of Drinking Water.",
       "trigger_process": [
         "UV Disinfection"
@@ -115,14 +141,12 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Secondary effluent is disposed of in a system of 37 percolation ponds with a combined area of 395 acres.",
+      "Sentence": "Secondary effluent is disposed of in a system of 37 percolation ponds...",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -140,10 +164,41 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Biosolids are dewatered using belt presses.",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are transported by Synagro for beneficial reuse in Dos Palos.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings are disposed of at the Monterey Regional Waste Management District landfill in Marina.",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -155,72 +210,55 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Grit and screenings are disposed of at the Monterey Regional Waste Management District landfill in Marina.",
+      "Sentence": "Headworks improvements ... to provide fine screening to protect the membranes.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Reactor",
       "Process": [
-        "Landfill"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification",
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Secondary",
+        "Tertiary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Grit and screenings are disposed of at the Monterey Regional Waste Management District landfill in Marina.",
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The biological process will be designed for BOD removal, nitrification and denitrification ... in a series of un-aerated and aerated zones with internal recycle.",
       "trigger_process": [
-        "Biosolids Landfill"
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification",
-        "MembraneProcess",
-        "Recirculation",
-        "Aeration",
-        "Oxidation"
+        "Microfiltration"
       ],
       "Role": [
-        "Secondary",
-        "Tertiary",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The planned expansion project will consist of a parallel treatment system utilizing membrane bioreactor (MBR) technology ...",
+      "Sentence": "Two parallel series of membrane tanks, where hollow-fiber membranes will be used to separate suspended solids from the treated liquid.",
       "trigger_process": [
-        "Denitrification",
-        "Membrane Bioreactor",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.98,
-      "Sentence": "The headworks improvements ... to provide fine screening to protect the membranes.",
-      "trigger_process": [
-        "Screening/Microstrainer"
+        "Membrane Bioreactor"
       ]
     },
     {
@@ -236,7 +274,6 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "A new solids-handling building will be constructed to house screw presses to dewater the biological solids produced by the MBR process train.",
       "trigger_process": [
         "Mechanical Dewatering"
@@ -247,32 +284,31 @@
       "Process": [
         "ChemicalAddition"
       ],
-      "Role": null,
+      "Role": [
+        "MakeUp",
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.8,
       "Sentence": "Chemical storage tanks and metering equipment will be provided to feed hypochlorous acid and citric acid for periodic membrane cleaning operations.",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Compressor",
       "Process": [
-        "LandApplication"
+        "Aeration"
       ],
       "Role": [
-        "SolidsHandling"
+        "Aerobic"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Dewatered biosolids are transported by Synagro for beneficial reuse in Dos Palos.",
-      "trigger_process": [
-        "Land Application"
-      ]
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Aeration air blowers will be installed in a new building along with supporting electrical equipment.",
+      "trigger_process": []
     }
   ]
 }

@@ -41,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...a flow equalization basin...",
+      "Sentence": "...a flow equalization basin, primary clarifier...",
       "trigger_process": [
         "Equalization"
       ]
@@ -57,7 +57,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarifier...",
+      "Sentence": "...primary clarifier, two activated sludge aeration basins...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -75,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...two activated sludge aeration basins...",
+      "Sentence": "...two activated sludge aeration basins, two secondary clarifiers...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -91,7 +91,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...two secondary clarifiers...",
+      "Sentence": "...two secondary clarifiers, a chlorine contact chamber...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -107,7 +107,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...anthracite bed filter...",
+      "Sentence": "...a chlorine contact chamber, anthracite bed filter, and dechlorination.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -116,35 +116,18 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...a chlorine contact chamber...",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and dechlorination.",
+      "Sentence": "...a chlorine contact chamber, anthracite bed filter, and dechlorination.",
       "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -162,16 +145,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are managed in two aerobic digesters...",
+      "Sentence": "Biosolids are managed in two aerobic digesters, dewatered by a two-meter belt press...",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -181,36 +163,50 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...dewatered by a two-meter belt press...",
+      "Sentence": "Biosolids are managed in two aerobic digesters, dewatered by a two-meter belt press...",
       "trigger_process": [
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
         "Storage",
-        "Containment"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and stockpiled in a sludge holding bed. The holding bed contains drains which permit leachate to flow back to the head of the liquid treatment train for treatment.",
+      "Sentence": "...and stockpiled in a sludge holding bed.",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Drain"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The holding bed contains drains which permit leachate to flow back to the head of the liquid treatment train for treatment.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "BiosolidsDisposal"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -219,7 +215,7 @@
       "Location": "off-site",
       "Sentence": "Biosolids are periodically removed and hauled by Liberty Composting to its 162-acre composting facility in Kern County, California.",
       "trigger_process": [
-        "Land Application"
+        "Composting"
       ]
     }
   ]

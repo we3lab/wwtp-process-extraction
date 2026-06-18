@@ -30,7 +30,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison
-from helpers.utils import get_leaf_names
+from helpers.utils import get_leaf_names, precision_recall_f1
 
 
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
@@ -145,11 +145,7 @@ def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: lis
         fp += int((not truth_positive) and pred_positive)
         fn += int(truth_positive and (not pred_positive))
 
-    precision = tp / (tp + fp) if (tp + fp) else float("nan")
-    recall = tp / (tp + fn) if (tp + fn) else float("nan")
-    f1 = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float("nan")
-    jaccard = tp / (tp + fp + fn) if (tp + fp + fn) else float("nan")
-    return precision, recall, f1, jaccard
+    return precision_recall_f1(tp, fp, fn)
 
 
 def family_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
@@ -162,11 +158,7 @@ def family_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: li
     fp = len(pred_families - truth_families)
     fn = len(truth_families - pred_families)
 
-    precision = tp / (tp + fp) if (tp + fp) else float("nan")
-    recall = tp / (tp + fn) if (tp + fn) else float("nan")
-    f1 = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float("nan")
-    jaccard = tp / (tp + fp + fn) if (tp + fp + fn) else float("nan")
-    return precision, recall, f1, jaccard
+    return precision_recall_f1(tp, fp, fn)
 
 
 def exact_state_accuracy(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> float:
@@ -213,7 +205,6 @@ def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataF
         subset = subset.drop_duplicates("Place ID").set_index("Place ID").reindex(manual.index)
 
         per_pdf_label_f1: list[float] = []
-        per_pdf_overlap: list[float] = []
         per_pdf_family_f1: list[float] = []
         per_pdf_state_acc: list[float] = []
 
@@ -221,12 +212,11 @@ def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataF
             manual_row = manual.loc[place_id, label_cols]
             pred_row = subset.loc[place_id, label_cols]
 
-            _, _, label_f1, label_overlap = label_presence_f1(manual_row, pred_row, unit_cols)
+            _, _, label_f1, _ = label_presence_f1(manual_row, pred_row, unit_cols)
             _, _, family_f1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
             state_acc = exact_state_accuracy(manual_row, pred_row, unit_cols)
 
             per_pdf_label_f1.append(label_f1)
-            per_pdf_overlap.append(label_overlap)
             per_pdf_family_f1.append(family_f1)
             per_pdf_state_acc.append(state_acc)
 
@@ -235,9 +225,6 @@ def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataF
                 "Method": method,
                 "Model": model,
                 "Macro Unit Process F1": pd.Series(per_pdf_label_f1).mean(),
-                # Jaccard overlap as a percent — of all processes truly present or predicted,
-                # the share both agree on. More intuitive companion to F1.
-                "Unit Process Accuracy (%)": pd.Series(per_pdf_overlap).mean() * 100,
                 "Macro Category F1": pd.Series(per_pdf_family_f1).mean(),
                 "State Accuracy": pd.Series(per_pdf_state_acc).mean(),
             }
@@ -357,19 +344,17 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols=None):
     if unit_cols is None:
         unit_cols = label_cols
     pred = pred_df.reindex(manual.index)  # missing facilities -> all-NaN (counts as no prediction)
-    label_f1, overlap, family_f1, state_acc = [], [], [], []
+    label_f1, family_f1, state_acc = [], [], []
     for place_id in manual.index:
         truth_row = manual.loc[place_id, label_cols]
         pred_row = pred.loc[place_id, label_cols]
-        _, _, f1, jac = label_presence_f1(truth_row, pred_row, unit_cols)
+        _, _, f1, _ = label_presence_f1(truth_row, pred_row, unit_cols)
         _, _, ff1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
         label_f1.append(f1)
-        overlap.append(jac)
         family_f1.append(ff1)
         state_acc.append(exact_state_accuracy(truth_row, pred_row, unit_cols))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
-        "Unit Process Accuracy (%)": pd.Series(overlap).mean() * 100,
         "Macro Category F1": pd.Series(family_f1).mean(),
         "State Accuracy": pd.Series(state_acc).mean(),
     }
@@ -448,7 +433,6 @@ def main() -> None:
         np.nan,
     ).round(2)
     metrics = metrics.round(3)
-    metrics["Unit Process Accuracy (%)"] = metrics["Unit Process Accuracy (%)"].round(1)
 
     # Reorder rows to the user's requested display order and add placeholders.
     desired_order = [

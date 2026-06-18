@@ -72,13 +72,12 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge aeration",
+      "Sentence": "activated sludge aeration and secondary clarification (6.0-MGD capacity)",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -110,7 +109,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "in the process of installing another secondary clarifier",
+      "Sentence": "installing another secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -118,25 +117,25 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "planned to add new aeration basins",
+      "Sentence": "planned to add new aeration basins... will increase the aeration basin from 6 MGD to 9 MGD",
       "trigger_process": [
         "Unspecified AS"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "StaticMixer",
       "Process": [
-        "Mixing",
-        "ChemicalAddition"
+        "ChemicalAddition",
+        "Mixing"
       ],
       "Role": [
         "Tertiary"
@@ -144,7 +143,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chemical addition/flash mixing",
+      "Sentence": "tertiary treatment through chemical addition/flash mixing",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
@@ -186,11 +185,15 @@
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Waste activated sludge from the Chiquita WRP is thickened",
@@ -207,23 +210,28 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "digested",
+      "Sentence": "is thickened, digested, and dewatered",
       "trigger_process": [
         "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dewatered, using belt filter press",
@@ -239,7 +247,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill",
@@ -250,17 +260,19 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "the remaining biosolids are trucked to contract composting operations",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     },
     {
@@ -271,7 +283,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Screenings removed from the wastewater in the preliminary treatment process are sent to a Class 1 sanitary landfill in Simi Valley",

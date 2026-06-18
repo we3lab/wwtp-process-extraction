@@ -1,9 +1,23 @@
 {
   "items": [
     {
-      "Equipment": "MicrofiltrationUnit",
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A membrane filtration influent tank;",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
       "Process": [
-        "Microfiltration"
+        "Screening",
+        "Backwashing"
       ],
       "Role": [
         "Pretreatment"
@@ -11,40 +25,111 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The increased recycled water use includes the addition of the proposed MFRO Facility.",
+      "Sentence": "Strainer backwash flows,",
       "trigger_process": [
-        "Microfiltration"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration",
+        "Ultrafiltration",
+        "ChemicalAddition",
+        "Backwashing",
+        "Cleaning",
+        "Neutralization"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A MF/UF membrane filtration system with associated chemical addition, backwash, and chemical cleaning and membrane conditioning processes;",
+      "trigger_process": [
+        "Microfiltration",
+        "Neutralization",
+        "Ultrafiltration"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "An inter-process storage tank to equalize flows between the MF/UF and reverse osmosis (RO) systems;",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "CartridgeFiltrationUnit",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO transfer pumps and cartridge filters to convey MF/UF filtrate from the inter-process storage tank to the RO feed pumps;",
+      "trigger_process": [
+        "Unspecified Filtration"
       ]
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "ReverseOsmosis"
+        "ReverseOsmosis",
+        "ChemicalAddition",
+        "Backwashing",
+        "Cleaning"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The proposed MFRO Facility would be sized to produce 2 MGD of MFRO product water...",
+      "Sentence": "RO treatment trains with associated chemical addition, backwash, chemical cleaning, and membrane conditioning processes;",
       "trigger_process": [
-        "Reverse Osmosis"
+        "Reverse Osmosis",
+        "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Tank",
       "Process": [
         "Mixing"
       ],
       "Role": [
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "...would be blended with a quantity of HARRF disinfected tertiary-treated recycled water to produce a final agricultural reuse supply...",
+      "Sentence": "A product water blending and storage tank;",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The following low-flow MFRO waste or residuals streams will be discharged to an on-site waste equalization wet well prior to discharge to the sanitary sewer for treatment at HARRF:",
+      "trigger_process": [
+        "Equalization"
+      ]
     }
   ]
 }

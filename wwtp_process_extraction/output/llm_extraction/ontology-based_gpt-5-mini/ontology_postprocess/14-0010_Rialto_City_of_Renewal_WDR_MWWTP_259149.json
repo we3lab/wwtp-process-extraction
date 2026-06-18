@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Bar Screens",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Aerated Grit Chamber",
       "trigger_process": [
         "Grit Removal"
@@ -43,7 +41,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Flow Equalization",
       "trigger_process": [
         "Equalization"
@@ -60,10 +57,43 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Primary Basins",
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "activated sludge treatment",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "FourStageBardenpho"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "No.5 (Four-stage Bardenpho process)",
+      "trigger_process": [
+        "Denitrification",
+        "Four Stage Bardenpho",
+        "Nitrification"
       ]
     },
     {
@@ -77,47 +107,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "activated sludge treatment",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "FourStageBardenpho",
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "No.5 (Four-stage Bardenpho process)",
-      "trigger_process": [
-        "Denitrification",
-        "Four Stage Bardenpho",
-        "Nitrification"
       ]
     },
     {
@@ -131,10 +123,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "receive tertiary treatment through filtration and disinfection",
+      "Sentence": "receive tertiary treatment through filtration",
       "trigger_process": [
         "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "8 mgd UV disinfection system which never was put into operation",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     },
     {
@@ -152,34 +159,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility currently uses chlorine contact chambers for disinfection using an aqueous sodium hypochlorite and sodium bisulfate for dichlorination.",
+      "Sentence": "chlorine contact chambers for disinfection using an aqueous sodium hypochlorite and sodium bisulfate for dichlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "The Facility has an 8 mgd UV disinfection system which never was put into operation.",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -189,25 +178,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "pumped to a gravity belt thickener to reduce the water content prior to being pumped to an anaerobic digester for stabilization.",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Gravity Thickeners",
+      "Sentence": "pumped to a gravity belt thickener to reduce the water content",
       "trigger_process": [
         "Thickening"
       ]
@@ -218,16 +189,15 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "Stabilization",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Solids are stabilized by the anaerobic digestion process",
+      "Sentence": "Biosolids are anaerobically digested",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -241,51 +211,16 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "then dewatered by a belt press.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "ChemicalAddition",
-        "Flocculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
+        "Fluid-Sludge",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "a polymer is injected into the sludge as it is being pumped to the belt press.",
+      "Sentence": "sludge is dewatered by a belt press...a polymer is injected into the sludge as it is being pumped to the belt press",
       "trigger_process": [
-        "Flocculation",
+        "Mechanical Dewatering",
         "Polymer Addition"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The filtrate removed from the de-watered sludge is pumped back to the liquid process flow streams for further treatment.",
-      "trigger_process": []
     },
     {
       "Equipment": "DewateringUnit",
@@ -300,17 +235,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The plant utilizes a concrete-lined sludge drying bed where dewatered solids from the belt press may be spread by tractor for further solar drying.",
+      "Sentence": "concrete-lined sludge drying bed where dewatered solids...may be spread by tractor for further solar drying",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -320,11 +253,22 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "de-watered solids from the belt press are placed directly into trucks and taken to a biosolids contractor where the solids are blended with greenwaste and composted",
+      "Sentence": "taken to a biosolids contractor where the solids are blended with greenwaste and composted",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The filtrate removed from the de-watered sludge is pumped back to the liquid process flow streams",
+      "trigger_process": []
     }
   ]
 }

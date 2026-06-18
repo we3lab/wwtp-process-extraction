@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment ... consists of mechanical screening, aerated grit removal, and primary sedimentation."
+      "Sentence": "Primary treatment ... consists of mechanical screening"
     },
     {
       "Equipment": "GritChamber",
@@ -25,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment ... consists of mechanical screening, aerated grit removal, and primary sedimentation."
+      "Sentence": "mechanical screening, aerated grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -38,7 +38,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment ... consists of mechanical screening, aerated grit removal, and primary sedimentation."
+      "Sentence": "primary sedimentation"
     },
     {
       "Equipment": "TricklingFilter",
@@ -51,7 +51,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service)."
+      "Sentence": "two biotowers with high-rate plastic media (currently out of service)"
     },
     {
       "Equipment": "AerationBasin",
@@ -70,7 +70,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment processes ... consisting of conventional activated sludge, including nitrification-denitrification, followed by secondary sedimentation."
+      "Sentence": "secondary treatment processes ... consisting of conventional activated sludge, including nitrification-denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -83,7 +83,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment processes ... followed by secondary sedimentation."
+      "Sentence": "followed by secondary sedimentation"
     },
     {
       "Equipment": "Pond",
@@ -91,28 +91,52 @@
         "Aeration"
       ],
       "Role": [
-        "Storage",
-        "Aerobic"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond, and then applied to agricultural fields when needed."
+      "Sentence": "The food processing wastewater is stored and aerated in a lined pond"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond..."
+      "Sentence": "applied directly to agricultural fields"
     },
     {
-      "Equipment": "StaticMixer",
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tailwater ... is collected in a sump and pumped back to the irrigation supply system"
+    },
+    {
+      "Equipment": "MixingBasin",
       "Process": [
         "Mixing"
       ],
@@ -122,7 +146,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary effluent in excess of crop demands undergoes tertiary treatment through rapid mixing, flocculation, cloth media filtration, and ultraviolet (UV) disinfection."
+      "Sentence": "tertiary treatment through rapid mixing"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -135,7 +159,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary effluent ... undergoes tertiary treatment through rapid mixing, flocculation, cloth media filtration, and ultraviolet (UV) disinfection."
+      "Sentence": "flocculation"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -148,7 +172,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary effluent ... undergoes tertiary treatment through ... cloth media filtration ..."
+      "Sentence": "cloth media filtration"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -162,46 +186,54 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary effluent ... undergoes tertiary treatment through ... ultraviolet (UV) disinfection."
+      "Sentence": "ultraviolet (UV) disinfection"
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Recirculation"
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tailwater from the irrigation fields ... is collected in a sump and pumped back to the irrigation supply system."
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters"
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Recirculation"
+        "Flotation"
       ],
       "Role": [
-        "Feed"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The disinfected tertiary recycled water is pumped from the Facility to its Truck Fill Station."
+      "Sentence": "sludge from secondary sedimentation is thickened by dissolved air flotation"
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "LandApplication"
+        "Dewatering"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "applied directly to agricultural fields."
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge"
     },
     {
       "Equipment": null,
@@ -214,7 +246,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings are hauled offsite to a landfill for disposal."
+      "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal"
     }
   ]
 }

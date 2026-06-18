@@ -30,7 +30,9 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -40,12 +42,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two main bioreactor trains used for secondary treatment. Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids"
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids"
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "Filter",
       "Process": [
-        "MembraneProcess"
+        "MembraneProcess",
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -90,6 +93,97 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks"
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the reduced solids are purged into the digester, which holds the solids for 10 to 15 days"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the solids are sent to dewatering equipment, which includes a centrifuge"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to ... a composting facility"
     }
   ]
 }

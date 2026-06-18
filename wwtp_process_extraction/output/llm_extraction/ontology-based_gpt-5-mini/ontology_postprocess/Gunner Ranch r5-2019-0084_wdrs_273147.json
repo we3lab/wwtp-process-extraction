@@ -1,60 +1,162 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "influent pump station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "equalization basins",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "60-mil single lined emergency overflow pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess"
+        "MembraneProcess",
+        "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the proposed treatment process using an MBR system",
+      "Sentence": "a modular packaged membrane bioreactor (MBR) system designed by Cloacina\u00ae",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "MixingBasin",
       "Process": [
-        "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Mixing"
       ],
       "Role": [
+        "Anoxic",
         "NitrogenRemoval"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WRP will provide treatment that will include nitrification/denitrification to reduce nitrogen concentrations in the effluent to less than 10 mg/L.",
+      "Sentence": "two anoxic basins",
       "trigger_process": [
         "Denitrification",
-        "Membrane Bioreactor",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
         "Nitrification"
+      ],
+      "Role": [
+        "Aerobic",
+        "Secondary",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three aeration basins",
+      "trigger_process": [
+        "Nitrification",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "MembraneProcess"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two MBR filters",
+      "trigger_process": [
+        "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Disinfection"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a UV disinfection unit",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "one percolation pond divided into multiple cells",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Aeration"
-      ],
+      "Process": null,
       "Role": [
         "Storage",
-        "Aerobic",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Aerobic"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "aerated sludge storage tank",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "DewateringUnit",
@@ -68,25 +170,13 @@
         "Fluid-Sludge",
         "Flocculant-Polymer"
       ],
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "aerated sludge handling system, which will consist of an aerated sludge storage tank, dewatering press, polymer system",
+      "Sentence": "dewatering press, polymer system",
       "trigger_process": [
         "Mechanical Dewatering",
         "Polymer Addition"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "associated pumps",
-      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -97,31 +187,113 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Dewatered sludge will be placed in bins and transported off-site for disposal at a permitted landfill or land application area.",
+      "Sentence": "transported off-site for disposal at a permitted landfill or land application area",
       "trigger_process": [
         "Biosolids Landfill",
         "Land Application"
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Denitrification",
+        "Mixing"
+      ],
       "Role": [
-        "Posttreatment"
+        "Anoxic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disposal of treated effluent will be to onsite percolation ponds only.",
+      "Sentence": "addition of two additional anoxic basins",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Denitrification",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification"
+      ],
+      "Role": [
+        "Aerobic",
+        "Secondary",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "addition of three aeration basins",
+      "trigger_process": [
+        "Nitrification",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "MembraneProcess"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "addition of two MBR filters",
+      "trigger_process": [
+        "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Disinfection"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a second UV disinfection unit",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "associated pumps and piping",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "MembraneProcess",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Phase 2 will add a second 0.5 mgd treatment train; at build-out three complete treatment trains",
+      "trigger_process": [
+        "Membrane Bioreactor"
       ]
     }
   ]

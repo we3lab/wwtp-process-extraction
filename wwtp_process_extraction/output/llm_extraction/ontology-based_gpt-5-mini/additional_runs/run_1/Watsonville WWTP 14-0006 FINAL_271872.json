@@ -11,20 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening..."
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treatment facilities consist of ... pre-aeration/grit removal..."
+      "Sentence": "Treatment facilities consist of screening,"
     },
     {
       "Equipment": "GritChamber",
@@ -37,7 +24,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of ... pre-aeration/grit removal..."
+      "Sentence": "pre-aeration/grit removal"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pre-aeration/grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,12 +50,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of ... primary sedimentation..."
+      "Sentence": "primary sedimentation"
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -63,7 +64,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of ... biological filtration (trickling filters)..."
+      "Sentence": "biological filtration (trickling filters)"
+    },
+    {
+      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Process": [
+        "GranularActivatedCarbon"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "odor control"
     },
     {
       "Equipment": "AerationBasin",
@@ -72,12 +86,13 @@
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
         "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of ... solids contact stabilization (activated sludge)..."
+      "Sentence": "solids contact stabilization (activated sludge)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -90,7 +105,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of ... secondary clarification."
+      "Sentence": "secondary clarification"
     },
     {
       "Equipment": "GravityThickener",
@@ -100,10 +115,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using gravity thickening..."
+      "Sentence": "Biosolids ... are treated on the site using gravity thickening"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -114,10 +131,12 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using ... anaerobic digestion..."
+      "Sentence": "Biosolids ... are treated on the site using ... anaerobic digestion"
     },
     {
       "Equipment": "DewateringUnit",
@@ -127,10 +146,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using ... drying beds..."
+      "Sentence": "drying beds"
     },
     {
       "Equipment": "DewateringUnit",
@@ -140,21 +161,51 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using ... belt filter press dewatering..."
+      "Sentence": "belt filter press dewatering"
     },
     {
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
       ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat"
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
       "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Since approximately 1998, the Facility has not disinfected its effluent prior to ocean outfall discharge"
+    },
+    {
+      "Equipment": "SepticTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat..."
+      "Sentence": "leachate ... is discharged into the septic receiving station"
     },
     {
       "Equipment": null,
@@ -167,18 +218,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids ... are land-applied at various sites."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Since approximately 1998, the Facility has not disinfected its effluent prior to ocean outfall discharge."
+      "Sentence": "and are land-applied at various sites"
     }
   ]
 }

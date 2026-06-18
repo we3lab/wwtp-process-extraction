@@ -1,44 +1,43 @@
 {
   "items": [
     {
-      "Equipment": "SepticTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The septic tanks and pump tanks for the existing residence ... and guesthouse ... will be inspected and remain in place and continue to serve as primary treatment for the residences."
-    },
-    {
       "Equipment": "Tank",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "including a 7,000-gallon Xerxes grease interceptor and a 15,000-gallon Xerxes combined septic and pump tank"
+      "Sentence": "a 7,000-gallon Xerxes grease interceptor ... will remain in place and continue to serve as primary treatment"
+    },
+    {
+      "Equipment": "SepticTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a 15,000-gallon Xerxes combined septic and pump tank ... will remain in place and continue to serve as primary treatment"
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The dosing compartment of the 15,000-gallon combination septic/pump tank is equipped with duplex submersible pumps (Goulds Model 3887 BHF No. WS1012BHF)"
     },
     {
@@ -52,8 +51,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The combined septic tank effluent from the site will be pumped to the system, through an existing two-millimeter perforated screen."
+      "Sentence": "pumped to the system, through an existing two-millimeter perforated screen"
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The existing MBR unit combines biological treatment and membrane microfiltration in a single package system"
     },
     {
       "Equipment": "Reactor",
@@ -62,22 +73,20 @@
       ],
       "Role": [
         "Anoxic",
+        "Secondary",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The screened influent will first enter the 7,000-gallon pre-anoxic chamber of the treatment tank. In addition to the septic tank effluent, a mixed liquor recirculation stream from the AX100 treatment units will also enter the anoxic zone for denitrification."
+      "Sentence": "The screened influent will first enter the 7,000-gallon pre-anoxic chamber of the treatment tank"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge",
-        "Nitrification"
+        "Nitrification",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -87,8 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "effluent will flow over an existing weir inside the treatment tank into the 13,000-gallon aeration chamber for biological oxygen demand (BOD) removal and nitrification."
+      "Sentence": "the 13,000-gallon aeration chamber for biological oxygen demand (BOD) removal and nitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -101,8 +109,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing 3,000-gallon membrane chamber of the treatment tank will remain as a primary post-aeration settling chamber."
+      "Sentence": "The existing 3,000-gallon membrane chamber of the treatment tank will remain as a primary post-aeration settling chamber"
     },
     {
       "Equipment": "Filter",
@@ -113,29 +120,13 @@
       "Role": [
         "Secondary",
         "Tertiary",
+        "NutrientRemoval",
         "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Two new Orenco AdvanTex® AX100 treatment units (AX100 units), designed for blackwater and restaurant waste, will be installed above-ground."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Recirculation will be controlled by two 50 gallon per minute, 0.75 Horsepower pumps."
+      "Sentence": "Two new Orenco AdvanTex® AX100 treatment units ... will be installed ... which will provide additional BOD removal and denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -143,15 +134,13 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "One sludge tank will be repurposed as an additional settling tank for the secondary-treated effluent from the settling chamber of the treatment tank."
+      "Sentence": "One sludge tank will be repurposed as an additional settling tank for the secondary-treated effluent"
     },
     {
       "Equipment": "Tank",
@@ -159,45 +148,80 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation",
+        "Secondary",
         "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "one sludge tank ... will be repurposed as a recirculation tank for the AX100 units"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Recirculation will be controlled by two 50 gallon per minute, 0.75 Horsepower pumps"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "This will allow suspended solids to settle out before gravity flowing to the second sludge tank, which will be repurposed as a recirculation tank for the AX100 units."
+      "Sentence": "Sludge from the MBR is stored in four 5,000-gallon holding tanks"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Disinfection will be provided by a new 280-watt Sanitron® S5000C Ultraviolet (UV) unit."
+      "Sentence": "Disinfection will be provided by a new 280-watt Sanitron® S5000C Ultraviolet (UV) unit"
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": null,
       "Process": [
-        "MembraneProcess"
+        "LandApplication"
       ],
       "Role": [
-        "Secondary"
+        "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The MBR membranes, pumps, and diffusers will be removed and the MBR tank (treatment tank) will remain in place."
+      "Sentence": "The effluent dispersal system is comprised of a subsurface pressurized pipe network ... (GeoflowTM Subsurface Dripline)"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Phase 3 upgrades include replacing the Geoflow subsurface drip tubing ... Two complete Geoflow dispersal fields will be built"
     }
   ]
 }

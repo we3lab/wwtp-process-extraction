@@ -5,23 +5,25 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The influent flows into the headworks, which consist of fine screening and a grit chamber."
+      "Sentence": "The influent flows into the headworks, which consist of fine screening..."
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The influent flows into the headworks, which consist of fine screening and a grit chamber."
     },
     {
@@ -31,13 +33,14 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing Facility provides for secondary wastewater treatment that consists of: ... extended aeration (oxidation ditches), activated sludge processing..."
+      "Sentence": "extended aeration (oxidation ditches), activated sludge processing..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,8 +53,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater is passed through a secondary clarifier and a chlorine disinfection process."
+      "Sentence": "The wastewater is passed through a secondary clarifier..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -59,59 +61,67 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing Facility provides for secondary wastewater treatment that consists of: ... disinfection (chlorine) ..."
+      "Sentence": "secondary clarification, disinfection (chlorine)... The wastewater is passed through a secondary clarifier and a chlorine disinfection process."
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
+        "Aeration",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "de-chlorination processes (box and open ponds)"
+      "Sentence": "Chlorinated wastewater effluent is dechlorinated by aeration in a dechlorination box..."
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Dechlorination"
+      ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "There are two emergency storage ponds, NO.1 and NO.2."
+      "Sentence": "Chlorinated wastewater effluent ... finishes dechlorination in open storage ponds."
     },
     {
       "Equipment": "Wetland",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "From the open pond the treated effluent passes through a polishing wetland prior to being discharged into an unlined channel (EFF-001)."
+      "Sentence": "From the open pond the treated effluent passes through a polishing wetland prior to being discharged..."
     },
     {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The raw or partially treated wastewater flows by gravity to a lift station that pumps the wastewater back into the headworks screening process."
     },
     {
@@ -119,34 +129,37 @@
       "Process": [
         "AerobicDigestion"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sludge handling andtreatmentsystems at the Facility include an aerobic d'igester, sludge storage tank and a centrifuge to dewater the sludge."
+      "Sentence": "Sludge handling and treatment systems at the Facility include an aerobic digester..."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sludge handling andtreatmentsystems at the Facility include an aerobic d'igester, sludge storage tank and a centrifuge to dewater the sludge."
+      "Sentence": "Sludge handling and treatment systems at the Facility include an aerobic digester, sludge storage tank..."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -156,8 +169,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sludge is dewatered by centrifuge and relinquished to others for application to agricultural lands in Lassen County."
+      "Sentence": "Sludge is dewatered by centrifuge and relinquished to others for application to agricultural lands..."
     },
     {
       "Equipment": null,
@@ -165,14 +177,14 @@
         "LandApplication"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "BiosolidsDisposal"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Sludge is dewatered by centrifuge and relinquished to others for application to agricultural lands in Lassen County."
     },
     {
@@ -181,14 +193,14 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "BiosolidsDisposal"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Dewatered sludge is also transported to a landfill in Nevada."
     },
     {
@@ -196,11 +208,12 @@
       "Process": [
         "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "During the upcoming permit term, the Discharger is considering changing disinfection systems, from operating a liquid chlorine system to an ultraviolet (UV) system."
     }
   ]

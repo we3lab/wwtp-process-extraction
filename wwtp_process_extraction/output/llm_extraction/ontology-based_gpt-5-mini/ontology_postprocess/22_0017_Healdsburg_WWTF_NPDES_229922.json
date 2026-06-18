@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent screening and grit removal;",
+      "Sentence": "influent screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent screening and grit removal;",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -36,31 +36,13 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
-        "Nitrification"
+        "Nitrification",
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "NitrogenRemoval",
-        "NutrientRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins;",
-      "trigger_process": [
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
         "Anoxic",
         "NitrogenRemoval",
         "NutrientRemoval"
@@ -68,17 +50,17 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins;",
+      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
-        "Unspecified AS"
+        "Nitrification"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
         "ActivatedSludge",
-        "MembraneProcess",
         "Microfiltration",
         "Ultrafiltration"
       ],
@@ -91,7 +73,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration through a membrane bioreactor (MBR);",
+      "Sentence": "The MBR combines the secondary biological treatment and immersed membrane filtration processes",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -99,8 +81,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary",
@@ -109,7 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved in an open channel UV disinfection system",
+      "Sentence": "open channel UV disinfection system",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -119,11 +100,13 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins.",
+      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins",
       "trigger_process": []
     },
     {
@@ -135,13 +118,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system,",
+      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system",
       "trigger_process": []
     },
     {
-      "Equipment": null,
+      "Equipment": "Digester",
       "Process": [
-        "Digestion"
+        "AnaerobicDigestion",
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -152,16 +136,52 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a proprietary sludge digestion process,",
+      "Sentence": "proprietary solids removal and digestion process that combines aerobic and anaerobic processes",
       "trigger_process": [
-        "Unspecified Digestion"
+        "Aerobic Digestion",
+        "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "Screen",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Screening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "passed through a 250 micron rotary drum screen to remove inert non-biodegradable material",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening",
+      "trigger_process": [
+        "Polymer Addition",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -171,15 +191,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering via centrifuge,",
+      "Sentence": "then dewatered in a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
@@ -188,9 +209,39 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal to a Class III solid waste landfill.",
+      "Sentence": "transported for disposal at Redwood Landfill in Marin County or Hay Road Landfill in Solano County",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "5 million gallon aerated influent equalization basin",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "3.35 million gallon equalization basin",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -202,7 +253,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtered and UV disinfected wastewater flows by gravity to the 25 million gallon recycled water storage pond, 15 million gallon recycled water storage pond, or Basalt Pond.",
+      "Sentence": "25 million gallon and 15 million gallon capacity...recycled water storage pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -217,48 +268,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Recycled water is delivered by an effluent pump station from the recycled water storage pond to the recycled water system",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and a 3.35 million gallon equalization basin, which provides equalization storage capacity",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Permittee has the ability to divert inadequately treated wastewater from downstream of the UV disinfection system and return it to the headworks for re-treatment.",
       "trigger_process": []
     }
   ]

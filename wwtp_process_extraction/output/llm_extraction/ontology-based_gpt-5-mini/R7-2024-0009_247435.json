@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Preliminary treatment includes two automatic bar screens."
     },
     {
@@ -25,8 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The sludge, solids, and grit that have settled to the bottom of the primary tank are then pumped to four hydro gritters for grit removal..."
+      "Sentence": "The hydro gritters remove most of the influent grit and inorganic matter."
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,7 +37,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Effluent from the influent pump station enters one of two primary clarifiers, where solids settle to the bottom of the tank and are removed."
     },
     {
@@ -55,8 +52,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "the sludge continues to gravity thickeners for further concentration."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent from the influent pump station enters one of two primary clarifiers."
+    },
+    {
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "influent and effluent gates for the two new barscreens."
     },
     {
       "Equipment": "TricklingFilter",
@@ -70,8 +86,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Secondary treatment includes four trickling filters and six secondary clarifiers with both systems operating in parallel."
+      "Sentence": "Secondary treatment includes four trickling filters ... biological organisms growing on the trickling filter media."
     },
     {
       "Equipment": "SedimentationTank",
@@ -81,27 +96,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Trickling filter effluent... flows to the secondary clarifiers where suspended solids are removed before discharge."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The combined flow is then pumped over the trickling filters..."
+      "Sentence": "Trickling filter effluent ... flows to the secondary clarifiers where suspended solids are removed before discharge."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -118,7 +116,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The solids are then transferred to anaerobic digesters for further treatment."
     },
     {
@@ -126,15 +123,16 @@
       "Process": [
         "Incineration"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "The methane is disposed of via a gas burner."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -146,7 +144,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The solids are then drawn off into one of 26 sludge drying beds where the solids are dried for several weeks."
     },
     {
@@ -162,40 +159,52 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "A belt filter press was installed in 2002 to allow for increased solids dewatering capabilities during the cooler winter months..."
+      "Sentence": "A belt filter press was installed in 2002 to allow for increased solids dewatering capabilities."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Water that is removed from the sludge in the solids handling processes is collected and returned to the plant headworks for treatment."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting",
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered solids are stored ... for eventual removal by a biosolids hauling contractor for legally permitted composting or land application."
     },
     {
       "Equipment": "Pond",
       "Process": [
         "Evaporation"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The effluent that is not conveyed offsite for tertiary treatment... is discharged to six unlined evaporation/percolation ponds..."
+      "Sentence": "The effluent that is not conveyed offsite for tertiary treatment ... is discharged to six unlined evaporation/percolation ponds."
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": null,
       "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A large portion of the Facility’s effluent is conveyed offsite to the Desert Water Agency (DWA) Wastewater Reclamation Plant (WRP), where it is subjected to filtration and disinfection (i.e., tertiary treatment)..."
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
+        "MediaFiltration",
         "Disinfection"
       ],
       "Role": [
@@ -204,104 +213,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "A large portion of the Facility’s effluent is conveyed offsite to the Desert Water Agency (DWA) Wastewater Reclamation Plant (WRP), where it is subjected to filtration and disinfection (i.e., tertiary treatment)..."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Water that is removed from the sludge in the solids handling processes is collected and returned to the plant headworks for treatment."
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "By 2024, the #2 Digester will be replaced with a new digester of equal size with a fixed lid."
-    },
-    {
-      "Equipment": "Flare",
-      "Process": [
-        "Incineration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "By 2024, ... a new waste gas burner will be installed."
-    },
-    {
-      "Equipment": "Conditioner",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.75,
-      "Sentence": "The third priority CIP includes... a digester gas treatment system..."
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "The third priority CIP includes installation of a new third digester..."
-    },
-    {
-      "Equipment": "Cogenerator",
-      "Process": [
-        "Cogeneration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.6,
-      "Sentence": "The third priority CIP includes... a fuel cell."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "Planned CIP within the next five years include... the addition of a third pump to #1 Lift Station..."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "Planned CIP within the next five years include... a new upgraded sludge bed filtrate pump station."
+      "Sentence": "A large portion of the Facility’s effluent is conveyed offsite to the Desert Water Agency ... where it is subjected to filtration and disinfection (i.e., tertiary treatment)."
     }
   ]
 }

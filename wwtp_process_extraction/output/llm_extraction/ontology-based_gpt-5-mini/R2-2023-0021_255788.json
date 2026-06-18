@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
+      "Sentence": "The wastewater treatment process consists of screening, grit removal..."
     },
     {
       "Equipment": "GritChamber",
@@ -25,20 +24,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
+      "Sentence": "The wastewater treatment process consists of screening, grit removal..."
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
+      "Sentence": "The wastewater treatment process consists of... flow equalization..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -51,14 +50,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
+      "Sentence": "The wastewater treatment process consists of... primary sedimentation..."
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -66,8 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
+      "Sentence": "The wastewater treatment process consists of... biological treatment (trickling filters)..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -80,8 +76,115 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
+      "Sentence": "The wastewater treatment process consists of... secondary clarification..."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Chlorine contact is accomplished in the effluent force main, which is approximately 6.5 miles long"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dechlorination is accomplished by sodium bisulfite addition at Sanitary District No. 5 of Marin County (Tiburon) prior to discharge"
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids removed from the wastewater stream are treated by gravity thickening..."
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids removed from the wastewater stream are treated by... primary and secondary digestion..."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids removed from the wastewater stream are treated by... dewatering by belt filter press."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are sent to the Redwood Sanitary Landfill in Novato, where they are composted with yard waste..."
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger’s water recycling facility provides additional treatment... via coagulation..."
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "RapidSandFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger’s water recycling facility provides additional treatment... sand filtration..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -97,83 +200,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process consists of screening, grit removal, flow equalization, primary sedimentation, biological treatment (trickling filters), secondary clarification, disinfection (chlorination), gravity thickening, and solids digestion and dewatering."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "dechlorination is accomplished by sodium bisulfite addition at Sanitary District No. 5 of Marin County (Tiburon) prior to discharge."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tank holding primary effluent (the recirculation wet well) and tank holding biologically-treated effluent (the effluent wet well) lay side-by-side."
+      "Sentence": "The Discharger’s water recycling facility provides additional treatment... and chorine disinfection."
     }
   ]
 }

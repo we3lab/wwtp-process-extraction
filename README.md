@@ -28,12 +28,17 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 
 **Figures and tables**
 - [wwtp_process_extraction/figure_2_data_source_comparison.py](wwtp_process_extraction/figure_2_data_source_comparison.py): ground-truth comparison of extraction methods
-- [wwtp_process_extraction/figure_s2_npdes_method_comparison.py](wwtp_process_extraction/figure_s2_npdes_method_comparison.py): keyword vs LLM method comparison
 - [wwtp_process_extraction/figure_3_source_comparison.py](wwtp_process_extraction/figure_3_source_comparison.py): CWNS vs LLM unit process detection comparison
+- [wwtp_process_extraction/figure_4_ca_ghg_comparison.py](wwtp_process_extraction/figure_4_ca_ghg_comparison.py): computes CA WWTP GHG emissions across three treatment process data sources (El Abbadi all-sources, El Abbadi CWNS-only, LLM permit scraping)
 - [wwtp_process_extraction/table_1_evaluate_model_performance.py](wwtp_process_extraction/table_1_evaluate_model_performance.py): evaluates LLM model performance against truth labels
+- [wwtp_process_extraction/figure_s2_npdes_method_comparison.py](wwtp_process_extraction/figure_s2_npdes_method_comparison.py): keyword vs LLM method comparison
+- [wwtp_process_extraction/figure_s3_category_f1_method.py](wwtp_process_extraction/figure_s3_category_f1_method.py): per-category F1 score comparison across methods
 
-**GHG analysis**
-- [wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py](wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py): computes CA WWTP GHG emissions across three treatment process data sources (El Abbadi all-sources, El Abbadi CWNS-only, LLM permit scraping)
+## Installation
+
+```bash
+pip install -e .
+```
 
 ## How to Run
 Executing from the repository root directory:
@@ -47,7 +52,7 @@ python wwtp_process_extraction/step5_llm_extraction.py  # for all facilities
 python wwtp_process_extraction/step5_llm_extraction.py --max_facilities 5  # small test sweep
 python wwtp_process_extraction/step6_postprocess_llm_output.py
 python wwtp_process_extraction/figure_3_source_comparison.py
-python wwtp_process_extraction/ghg_comparison/ca_ghg_comparison.py
+python wwtp_process_extraction/figure_4_ca_ghg_comparison.py
 ```
 
 ## Contact 
@@ -67,3 +72,5 @@ Meagan Mauter - mauter@stanford.edu
 This work is funded in part by:
 Stanford SURGE program
 National Alliance for Water Innovation
+
+We acknowledge the use of Claude Code and Anthropic LLMs for drafting and refining elements of web scraping, data manipulation, and visualization code throughout the codebase.

@@ -57,9 +57,10 @@
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
-        "Microfiltration"
+        "Filtration",
+        "MembraneProcess"
       ],
       "Role": [
         "Secondary"
@@ -69,13 +70,14 @@
       "Location": "on-site",
       "Sentence": "microfiltration through a membrane bioreactor (MBR);",
       "trigger_process": [
-        "Membrane Bioreactor"
+        "Membrane Aerated Biofilm Reactor"
       ]
     },
     {
       "Equipment": "UVDisinfectionUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -89,21 +91,25 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dewatering via centrifuge, and disposal to a Class III solid waste landfill.",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Centrifuge",
+        "Mechanical Dewatering",
+        "Polymer Addition"
       ]
     },
     {
@@ -131,7 +137,7 @@
         "Equalization"
       ],
       "Role": [
-        "Equalization",
+        "Pretreatment",
         "Detention"
       ],
       "Substance": null,

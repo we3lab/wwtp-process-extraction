@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal"
+      "Sentence": "primary treatment with mechanical bar screens, grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification"
+      "Sentence": "primary treatment with mechanical bar screens, grit removal, and primary clarification"
     },
     {
       "Equipment": "TricklingFilter",
@@ -69,44 +69,30 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by secondary clarification, and chlorine disinfection"
+      "Sentence": "followed by secondary clarification, and chlorine disinfection. The chlorinated effluent is stored in a holding pond then dechlorinated"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The chlorinated effluent is stored in a holding pond"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "then dechlorinated and discharged at Discharge Point 001"
     },
     {
       "Equipment": "Wetland",
@@ -125,7 +111,9 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -149,8 +137,9 @@
       "Sentence": "Solids are treated by anaerobic digestion"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [

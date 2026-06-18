@@ -1,34 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "process trains which include influent pumping, primary sedimentation...",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "preliminary screening to remove large debris, followed by primary and secondary treatments",
-      "Source": "web_search",
-      "Website": "https://www.waterandwastewater.com/san-jose-creek-water-reclamation-plant/"
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -39,9 +11,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "process trains which include influent pumping, primary sedimentation, activated sludge biological treatment...",
+      "Sentence": "influent pumping, primary sedimentation, activated sludge biological treatment with nitrification/denitrification",
       "Source": "permit_text",
       "Website": null
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Ferric chloride and anionic polymer dosed to primary settling tanks",
+      "Source": "web_search",
+      "Website": "https://instruction2.mtsac.edu/mcooper/Biology%206%20lab/SJC-CRS/San%20Jose%20Creek%20Water%20Reclamation%20Handout.pdf"
     },
     {
       "Equipment": "AerationBasin",
@@ -52,17 +43,18 @@
       ],
       "Role": [
         "Secondary",
+        "NitrogenRemoval",
+        "NutrientRemoval",
         "Aerobic",
         "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Stepfeed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge biological treatment with nitrification/denitrification... biological nutrient removal system with nitrogen denitrification process (NDN) in operation since June 2003",
-      "Source": "permit_text",
-      "Website": null
+      "Sentence": "activated sludge biological treatment with nitrification/denitrification... biological nutrient removal system with nitrogen denitrification process (NDN)",
+      "Source": "both",
+      "Website": "https://instruction2.mtsac.edu/mcooper/Biology%206%20lab/SJC-CRS/San%20Jose%20Creek%20Water%20Reclamation%20Handout.pdf"
     },
     {
       "Equipment": "SedimentationTank",
@@ -75,24 +67,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...activated sludge biological treatment with nitrification/denitrification, secondary sedimentation, coagulation...",
+      "Sentence": "secondary sedimentation, coagulation, inert media filtration",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "CoagulationBasin",
       "Process": [
-        "Coagulation"
+        "Coagulation",
+        "Flocculation"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Coagulant-Alum",
+        "Flocculant-Polymer"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, coagulation, inert media filtration, chlorination for disinfection...",
-      "Source": "permit_text",
-      "Website": null
+      "Sentence": "coagulation, inert media filtration",
+      "Source": "both",
+      "Website": "https://instruction2.mtsac.edu/mcooper/Biology%206%20lab/SJC-CRS/San%20Jose%20Creek%20Water%20Reclamation%20Handout.pdf"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -105,7 +101,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...coagulation, inert media filtration, chlorination for disinfection, and dechlorination",
+      "Sentence": "inert media filtration",
       "Source": "permit_text",
       "Website": null
     },
@@ -113,7 +109,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -123,22 +120,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite is used as a disinfectant at the Facility. The disinfecting agent is added to the treated effluent prior to the filters to destroy bacteria, pathogens and viruses... Additional disinfectant may be dosed prior to the serpentine chlorine contact chamber.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine. The Facility also has a backup sodium bisulfite dechlorination system.",
+      "Sentence": "chlorination for disinfection, and dechlorination. Sodium hypochlorite is used as a disinfectant... Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine",
       "Source": "permit_text",
       "Website": null
     },
@@ -155,7 +137,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "No facilities are provided for solids processing at the plant. Sewage solids separated from the wastewater are returned to the trunk sewer for conveyance to JWPCP for treatment and disposal.",
+      "Sentence": "No facilities are provided for solids processing at the plant. Sewage solids separated from the wastewater are returned to the trunk sewer for conveyance to JWPCP for treatment and disposal",
       "Source": "permit_text",
       "Website": null
     }

@@ -1,6 +1,39 @@
 {
   "items": [
     {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary treatment consists of barrel grinders...",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation",
+        "Aeration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary treatment consists of barrel grinders followed by aerated grit removal.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -8,11 +41,12 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant provides preliminary treatment, primary treatment, biological treatment, filtration, and disinfection.",
+      "Sentence": "wastewater is pumped into rectangular primary sedimentation basins to remove floatable and settleable material.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -20,88 +54,215 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Anaerobic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia",
+        "Constituent-Bacteria"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the existing biological treatment system (Oxidation Ponds, FGRs, DAFTs)",
+      "Sentence": "Primary effluent is gravity-fed to 440 acres of mechanically aerated Oxidation Ponds, where organic matter and ammonia are degraded by aerobic and anaerobic bacteria. Nitrification and denitrification in the ponds...",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Denitrification",
+        "Facultative Lagoon",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated pond effluent is pumped to Fixed Growth Reactors (FGRs) (i.e., trickling filters) that provide additional nitrification of ammonia.",
+      "trigger_process": [
+        "Nitrification",
+        "Trickling Filter",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Coagulation",
+        "Flocculation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Flocculant-Polymer",
+        "Constituent-Bacteria",
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the existing biological treatment system (Oxidation Ponds, FGRs, DAFTs)",
+      "Sentence": "FGR effluent is conveyed to the Dissolved Air Flotation Tanks (DAFTs), where compressed air and polymer are injected to coagulate, flocculate, and remove biological solids (algae and bacteria)...",
       "trigger_process": [
+        "Coagulation",
+        "Flocculation",
         "Flotation",
+        "Polymer Addition",
         "Thickening"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Backwash"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The plant provides preliminary treatment, primary treatment, biological treatment, filtration, and disinfection.",
+      "Sentence": "the wastewater undergoes filtration through four parallel dual media filters... The settled solids from the filter backwash water are pumped back to the oxidation ponds.",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
-      "Equipment": "DisinfectionUnit",
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "Disinfection"
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The plant provides preliminary treatment, primary treatment, biological treatment, filtration, and disinfection.",
+      "Sentence": "Sodium hypochlorite is metered into the filtered effluent at the beginning of four serpentine chlorine contact tanks to generate a chlorine residual... As the effluent leaves the contact tanks, sodium bisulfite is added as needed to neutralize the hypochlorite.",
       "trigger_process": [
-        "Unspecified Disinfection"
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
-      "Equipment": "DisinfectionUnit",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Dechlorination"
+        "AnaerobicDigestion",
+        "Thickening"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger pumps sludge produced in the primary sedimentation basins to primary anaerobic digesters. Generally, the Discharger operates secondary digesters in series to stabilize and thicken the biosolids...",
+      "trigger_process": [
+        "Anaerobic Digestion",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition",
+        "Flocculation"
+      ],
+      "Role": [
+        "Equalization",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger pumps digested sludge (biosolids) to an equalization tank, conditions the biosolids with polymer...",
+      "trigger_process": [
+        "Equalization",
+        "Flocculation",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "mechanically dewaters them using a belt filter press to approximately 20 to 25 percent solids prior to land application or disposal at a landfill.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary treatment solids removed by dredging the oxidation ponds are chemically conditioned in an equalization tank and dewatered using a centrifuge or belt filter press...",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Combustion",
+        "Cogeneration"
+      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "blend effluent from the existing biological treatment system with effluent from the new activated sludge system at a point upstream of the disinfection and dechlorination system.",
+      "Sentence": "secondary digesters... generate biogas used to fuel the plant\u2019s main influent pump engines and Power Generation Facility.",
       "trigger_process": [
-        "Dechlorination"
+        "Cogeneration",
+        "Heat Recovery"
       ]
     },
     {
@@ -115,8 +276,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "use of influent bar screens and high efficiency grit basins.",
+      "Sentence": "the new facilities would better protect downstream processes and improve biosolids quality through use of influent bar screens...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -124,7 +284,8 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
         "Pretreatment"
@@ -132,8 +293,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "This project includes ... grit removal facilities, and associated electrical, mechanical, and control systems.",
+      "Sentence": "the phased design and construction of new headworks, primary sedimentation tanks, an influent pump station, grit removal facilities...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -149,40 +309,42 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "This project includes the phased design and construction of new headworks, primary sedimentation tanks, an influent pump station, grit removal facilities...",
+      "Sentence": "This project includes the phased design and construction of new... primary sedimentation tanks...",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "This project includes the phased design and construction of new headworks, primary sedimentation tanks, an influent pump station...",
+      "Sentence": "phased design and construction of new headworks, primary sedimentation tanks, an influent pump station...",
       "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "Nitrification",
+        "Denitrification",
         "MLE"
       ],
       "Role": [
         "Secondary",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "replace the current biological treatment facilities with an activated sludge system consisting of bioreactors and secondary clarifiers configured as a Modified Ludzak-Ettinger (MLE) process to enhance nitrogen removal.",
+      "Sentence": "The Discharger proposes to replace the current biological treatment facilities with an activated sludge system consisting of bioreactors and secondary clarifiers configured as a Modified Ludzak-Ettinger (MLE) process...",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -201,8 +363,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "replace the current biological treatment facilities with an activated sludge system consisting of bioreactors and secondary clarifiers configured as a Modified Ludzak-Ettinger (MLE) process...",
+      "Sentence": "First, the Discharger would construct two aeration basins, four secondary clarifiers, and associated appurtenances.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -210,7 +371,7 @@
     {
       "Equipment": "Thickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -218,7 +379,6 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "The new activated sludge system would generate more sludge, which the Discharger proposes to treat with a new thickening and dewatering facility.",
       "trigger_process": [
         "Thickening"
@@ -235,7 +395,6 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "The new activated sludge system would generate more sludge, which the Discharger proposes to treat with a new thickening and dewatering facility.",
       "trigger_process": [
         "Mechanical Dewatering"

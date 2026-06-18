@@ -1,50 +1,17 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Evaporation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Currently unlined evaporation/percolation ponds and land application to ~ 32 acres of pasture",
-      "trigger_process": [
-        "Evaporation Pond"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Currently unlined evaporation/percolation ponds and land application to ~ 32 acres of pasture",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
       "Equipment": "Grinder",
       "Process": [
         "Comminution"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Screened solids are processed in a comminutor (grinder) and allowed to settle and accumulate in the unlined complete-mix pond.",
+      "Sentence": "it passes through a comminutor (grinder) prior to being discharged to an unlined complete-mix aerated lagoon",
       "trigger_process": [
         "Comminution"
       ]
@@ -54,11 +21,12 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
-      "Score": 0.8,
       "Sentence": "Screened solids are processed in a comminutor (grinder) and allowed to settle and accumulate in the unlined complete-mix pond.",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -67,22 +35,72 @@
     {
       "Equipment": "Pond",
       "Process": [
+        "Aeration",
+        "Mixing",
         "Sedimentation"
       ],
       "Role": [
-        "Storage",
+        "Secondary",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Screened solids are processed in a comminutor (grinder) and allowed to settle and accumulate in the unlined complete-mix pond.",
+      "Sentence": "The existing WWTF is an aerated lagoon system designed to remove BOD and total suspended solids (TSS). Raw wastewater ... passes through a comminutor (grinder), prior to being discharged to an unlined complete-mix aerated lagoon.",
       "trigger_process": [
         "Biosolids Lagoon",
+        "Secondary Clarification",
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Oxidation",
+        "Evaporation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "From the complete-mix aerated lagoon, the effluent is discharged to one of six unlined oxidation lagoons, where the effluent percolates into the underlying soil/substrate and evaporates.",
+      "trigger_process": [
+        "Evaporation Pond",
+        "Oxidation"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent in excess of what the ponds can hold is discharged to about 32 acres of adjacent pasture land.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "there is an old trickling filter ... that have not been operational since 1985",
+      "trigger_process": [
+        "Trickling Filter"
       ]
     }
   ]

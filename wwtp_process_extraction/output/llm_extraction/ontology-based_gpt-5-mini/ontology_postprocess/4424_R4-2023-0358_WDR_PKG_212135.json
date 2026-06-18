@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "bar screen removal of large solids",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -26,7 +25,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "flow equalization",
       "trigger_process": [
         "Equalization"
@@ -43,7 +41,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
@@ -53,6 +50,7 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "MLE",
         "Nitrification",
         "Denitrification"
       ],
@@ -63,14 +61,16 @@
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "nitrification and denitrification (NDN) activated sludge biological treatment",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
+        "MLE",
         "Nitrification"
       ]
     },
@@ -85,7 +85,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
@@ -102,7 +101,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "coagulation",
       "trigger_process": [
         "Coagulation",
@@ -112,8 +110,7 @@
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration",
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -121,7 +118,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "single media and deep bed sand filtration",
       "trigger_process": [
         "Media Filtration"
@@ -143,7 +139,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "disinfection by chlorination with the addition of ammonium hydroxide, and dechlorination",
       "trigger_process": [
         "Chlorination",
@@ -151,29 +146,18 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
-        "MLE",
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Recirculation"
       ],
       "Role": [
-        "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "the Enhanced Modified Ludzack-Ettinger (eMLE) Process",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "MLE",
-        "Nitrification"
-      ]
+      "Location": "off-site",
+      "Sentence": "solids from the Facility are returned to the collection system for processing at the Hyperion Water Reclamation Plant",
+      "trigger_process": []
     }
   ]
 }

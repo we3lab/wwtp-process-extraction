@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Raw wastewater will be conveyed to the Facility headworks, which will include two coarse screen and grit removal trains, a SAFE system box, and two parallel fine screens.",
+      "Sentence": "Raw wastewater will be conveyed to the Facility headworks, which will include two coarse screen and grit removal trains",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Raw wastewater will be conveyed to the Facility headworks, which will include two coarse screen and grit removal trains, a SAFE system box, and two parallel fine screens.",
+      "Sentence": "Raw wastewater will be conveyed to the Facility headworks, which will include two coarse screen and grit removal trains",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,13 +43,13 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Raw wastewater will be conveyed to the Facility headworks, which will include two coarse screen and grit removal trains, a SAFE system box, and two parallel fine screens.",
+      "Sentence": "which will include two coarse screen and grit removal trains, a SAFE system box, and two parallel fine screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Reactor",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
@@ -57,11 +57,13 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
+        "NutrientRemoval",
         "Anoxic",
-        "NutrientRemoval"
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Screened effluent and return activated sludge will flow into two biological nutrient removal (BNR) basins and then pumped to the MBR. The BNR-MBR basins will be configured as two parallel activated sludge treatment trains, each consisting of pre-anoxic, aerobic, and post-anoxic basins in-series.",
@@ -74,12 +76,11 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Microfiltration",
-        "Ultrafiltration"
+        "ActivatedSludge",
+        "Microfiltration"
       ],
       "Role": [
-        "Secondary",
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -93,28 +94,14 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Filtrate from the MBR will be stored in two RO feed tanks, which will provide water for onsite uses and feed water to the RO system which produces water for IPR.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
         "Storage",
-        "Equalization"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Overflows from these tanks will be discharged to an outfall balancing tank.",
-      "trigger_process": [
-        "Equalization"
-      ]
+      "Sentence": "Filtrate from the MBR will be stored in two RO feed tanks, which will provide water for onsite uses and feed water to the RO system",
+      "trigger_process": []
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -130,7 +117,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Tertiary treated effluent from the outfall balancing tank will be pumped through an outfall disinfection chlorine contact pipeline and will then be dechlorinated by sodium bisulfite injection prior to discharge through the ocean outfall.",
+      "Sentence": "Tertiary treated effluent from the outfall balancing tank will be pumped through an outfall disinfection chlorine contact pipeline",
       "trigger_process": [
         "Chlorination"
       ]
@@ -146,24 +133,26 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Tertiary treated effluent from the outfall balancing tank will be pumped through an outfall disinfection chlorine contact pipeline and will then be dechlorinated by sodium bisulfite injection prior to discharge through the ocean outfall.",
+      "Sentence": "will then be dechlorinated by sodium bisulfite injection prior to discharge through the ocean outfall",
       "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Equalization"
       ],
       "Role": [
         "Primary",
-        "Equalization"
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A concrete tank, called the SAFE settling basin, will capture and equalize the wet weather flows prior to entering the SAFE filter system.",
+      "Sentence": "A concrete tank, called the SAFE settling basin, will capture and equalize the wet weather flows prior to entering the SAFE filter system...the SAFE settling basin, which will provide sedimentation treatment",
       "trigger_process": [
         "Equalization",
         "Primary Clarification"
@@ -180,27 +169,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "During higher volume peak flow events, effluent will fill the SAFE settling basin, which will provide sedimentation treatment, until it passes over a weir and flows to the SAFE filter system for filtration treatment.",
+      "Sentence": "flows to the SAFE filter system for filtration treatment",
       "trigger_process": [
         "Unspecified Filtration"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The SAFE settling tank will have separate piping connected to the sludge dewatering pumps to provide the capability to operate one dewatering pump to drain the tank and the other to process sludge.",
-      "trigger_process": [
-        "Mechanical Dewatering"
       ]
     },
     {
@@ -214,7 +185,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor.",
+      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -230,7 +201,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor.",
+      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -247,7 +218,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor.",
+      "Sentence": "ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination",
       "trigger_process": [
         "UV Disinfection",
         "UV-AOP"
@@ -256,8 +227,7 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
         "Tertiary"
@@ -267,7 +237,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor.",
+      "Sentence": "ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor",
       "trigger_process": [
         "Chlorination"
       ]
@@ -283,9 +253,84 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "IPR system treatment consists of cartridge filters, an RO system, ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor.",
+      "Sentence": "ultraviolet disinfection with advanced oxidation (UV/AOP) chlorination, and a calcite contactor",
       "trigger_process": [
         "Neutralization"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "RO concentrate will also be diverted directly to the RO concentrate disinfection contact pipeline for chlorination prior to commingling with the outfall disinfection contact pipeline",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The sludge holding tanks will receive, store, and aerate activated sludge wasted from the BNR MBR process.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "BeltThickener",
+      "Process": [
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The sludge dewatering system will pump waste sludge from the sludge holding tanks, or directly from the MBR system, and dewatered by a belt filter press with a polymer storage and feed system.",
+      "trigger_process": [
+        "Polymer Addition",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids will be transported offsite for beneficial use or landfill.",
+      "trigger_process": [
+        "Biosolids Landfill",
+        "Land Application"
       ]
     }
   ]

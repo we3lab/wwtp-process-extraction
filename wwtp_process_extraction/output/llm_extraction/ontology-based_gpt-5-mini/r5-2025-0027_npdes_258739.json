@@ -80,30 +80,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and further routed to secondary clarifiers"
+      "Sentence": "further routed to secondary clarifiers"
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Sedimentation",
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary",
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "facultative pond system ... recirculation channel that surround most of the perimeter of the facultative ponds and wetlands system for flow equalization"
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Biofiltration",
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
         "Secondary",
         "Storage"
@@ -111,23 +92,46 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "engineered treatment wetlands on the west side of the San Joaquin River"
+      "Sentence": "Additional secondary treatment and water storage is available in the facultative ponds"
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Additional treatment is also available through engineered treatment wetlands"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Optional flows enter the recirculation channel that surround most of the perimeter of the facultative ponds and wetlands system for flow equalization"
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
+        "TricklingFiltration",
         "Nitrification"
       ],
       "Role": [
         "Tertiary",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treatment on the west side of the San Joaquin River consists of a nitrifying biotower for ammonia removal"
+      "Sentence": "Tertiary treatment on the west side of the San Joaquin River consists of a nitrifying biotower for ammonia removal"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -160,18 +164,18 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and disinfected using chlorination/dechlorination prior to discharge"
+      "Sentence": "and disinfected using chlorination/dechlorination prior to discharge to the San Joaquin River"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -197,15 +201,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disk filters and UV disinfection prior to discharge"
+      "Sentence": "disk filters and UV disinfection prior to discharge to the San Joaquin River at Discharge Point 001B"
     },
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Primary"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -217,7 +222,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -244,7 +249,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the anaerobic digesters directly. Following anaerobic digestion"
+      "Sentence": "pumped to the anaerobic digesters directly. Following anaerobic digestion, sludge is routed to a holding tank."
     },
     {
       "Equipment": "Tank",
@@ -252,13 +257,15 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge is routed to a holding tank"
+      "Sentence": "Following anaerobic digestion, sludge is routed to a holding tank."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -273,9 +280,9 @@
       "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -285,19 +292,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested solids are further conditioned and dewatered using ... belt filter presses"
+      "Sentence": "Digested solids are further conditioned and dewatered using a centrifuge or belt filter presses"
     },
     {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered solids are hauled off-site by a private contractor and routinely recycled on agricultural lands as a source of nutrients and soil amendment"
@@ -307,9 +310,7 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -335,7 +336,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side of the San Joaquin River to the upgraded facility on the east side ... for retreatment"
+      "Sentence": "The Discharger plans to build return flow facilities from the ponds and wetlands on the west side of the San Joaquin River to the upgraded facility on the east side of the San Joaquin River for retreatment."
     }
   ]
 }

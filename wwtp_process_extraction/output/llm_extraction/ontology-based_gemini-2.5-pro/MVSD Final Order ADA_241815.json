@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration..."
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection."
     },
     {
       "Equipment": "SedimentationTank",
@@ -103,7 +103,7 @@
     {
       "Equipment": "Thickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -113,7 +113,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge..."
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -132,7 +132,7 @@
       "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge..."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering",
         "Centrifugation"
@@ -175,7 +175,35 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...and placed as alternative daily cover at a landfill."
+      "Sentence": "...placed as alternative daily cover at a landfill."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "pHAdjuster"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -188,10 +216,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment..."
+      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment and controls."
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering",
         "Centrifugation"
@@ -222,8 +250,7 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "Nitrification",
-        "Denitrification"
+        "Biofiltration"
       ],
       "Role": [
         "Posttreatment",

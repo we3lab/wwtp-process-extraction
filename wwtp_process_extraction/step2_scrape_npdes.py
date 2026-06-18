@@ -63,7 +63,7 @@ os.makedirs(pdfs_path, exist_ok=True)
 
 # PDF filenames matching this regex are skipped on the order page.
 SEP = r"[ ._-]"  # - must be last to avoid range interpretation
-SKIP_BASE_KW = ["rpts|rowd|memo|nov|map|rwd|gwmp"]  # match only with separators (e.g. "_memo_")
+SKIP_BASE_KW = ["rpts|rowd|memo|nov|map|rwd|gwmp|mgo"]  # match only with separators (e.g. "_memo_")
 SKIP_PHRASE = (
     "report|financial|response to|rate study|ratestudy|study|"
     "addendum|registration|adoption|"
@@ -693,7 +693,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                 entry.update(
                     {"Facility Name": fac_name,
                      "WDID": wdid,
-                     "other_pdfs": [],
+                     "pdfs": [],
                      "total_pdfs": 0,
                      "reg_measure_id": None,
                      "reg_measure_type": None,
@@ -708,7 +708,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
             if not order_url or (eff and eff.year < 2004):
                 reason = "pre-2004" if (eff and eff.year < 2004) else "no link"
                 print(f"  Skipping PDFs ({reason}): {rm_type}, eff={eff.date() if eff else 'unknown'}")
-                entry.update({"Facility Name": fac_name, "WDID": wdid, "other_pdfs": [],
+                entry.update({"Facility Name": fac_name, "WDID": wdid, "pdfs": [],
                               "total_pdfs": 0, "reg_measure_id": reg_id,
                               "reg_measure_type": rm_type, "order_no": order_no,
                               "pdf_skip_reason": reason})
@@ -731,7 +731,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
             info = {
                 "Facility Name": fac_name,
                 "WDID": wdid,
-                "other_pdfs": downloaded_pdfs,
+                "pdfs": downloaded_pdfs,
                 "missed_pdfs": missed_pdfs,
                 "total_pdfs": total_pdfs,
                 "reg_measure_id": reg_id,
@@ -748,7 +748,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                 with lock:
                     cached = addtl_reg_id and addtl_reg_id in reg_id_to_info
                 if cached:
-                    extra_pdfs = reg_id_to_info[addtl_reg_id].get("other_pdfs", [])
+                    extra_pdfs = reg_id_to_info[addtl_reg_id].get("pdfs", [])
                 else:
                     extra_pdfs, extra_missed, _ = _download_and_move(
                         driver, addtl_url, worker_dir, main_window, check_dirs, pdfs_path
@@ -756,8 +756,8 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                     info["missed_pdfs"].extend(extra_missed)
                     with lock:
                         if addtl_reg_id:
-                            reg_id_to_info[addtl_reg_id] = {"other_pdfs": extra_pdfs}
-                info["other_pdfs"].extend(extra_pdfs)
+                            reg_id_to_info[addtl_reg_id] = {"pdfs": extra_pdfs}
+                info["pdfs"].extend(extra_pdfs)
                 addtl_reg_ids.append(addtl_reg_id or "")
                 addtl_wdids.append(addtl_wdid or "")
             if addtl_reg_ids:
@@ -791,7 +791,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
         if entry.get("pdf_skip_reason"):
             return False
         # A reg measure was clicked and 0 PDFs came back — should be impossible; retry
-        if entry.get("reg_measure_type") and not entry.get("other_pdfs") and not entry.get("total_pdfs"):
+        if entry.get("reg_measure_type") and not entry.get("pdfs") and not entry.get("total_pdfs"):
             return True
         return False
 
@@ -1022,7 +1022,7 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     for place_id, entry in facilities_by_place.items():
         g = entry.get("reg_measure_id") or place_id
         group_to_rm_type[g] = entry.get("reg_measure_type", "")
-        for pdf in entry.get("other_pdfs", []):
+        for pdf in entry.get("pdfs", []):
             pdf_to_groups.setdefault(pdf, set()).add(g)
             group_to_pdfs.setdefault(g, set()).add(pdf)
     pdf_signals = {}
@@ -1033,8 +1033,8 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     single_pdf_files = {
         pdf
         for entry in facilities_by_place.values()
-        for pdf in entry.get("other_pdfs", [])
-        if len(entry.get("other_pdfs", [])) == 1
+        for pdf in entry.get("pdfs", [])
+        if len(entry.get("pdfs", [])) == 1
     }
 
     for filename in pdf_files:
@@ -1043,6 +1043,9 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     for filename in pdf_files:
         matched_type = pdf_signals[filename]
         src = os.path.join(pdfs_path, filename)
+        stem = os.path.splitext(filename)[0]
+        if matched_type and SKIP_RE.search(stem) and not KEEP_RE.search(stem):
+            matched_type = None  # general-order/non-permit filename pattern
         if matched_type in ("WDR", "NPDES"):
             assoc_types = {group_to_rm_type.get(g, "") for g in pdf_to_groups.get(filename, set())}
             if assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
@@ -1097,7 +1100,7 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
     # Count distinct place_ids mapping to each NPDES PDF (for Shared_PDF flag)
     pdf_to_n_facilities = {}
     for entry in facilities_by_place.values():
-        for pdf in entry.get("other_pdfs", []):
+        for pdf in entry.get("pdfs", []):
             if pdf in npdes_pdfs:
                 pdf_to_n_facilities[pdf] = pdf_to_n_facilities.get(pdf, 0) + 1
 
@@ -1108,7 +1111,7 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
         fac_name = entry.get("Facility Name", "")
         wdid = entry.get("WDID", "")
         meta = enrich.get((wdid, fac_name), {})
-        facility_npdes_pdfs = [p for p in entry.get("other_pdfs", []) if p in npdes_pdfs]
+        facility_npdes_pdfs = [p for p in entry.get("pdfs", []) if p in npdes_pdfs]
         meta_dict = {key: meta.get(key, "") for key in meta_keys}
         if entry.get("order_no"):
             meta_dict["Order_No"] = entry["order_no"]

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the headworks system two automatic bar screens",
+      "Sentence": "two automatic bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -54,8 +54,7 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -67,7 +66,9 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Sedimentation"
+      ],
       "Role": [
         "Secondary"
       ],
@@ -76,7 +77,7 @@
       "Location": "on-site",
       "Sentence": "two lined polishing ponds",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Secondary Clarification"
       ]
     },
     {
@@ -112,63 +113,6 @@
       ]
     },
     {
-      "Equipment": "GravityBeltThickener",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer",
-      "trigger_process": [
-        "Polymer Addition",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "single 2-meter gravity belt filter press where it is dewatered",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total).",
-      "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
@@ -179,14 +123,35 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Disinfectant-Chlorine",
+        "ReducingAgent"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "conveyed to the chlorine contact basin to be disinfected and de-chlorinated",
+      "Sentence": "chlorine contact basin to be disinfected and de-chlorinated",
       "trigger_process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Reduction"
+      ]
+    },
+    {
+      "Equipment": "StaticMixer",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "ReducingAgent"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a chemical induction unit which employs a vacuum and gas system capable of dispersing the chlorine and sulfur dioxide gas",
+      "trigger_process": [
+        "Reduction"
       ]
     },
     {
@@ -209,17 +174,128 @@
       ]
     },
     {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer",
+      "trigger_process": [
+        "Polymer Addition",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "48,000-gallon sludge holding tank",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a single 2-meter gravity belt filter press where it is dewatered",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total).",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids.",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled off site by a private hauler for composting.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "screenings are hauled off site for disposal at a County of Riverside landfill",
+      "Sentence": "screenings are hauled off site for disposal at a County of Riverside landfill.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -243,7 +319,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -263,17 +340,31 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "chemical storage and feed system (sodium hypochlorite)",
+      "Sentence": "a chemical storage and feed system (sodium hypochlorite)",
       "trigger_process": [
         "Chlorination"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "seasonal and operational storage",
+      "trigger_process": []
     }
   ]
 }

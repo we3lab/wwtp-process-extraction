@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "flows through two microscreens, where it is dispersed evenly to six primary basins.",
+      "Sentence": "flows through two microscreens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,41 +27,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of screening, compaction, primary clarification, flow equalization, pure oxygen activated sludge aeration, secondary clarification, chlorination by sodium hypochlorite, and dechlorination by sodium bisulfite.",
+      "Sentence": "six primary basins...primary clarification",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The other 30 percent is stored in equalization basins until late evening, when it is pumped back into the secondary system for treatment.",
+      "Sentence": "The other 30 percent is stored in equalization basins",
       "trigger_process": [
         "Equalization"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The primary effluent is then split, with 70 percent pumped to two pure oxygen activated sludge reactors...",
-      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -77,8 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of ... pure oxygen activated sludge aeration...",
+      "Sentence": "pure oxygen activated sludge aeration",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -94,71 +75,80 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Flows from the activated sludge reactors are then routed to three secondary clarifiers, operated in parallel, for settling.",
+      "Sentence": "Flows from the activated sludge reactors are then routed to three secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "effluent then flows over weirs into a chlorine contact mixing chamber",
+      "trigger_process": []
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The treatment process consists of ... chlorination by sodium hypochlorite, and dechlorination by sodium bisulfite.",
+      "Sentence": "chlorination by sodium hypochlorite",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dechlorination by sodium bisulfite",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": null,
       "Process": [
         "Coagulation",
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin.",
-      "trigger_process": [
-        "Alum Addition",
-        "Coagulation"
-      ]
-    },
-    {
-      "Equipment": "FlocculationBasin",
-      "Process": [
         "Flocculation"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
+        "Coagulant-Alum",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin.",
+      "Sentence": "alum or polymer injection followed by sand filtration",
       "trigger_process": [
+        "Alum Addition",
+        "Coagulation",
         "Flocculation",
         "Polymer Addition"
       ]
@@ -175,8 +165,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin.",
+      "Sentence": "filtration through a Dina-sand filtration system",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -192,27 +181,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin.",
+      "Sentence": "Title 22 disinfected tertiary via flocculation, filtration...and disinfection",
       "trigger_process": [
         "Unspecified Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "The tertiary treatment system includes alum or polymer injection followed by sand filtration, disinfection, gypsum injection, and a 1.4-million-gallon storage basin.",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
       ]
     },
     {
@@ -224,9 +195,159 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The tertiary treatment system includes ... and a 1.4-million-gallon storage basin.",
+      "Sentence": "a 1.4-million-gallon storage basin",
       "trigger_process": []
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solids are pumped to two gravity thickeners",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary and secondary scum is pumped to an air flotation tank...and treated with a polymer",
+      "trigger_process": [
+        "Flotation",
+        "Polymer Addition",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The thickened solids are removed and pumped to two anaerobic digesters",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Digested solids are treated with polymer and centrifuged",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled offsite for disposal at either the Potrero Hills municipal landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled offsite...for land application at one of several farms",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the Discharger treated the return activated sludge with sodium hypochlorite",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the Discharger plans to rehabilitate and upgrade the aeration basin with...non-clogging aerators",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
     }
   ]
 }

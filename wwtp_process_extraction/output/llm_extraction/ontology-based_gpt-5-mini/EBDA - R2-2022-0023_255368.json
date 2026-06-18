@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
     },
     {
@@ -25,7 +24,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
     },
     {
@@ -39,21 +37,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary sedimentation"
+      "Sentence": "The treatment process consists of ... primary sedimentation, flow equalization, trickling filtration ..."
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
       "Role": [
-        "Equalization",
-        "Detention"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "flow equalization"
+      "Sentence": "The treatment process consists of ... flow equalization, trickling filtration ..."
     },
     {
       "Equipment": "TricklingFilter",
@@ -66,14 +63,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "trickling filtration"
+      "Sentence": "The treatment process consists of ... trickling filtration, activated sludge aeration, secondary clarification ..."
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -82,8 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "activated sludge aeration"
+      "Sentence": "The treatment process consists of ... activated sludge aeration, secondary clarification ..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -96,8 +91,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "secondary clarification"
+      "Sentence": "The treatment process consists of ... activated sludge aeration, secondary clarification, and chlorine disinfection."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -113,8 +107,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "chlorine disinfection"
+      "Sentence": "The treatment process consists of ... secondary clarification, and chlorine disinfection."
     },
     {
       "Equipment": "Pond",
@@ -125,8 +118,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the plant also has five acres of out-of-service oxidation ponds that can be used for emergency storage"
+      "Sentence": "The plant also has five acres of out-of-service oxidation ponds that can be used for emergency storage."
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City is constructing a demonstration treatment wetland that would accept up to 0.95 MGD of its wastewater for polishing treatment."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -135,7 +138,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -143,8 +145,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested"
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested, dewatered using a belt filter press, and air dried."
     },
     {
       "Equipment": "DewateringUnit",
@@ -159,25 +160,22 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "dewatered using a belt filter press"
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... dewatered using a belt filter press ..."
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "air dried"
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested, dewatered using a belt filter press, and air dried."
     },
     {
       "Equipment": null,
@@ -191,9 +189,8 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "applies the biosolids to land as Class A Exceptional Quality biosolids or Class B biosolids"
+      "Location": "off-site",
+      "Sentence": "The City hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids or Class B biosolids ..."
     }
   ]
 }

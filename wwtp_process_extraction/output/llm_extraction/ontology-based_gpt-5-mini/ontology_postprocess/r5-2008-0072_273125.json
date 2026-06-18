@@ -11,39 +11,63 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The existing WWTF consists of a headworks with two mechanical bar screens and an influent meter.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Aeration"
+        "Dewatering"
       ],
       "Role": [
-        "Aerobic"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The wastewater is then routed to four aerated lagoons (Nos. 1, 1A, 2 and 3) equipped with small bubble diffused-air aeration devices.",
+      "Sentence": "Solids from the screen/compactor are dewatered and deposited in a trash-bin.",
       "trigger_process": [
-        "Unspecified AS"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater is then routed to four aerated lagoons ... equipped with small bubble diffused-air aeration devices ... flows by gravity into Aeration Lagoon No. 2 for further aeration and solids settling.",
+      "trigger_process": [
+        "Aerated Lagoon",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Storage"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Wastewater is pumped to the Use Area that consists of two unlined storage ponds...",
-      "trigger_process": []
+      "Sentence": "Effluent from the Aeration Lagoons is discharged to the eastern Disposal Ponds, which comprise approximately 30 acres and have a capacity of approximately 236 acre feet.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
     },
     {
       "Equipment": "Pond",
@@ -53,10 +77,9 @@
         "Posttreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater is pumped to the Use Area that consists of two unlined storage ponds that comprised about 30 acres or about 236 acre-feet of storage (new pond under construction).",
+      "Sentence": "Use Area that consists of two unlined storage ponds that comprised about 30 acres or about 236 acre-feet of storage (new pond under construction).",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -71,7 +94,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Two small effluent storage ponds are located at the southwest corner of the WWTF and are used to deliver effluent to the adjacent farm fields.",
       "trigger_process": [
         "Unspecified Lagoon"
@@ -86,8 +108,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "The Discharger changed the design of the proposed pond construction and has constructed a separate 30-acre disposal pond east of the existing ponds.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Conceptually the expansion project consists of expanding the capacity of the disposal ponds by adding another 30-acre disposal pond east of the existing disposal pond.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

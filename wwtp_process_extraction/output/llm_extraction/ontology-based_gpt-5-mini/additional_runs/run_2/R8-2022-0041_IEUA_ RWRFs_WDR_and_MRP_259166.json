@@ -3,7 +3,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -18,7 +18,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -63,7 +64,7 @@
       "Sentence": "The solids treatment system at RP-2 includes ... aerobic digestion;"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -75,11 +76,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The solids treatment system at RP-2 includes ... belt press, and centrifuge dewatering."
+      "Sentence": "The solids treatment system at RP-2 includes ... belt press,"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -93,6 +95,21 @@
       "Sentence": "The solids treatment system at RP-2 includes ... centrifuge dewatering."
     },
     {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Sludge treatment system wastewater from RP-2 is pumped back to headworks of RP-5."
+    },
+    {
       "Equipment": null,
       "Process": [
         "BiosolidsDisposal"
@@ -103,22 +120,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered biosolids are hauled away to approved disposal sites"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge treatment system wastewater from RP-2 is pumped back to headworks of RP-5."
+      "Sentence": "Dewatered biosolids are hauled away to approved disposal sites."
     }
   ]
 }

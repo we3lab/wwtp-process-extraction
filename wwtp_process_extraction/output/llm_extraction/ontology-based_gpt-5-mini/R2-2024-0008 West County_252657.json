@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins."
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal..."
     },
     {
       "Equipment": "GritChamber",
@@ -25,8 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins."
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,24 +37,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins."
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... primary clarifiers..."
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins."
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... aeration basins...; two of the ammonia violations occurred when the Richmond Plant’s ability to convert ammonia to nitrate declined."
     },
     {
       "Equipment": "SedimentationTank",
@@ -69,8 +68,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins."
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... secondary clarifiers..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -78,43 +76,95 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The wastewater treatment process at the Richmond Plant consists of a bar screen, fine bar screens, grit removal, primary clarifiers, aeration basins, secondary clarifiers, and chlorine contact basins."
+      "Sentence": "The wastewater treatment process at the Richmond Plant consists of ... chlorine contact basins."
     },
     {
       "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The dechlorination system for both plants is located at the Richmond Plant and is jointly owned by the Dischargers."
+      "Sentence": "The dechlorination system for both plants is located at the Richmond Plant and is jointly owned by the Dischargers. The Dischargers upgraded the dechlorination system in 2023."
     },
     {
-      "Equipment": "Thickener",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Dewatering"
+        "Flotation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge..."
+    },
+    {
+      "Equipment": "RotaryDrumThickener",
+      "Process": [
+        "Process-Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The City of Richmond and Richmond Municipal Sewer District No. 1 plan to replace the sludge thickening unit by March 2025."
+      "Sentence": "the Richmond Municipal Sewer District plans to replace the dissolved air flotation thickener with a rotary drum thickener by November 2024 as part of the Critical Improvement Project."
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary activated sludge is sent to the dissolved air flotation thickener, combined with primary sludge, anaerobically digested, and pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary-treated wastewater flows above 20.0 MGD are bypassed around biological treatment when necessary and stored in equalization basins."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "pumped via a shared sludge and leachate line to the West County Plant for drying and disposal at a landfill."
     }
   ]
 }

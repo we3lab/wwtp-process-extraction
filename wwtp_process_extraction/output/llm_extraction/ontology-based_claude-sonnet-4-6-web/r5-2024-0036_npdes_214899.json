@@ -6,12 +6,13 @@
         "Screening"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens",
       "Source": "permit_text",
       "Website": null
     },
@@ -21,12 +22,31 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
+      "Sentence": "a vortex grit removal mechanism",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
       "Source": "permit_text",
       "Website": null
     },
@@ -34,15 +54,12 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Denitrification",
         "Nitrification",
         "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
-        "Aerobic",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -54,7 +71,7 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Ultrafiltration"
+        "Microfiltration"
       ],
       "Role": [
         "Tertiary"
@@ -86,12 +103,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank.",
+      "Sentence": "disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank.",
       "Source": "permit_text",
       "Website": null
     },
@@ -111,7 +129,46 @@
     {
       "Equipment": "Reactor",
       "Process": [
-        "AnaerobicDigestion"
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Retention"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Detention"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the reduced solids are purged into the digester, which holds the solids for 10 to 15 days.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -121,9 +178,54 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The patented Cannibal™ sludge reduction system will reduce the amount of biosolids significantly and is the largest application of the technology to date in California.",
-      "Source": "web_search",
-      "Website": "https://www.waterworld.com/wastewater-treatment/article/16219877/water-reuse-facility-opens-in-clovis-ca"
+      "Sentence": "the solids are sent to dewatering equipment, which includes a centrifuge.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
+      "Source": "permit_text",
+      "Website": null
     }
   ]
 }

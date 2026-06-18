@@ -5,33 +5,13 @@
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of bar screening, peroxide addition, grit removal, primary sedimentation, biological treatment using activated sludge, and secondary clarification.",
+      "Location": "on-site",
+      "Sentence": "bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of bar screening, peroxide addition, grit removal, primary sedimentation, biological treatment using activated sludge, and secondary clarification.",
-      "trigger_process": [
-        "Grit Removal"
       ]
     },
     {
@@ -40,18 +20,29 @@
         "ChemicalAddition",
         "Oxidation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": [
         "OxidizingAgent-HydrogenPeroxide"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 0.95,
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of bar screening, peroxide addition, grit removal, primary sedimentation, biological treatment using activated sludge, and secondary clarification.",
+      "Location": "on-site",
+      "Sentence": "peroxide addition",
       "trigger_process": [
-        "Unspecified Chemical Addition"
+        "Oxidation"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "grit removal",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
@@ -64,9 +55,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... primary sedimentation ...",
+      "Location": "on-site",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -77,14 +67,12 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... biological treatment using activated sludge ...",
+      "Location": "on-site",
+      "Sentence": "biological treatment using activated sludge",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -99,9 +87,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... secondary clarification.",
+      "Location": "on-site",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -112,17 +99,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "The EWPCF also has disinfection (chlorination) capabilities limited to the capacity necessary to disinfect secondary-treated effluent currently reused onsite at the EWPCF.",
+      "Location": "on-site",
+      "Sentence": "disinfection (chlorination)",
       "trigger_process": [
         "Chlorination"
       ]
@@ -139,9 +122,8 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids treatment unit operations and processes consist of dissolved air flotation (DAF) thickening, anaerobic digestion, mechanical dewatering (centrifuges), and heat drying.",
+      "Location": "on-site",
+      "Sentence": "dissolved air flotation (DAF) thickening",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -153,26 +135,22 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids treatment unit operations and processes consist of dissolved air flotation (DAF) thickening, anaerobic digestion, mechanical dewatering (centrifuges), and heat drying.",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -181,19 +159,17 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids treatment unit operations and processes consist of ... mechanical dewatering (centrifuges) ...",
+      "Location": "on-site",
+      "Sentence": "mechanical dewatering (centrifuges)",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -202,12 +178,205 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solids treatment unit operations and processes consist of ... mechanical dewatering (centrifuges), and heat drying.",
+      "Location": "on-site",
+      "Sentence": "heat drying",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "inline sewage grinding, grinding with augers",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary sedimentation",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "roughing filtration",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological treatment using activated sludge",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary clarification",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "tertiary filtration",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "chlorine disinfection",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "continuous backwash granulated media filtration",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "microfiltration (MF)",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "ultrafiltration (UF)",
+      "trigger_process": [
+        "Ultrafiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": [
+        "Water-Brackish"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "reverse osmosis (RO) membrane filtration (typically bypassed)",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Stripping"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "decarbonation (typically bypassed)",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solids thickening",
+      "trigger_process": [
+        "Thickening"
       ]
     }
   ]

@@ -323,15 +323,7 @@ manual = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_ma
 manual["Place ID"] = manual["Place ID"].str.strip()
 manual = manual[manual["Place ID"].ne("")].copy()
 
-# Match the manual facilities used by table_1: use the workbook's Manual Read Place IDs
-workbook_path = "wwtp_process_extraction/output/llm_extraction/model_comparison_all.csv"
-if os.path.exists(workbook_path):
-    wb = pd.read_csv(workbook_path, dtype=str)
-    workbook_manual_ids = set(wb.loc[wb["Method"].eq("Manual Read"), "Place ID"].dropna())
-    manual = manual[manual["Place ID"].isin(workbook_manual_ids)].copy()
-else:
-    workbook_manual_ids = None
-
+# The manual CSV is exactly the benchmark (manually-read) facility set.
 manual_facilities = set(manual["Place ID"])
 
 llm_results_manual = (
@@ -430,9 +422,9 @@ if llm_results_both is not None:
 category_metrics_df = pd.DataFrame(category_metric_rows)
 
 metrics_df = pd.concat(metrics_frames, ignore_index=True)
-metrics_path = f"wwtp_process_extraction/output/npdes_method_comparison_metrics.csv"
-metrics_df.to_csv(metrics_path, index=False)
-print(f"\nSaved npdes_method_comparison_metrics.csv")
+# metrics_path = f"wwtp_process_extraction/output/npdes_method_comparison_metrics.csv"
+# metrics_df.to_csv(metrics_path, index=False)
+# print(f"\nSaved npdes_method_comparison_metrics.csv")
 summary = metrics_df.groupby(["Level", "Source"])[
     [
         "Precision",
@@ -453,9 +445,8 @@ kw_hallucinated = (
     .sort_values(["Hallucinated_Rate", "FP", "Support_Pred"], ascending=[False, False, False])
     .head(12)
 )
-if not kw_hallucinated.empty:
-    print("\nTop hallucinated unit processes (Keyword):")
-    print(kw_hallucinated.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
+print("\nTop hallucinated unit processes (Keyword):")
+print(kw_hallucinated.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
 
 violin_path = f"{final_dir}/figure_s2_npdes_method_comparison_metrics_violin.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))

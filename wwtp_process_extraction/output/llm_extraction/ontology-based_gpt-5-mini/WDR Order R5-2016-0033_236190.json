@@ -1,18 +1,56 @@
 {
   "items": [
     {
-      "Equipment": "OxidationDitch",
+      "Equipment": "Screen",
       "Process": [
-        "ActivatedSludge"
+        "Screening"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility currently consists of headworks, oxidation ditch, two secondary clarifiers, secondary effluent holding pond, return activated sludge (RAS) pump station, effluent pump station, force main, four percolation/evaporation ponds, and seven sludge drying beds."
+      "Sentence": "headworks structure equipped with a grinder and a bar screen."
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks structure equipped with a grinder and a bar screen."
+    },
+    {
+      "Equipment": "OxidationDitch",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the wastewater flowed to an oxidation ditch equipped with two brush aerators."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A new return activated sludge (RAS) pump station ... provides continuous RAS return to just below the headworks."
     },
     {
       "Equipment": "SedimentationTank",
@@ -25,30 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility currently consists of headworks, oxidation ditch, two secondary clarifiers, secondary effluent holding pond, return activated sludge (RAS) pump station, effluent pump station, force main, four percolation/evaporation ponds, and seven sludge drying beds."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "A new return activated sludge (RAS) pump station was constructed... and provides continuous RAS return to just below the headworks."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The effluent pumps were upsized to each have a capacity of 750 gpm, allowing for redundancy."
+      "Sentence": "the effluent from the oxidation ditch flowed to a secondary clarifier"
     },
     {
       "Equipment": "Pond",
@@ -59,34 +74,43 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The Facility currently consists of... secondary effluent holding pond..."
+      "Sentence": "The Facility currently consists of ... secondary effluent holding pond."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Evaporation"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Effluent is sent to percolation/evaporation ponds for final disposal."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
+        "MediaFiltration"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The chlorine contact chamber has been taken out of service."
+      "Sentence": "Prior to compliance upgrades, the Facility consisted of ... three pressure filters."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the Facility consisted of ... a chlorine contact basin"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the wastewater was ... dechlorinated with sodium bisulfite."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -100,8 +124,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Chlorination occurs in the 10-inch diameter, 12,500-foot long force main that routes effluent from the treatment plant to the percolation/evaporation ponds."
+      "Sentence": "Chlorination occurs in the 10-inch diameter, 12,500-foot long force main ... Currently, sodium hypochlorite is the only chemical used in the treatment process."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -114,23 +137,29 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "An emergency chlorine dosing station is located at the pond site to allow for additional chlorine dosing as needed."
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "ChemicalAddition",
-        "Chlorination"
-      ],
+      "Process": null,
       "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Three chemical dosing pumps have the ability to inject 12.5% sodium hypochlorite solution at the RAS pipeline, the secondary clarifiers, and the effluent pump station."
+      "Sentence": "The effluent pumps were upsized to each have a capacity of 750 gpm"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Effluent is sent to percolation/evaporation ponds for final disposal."
     },
     {
       "Equipment": "DewateringUnit",
@@ -145,7 +174,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Solids produced during the activated sludge process are applied to the sludge drying beds and dried in the summer."
     },
     {
@@ -159,7 +187,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "The Discharger disposes of the biosolids at a local landfill yearly."
     }
   ]

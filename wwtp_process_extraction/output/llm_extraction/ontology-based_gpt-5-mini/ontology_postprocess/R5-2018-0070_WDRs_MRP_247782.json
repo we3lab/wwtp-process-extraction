@@ -1,37 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "ImhoffTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The WQCF was originally constructed with an Imhoff tank treatment system in the 1950s",
-      "trigger_process": [
-        "Anaerobic Digestion",
-        "Septic Tank"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Undisinfected secondary effluent is discharged for disposal to a series of 15 percolation ponds covering approximately 100 acres.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -42,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Influent flows enter a mechanical bar screen before being pumped from the influent pump station to the NASTS distribution structure and the SASTS flow splitter structure.",
+      "Sentence": "Influent flows enter a mechanical bar screen before being pumped from the influent pump station...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -57,8 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Influent flows enter a mechanical bar screen before being pumped from the influent pump station to the NASTS distribution structure and the SASTS flow splitter structure.",
+      "Sentence": "before being pumped from the influent pump station to the NASTS distribution structure and the SASTS flow splitter structure.",
       "trigger_process": []
     },
     {
@@ -66,19 +33,20 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "NitrogenRemoval",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The NASTS contains an aeration oxidation ditch and two clarifiers for solids separation.",
+      "Sentence": "The NASTS contains an aeration oxidation ditch ... operate as a Simultaneous Nitrification Dentification process...",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
@@ -97,7 +65,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The NASTS contains an aeration oxidation ditch and two clarifiers for solids separation.",
       "trigger_process": [
         "Secondary Clarification"
@@ -106,45 +73,60 @@
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion",
-        "Dewatering"
+        "AerobicDigestion"
       ],
       "Role": [
+        "Stabilization",
         "SolidsHandling",
-        "Stabilization"
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Waste sludge produced by this system is metered and pumped to SASTS Aerobic Digesters 1, 2 and 3 for stabilization and dewatering.",
+      "Sentence": "Wasted sludge produced by this system is metered and pumped to SASTS Aerobic Digesters 1, 2 and 3 for stabilization and dewatering.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "AnaerobicDigestion",
-        "Aeration"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
-        "Primary",
-        "Anaerobic",
-        "Aerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The primary pond is separated into three cells of varying depths which allow for the creation of aerobic and anaerobic zones in the pond. The first cell being the deepest functions as an anaerobic digester to breakdown solids. The primary pond contains three floating brush aerators.",
+      "Sentence": "A centrifuge is used to dewater solids from the digesters. Centrate from the centrifuge is returned to the headworks for treatment.",
       "trigger_process": [
-        "Anaerobic Digestion",
-        "Facultative Lagoon"
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "There are 13 unlined sand drying beds ... Historically, sludge dryings beds were used for solids dewatering, but this practice was discontinued in 2010 when the centrifuge was installed. The drying beds are now only used in an emergency...",
+      "trigger_process": [
+        "Drying"
       ]
     },
     {
@@ -154,20 +136,31 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Anaerobic",
-        "Aerobic"
+        "Primary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
+      "Sentence": "The primary pond ... allow for the creation of aerobic and anaerobic zones in the pond. The first cell being the deepest functions as an anaerobic digester ... The primary pond contains three floating brush aerators.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AnaerobicDigestion",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
       "Sentence": "The secondary pond is divided into two cells with a deep first cell to stabilize solids similar to the primary pond. The secondary pond contains one floating brush aerator.",
       "trigger_process": [
-        "Anaerobic Digestion",
-        "Facultative Lagoon"
+        "Anaerobic Digestion"
       ]
     },
     {
@@ -181,101 +174,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The tertiary pond provides polishing and allows algae to be settled.",
       "trigger_process": [
         "Polishing Lagoon"
       ]
     },
     {
-      "Equipment": "OxidationDitch",
-      "Process": [
-        "ActivatedSludge"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Secondary"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SASTS consists of an oxidation ditch, a secondary clarifier, a return activated sludge/waste activated sludge pump station, three aerobic digesters, and six sludge drying beds.",
+      "Sentence": "Undisinfected secondary effluent is discharged for disposal to a series of 15 percolation ponds covering approximately 100 acres.",
       "trigger_process": [
-        "Oxidation Ditch"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The SASTS consists of an oxidation ditch, a secondary clarifier, a return activated sludge/waste activated sludge pump station, three aerobic digesters, and six sludge drying beds.",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "The SASTS consists of... a return activated sludge/waste activated sludge pump station...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "A centrifuge is used to dewater solids from the digesters.",
-      "trigger_process": [
-        "Centrifuge",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.8,
-      "Sentence": "Historically, sludge dryings beds were used for solids dewatering, but this practice was discontinued in 2010 when the centrifuge was installed. The drying beds are now only used in an emergency when the centrifuge must be shut down for extended maintenance.",
-      "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -284,35 +199,14 @@
         "Landfill"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Bar screenings are disposed off-site at a permitted landfill site.",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Dewatered biosolids are currently stored onsite at in 0.25-acre area (adjacent to Pond 2) until disposed offsite by a licensed disposal contractor.",
-      "trigger_process": [
-        "Unspecified Disposal"
       ]
     },
     {
@@ -321,17 +215,16 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "Centrate from the centrifuge is returned to the headworks for treatment.",
+      "Sentence": "The SASTS consists of an oxidation ditch, a secondary clarifier, a return activated sludge/waste activated sludge pump station...",
       "trigger_process": []
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reactor",
       "Process": [
         "Denitrification"
       ],
@@ -342,7 +235,6 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "The City plans to construct a 200,000-gallon concrete tank to add an anoxic zone to the existing oxidation ditch.",
       "trigger_process": [
         "Denitrification",
@@ -353,18 +245,22 @@
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval"
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Installation of a 1-MG oxidation ditch with two slow speed surface aerators for biological treatment",
       "trigger_process": [
+        "Denitrification",
+        "Nitrification",
         "Oxidation Ditch"
       ]
     },
@@ -379,8 +275,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "SASTS Clarifier 2 80-Foot diameter circular secondary clarifier",
+      "Sentence": "Phase III\u2014Major Improvements: SASTS Clarifier 2 80-Foot diameter circular secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -388,8 +283,8 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Filtration",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -397,7 +292,6 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Rotary drum thickener for dewatering clarifier solids prior to stabilization in Aerobic Digesters 4, 5 and 6",
       "trigger_process": [
         "Thickening"
@@ -409,48 +303,90 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Stabilization",
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Three 129,000-gallon aerobic digesters for stabilization and storage of waste sludge",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "Dewatering"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "RAS/WAS Pump Station 2 Return/Waste Sludge Pumping from SASTS Clarifier 2",
-      "trigger_process": []
+      "Sentence": "Conversion of three NASTS Sand Drying Beds to receive dewatering vactor truck debris...",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Containment",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
+      "Sentence": "Installation of an additional 1.5-acre paved asphalt area for short term (less than 6 months) storage of dewatered solids Sludge Storage Area",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
       "Sentence": "Installation of 3.1 acre-feet storm water retention pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "ImhoffTank",
+      "Process": [
+        "Sedimentation",
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The WQCF was originally constructed with an Imhoff tank treatment system in the 1950s...",
+      "trigger_process": [
+        "Anaerobic Digestion",
+        "Primary Clarification",
+        "Septic Tank"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Ponds 4 and 9 are abandoned",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

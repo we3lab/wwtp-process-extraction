@@ -24,29 +24,42 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of...a vortex grit removal mechanism."
+      "Sentence": "and a vortex grit removal mechanism."
     },
     {
       "Equipment": "Reactor",
       "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Anoxic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each bioreactor train consists of two anoxic zones"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
         "ActivatedSludge",
-        "Mixing",
         "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids."
+      "Sentence": "followed by one aerobic zone with two aeration grids."
     },
     {
       "Equipment": "Filter",
       "Process": [
-        "Filtration"
+        "Filtration",
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary"
@@ -74,8 +87,7 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -86,13 +98,103 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II"
+    },
+    {
+      "Equipment": "Reactor",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks."
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the reduced solids are purged into the digester, which holds the solids for 10 to 15 days."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the solids are sent to dewatering equipment, which includes a centrifuge."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "or a composting facility."
     }
   ]
 }

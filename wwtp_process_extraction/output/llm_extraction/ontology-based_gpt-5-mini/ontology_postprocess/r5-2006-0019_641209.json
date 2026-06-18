@@ -1,9 +1,39 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "prescreened for solid and inert material ... using automatic equipment or a manually racked bar screen.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "discharged into one of two aerobic digesters via an automatically controlled wet well utilizing a lead and lag pump system.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion"
+        "AerobicDigestion",
+        "Aeration",
+        "Sedimentation"
       ],
       "Role": [
         "Aerobic",
@@ -11,21 +41,21 @@
         "Stabilization"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WWTF consists of aerobic digesters, a sludge centrifuge, a disinfection system, an effluent storage tank, and sprayfields.",
+      "Sentence": "Each digester is a complete mix system ... kept in a homogenous state by an aeration diffuser system utilizing blowers.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -35,28 +65,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WWTF consists of aerobic digesters, a sludge centrifuge, a disinfection system, an effluent storage tank, and sprayfields.",
+      "Sentence": "Digested sludge from each aerobic digester is pumped to one of two centrifuges for solids processing.",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WWTF consists of aerobic digesters, a sludge centrifuge, a disinfection system, an effluent storage tank, and sprayfields.",
-      "trigger_process": [
-        "Unspecified Disinfection"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -68,25 +80,57 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WWTF consists of aerobic digesters, a sludge centrifuge, a disinfection system, an effluent storage tank, and sprayfields.",
+      "Sentence": "Effluent is stored in a two million gallon above ground storage tank.",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the Discharger will install an addition two million gallon above ground storage tank ... will be installed by January 2006.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Disinfection is achieved by dosing the effluent stored in the effluent storage tanks with sodium hypochlorite.",
+      "trigger_process": [
+        "Chlorination"
+      ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Landfill"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The WWTF consists of aerobic digesters, a sludge centrifuge, a disinfection system, an effluent storage tank, and sprayfields.",
+      "Sentence": "The processed solids from each centrifuge are deposited into temporary storage bins that are transported to the on-site Class II landfill for disposal.",
       "trigger_process": [
-        "Land Application"
+        "Biosolids Landfill"
       ]
     }
   ]

@@ -68,8 +68,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -79,24 +78,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge aeration and secondary clarification (6.0-MGD capacity)",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "SMWD was in the process of installing ... planned to add new aeration basins ... increase the aeration basin from 6 MGD to 9 MGD",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -134,7 +115,24 @@
       ]
     },
     {
-      "Equipment": "StaticMixer",
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD also planned to add new aeration basins... projected operational date...increase the aeration basin from 6 MGD to 9 MGD",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": null,
       "Process": [
         "ChemicalAddition",
         "Mixing"
@@ -145,7 +143,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treatment through chemical addition/flash mixing",
+      "Sentence": "a portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
@@ -161,7 +159,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary filtration",
+      "Sentence": "a portion of the secondary-treated wastewater receives tertiary treatment through...tertiary filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -173,19 +171,24 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination disinfection",
+      "Sentence": "tertiary filtration, and chlorination disinfection",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -213,13 +216,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the Chiquita WRP is ... digested",
+      "Sentence": "Waste activated sludge from the Chiquita WRP is...digested",
       "trigger_process": [
         "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -244,9 +247,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Approximately 40 percent of dewatered biosolids from the Chiquita WRP are directed to the Prima Deshecha landfill",
@@ -257,19 +258,17 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "the remaining biosolids are trucked to contract composting operations",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
       ]
     },
     {

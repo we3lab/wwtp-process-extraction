@@ -1,7 +1,7 @@
 {
   "items": [
     {
-      "Equipment": "Bar Screens",
+      "Equipment": "Bar Screen",
       "Process": [
         "Screening"
       ],
@@ -14,7 +14,7 @@
       "Sentence": "Treatment components include influent flow monitoring, bar screens, barminutors, an aerated grit tank, primary settling basins, four secondary aeration basins, and secondary clarifiers."
     },
     {
-      "Equipment": "Barminutors",
+      "Equipment": "Barminutor",
       "Process": [
         "Comminution"
       ],
@@ -56,7 +56,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -84,14 +85,15 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine",
-        "Disinfectant-Dechlorination"
+        "Disinfectant-Sodium Bisulfite"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -103,8 +105,7 @@
         "Flotation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Thickening"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -132,10 +133,11 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Dewatering"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -171,22 +173,36 @@
       "Sentence": "The microfiltration system serves as a pretreatment to reverse osmosis; a portion of the microfiltration flow is not treated by reverse osmosis but instead blended with reverse osmosis permeate."
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "FlowEqualizationBasin",
       "Process": [
-        "Chlorination"
+        "Equalization"
       ],
       "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Tertiary Facilities include a flow equalization basin, four chlorine contact basins, a Lamella Thickener, and a reclamation wet well and conveyance pumps."
+    },
+    {
+      "Equipment": "ChlorineContactBasin",
+      "Process": [
+        "Chlorination",
         "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Finished water is then conveyed to the Tertiary Facility for chlorination."
+      "Sentence": "The Tertiary Facilities include a flow equalization basin, four chlorine contact basins, a Lamella Thickener, and a reclamation wet well and conveyance pumps."
     },
     {
-      "Equipment": "LamellaTank",
+      "Equipment": "LamellaTankThickener",
       "Process": [
         "Sedimentation"
       ],
@@ -199,53 +215,20 @@
       "Sentence": "The Tertiary Facilities include a flow equalization basin, four chlorine contact basins, a Lamella Thickener, and a reclamation wet well and conveyance pumps."
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Disinfection"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "Disinfectant-Dechlorination"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Reverse osmosis reject water is chlorinated and dechlorinated before it is sent to the effluent station for ocean discharge."
-    },
-    {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
       "Role": [
         "SolidsHandling",
-        "Thickening"
-      ],
-      "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The following projects are planned: Thickener replacement"
-    },
-    {
-      "Equipment": "ScrewPress",
-      "Process": [
         "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The following projects are planned: Dewatering Improvements – install new screw press and backup system"
+      "Sentence": "Dewatering Improvements – install new screw press and backup system"
     }
   ]
 }

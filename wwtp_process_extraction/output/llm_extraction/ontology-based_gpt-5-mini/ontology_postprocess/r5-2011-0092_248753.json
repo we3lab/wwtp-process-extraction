@@ -1,45 +1,34 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pond",
       "Process": [
+        "Sedimentation",
         "Aeration"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "two aerated ponds (Ponds 1 and 3)",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "one unaerated pond (Pond 2)",
+      "Sentence": "two aerated ponds (Ponds 1 and 3)...Wastewater is treated in Ponds 1 through 3.",
       "trigger_process": [
+        "Unspecified Clarification",
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "Pond",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Sedimentation"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "chlorination facilities",
+      "Sentence": "one unaerated pond (Pond 2)...Wastewater is treated in Ponds 1 through 3.",
       "trigger_process": [
-        "Chlorination"
+        "Unspecified Clarification",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -51,9 +40,100 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "The storage reservoir is used for storage of treated and disinfected effluent.",
       "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Hypochlorite is injected to the Pond 3 effluent at the output of the storage reservoir transfer pumps.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger may move the disinfection system to the Pond 3 outlet to allow disinfected effluent to bypass the storage reservoir.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Construction of a headworks facility, including a mechanical screen and solids compactor...",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Replacement of the existing transfer pump with a new pump and addition of a standby pump.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Installation of a concrete sludge drying bed and portable pump for future sludge removal.",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "LandApplication"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater is applied to approximately 85 acres of the 125-acre site.",
+      "trigger_process": [
+        "Land Application"
+      ]
     },
     {
       "Equipment": null,
@@ -63,16 +143,25 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Sludge is hauled off site to a permitted landfill.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Installation of a pipe bypass of Pond 1 to Pond 2...to facilitate shunting of water during potential process upsets.",
+      "trigger_process": []
     }
   ]
 }

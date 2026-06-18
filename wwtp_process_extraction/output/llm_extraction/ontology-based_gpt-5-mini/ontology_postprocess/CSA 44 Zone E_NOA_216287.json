@@ -9,43 +9,58 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Wastewater is collected in a lift station, pumped to an equalization tank,",
+      "Sentence": "wastewater is collected in a lift station, pumped to an equalization tank",
       "trigger_process": []
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "pumped to an equalization tank",
+      "Sentence": "pumped to an equalization tank at a reduced/equalized rate to minimize hydraulic and organic loading surges",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Reactor",
       "Process": [
-        "Denitrification",
-        "Mixing"
+        "Denitrification"
       ],
       "Role": [
-        "Anoxic"
+        "Anoxic",
+        "Secondary",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "pumped to an anoxic tank at a reduced/equalized rate to minimize hydraulic and organic loading surges through the system.",
+      "Sentence": "pumped to an anoxic tank ... to achieve denitrification",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Mixed liquor recycle (MLR) pumping brings high-nitrate mixed solution from the aeration tank to the anoxic tank; Return activated sludge (RAS) is recycled from the clarifier to the anoxic tank",
+      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -57,51 +72,19 @@
       "Role": [
         "Aerobic",
         "Secondary",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Mixed liquor recycle (MLR) pumping brings high-nitrate mixed solution from the aeration tank to the anoxic tank to achieve denitrification.",
+      "Sentence": "The WWTF is an activated sludge treatment system...from the aeration tank",
       "trigger_process": [
-        "Nitrification"
+        "Nitrification",
+        "Unspecified Nutrient Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation",
-        "Denitrification"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Mixed liquor recycle (MLR) pumping brings high-nitrate mixed solution from the aeration tank to the anoxic tank to achieve denitrification.",
-      "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Return activated sludge (RAS) is recycled from the clarifier to the anoxic tank for maintaining healthy biomass in the biological reactors.",
-      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -109,12 +92,14 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "Return activated sludge (RAS) is recycled from the clarifier to the anoxic tank",
       "trigger_process": [
         "Secondary Clarification"
@@ -134,8 +119,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Periodically, the sludge is sent to the sludge digester as waste activated sludge (WAS).",
+      "Sentence": "Periodically, the sludge is sent to the sludge digester as waste activated sludge (WAS)",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -146,15 +130,15 @@
         "MediaFiltration"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Dual media filters are used to remove excess suspended matter from the secondary effluent.",
+      "Sentence": "Dual media filters are used to remove excess suspended matter from the secondary effluent",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -166,15 +150,15 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The effluent is then disinfected by chlorine bleach in the chlorine effluent tank, prior to discharging to a disposal field.",
+      "Sentence": "The effluent is then disinfected by chlorine bleach in the chlorine effluent tank",
       "trigger_process": [
         "Chlorination"
       ]

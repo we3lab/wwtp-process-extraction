@@ -85,9 +85,7 @@
       "Process": [
         "Filtration"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -99,12 +97,10 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Disinfection",
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -120,9 +116,7 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -132,16 +126,15 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "attenuated with lined emergency storage basins located onsite",
+      "Sentence": "attenuated with lined emergency storage basins located onsite and returned to the treatment system when flows decrease",
       "trigger_process": [
         "Equalization"
       ]
@@ -166,9 +159,8 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
         "Drying"
       ],
       "Role": [
@@ -195,19 +187,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried biosolids are hauled to a landfill.",
+      "Sentence": "Dried biosolids are hauled to a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "replacing the chlorine disinfection with UV disinfection",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -216,23 +223,6 @@
       "trigger_process": [
         "Denitrification",
         "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "replacing the chlorine disinfection with UV disinfection",
-      "trigger_process": [
-        "UV Disinfection"
       ]
     }
   ]

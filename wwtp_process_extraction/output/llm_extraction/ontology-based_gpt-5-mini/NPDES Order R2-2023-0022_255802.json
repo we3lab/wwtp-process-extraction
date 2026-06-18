@@ -11,8 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "bar screening"
+      "Sentence": "addition of a headworks with bar screening"
     },
     {
       "Equipment": "GritChamber",
@@ -25,7 +24,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "grit removal"
     },
     {
@@ -39,7 +37,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "primary clarification"
     },
     {
@@ -53,7 +50,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.7,
       "Sentence": "biofiltration using fixed film reactors"
     },
     {
@@ -67,13 +63,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -81,14 +76,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "filtration using rotating disk filters"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -98,57 +93,99 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "chlorine disinfection"
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "sodium bisulfite dechlorination"
+      "Sentence": "chlorine disinfection, and sodium bisulfite dechlorination"
     },
     {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "flow equalization storage"
+      "Sentence": "construction of 600,000 gallons of flow equalization storage"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion",
+        "Mixing",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The primary digester is heated, mixed, and dosed with ferric chloride"
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion",
+        "Mixing"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "new pumps"
+      "Sentence": "secondary digester where it is mixed but not heated"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from the secondary digester passes through a screw press, and the dewatered solids are trucked for offsite disposal"
     },
     {
       "Equipment": null,
       "Process": [
-        "Mixing"
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the dewatered solids are trucked for offsite disposal"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "bypassed around biological treatment when necessary and blended with biologically-treated wastewater prior to disinfection"
+      "Sentence": "Screw press filtrate is returned to the headworks"
+    },
+    {
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Replacement of flow diversion gates into the headworks"
     },
     {
       "Equipment": "SedimentationTank",
@@ -161,18 +198,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "Rehabilitation of the original primary clarifier"
-    },
-    {
-      "Equipment": "SluiceGate",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Replacement of flow diversion gates into the headworks"
     }
   ]
 }

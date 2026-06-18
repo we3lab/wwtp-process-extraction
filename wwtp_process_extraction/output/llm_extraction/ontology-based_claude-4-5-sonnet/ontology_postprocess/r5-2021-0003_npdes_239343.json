@@ -6,7 +6,6 @@
         "Screening"
       ],
       "Role": [
-        "Primary",
         "Pretreatment"
       ],
       "Substance": null,
@@ -23,7 +22,6 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary",
         "Pretreatment"
       ],
       "Substance": null,
@@ -123,22 +121,6 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Storage"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
         "LandApplication"
@@ -155,7 +137,23 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Pond",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Reactor",
       "Process": [
         "Mixing"
       ],
@@ -217,6 +215,63 @@
       ]
     },
     {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After digestion, the treated sludge is dewatered by centrifuge.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
         "Landfill"
@@ -225,7 +280,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings are hauled offsite to a landfill for disposal.",
+      "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal.",
       "trigger_process": [
         "Biosolids Landfill"
       ]

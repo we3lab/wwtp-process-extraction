@@ -11,22 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The existing WWTF consists of a mechanical bar screen..."
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Score": 1,
-      "Sentence": "Solid waste from the bar screen is hauled off site to a permitted landfill."
+      "Sentence": "mechanical bar screen"
     },
     {
       "Equipment": "Pond",
@@ -34,25 +19,56 @@
         "Aeration"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the influent flows through the mechanical bar screen and is treated in aerated Ponds 1 through 3."
+      "Sentence": "treated in aerated Ponds 1 through 3"
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Aeration"
+      ],
       "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond 1 0.41 6.5 0.70"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond 2 0.20 7.0 0.50"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Pond 3 is also used as a storage pond."
+      "Sentence": "Pond 3 is also used as a storage pond"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -60,27 +76,29 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The effluent from Pond 3 is pumped to a contact tank for disinfection by sodium hypochlorite."
+      "Sentence": "contact tank for disinfection by sodium hypochlorite"
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "RapidSandFiltration",
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The disinfected wastewater flows through sand filters and then is applied to the LAAs."
+      "Sentence": "disinfected wastewater flows through sand filters"
     },
     {
       "Equipment": null,
@@ -88,39 +106,27 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The LAAs consist of a 4.4-acre spray field and a 1.5-acre subsurface drip irrigation field."
+      "Sentence": "then is applied to the LAAs"
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The subsurface drip irrigation system was installed in 2008 to increase disposal capacity during the wet season."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
+        "Landfill"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "the tailwater is returned to Pond 3."
+      "Location": "off-site",
+      "Sentence": "Solid waste from the bar screen is hauled off site to a permitted landfill"
     },
     {
       "Equipment": "Pump",
@@ -133,11 +139,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The irrigation pumps are automatically controlled to coincide with the irrigation schedule..."
+      "Sentence": "The effluent from Pond 3 is pumped to a contact tank for disinfection by sodium hypochlorite"
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The irrigation pumps are automatically controlled to coincide with the irrigation schedule"
+    },
+    {
+      "Equipment": null,
       "Process": [
         "BiosolidsDisposal"
       ],
@@ -149,8 +167,18 @@
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "approximately 300 cubic yards of biosolids were removed from Pond 2 in December 2002."
+      "Sentence": "approximately 300 cubic yards of biosolids were removed from Pond 2 in December 2002"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the tailwater is returned to Pond 3"
     }
   ]
 }

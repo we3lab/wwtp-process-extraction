@@ -11,7 +11,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment processes of the Civic Center Facility include coarse and fine mechanical screening and grit removal for preliminary treatment of the influent wastewater.",
+      "Sentence": "Coarse screen used in the wastewater treatment plant removes solids",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Fine screen with 2 millimeter openings removes inert solids before entering the bioreactor",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,54 +40,48 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment processes of the Civic Center Facility include coarse and fine mechanical screening and grit removal for preliminary treatment of the influent wastewater.",
+      "Sentence": "Grit removal is used to remove as much sand and silt as possible",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Detention"
-      ],
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The effluent after the preliminary treatment flows to an equalization basin.",
+      "Sentence": "The effluent after the preliminary treatment flows to an equalization basin",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
+      "Equipment": "Reactor",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Filtration"
+        "Denitrification"
       ],
       "Role": [
-        "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic",
-        "SolidsHandling"
+        "NitrogenRemoval"
       ],
-      "Substance": null,
-      "Implementation": "future",
+      "Substance": [
+        "Constituent-Bacteria"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The effluent of an equalization basin will flow to a Membrane Bioreactor (MBR) consisting of biological reactors and membrane-based solids removal.",
+      "Sentence": "The bacteria species Nitrosomonas and Nitrobacter in the bioreactor provide nitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
-        "Membrane Bioreactor",
         "Nitrification"
       ]
     },
@@ -81,22 +91,19 @@
         "ActivatedSludge",
         "Nitrification",
         "Denitrification",
-        "Filtration"
+        "MembraneProcess"
       ],
       "Role": [
-        "Secondary",
-        "NutrientRemoval",
         "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic",
         "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The MBR will provide carbonaceous oxidation, nitrificationidenitrification and solids removal to meet the limits of the WDRsWRRs.",
+      "Sentence": "The effluent of an equalization basin will flow to a Membrane Bioreactor (MBR) consisting of biological reactors and membrane-based solids removal",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Membrane Bioreactor",
         "Nitrification"
@@ -108,13 +115,12 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection of the treated effluent will be achieved by Ultraviolet (UV) disinfection.",
+      "Sentence": "Disinfection of the treated effluent will be achieved by Ultraviolet (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -122,19 +128,17 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection will be followed by the addition of chlorine to maintain a chlorine residual in the distribution system to minimize microorganisms re-growth and bio-fouling in the pipelines and injection welts.",
+      "Sentence": "Chlorination with sodium hypochlorite is used to minimize re-growth and bio-fouling of bacteria, pathogens, and viruses in the pipelines and injection wells",
       "trigger_process": [
         "Chlorination"
       ]
@@ -142,13 +146,11 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Three (3) percolation ponds (Figure 2) in the Winter Canyon area are to be constructed at the site of the Civic Center Facility as a back-up method for disposal of recycled water into the Winter Canyon groundwater basin.",
+      "Sentence": "Three (3) percolation ponds ... are to be constructed at the site of the Civic Center Facility as a back-up method for disposal of recycled water",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

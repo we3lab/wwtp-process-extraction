@@ -3,24 +3,28 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Aerobic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The expanded WWTF consists of headworks, two oxidation ditches, one anoxic basin, four secondary clarifiers, three return sludge holding tanks, and three centrifuges.",
+      "Sentence": "two oxidation ditches",
       "trigger_process": [
-        "Oxidation Ditch"
+        "Nitrification",
+        "Oxidation Ditch",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "MixingBasin",
       "Process": [
+        "Mixing",
         "Denitrification"
       ],
       "Role": [
@@ -31,8 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "The expanded WWTF consists of headworks, two oxidation ditches, one anoxic basin, four secondary clarifiers, three return sludge holding tanks, and three centrifuges.",
+      "Sentence": "one anoxic basin",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
@@ -49,8 +52,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The expanded WWTF consists of headworks, two oxidation ditches, one anoxic basin, four secondary clarifiers, three return sludge holding tanks, and three centrifuges.",
+      "Sentence": "four secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -64,29 +66,32 @@
         "Storage",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
-      "Sentence": "The expanded WWTF consists of headworks, two oxidation ditches, one anoxic basin, four secondary clarifiers, three return sludge holding tanks, and three centrifuges.",
+      "Sentence": "three return sludge holding tanks",
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "The expanded WWTF consists of headworks, two oxidation ditches, one anoxic basin, four secondary clarifiers, three return sludge holding tanks, and three centrifuges.",
+      "Sentence": "three centrifuges",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -99,10 +104,86 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "Undisinfected secondary effluent is discharged to six percolation ponds adjacent to the Kings River (approximately 36 acres of percolation ponds).",
+      "Sentence": "Undisinfected secondary effluent is discharged to six percolation ponds",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Historically, sludge handling practices included discharging sludge to unlined sludge drying beds",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The WWTF does have approximately 1.5 acres of asphalt-lined sludge drying beds. The asphalt-lined sludge drying beds are only used in case of emergency.",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sludge generated at the WWTF will continue to be hauled off-site and discharged to McCarthy Family Farms Inc., near Corcoran, California, for composting",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Metals"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Pretreatment consists of cerium settling through small tubs and silver recovery unit utilizing ultrafiltration.",
+      "trigger_process": [
+        "Ultrafiltration"
       ]
     }
   ]

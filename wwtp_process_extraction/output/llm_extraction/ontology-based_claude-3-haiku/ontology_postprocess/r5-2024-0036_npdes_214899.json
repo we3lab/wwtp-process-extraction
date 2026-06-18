@@ -3,36 +3,185 @@
     {
       "Equipment": "Screen",
       "Process": [
-        "Screening",
-        "Sedimentation",
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification",
-        "Filtration",
-        "Disinfection",
-        "UVDisinfection"
+        "Screening"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary treatment consists of 2-millimeter (mm) drum screens with a bypass channel/bar with screens and a vortex grit removal mechanism.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
         "Secondary",
-        "Tertiary",
+        "Aerobic",
+        "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "MembraneAeratedBiofilmReaactor",
+      "Process": [
+        "MembraneProcess",
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment.",
+      "trigger_process": [
+        "Membrane Aerated Biofilm Reactor"
+      ]
+    },
+    {
+      "Equipment": "UVDisinfectionUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The tertiary-treated effluent is disinfected using an ultraviolet light (UV) disinfection system.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Equalization",
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Equalization",
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II, as described in section II.E of this Fact Sheet.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "InterchangeTank",
+      "Process": [
+        "Thickening",
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
+      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days, under specific environmental conditions, to break down the solids.",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification",
-        "Primary Clarification",
-        "Screening/Microstrainer",
-        "Secondary Clarification",
-        "Secondary Filtration",
-        "UV Disinfection"
+        "Thickening",
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following the interchange tanks, the reduced solids are purged into the digester, which holds the solids for 10 to 15 days.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
       ]
     }
   ]

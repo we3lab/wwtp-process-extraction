@@ -11,10 +11,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "bar screening",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of bar screening...",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... grit removal...",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
@@ -29,27 +44,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "peroxide addition",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... peroxide addition...",
       "trigger_process": [
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "grit removal",
-      "trigger_process": [
-        "Grit Removal"
+        "Oxidation"
       ]
     },
     {
@@ -63,8 +60,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "primary sedimentation",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... primary sedimentation...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -75,14 +71,12 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "biological treatment using activated sludge",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... biological treatment using activated sludge...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -98,8 +92,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "secondary clarification",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... secondary clarification.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -118,8 +111,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disinfection (chlorination) capabilities limited to the capacity necessary to disinfect secondary-treated effluent currently reused onsite at the EWPCF",
+      "Sentence": "The EWPCF also has disinfection (chlorination) capabilities limited to the capacity necessary to disinfect secondary-treated effluent currently reused onsite at the EWPCF.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -137,8 +129,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "dissolved air flotation (DAF) thickening",
+      "Sentence": "Solids treatment unit operations and processes consist of dissolved air flotation (DAF) thickening...",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -158,17 +149,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "anaerobic digestion",
+      "Sentence": "Solids treatment unit operations and processes consist of ... anaerobic digestion...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -178,15 +167,14 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "mechanical dewatering (centrifuges)",
+      "Sentence": "Solids treatment unit operations and processes consist of ... mechanical dewatering (centrifuges)...",
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -198,11 +186,57 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "heat drying",
+      "Sentence": "Solids treatment unit operations and processes consist of ... heat drying.",
       "trigger_process": [
-        "Drying",
-        "Mechanical Dewatering"
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "RapidSandFilter",
+      "Process": [
+        "RapidSandFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary-treated effluent is used onsite at the EWPCF for the sand filter influent...",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to landfills in San Diego County, California...",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to land application sites in Yuma County, Arizona...",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

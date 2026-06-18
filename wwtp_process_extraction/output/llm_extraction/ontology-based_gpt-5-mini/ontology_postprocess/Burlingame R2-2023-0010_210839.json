@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "screening (two bar screens)",
       "trigger_process": [
         "Screening/Microstrainer"
@@ -28,7 +27,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "grit removal (vortex-type grit remover)",
       "trigger_process": [
         "Grit Removal"
@@ -45,7 +43,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "primary sedimentation (two primary clarifiers)",
       "trigger_process": [
         "Primary Clarification"
@@ -54,8 +51,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -64,7 +61,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "biological treatment (four aeration basins)",
       "trigger_process": [
         "Unspecified AS"
@@ -81,7 +77,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification (four secondary clarifiers)",
       "trigger_process": [
         "Secondary Clarification"
@@ -102,7 +97,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "chlorine disinfection using sodium hypochlorite",
       "trigger_process": [
         "Chlorination"
@@ -119,65 +113,164 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
-      "Sentence": "transport[s] treated wastewater to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination using sodium bisulfite",
+      "Sentence": "transports treated wastewater to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination",
       "trigger_process": [
         "Dechlorination"
       ]
     },
     {
       "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
         "Storage",
-        "Equalization"
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
-      "Sentence": "an offline primary clarifier (0.4 million gallons [MG])",
+      "Sentence": "offline primary clarifier (0.4 million gallons [MG])",
       "trigger_process": [
-        "Equalization"
+        "Unspecified Clarification"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
         "Storage",
-        "Retention",
-        "Equalization"
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.85,
       "Sentence": "a stormwater retention basin (1.6 MG)",
       "trigger_process": [
-        "Equalization"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
+      "Process": null,
       "Role": [
         "Storage",
-        "Equalization"
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 0.95,
       "Sentence": "an offline aeration basin (0.3 MG)",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "thickens primary sludge with a gravity thickener",
       "trigger_process": [
-        "Equalization"
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "waste activated sludge with a gravity belt thickener",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All thickened sludge is then treated by anaerobic digestion",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered by a belt filter press",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered by ... centrifuge",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting",
+        "LandApplication",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered sludge is trucked to either composting sites, land application sites, or landfills for disposal",
+      "trigger_process": [
+        "Biosolids Landfill",
+        "Composting",
+        "Land Application"
       ]
     }
   ]

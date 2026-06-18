@@ -11,7 +11,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "comminutors at the influent pump station"
     },
     {
@@ -25,7 +24,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "fine screening"
     },
     {
@@ -39,7 +37,6 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "aerated grit removal"
     },
     {
@@ -53,38 +50,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "primary clarification"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "activated sludge biological treatment"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Nitrification"
-      ],
-      "Role": [
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 0.7,
-      "Sentence": "Installation of Hach combination ammonia and nitrate sensors to simultaneously track ammonia and nitrate concentrations and provide additional data on nitrification."
     },
     {
       "Equipment": "SedimentationTank",
@@ -97,14 +76,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "secondary clarification"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -114,27 +93,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
-      "Sentence": "disinfection with sodium hypochlorite"
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Score": 1,
-      "Sentence": "dechlorination using sodium bisulfite"
+      "Sentence": "disinfection with sodium hypochlorite, and dechlorination using sodium bisulfite"
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -144,7 +108,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "thickens primary and secondary sludge with a rotary drum thickener"
     },
     {
@@ -154,18 +117,18 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "treats the combined sludge with anaerobic digestion"
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -178,7 +141,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "dewaters the combined sludge with a centrifuge"
     },
     {
@@ -194,7 +156,6 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Score": 1,
       "Sentence": "and then drying beds"
     },
     {
@@ -210,8 +171,22 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Score": 1,
       "Sentence": "Biosolids are currently hauled to the Potrero Hills Landfill in Suisun City for use as alternative daily cover"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "The Discharger is considering composting ... of biosolids for future disposal practices"
     },
     {
       "Equipment": null,
@@ -221,11 +196,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
-      "Location": null,
-      "Score": 0.9,
-      "Sentence": "The Discharger is considering composting and land application of biosolids for future disposal practices"
+      "Location": "off-site",
+      "Sentence": "considering ... land application of biosolids for future disposal practices"
     },
     {
       "Equipment": "DewateringUnit",
@@ -238,11 +214,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "Replacement of the current centrifuge with a screw press"
     },
     {
-      "Equipment": "Evaporator",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -252,7 +227,6 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
       "Sentence": "a thermal dryer is currently in design and is expected to be installed along with the screw press"
     },
     {
@@ -260,12 +234,14 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Score": 0.9,
-      "Sentence": "Aeration Basin: Replacement of aging diffusers with diffusers that provide an optimum combination of diffuser efficiency, submergence, basin coverage, and capital cost"
+      "Sentence": "Aeration Basin: Replacement of aging diffusers ... Installation of Hach combination ammonia and nitrate sensors to ... provide additional data on nitrification"
     }
   ]
 }

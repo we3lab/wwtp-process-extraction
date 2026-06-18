@@ -84,8 +84,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -95,18 +94,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection... then dechlorinated",
+      "Sentence": "chlorine disinfection",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -117,17 +114,32 @@
       ]
     },
     {
-      "Equipment": "Wetland",
-      "Process": null,
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Dechlorination"
+      ],
       "Role": [
-        "Storage",
-        "Equalization",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "excess treated wastewater... directed to the 13-acre freshwater holding marsh (Overflow Marsh) and pumped back",
+      "Sentence": "then dechlorinated and discharged at Discharge Point 001",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "excess treated wastewater ... directed to the 13-acre freshwater holding marsh (Overflow Marsh)",
       "trigger_process": [
         "Equalization",
         "Wetland"
@@ -153,8 +165,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -168,8 +181,7 @@
       "Sentence": "may be processed on site using a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -196,13 +208,12 @@
         "Mixing"
       ],
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "blending primary treated effluent with secondary treated effluent in the storage pond. This practice is prohibited",
+      "Sentence": "blending primary treated effluent with secondary treated effluent in the storage pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

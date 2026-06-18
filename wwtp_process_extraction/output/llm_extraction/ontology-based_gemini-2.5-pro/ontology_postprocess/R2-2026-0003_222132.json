@@ -43,14 +43,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... primary clarification...",
+      "Sentence": "The wastewater treatment process consists of... grit removal, primary clarification, high purity oxygen activated sludge...",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Storage",
         "Equalization"
@@ -77,7 +79,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... high purity oxygen activated sludge...",
+      "Sentence": "The wastewater treatment process consists of... primary clarification, high purity oxygen activated sludge, secondary clarification...",
       "trigger_process": [
         "Pure Oxygen"
       ]
@@ -93,31 +95,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... secondary clarification...",
+      "Sentence": "...high purity oxygen activated sludge, secondary clarification, disinfection, and dechlorination.",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Disinfection",
-        "Chlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of... disinfection, and dechlorination.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
       "Equipment": "DisinfectionUnit",
       "Process": [
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
@@ -126,7 +112,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The \u201cblended\u201d wastewater is then dechlorinated prior to being discharged to Central San Francisco Bay through a deepwater outfall.",
+      "Sentence": "...secondary clarification, disinfection, and dechlorination.",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -134,6 +120,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
+        "Thickening",
         "Filtration",
         "Sedimentation"
       ],
@@ -170,10 +157,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -186,8 +173,7 @@
       "Sentence": "The digested sludge is then dewatered in one of five centrifuges.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -201,7 +187,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The Discharger contracts with Synagro-WWT, Inc. (Synagro) for hauling about 90 percent of its biosolids that are land applied in dry weather or composted.",
+      "Sentence": "The resulting material, referred to as biosolids, is hauled offsite by a contractor for beneficial reuse as soil amendment.",
       "trigger_process": [
         "Land Application"
       ]
@@ -255,30 +241,15 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans, at a minimum, to rehabilitate the secondary clarifiers, the oxygen production plant, and grit dewatering over the next five years.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "NutrientRemoval",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",

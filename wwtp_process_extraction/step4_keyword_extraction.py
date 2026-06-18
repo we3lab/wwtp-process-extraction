@@ -10,6 +10,7 @@ from helpers.utils import (
     PRESENT_STATUSES,
     build_secondary_category_lookup,
     apply_secondary_category_backfill,
+    add_county_and_sort,
 )
 
 
@@ -147,7 +148,9 @@ def main():
         key_cols=["Place ID"],
         meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"],
     )
+    collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(kw_by_fac_path, index=False)
+    add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(out_file, index=False)
     print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
 
 

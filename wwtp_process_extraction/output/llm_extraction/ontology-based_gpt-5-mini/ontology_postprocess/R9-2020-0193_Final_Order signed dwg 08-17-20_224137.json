@@ -54,7 +54,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -117,34 +118,21 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection",
+      "Sentence": "chlorine disinfection. Dechlorination of chlorinated effluent is accomplished with sodium bisulfite",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dechlorination of chlorinated effluent is accomplished with sodium bisulfite",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -159,7 +147,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled to a local landfill for disposal",
+      "Sentence": "screenings from the headworks and solids from grit removal ... hauled to a local landfill for disposal",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -171,7 +159,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -184,8 +173,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -199,18 +189,16 @@
       "Sentence": "then dewatered by a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Evaporator",
+      "Equipment": null,
       "Process": [
-        "Evaporation"
+        "Drying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -219,11 +207,11 @@
       "Location": "on-site",
       "Sentence": "Dewatered sludge is fed to a thermal dryer to meet Class A biosolids requirements",
       "trigger_process": [
-        "Heat Recovery"
+        "Drying"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],

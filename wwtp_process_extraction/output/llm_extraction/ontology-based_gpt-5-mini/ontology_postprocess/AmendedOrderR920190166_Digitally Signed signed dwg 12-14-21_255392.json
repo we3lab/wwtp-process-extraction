@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks of the SLRWRF includes mechanical bar screens",
+      "Sentence": "The headworks of the SLRWRF includes mechanical bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks of the SLRWRF includes ... aerated grit removal",
+      "Sentence": "The headworks of the SLRWRF includes ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -101,7 +101,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -122,7 +122,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary effluent equalization pond (new emergency pond)",
+      "Sentence": "the Discharger can also temporarily send the disinfected secondary-treated wastewater to the secondary effluent equalization pond (new emergency pond)",
       "trigger_process": [
         "Equalization"
       ]
@@ -130,7 +130,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -140,7 +140,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "features gravity belt thickeners for thickening secondary sludge",
+      "Sentence": "The SLRWRF features gravity belt thickeners for thickening secondary sludge",
       "trigger_process": [
         "Thickening"
       ]
@@ -152,7 +152,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -165,9 +166,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -180,24 +181,7 @@
       "Sentence": "dewatering of digested sludge using centrifuges",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "screenings ... and solids from the grit removal are collected onsite and trucked to a local landfill",
-      "trigger_process": [
-        "Biosolids Landfill"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -211,9 +195,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "SLRWRF Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
+      "Sentence": "Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings from the headworks and solids from the grit removal are collected onsite and trucked to a local landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -227,7 +229,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "AWPF treatment will include membrane filtration (MF)",
+      "Sentence": "The AWPF treatment will include membrane filtration (MF)",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -243,7 +245,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "AWPF treatment will include ... reverse osmosis (RO)",
+      "Sentence": "The AWPF treatment will include ... reverse osmosis (RO)",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -251,8 +253,7 @@
     {
       "Equipment": "UVH2O2Reactor",
       "Process": [
-        "AdvancedOxidation",
-        "UVDisinfection"
+        "AdvancedOxidation"
       ],
       "Role": [
         "Tertiary"
@@ -260,9 +261,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "AWPF treatment will include ultraviolet advanced oxidization (UV/AOP)",
+      "Sentence": "The AWPF treatment will include ultraviolet advanced oxidization (UV/AOP)",
       "trigger_process": [
-        "UV Disinfection",
+        "Oxidation",
         "UV-AOP"
       ]
     },
@@ -280,7 +281,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "AWPF treatment will include ... free chlorine disinfection",
+      "Sentence": "The AWPF treatment will include ... free chlorine disinfection",
       "trigger_process": [
         "Chlorination"
       ]
@@ -296,25 +297,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "addition of two primary clarifiers",
+      "Sentence": "The upgrades include the addition of two primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "addition of two aeration basins",
-      "trigger_process": [
-        "Unspecified AS"
       ]
     },
     {
@@ -328,7 +313,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "addition of ... two secondary clarifiers",
+      "Sentence": "The upgrades include the addition of ... two secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -336,22 +321,37 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "Secondary",
         "NitrogenRemoval",
-        "NutrientRemoval"
+        "Aerobic",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "upgrading Plant 2\u2019s secondary process from non-nitrifying/partial nitrifying to full nitrification-denitrification",
+      "Sentence": "The upgrades include the addition of ... two aeration basins; the Discharger is also upgrading Plant 2's secondary process ... to full nitrification-denitrification",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and pumps the disinfected secondary-treated wastewater to the OOO",
+      "trigger_process": []
     }
   ]
 }

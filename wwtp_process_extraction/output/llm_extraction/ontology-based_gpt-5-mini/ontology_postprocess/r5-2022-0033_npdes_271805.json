@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "The Facility consists of ... grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -55,12 +55,13 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Aeration Basins No. 3-6: 11.4 MGD (ADAM)",
+      "Sentence": "activated sludge treatment ... Aeration Basins No. 3-6",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -76,7 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary Clarifiers No. 3-5: 9.1 MGD (ADAM)",
+      "Sentence": "secondary clarification ... Secondary Clarifiers No. 3-5",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -88,11 +89,13 @@
         "Dechlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination/dechlorination",
+      "Sentence": "chlorination/dechlorination ... Chlorine Contact Basins No. 3-4",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -105,7 +108,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -118,8 +122,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -130,11 +135,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered using a centrifuge",
+      "Sentence": "dewatered using a centrifuge and are hauled directly from the centrifuge building",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -150,9 +154,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Drying beds are still used as necessary during facility maintenance.",
+      "Sentence": "Drying beds are still used as necessary during facility maintenance",
       "trigger_process": [
         "Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization",
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The northeast pond, PND-004 can be utilized as an influent diversion, and emergency storage pond",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -164,35 +184,42 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge digester supernatant (centrate) is routed back to the secondary treatment works.",
+      "Sentence": "Sludge digester supernatant (centrate) is routed back to the secondary treatment works",
       "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The northeast pond, PND-004 can be utilized as an influent diversion, and emergency storage pond.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
     },
     {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled directly from the centrifuge building... for land application in unincorporated Sacramento County, California (Silva Ranch).",
+      "Sentence": "hauled directly from the centrifuge building ... for land application in unincorporated Sacramento County, California (Silva Ranch)",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ActivatedSludge",
+        "Disinfection"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Plant 1 has not been operated regularly since the commissioning of Plant 2",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     }
   ]

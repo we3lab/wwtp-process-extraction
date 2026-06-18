@@ -67,12 +67,10 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -105,7 +103,9 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -120,7 +120,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -142,7 +142,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -155,9 +156,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -170,8 +172,7 @@
       "Sentence": "dewaters the combined sludge with a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -200,10 +201,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are currently hauled to the Potrero Hills Landfill in Suisun City",
+      "Sentence": "Biosolids are currently hauled to the Potrero Hills Landfill in Suisun City for use as alternative daily cover",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -216,10 +219,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
-      "Location": null,
-      "Sentence": "The Discharger is considering composting ... for future disposal practices",
+      "Location": "off-site",
+      "Sentence": "The Discharger is considering composting ... of biosolids for future disposal practices",
       "trigger_process": [
         "Composting"
       ]
@@ -232,42 +237,15 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
-      "Location": null,
-      "Sentence": "The Discharger is considering ... land application of biosolids for future disposal practices",
+      "Location": "off-site",
+      "Sentence": "considering ... land application of biosolids for future disposal practices",
       "trigger_process": [
         "Land Application"
       ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Nitrification"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Installation of Hach combination ammonia and nitrate sensors ... provide additional data on nitrification",
-      "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Conversion from manual pump operation of waste activated sludge (WAS) to the dewatering system to a continuous / automated wasting system process",
-      "trigger_process": []
     },
     {
       "Equipment": "DewateringUnit",
@@ -286,7 +264,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -299,6 +277,23 @@
       "Sentence": "a thermal dryer is currently in design and is expected to be installed along with the screw press",
       "trigger_process": [
         "Drying"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Aeration Basin: Replacement of aging diffusers ... Installation of Hach combination ammonia and nitrate sensors to ... provide additional data on nitrification",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     }
   ]

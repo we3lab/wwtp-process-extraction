@@ -47,29 +47,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarification, biological treatment by activated sludge...",
+      "Sentence": "...primary clarification, biological treatment by activated sludge, secondary clarification...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Retention",
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Hauled septic and high influent flows that exceed treatment design capacity are attenuated with lined emergency storage basins located onsite and returned to the treatment system when flows decrease.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -102,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by activated sludge, secondary clarification, disinfection, filtration, and dechlorination.",
+      "Sentence": "...biological treatment by activated sludge, secondary clarification, disinfection, filtration...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -151,6 +133,23 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Hauled septic and high influent flows that exceed treatment design capacity are attenuated with lined emergency storage basins located onsite and returned to the treatment system when flows decrease.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion"
@@ -172,9 +171,8 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
-        "Dewatering",
         "Drying"
       ],
       "Role": [
@@ -185,11 +183,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins. Dried biosolids are hauled to a landfill.",
+      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying"
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -211,44 +211,6 @@
       ]
     },
     {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Two existing anaerobic digesters, no longer in use, will be demolished.",
-      "Source": "web_search",
-      "Website": "https://www.scorca.gov/files/a433409c8/2022-0708++SC-OR+WWTP+Draft++IS-MND_F+.pdf",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "upgrades to the existing grit removal system, retrofitting the existing aeration basins to provide nitrification and denitrification...",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -257,8 +219,7 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -268,7 +229,6 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -276,8 +236,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"

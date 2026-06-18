@@ -5,9 +5,7 @@
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -21,9 +19,7 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -41,7 +37,9 @@
         "Anoxic",
         "Equalization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-OrganicCarbon"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "an anoxic reactor for flow/load equalization and a carbon source for denitrification",
@@ -58,7 +56,9 @@
         "Nitrification",
         "Denitrification"
       ],
-      "Role": null,
+      "Role": [
+        "NitrogenRemoval"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -122,7 +122,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two lined, aerated storage reservoirs",
+      "Sentence": "two lined, aerated storage reservoirs ... provide automatic short-term emergency storage",
       "trigger_process": []
     },
     {
@@ -143,15 +143,15 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "Aerobic",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling at the Facility includes two stage aerobic digesters",
+      "Sentence": "two stage aerobic digesters",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -159,7 +159,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -175,8 +175,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -187,11 +188,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and a centrifuge",
+      "Sentence": "a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -199,9 +199,7 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -213,15 +211,11 @@
       "Process": [
         "BiosolidsDisposal"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "removed by a hauler (currently Synagro) for disposal at a licensed biosolids facility",
+      "Sentence": "Solids are collected in a truck and removed by a hauler ... for disposal at a licensed biosolids facility",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -247,7 +241,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new ultra-fine screening and grit removal headworks",
+      "Sentence": "new ultra-fine screening ... headworks",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -261,7 +255,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new ultra-fine screening and grit removal headworks",
+      "Sentence": "new ... grit removal headworks",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -269,14 +263,13 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "MembraneProcess"
+        "Biofiltration"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "replacing the SBRs with MBRs",
+      "Sentence": "replacing the SBRs with Membrane Bio Reactors (MBR)",
       "trigger_process": [
         "Membrane Bioreactor"
       ]

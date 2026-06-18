@@ -6,8 +6,7 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment",
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -20,11 +19,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
-        "Pretreatment",
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -56,8 +55,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -78,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "followed by secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -138,13 +136,30 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled to a local landfill for disposal",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -157,8 +172,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -169,11 +185,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered by a centrifuge",
+      "Sentence": "then dewatered by a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -185,9 +200,7 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Dewatered sludge is fed to a thermal dryer to meet Class A biosolids requirements",
@@ -196,28 +209,65 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
         "Drying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered sludge (Class B biosolids) is either sent to one of twelve drying beds for a minimum of three months",
+      "Sentence": "sent to one of twelve drying beds for a minimum of three months",
       "trigger_process": [
-        "Drying"
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Class A biosolids are utilized as fertilizer by local farmers",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger contracts with Denali Solid Solutions for transporting Class B biosolids for land application in Yuma, Arizona",
+      "trigger_process": [
+        "Land Application"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization",
+        "Storage"
+      ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -229,7 +279,9 @@
     },
     {
       "Equipment": "Reservoir",
-      "Process": null,
+      "Process": [
+        "Storage"
+      ],
       "Role": [
         "Storage"
       ],

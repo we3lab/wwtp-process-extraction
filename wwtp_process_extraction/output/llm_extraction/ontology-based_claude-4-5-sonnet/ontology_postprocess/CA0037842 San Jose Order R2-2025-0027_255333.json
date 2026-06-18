@@ -33,7 +33,7 @@
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "Tank",
       "Process": [
         "ChemicalAddition"
       ],
@@ -67,20 +67,6 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers.",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -91,6 +77,7 @@
         "Secondary",
         "Anoxic",
         "Aerobic",
+        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -101,7 +88,6 @@
       "Location": "on-site",
       "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins. Each basin is divided into four sections referred to as 'quads.' The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions.",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -144,20 +130,24 @@
         "Backwashing"
       ],
       "Role": [
-        "Cleaning"
+        "Backwash"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Discharger backwashes the filters to clean the media. Each filter is backwashed approximately once every 24 hours.",
-      "trigger_process": []
+      "trigger_process": [
+        "Media Filtration"
+      ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
+      "Process": [
         "Equalization"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -236,7 +226,7 @@
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "Tank",
       "Process": [
         "Aeration"
       ],
@@ -272,7 +262,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -284,6 +275,7 @@
       "Location": "on-site",
       "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -318,7 +310,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
         "Biosolids Lagoon",
         "Unspecified Lagoon"
@@ -337,13 +329,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges.",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
         "Drying"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -359,14 +351,13 @@
       "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Composting"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
@@ -376,7 +367,7 @@
       "Location": "off-site",
       "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
       "trigger_process": [
-        "Composting"
+        "Biosolids Landfill"
       ]
     },
     {
@@ -398,7 +389,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
@@ -408,7 +399,7 @@
       "Location": "off-site",
       "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Composting"
       ]
     },
     {
@@ -491,7 +482,7 @@
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -509,44 +500,7 @@
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering",
-        "Polymer Addition",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing.",
-      "trigger_process": [
-        "Drying"
+        "Polymer Addition"
       ]
     }
   ]

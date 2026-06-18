@@ -70,7 +70,7 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
         "FourStageBardenpho",
         "ActivatedSludge",
@@ -78,11 +78,9 @@
         "Denitrification"
       ],
       "Role": [
-        "Secondary",
         "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic"
+        "Secondary",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -153,25 +151,21 @@
       ]
     },
     {
-      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Equipment": null,
       "Process": [
-        "GranularActivatedCarbon"
+        "Adsorption"
       ],
       "Role": null,
-      "Substance": [
-        "OdorControlAgent-ActivatedCarbon"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "An odor control facility.",
-      "trigger_process": [
-        "Activated Carbon"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -181,7 +175,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rotary drum sludge thickening,",
+      "Sentence": "Treatment processes at the solids handling facility include rotary drum sludge thickening,",
       "trigger_process": [
         "Thickening"
       ]
@@ -193,15 +187,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "anaerobic digestion,",
+      "Sentence": "Sludge from the ECWRF primary and secondary clarifiers is treated at a solids handling facility... include ... anaerobic digestion,",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -210,20 +203,19 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "digested sludge storage,",
+      "Sentence": "The solids handling facility produces ... digested sludge storage,",
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -233,11 +225,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "centrifuge dewatering,",
+      "Sentence": "Treatment processes at the solids handling facility include ... centrifuge dewatering,",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -256,13 +247,27 @@
     {
       "Equipment": "Conditioner",
       "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biogas handling.",
+      "Sentence": "Treatment processes at the solids handling facility include ... biogas handling.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Drain"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The centrate from dewatering gravity flows to a residuals bypass pump station.",
       "trigger_process": []
     }
   ]

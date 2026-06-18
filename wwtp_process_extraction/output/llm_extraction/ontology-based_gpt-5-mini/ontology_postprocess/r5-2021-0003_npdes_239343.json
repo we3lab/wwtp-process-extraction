@@ -1,12 +1,43 @@
 {
   "items": [
     {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Storage",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The food processing wastewater is stored and aerated in a lined pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -19,10 +50,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -57,7 +89,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "At the north plant, the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service)",
+      "Sentence": "the primary effluent may undergo additional treatment through two biotowers with high-rate plastic media (currently out of service)",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -71,9 +103,6 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -81,7 +110,6 @@
       "Location": "on-site",
       "Sentence": "The secondary treatment processes ... consisting of conventional activated sludge, including nitrification-denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -103,54 +131,7 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "blended with treated food processing wastewater and applied directly to agricultural fields",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Storage",
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "StaticMixer",
+      "Equipment": "MixingBasin",
       "Process": [
         "Mixing"
       ],
@@ -160,7 +141,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary effluent ... undergoes tertiary treatment through rapid mixing",
+      "Sentence": "undergoes tertiary treatment through rapid mixing",
       "trigger_process": []
     },
     {
@@ -212,34 +193,6 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The disinfected tertiary recycled water is pumped from the Facility to its Truck Fill Station",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The City also has one recycled water user, the Great Wolf Lodge where water is sent for landscape irrigation",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
         "Flotation"
@@ -247,13 +200,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sludge from secondary sedimentation is thickened by dissolved air flotation",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -263,9 +215,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -278,8 +228,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -293,8 +244,7 @@
       "Sentence": "After digestion, the treated sludge is dewatered by centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -305,7 +255,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal",
@@ -314,7 +266,7 @@
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": null,
       "Process": [
         "Recirculation"
       ],
@@ -322,8 +274,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tailwater from Fields 2, 4, and a small portion of 5, is collected in a sump and pumped back to the irrigation supply system",
+      "Sentence": "Tailwater from the irrigation fields ... is recirculated into the irrigation system",
       "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent ... blended with treated food processing wastewater and applied directly to agricultural fields",
+      "trigger_process": [
+        "Land Application"
+      ]
     }
   ]
 }

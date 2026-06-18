@@ -1,10 +1,8 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Pretreatment"
       ],
@@ -12,15 +10,11 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "the LAWRP and its wastewater treatment processes include preliminary, secondary, and tertiary treatment",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
+      "trigger_process": []
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Secondary"
       ],
@@ -28,29 +22,25 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "the LAWRP and its wastewater treatment processes include preliminary, secondary, and tertiary treatment",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
+      "trigger_process": []
     },
     {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the LAWRP and its wastewater treatment processes include preliminary, secondary, and tertiary treatment",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
+      "Sentence": "the Discharger distributes from LAWRP Tertiary-2.2 recycled water",
+      "trigger_process": []
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -78,14 +68,15 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "includes the construction and/or installation of anaerobic digesters",
+      "Sentence": "includes the construction and/or installation of... anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -96,11 +87,10 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "includes the construction and/or installation of centrifuges for sludge dewatering",
+      "Sentence": "centrifuges for sludge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -116,7 +106,7 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "includes the construction and/or installation of sludge drying equipment",
+      "Sentence": "sludge drying equipment",
       "trigger_process": [
         "Drying"
       ]
@@ -125,14 +115,15 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Feed",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "includes the construction and/or installation of an anaerobically digestable material receiving station",
+      "Sentence": "anaerobically digestable material receiving station",
       "trigger_process": []
     },
     {
@@ -140,13 +131,16 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "includes the construction and/or installation of microturbines for generation of electricity and heat",
+      "Sentence": "microturbines for generation of electricity and heat. The microturbines would operate with biogas produced in the anaerobic digesters",
       "trigger_process": [
-        "Cogeneration"
+        "Cogeneration",
+        "Heat Recovery"
       ]
     }
   ]

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of fine bar screens",
+      "Sentence": "fine bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of... vortex grit removal",
+      "Sentence": "vortex grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment consists of primary sedimentations basins",
+      "Sentence": "primary sedimentations basins",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -51,9 +51,9 @@
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition",
         "Coagulation",
-        "Flocculation"
+        "Flocculation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Secondary"
@@ -64,7 +64,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment consists of ... alum and/or polymer injection",
+      "Sentence": "alum and/or polymer injection",
       "trigger_process": [
         "Alum Addition",
         "Coagulation",
@@ -77,8 +77,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -87,7 +86,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment consists of ... aeration basins (11 basins)",
+      "Sentence": "aeration basins (11 basins)",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -95,8 +94,7 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess",
-        "ActivatedSludge"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -120,7 +118,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment consists of ... secondary sedimentation (4 clarifiers)",
+      "Sentence": "secondary sedimentation (4 clarifiers)",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -129,13 +127,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Detention"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of equalization basins",
+      "Sentence": "equalization basins",
       "trigger_process": [
         "Equalization"
       ]
@@ -151,7 +148,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of ... dual media filtration (16 filters)",
+      "Sentence": "dual media filtration (16 filters)",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -164,8 +161,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -191,8 +187,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling includes dissolved air flotation (OAF) thickeners",
+      "Sentence": "dissolved air flotation (OAF) thickeners",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -203,7 +200,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -211,15 +207,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling includes ... anaerobic digestion (4 digesters)",
+      "Sentence": "anaerobic digestion (4 digesters)",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -229,13 +225,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling includes ... dewatering (2 belt presses and 2 centrifuges)",
+      "Sentence": "dewatering (2 belt presses and 2 centrifuges)",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -250,26 +246,7 @@
       "Sentence": "dewatering (2 belt presses and 2 centrifuges)",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "BeltThickener",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatering (2 belt presses and 2 centrifuges)",
-      "trigger_process": [
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     }
   ]

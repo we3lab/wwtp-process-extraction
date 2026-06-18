@@ -113,7 +113,7 @@ def main():
     ca_cwns_data = ca_cwns_data[~(ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1)]
 
     # Load Google Sheets
-    supplemental_data_df = pd.read_csv("wwtp_process_extraction/data/supplemental_data_unit_processes_by_facility.csv", dtype=str).fillna("")
+    supplemental_data_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_supplemental_data.csv", dtype=str).fillna("")
     supplemental_data_df["Place ID"] = supplemental_data_df["Place ID"].str.strip()
     npdes_text_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str).fillna("")
     npdes_text_df["Place ID"] = npdes_text_df["Place ID"].str.strip()

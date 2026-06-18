@@ -17,25 +17,6 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Oxidation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "OxidizingAgent-HydrogenPeroxide"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... peroxide addition...",
-      "trigger_process": [
-        "Oxidation"
-      ]
-    },
-    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -49,6 +30,23 @@
       "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... grit removal...",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition",
+        "Oxidation"
+      ],
+      "Role": null,
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater treatment unit operations and processes at the EWPCF consist of ... peroxide addition...",
+      "trigger_process": [
+        "Oxidation"
       ]
     },
     {
@@ -70,12 +68,10 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -108,8 +104,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -136,6 +131,7 @@
       "Location": "on-site",
       "Sentence": "Solids treatment unit operations and processes consist of dissolved air flotation (DAF) thickening...",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -159,10 +155,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -175,12 +170,11 @@
       "Sentence": "Solids treatment unit operations and processes consist of ... mechanical dewatering (centrifuges)...",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -203,7 +197,7 @@
         "RapidSandFiltration"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -211,6 +205,38 @@
       "Sentence": "Secondary-treated effluent is used onsite at the EWPCF for the sand filter influent...",
       "trigger_process": [
         "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to landfills in San Diego County, California...",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Solids and biosolids collected at the EWPCF may be trucked to land application sites in Yuma County, Arizona...",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

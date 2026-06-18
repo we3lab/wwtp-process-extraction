@@ -8,7 +8,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Wastewater treatment processes for both treatment trains include screening",
@@ -25,7 +27,7 @@
         "Pretreatment"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -79,14 +81,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment with activated sludge aeration and secondary sedimentation",
+      "Sentence": "secondary treatment with ... secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -107,24 +111,23 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes ... anaerobic digestion",
+      "Sentence": "Solids processing ... includes ... anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -134,11 +137,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes ... centrifuge dewatering",
+      "Sentence": "Solids processing ... includes ... centrifuge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -150,29 +152,11 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -190,7 +174,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a ... contractor-operated compost site",
+      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill or a contractor-operated compost site",
       "trigger_process": [
         "Composting"
       ]

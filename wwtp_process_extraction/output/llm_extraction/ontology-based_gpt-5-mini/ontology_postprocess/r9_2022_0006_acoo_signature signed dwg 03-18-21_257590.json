@@ -10,8 +10,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The SOCWA RTP ... with the following wastewater treatment unit operations and processes: coarse screening,",
+      "Location": "on-site",
+      "Sentence": "coarse screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -26,8 +26,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The SOCWA RTP ... aerated grit removal,",
+      "Location": "on-site",
+      "Sentence": "aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -42,8 +42,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The SOCWA RTP ... primary clarification,",
+      "Location": "on-site",
+      "Sentence": "primary clarification",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -51,7 +51,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -59,8 +60,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The SOCWA RTP ... activated sludge aeration,",
+      "Location": "on-site",
+      "Sentence": "activated sludge aeration",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -75,8 +76,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The SOCWA RTP ... and secondary clarification.",
+      "Location": "on-site",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -91,8 +92,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through the following process: chemical addition, coagulation, filtration, and chlorine disinfection.",
+      "Location": "on-site",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through the following process: chemical addition",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
@@ -107,27 +108,27 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through the following process: ... coagulation, ...",
+      "Location": "on-site",
+      "Sentence": "coagulation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through the following process: ... filtration, ...",
+      "Location": "on-site",
+      "Sentence": "filtration",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
@@ -143,8 +144,8 @@
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through the following process: ... chlorine disinfection.",
+      "Location": "on-site",
+      "Sentence": "chlorine disinfection",
       "trigger_process": [
         "Chlorination"
       ]
@@ -161,9 +162,10 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Solids treatment consists of dissolved air flotation thickening, anaerobic digestion, and centrifuge dewatering.",
+      "Location": "on-site",
+      "Sentence": "dissolved air flotation thickening",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -174,22 +176,22 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Solids treatment consists of ... anaerobic digestion, ...",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -199,70 +201,43 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Solids treatment consists of ... centrifuge dewatering.",
+      "Location": "on-site",
+      "Sentence": "centrifuge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Waste activated sludge from the SOCWA CTP is thickened using dissolved air flotation and pumped via a four-mile-long pipeline to the SOCWA RTP for treatment and disposal.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The SOCWA CTP ... with the following wastewater treatment unit operations and processes: coarse screening,",
+      "Sentence": "Dewatered biosolids ... are either sent to a composting facility",
       "trigger_process": [
-        "Screening/Microstrainer"
+        "Composting"
       ]
     },
     {
-      "Equipment": "GritChamber",
+      "Equipment": null,
       "Process": [
-        "Sedimentation"
+        "Landfill"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The SOCWA CTP ... aerated grit removal,",
+      "Sentence": "Screenings and grit are transported ... to a Class I sanitary landfill",
       "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The El Toro Water District WRP has ... flow equalization,",
-      "trigger_process": [
-        "Equalization"
+        "Biosolids Landfill"
       ]
     },
     {
@@ -275,8 +250,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes chemical addition, flash mixing, coagulation, flocculation, sedimentation, filtration, and chlorine disinfection.",
+      "Location": "on-site",
+      "Sentence": "flash mixing",
       "trigger_process": []
     },
     {
@@ -289,8 +264,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes ... flocculation, ...",
+      "Location": "on-site",
+      "Sentence": "flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -305,26 +280,40 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment, which includes ... sedimentation, ...",
+      "Location": "on-site",
+      "Sentence": "sedimentation",
       "trigger_process": [
         "Unspecified Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flow equalization",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The El Toro Water District WRP tertiary treatment includes ... rotating disk cloth media filtration, ...",
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "one of the two tertiary-treatment systems at the SOCWA RTP was no longer in use",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     }
   ]

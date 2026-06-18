@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The main treatment facility consists of raw influent bar screening...",
+      "Sentence": "main treatment facility consists of raw influent bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The main treatment facility consists of raw influent bar screening, primary sedimentation...",
+      "Sentence": "main treatment facility consists of ... primary sedimentation",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Phase 2 improvements include the construction of a second outfall... and construction of a new primary clarifier",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -41,7 +57,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Clarified primary effluent is pumped to an equalization tank which was designed to equalize peak wet weather flows...",
+      "Sentence": "Clarified primary effluent is pumped to an equalization tank which was designed to equalize peak wet weather flows",
       "trigger_process": [
         "Equalization"
       ]
@@ -55,13 +71,41 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval"
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The main treatment facility consists of ... biological nutrient removal, secondary sedimentation...",
+      "Sentence": "the most recent expansion ... included nitrification, denitrification and tertiary filtration",
       "trigger_process": [
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The proposed Phase 4 improvements include the construction of a new secondary clarifier and aeration basin",
+      "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -77,7 +121,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The main treatment facility consists of ... biological nutrient removal, secondary sedimentation...",
+      "Sentence": "The main treatment facility consists of ... secondary sedimentation",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The proposed Phase 4 improvements include the construction of a new secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -93,7 +153,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The most recent expansion ... included nitrification, denitrification and tertiary filtration.",
+      "Sentence": "the most recent expansion ... included nitrification, denitrification and tertiary filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -106,13 +166,12 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The main treatment facility consists of ... tertiary filtration, chlorination, dechlorination, post-aeration...",
+      "Sentence": "The main treatment facility consists of ... chlorination, dechlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -129,7 +188,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The main treatment facility consists of ... tertiary filtration, chlorination, dechlorination, post-aeration...",
+      "Sentence": "The main treatment facility consists of ... post-aeration",
       "trigger_process": []
     },
     {
@@ -141,167 +200,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The emergency storage pond is used infrequently to divert effluent when the Facility is under routine maintenance...",
+      "Sentence": "The emergency storage pond is used infrequently to divert effluent",
       "trigger_process": [
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "DissolvedAirFlotationThickener",
-      "Process": [
-        "Flotation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids are thickened by dissolved air flotation...",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids are thickened by dissolved air flotation, anaerobically digested...",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids are ... dewatered in asphalt-paved drying beds...",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A temporary mechanical dewatering centrifuge has been installed to dewater increased biosolids during construction...",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "permanent mechanical dewatering facilities being added in upcoming construction phases.",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Phase 2 improvements include the construction of a new primary clarifier to increase the discharge capacity to 12.5 MGD.",
-      "trigger_process": [
-        "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The proposed Phase 3 improvements include the ... installation of a new filter pump for tertiary treatment...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The proposed Phase 4 improvements include the construction of a new secondary clarifier and aeration basin...",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The proposed Phase 4 improvements include the construction of a new secondary clarifier and aeration basin...",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The proposed Phase 4 improvements include ... the construction of a sludge digester to increase the discharge capacity to 16 MGD.",
-      "trigger_process": [
-        "Anaerobic Digestion"
       ]
     },
     {
@@ -314,7 +215,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger\u0002s satellite holding ponds consists of five unlined facultative ponds...",
+      "Sentence": "The Discharger\u2019s satellite holding ponds consists of five unlined facultative ponds",
       "trigger_process": [
         "Equalization"
       ]
@@ -330,10 +231,138 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Leprino ... leases two geotextile-lined aerated lagoons from the Discharger for preliminary treatment of its industrial food processing wastewater.",
+      "Sentence": "Leprino ... leases two geotextile-lined aerated lagoons from the Discharger for preliminary treatment",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids are thickened by dissolved air flotation",
+      "trigger_process": [
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids are ... anaerobically digested",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The proposed Phase 4 improvements include the construction of a sludge digester",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered in asphalt-paved drying beds",
+      "trigger_process": [
+        "Drying"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A temporary mechanical dewatering centrifuge has been installed to dewater increased biosolids during construction",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "permanent mechanical biosolids dewatering facilities being added in upcoming construction phases",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three existing primary effluent pumps can be operated such that primary effluent can be pumped to the primary effluent wet well",
+      "trigger_process": []
     }
   ]
 }

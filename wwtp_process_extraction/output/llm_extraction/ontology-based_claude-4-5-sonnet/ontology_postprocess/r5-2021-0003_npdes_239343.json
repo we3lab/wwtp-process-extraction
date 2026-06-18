@@ -6,8 +6,7 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -23,8 +22,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment",
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -77,7 +75,7 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NutrogenRemoval"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -112,27 +110,12 @@
         "Storage"
       ],
       "Role": [
-        "Storage",
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The food processing wastewater is stored and aerated in a lined pond, and then applied to agricultural fields when needed.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
+      "Sentence": "The food processing wastewater is stored and aerated in a lined pond, and then applied to agricultural fields when needed.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -154,7 +137,23 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Pond",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15-million-gallon pond or blended with treated food processing wastewater and applied directly to agricultural fields.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Reactor",
       "Process": [
         "Mixing"
       ],
@@ -216,24 +215,6 @@
       ]
     },
     {
-      "Equipment": "DissolvedAirFlotationThickener",
-      "Process": [
-        "Flotation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
@@ -253,7 +234,26 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from primary sedimentation is pumped directly to anaerobic digesters while sludge from secondary sedimentation is thickened by dissolved air flotation and then pumped to anaerobic digesters.",
+      "trigger_process": [
+        "Flotation",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -268,8 +268,7 @@
       "Sentence": "After digestion, the treated sludge is dewatered by centrifuge.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {

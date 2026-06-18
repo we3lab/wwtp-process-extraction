@@ -51,7 +51,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -112,26 +113,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "transports treated wastewater to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination using sodium bisulfite prior to discharge",
+      "Sentence": "transports treated wastewater to the South San Francisco and San Bruno Water Quality Control Plant for dechlorination",
       "trigger_process": [
         "Dechlorination"
       ]
     },
     {
       "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Storage",
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "offline primary clarifier (0.4 million gallons [MG])",
       "trigger_process": [
-        "Equalization"
+        "Unspecified Clarification"
       ]
     },
     {
@@ -139,7 +138,7 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Detention"
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -151,42 +150,21 @@
     },
     {
       "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
+      "Process": null,
       "Role": [
-        "Equalization",
         "Storage",
-        "Aerobic"
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "an offline aeration basin (0.3 MG)",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "are blended with effluent receiving biological treatment",
-      "trigger_process": [
-        "Equalization"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -204,8 +182,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -240,7 +217,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -258,10 +235,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -274,8 +250,7 @@
       "Sentence": "dewatered by ... centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {

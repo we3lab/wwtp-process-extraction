@@ -1,92 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treatment processes at the ECAWP Facility consists of MF, reverse osmosis, ultraviolet light with advanced oxidation process (UV/AOP) and post-stabilization.",
-      "trigger_process": [
-        "Microfiltration"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treatment processes at the ECAWP Facility consists of MF, reverse osmosis, ultraviolet light with advanced oxidation process (UV/AOP) and post-stabilization.",
-      "trigger_process": [
-        "Reverse Osmosis"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "AdvancedOxidation"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treatment processes at the ECAWP Facility consists of MF, reverse osmosis, ultraviolet light with advanced oxidation process (UV/AOP) and post-stabilization.",
-      "trigger_process": [
-        "UV Disinfection",
-        "UV-AOP"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Stabilization"
-      ],
-      "Substance": [
-        "pHAdjuster-Lime"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "by using a post-stabilization treatment of carbon dioxide and hydrated lime to adjust the p",
-      "trigger_process": [
-        "Lime Treatment"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Currently, the ECAWP Project will direct dechlorinated effluent from the ECAWP Facility to Santee Lakes and Sycamore Creek",
-      "trigger_process": [
-        "Dechlorination"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -122,11 +36,10 @@
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation",
-        "Coagulation"
+        "ChemicalPrecipitation"
       ],
       "Role": [
-        "Primary",
-        "PhosphorusRemoval"
+        "Primary"
       ],
       "Substance": [
         "Coagulant-FerricChloride"
@@ -135,8 +48,7 @@
       "Location": "off-site",
       "Sentence": "Primary clarifiers, with ferric chloride for chemical phosphorus removal.",
       "trigger_process": [
-        "Chemical P Removal",
-        "Coagulation",
+        "Chemical Precipitation",
         "Ferric Chloride Addition",
         "Primary Clarification"
       ]
@@ -158,15 +70,10 @@
     {
       "Equipment": "Reactor",
       "Process": [
-        "FourStageBardenpho",
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "FourStageBardenpho"
       ],
       "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Secondary"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -182,11 +89,10 @@
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation",
-        "Coagulation"
+        "ChemicalPrecipitation"
       ],
       "Role": [
-        "Secondary",
-        "PhosphorusRemoval"
+        "Secondary"
       ],
       "Substance": [
         "Coagulant-FerricChloride"
@@ -195,8 +101,7 @@
       "Location": "off-site",
       "Sentence": "Secondary clarifiers, with ferric chloride for chemical phosphorus removal;",
       "trigger_process": [
-        "Chemical P Removal",
-        "Coagulation",
+        "Chemical Precipitation",
         "Ferric Chloride Addition",
         "Secondary Clarification"
       ]
@@ -206,9 +111,7 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -220,15 +123,10 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "A chlorine contact basin (remnant from the former Ray Stoyer WRF chlorine contact basins).",
@@ -237,9 +135,23 @@
       ]
     },
     {
+      "Equipment": "GranularActivatedCarbonAdsorber",
+      "Process": [
+        "GranularActivatedCarbon"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "An odor control unit.",
+      "trigger_process": [
+        "Activated Carbon"
+      ]
+    },
+    {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -247,9 +159,9 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Solids Handling Facility will produce Class B solids ... The treatment processes at the Solids Handling Facility includes a rotary drum for sludge thickening, anaerobic digestion,",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "rotary drum for sludge thickening,",
       "trigger_process": [
         "Thickening"
       ]
@@ -266,9 +178,9 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The treatment processes at the Solids Handling Facility includes a rotary drum for sludge thickening, anaerobic digestion,",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion,",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -279,17 +191,19 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
       "Sentence": "digested sludge storage,",
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -297,13 +211,131 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
+      "Implementation": "future",
+      "Location": "on-site",
       "Sentence": "centrifuge dewatering,",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "cake storage and loadout facilities,",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Conditioner",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "biogas handling.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "centrate from dewatering will gravity flow to a residuals bypass pump station.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Treatment processes at the ECAWP Facility consists of MF,",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "reverse osmosis,",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "ultraviolet light with advanced oxidation process (UV/AOP)",
+      "trigger_process": [
+        "UV Disinfection",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Stabilization"
+      ],
+      "Substance": [
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "post-stabilization treatment of carbon dioxide and hydrated lime to adjust the product water pH to between 7.5 and 8.5 pH units",
+      "trigger_process": [
+        "Lime Treatment"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Currently, the ECAWP Project will direct dechlorinated effluent from the ECAWP Facility to Santee Lakes and Sycamore Creek,",
+      "trigger_process": [
+        "Dechlorination"
       ]
     }
   ]

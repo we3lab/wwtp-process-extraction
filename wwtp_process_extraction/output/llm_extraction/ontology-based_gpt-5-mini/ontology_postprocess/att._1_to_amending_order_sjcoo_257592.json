@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening",
+      "Sentence": "wastewater treatment processes for both treatment trains include screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "include...aerated grit removal",
+      "Sentence": "wastewater treatment processes for both treatment trains include ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -83,6 +83,79 @@
       ]
     },
     {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "thickening (secondary sludge)",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "centrifuge dewatering",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
       "Equipment": "TricklingFilter",
       "Process": [
         "TricklingFiltration",
@@ -100,9 +173,44 @@
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Coagulation"
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD was in the process of installing another secondary clarifier",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "SMWD also planned to add new aeration basins",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition",
+        "Mixing"
       ],
       "Role": [
         "Tertiary"
@@ -110,9 +218,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treatment through chemical addition/flash mixing",
+      "Sentence": "A portion of the secondary-treated wastewater receives tertiary treatment through chemical addition/flash mixing",
       "trigger_process": [
-        "Coagulation",
         "Unspecified Chemical Addition"
       ]
     },
@@ -144,23 +251,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination disinfection",
+      "Sentence": "and chlorination disinfection",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "Thickener",
-      "Process": null,
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration"
+      ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids processing...includes thickening (secondary sludge)",
+      "Sentence": "Waste activated sludge ... is thickened, digested, and dewatered, using belt filter press",
       "trigger_process": [
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -178,110 +289,23 @@
       "Location": "on-site",
       "Sentence": "Biosolids are treated through dissolved air floatation",
       "trigger_process": [
+        "Flotation",
         "Thickening"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "anaerobic digestion",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "centrifuge dewatering",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered...using belt filter press",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Oxidation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "potassium permanganate and sodium hypochlorite addition followed by green-sand filtration",
-      "trigger_process": [
-        "Oxidation"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "green-sand filtration",
-      "trigger_process": [
-        "Media Filtration"
       ]
     },
     {
       "Equipment": "CartridgeFiltrationUnit",
-      "Process": null,
+      "Process": [
+        "Filtration"
+      ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "cartridge filtration",
-      "trigger_process": []
+      "trigger_process": [
+        "Unspecified Filtration"
+      ]
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
@@ -298,21 +322,48 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "Aeration"
+        "RapidSandFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aeration",
-      "trigger_process": []
+      "Sentence": "preliminary filtration (sand separators)",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration",
+        "Oxidation",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "iron and manganese pretreatment (potassium permanganate and sodium hypochlorite addition followed by green-sand filtration)",
+      "trigger_process": [
+        "Media Filtration",
+        "Oxidation"
+      ]
     },
     {
       "Equipment": null,
       "Process": [
-        "pHAdjustment"
+        "ChemicalAddition",
+        "pHAdjustment",
+        "Dechlorination"
       ],
       "Role": null,
       "Substance": [
@@ -320,53 +371,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chemical addition (addition of sulfuric acid...); pH adjustment",
+      "Sentence": "chemical addition (addition of sulfuric acid, sodium bisulfite and scale inhibitor)",
       "trigger_process": [
+        "Dechlorination",
         "Neutralization"
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "UVDisinfection"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "post treatment conditioning, which will include UV disinfection",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "FlocculationBasin",
-      "Process": [
-        "Flocculation"
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pretreatment consisting of flocculation",
+      "Sentence": "disinfection (sodium hypochlorite)",
       "trigger_process": [
-        "Flocculation"
-      ]
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The treatment system will likely include...microfiltration",
-      "trigger_process": [
-        "Microfiltration"
+        "Chlorination"
       ]
     },
     {
@@ -382,17 +407,19 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "FlocculationBasin",
       "Process": [
-        "pHAdjustment"
+        "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "post treatment conditioning, which will include...calcite contactors",
+      "Sentence": "The treatment system will likely include pretreatment consisting of flocculation",
       "trigger_process": [
-        "Neutralization"
+        "Flocculation"
       ]
     },
     {
@@ -401,31 +428,78 @@
         "Sedimentation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "SMWD was in the process of installing another secondary clarifier",
+      "Sentence": "pretreatment consisting of ... sedimentation",
       "trigger_process": [
         "Unspecified Clarification"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "MediaFiltration"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "SMWD also planned to add new aeration basins",
+      "Sentence": "pretreatment consisting of ... catalytic media filtration",
       "trigger_process": [
-        "Unspecified AS"
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The treatment system will likely include ... microfiltration",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "post treatment conditioning, which will include UV disinfection",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "post treatment conditioning ... calcite contactors",
+      "trigger_process": [
+        "Neutralization"
       ]
     }
   ]

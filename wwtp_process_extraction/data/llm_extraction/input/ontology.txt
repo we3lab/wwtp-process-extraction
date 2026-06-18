@@ -1,80 +1,80 @@
 EQUIPMENTS:
 Tank | A tank with at least one inlet and one outlet
 Reactor | A tank used for reaction or biological/chemical treatment processes | SubEquipOf: Tank
-SeparationTank | A tank that has at least two outlets (e.g. overflow and underflow) | SubEquipOf: Tank
-SequencingBatchReactor | A type of activated sludge process for wastewater treatment | SubEquipOf: Reactor, SeparationTank
+SeparationTank | A tank that has at least two outlets (e.g. overflow and underflow) | SubEquipOf: Tank | Process: Process-Separation
+SequencingBatchReactor | A type of activated sludge process for wastewater treatment | SubEquipOf: Reactor, SeparationTank | Process: Process-ActivatedSludge
 PlugFlowReactor | A type of reactor where the fluid flows in one direction through the tube | SubEquipOf: Reactor
 ContinuouslyStirredTankReactor | A reactor in which contents are well mixed and reactants are added continuously | SubEquipOf: Reactor
-StaticMixer | A device for mixing liquids without moving components | SubEquipOf: Reactor
-AerationBasin | A tank where water is aerated to remove gases and volatile organic compounds | SubEquipOf: Reactor
-MixingBasin | A tank where mixed liquor is stirred without aeration | SubEquipOf: Reactor
-MembraneAeratedBiofilmReaactor | A reactor that grows biofilm on membranes supplied with air | SubEquipOf: Reactor
-CoagulationBasin | A basin where coagulation occurs to destabilize particles in water | SubEquipOf: Reactor
-FlocculationBasin | A tank where flocculation occurs to aggregate particles in water | SubEquipOf: Reactor
-Digester | A container to promote decomposition of organic waste | SubEquipOf: Reactor
-AnaerobicDigester | A container to promote decomposition of organic waste in anaerobic conditions | SubEquipOf: Digester
-AerobicDigester | A container to promote decomposition of organic waste in aerobic conditions | SubEquipOf: Digester
-DisinfectionUnit | A unit used to eliminate or reduce harmful microorganisms | SubEquipOf: Reactor
-ChlorinationUnit | A unit that uses chlorine or chlorine compounds for disinfection. | SubEquipOf: DisinfectionUnit
-UltravioletLightUnit | A unit using ultraviolet light for disinfection | SubEquipOf: DisinfectionUnit
-SedimentationTank | A tank used to remove solids from liquids through sedimentation | SubEquipOf: SeparationTank
+StaticMixer | A device for mixing liquids without moving components | SubEquipOf: Reactor | Process: Process-Mixing
+AerationBasin | A tank where water is aerated to remove gases and volatile organic compounds | SubEquipOf: Reactor | Process: Process-Aeration
+MixingBasin | A tank where mixed liquor is stirred without aeration | SubEquipOf: Reactor | Process: Process-Mixing
+MembraneAeratedBiofilmReaactor | A reactor that grows biofilm on membranes supplied with air | SubEquipOf: Reactor | Process: Process-Aeration
+CoagulationBasin | A basin where coagulation occurs to destabilize particles in water | SubEquipOf: Reactor | Process: Process-Coagulation
+FlocculationBasin | A tank where flocculation occurs to aggregate particles in water | SubEquipOf: Reactor | Process: Process-Flocculation
+Digester | A container to promote decomposition of organic waste | SubEquipOf: Reactor | Process: Process-Digestion
+AnaerobicDigester | A container to promote decomposition of organic waste in anaerobic conditions | SubEquipOf: Digester | Process: Process-AnaerobicDigestion
+AerobicDigester | A container to promote decomposition of organic waste in aerobic conditions | SubEquipOf: Digester | Process: Process-AerobicDigestion
+DisinfectionUnit | A unit used to eliminate or reduce harmful microorganisms | SubEquipOf: Reactor | Process: Process-Disinfection
+ChlorinationUnit | A unit that uses chlorine or chlorine compounds for disinfection. | SubEquipOf: DisinfectionUnit | Process: Process-Chlorination
+UltravioletLightUnit | A unit using ultraviolet light for disinfection | SubEquipOf: DisinfectionUnit | Process: Process-UVDisinfection
+SedimentationTank | A tank used to remove solids from liquids through sedimentation | SubEquipOf: SeparationTank | Process: Process-Sedimentation
 SepticTank | A septic tank for on-site wastewater treatment | SubEquipOf: SedimentationTank
 ImhoffTank | A sedimentation tank specifically designed for septic treatment | SubEquipOf: SepticTank
-Screen | An equipment used for separation
-GritChamber | A chamber used to remove grit from wastewater
+Screen | An equipment used for separation | Process: Process-Screening
+GritChamber | A chamber used to remove grit from wastewater | Process: Process-Sedimentation
 Reservoir | A large natural or artificial body of water used for water supply
 Pond | A body of still water smaller than a lake, used for treatment or storage.
 Wetland | A marsh or bog-like area that is permanently or seasonally saturated with water, used for pre- or post-treatment.
 Battery | A device that stores energy for later use
-Cogenerator | An equipment that produces both electricity and heat from the same energy source
-Boiler | A device for heating water
+Cogenerator | An equipment that produces both electricity and heat from the same energy source | Process: Process-Cogeneration
+Boiler | A device for heating water | Process: Process-Combustion
 Conditioner | An equipment used to prepare raw biogas from a digester by removing impurities
 Flare | A device used to burn off unwanted gas
 Pump | A device used to move fluids by mechanical action
 PressureExchanger | A device used to transfer pressure energy from one fluid to another
-DewateringUnit | A unit used to remove water from solid material
+DewateringUnit | A unit used to remove water from solid material | Process: Process-Dewatering
 Thickener | A device used to increase the solids concentration of a slurry | Process: Process-Thickening
-DissolvedAirFlotationThickener | A thickener that uses dissolved air to separate solids from liquids | SubEquipOf: Thickener
-CentrifugalThickener | A thickener that uses centrifugal force to separate solids from liquids | SubEquipOf: Thickener
-GravityThickener | A thickener that uses gravity to separate solids from liquids | SubEquipOf: Thickener
-BeltThickener | A thickener that uses a belt system to separate solids from liquids | SubEquipOf: Thickener
+DissolvedAirFlotationThickener | A thickener that uses dissolved air to separate solids from liquids | SubEquipOf: Thickener | Process: Process-Flotation
+CentrifugalThickener | A thickener that uses centrifugal force to separate solids from liquids | SubEquipOf: Thickener | Process: Process-Centrifugation
+GravityThickener | A thickener that uses gravity to separate solids from liquids | SubEquipOf: Thickener | Process: Process-Sedimentation
+BeltThickener | A thickener that uses a belt system to separate solids from liquids | SubEquipOf: Thickener | Process: Process-Filtration
 GravityBeltThickener | A thickener that combines gravity separation with a belt system | SubEquipOf: BeltThickener, GravityThickener
-RotaryDrumThickener | A thickener that uses a rotating drum to separate solids from liquids | SubEquipOf: Thickener
+RotaryDrumThickener | A thickener that uses a rotating drum to separate solids from liquids | SubEquipOf: Thickener | Process: Process-Filtration
 BeltFilterPress | A dewatering unit that uses a belt system to separate solids from liquids | SubEquipOf: DewateringUnit | Process: Process-Filtration
 CentrifugalDewateringUnit | A dewatering unit that uses centrifugal force to separate solids from liquids | SubEquipOf: DewateringUnit | Process: Process-Centrifugation
-Filter | An equipment used to remove impurities from liquids or gases
-ReverseOsmosisMembrane | A membrane used for reverse osmosis | SubEquipOf: Filter
-RotatingBiologicalContactor | Fixed-film process using a slowly rotating discs partially submerged in a tank | SubEquipOf: Filter
+Filter | An equipment used to remove impurities from liquids or gases | Process: Process-Filtration
+ReverseOsmosisMembrane | A membrane used for reverse osmosis | SubEquipOf: Filter | Process: Process-ReverseOsmosis
+RotatingBiologicalContactor | Fixed-film process using a slowly rotating discs partially submerged in a tank | SubEquipOf: Filter | Process: Process-Biofiltration
 MovingBedBioreactor | MBBR process using suspended growth media a tank | SubEquipOf: Filter | Process: Process-Biofiltration
-TricklingFilter | A filter system that treats wastewater by trickling it over a bed of rocks or plastic | SubEquipOf: Filter
-OxidationDitch | Modified activated sludge process that uses a ring-shaped channel to biologically remove pollutants | SubEquipOf: Reactor
-MembraneBioreactor | A filter system that combines a membrane process like microfiltration with a biological reactor | SubEquipOf: Filter, Reactor, SeparationTank
-MicrofiltrationUnit | A filter system which removes contaminants from a liquid by passing it through a microporous membrane | SubEquipOf: Filter
-UltrafiltrationUnit | A filter system that uses a pressure-driven barrier to separate particles and solutes in a fluid | SubEquipOf: Filter
+TricklingFilter | A filter system that treats wastewater by trickling it over a bed of rocks or plastic | SubEquipOf: Filter | Process: Process-TricklingFiltration
+OxidationDitch | Modified activated sludge process that uses a ring-shaped channel to biologically remove pollutants | SubEquipOf: Reactor | Process: Process-ActivatedSludge
+MembraneBioreactor | A filter system that combines a membrane process like microfiltration with a biological reactor | SubEquipOf: Filter, Reactor, SeparationTank | Process: Process-Biofiltration
+MicrofiltrationUnit | A filter system which removes contaminants from a liquid by passing it through a microporous membrane | SubEquipOf: Filter | Process: Process-Microfiltration
+UltrafiltrationUnit | A filter system that uses a pressure-driven barrier to separate particles and solutes in a fluid | SubEquipOf: Filter | Process: Process-Ultrafiltration
 NanofiltrationUnit | A filter system that uses a membrane to soften water and remove organic contaminants | SubEquipOf: Filter
-MediaFiltrationUnit | A filter system that uses a bed of material to filter out contaminants | SubEquipOf: Filter
-RapidSandFilter | A type of media filter that uses sand as the filter medium and operates at high filtration rates. | SubEquipOf: MediaFiltrationUnit
+MediaFiltrationUnit | A filter system that uses a bed of material to filter out contaminants | SubEquipOf: Filter | Process: Process-MediaFiltration
+RapidSandFilter | A type of media filter that uses sand as the filter medium and operates at high filtration rates. | SubEquipOf: MediaFiltrationUnit | Process: Process-RapidSandFiltration
 CartridgeFiltrationUnit | A filter system using a cartridge to remove contaminants from fluids | SubEquipOf: Filter
-IonExchangeMembrane | A membrane that selectively allows ions to pass through while blocking other substances
-ElectrodialysisUnit | A unit that uses electricity to drive ion movement through a membrane
-Electrolyzer | An equipment that uses electricity to split liquids into constituent elements
-Crystallizer | An equipment used to produce solid crystals from a solution
+IonExchangeMembrane | A membrane that selectively allows ions to pass through while blocking other substances | Process: Process-IonExchange
+ElectrodialysisUnit | A unit that uses electricity to drive ion movement through a membrane | Process: Process-Electrodialysis
+Electrolyzer | An equipment that uses electricity to split liquids into constituent elements | Process: Process-Electrolysis
+Crystallizer | An equipment used to produce solid crystals from a solution | Process: Process-Crystallization
 Compressor | An equipment that increases the pressure of a gas
-Evaporator | A device used to turn the liquid form of a substance into its gaseous form
-Condenser | A device used to condense a gaseous substance back into a liquid
+Evaporator | A device used to turn the liquid form of a substance into its gaseous form | Process: Process-Evaporation
+Condenser | A device used to condense a gaseous substance back into a liquid | Process: Process-Condensation
 VariableFrequencyDrive | A type of AC motor drive that controls speed and torque by varying the frequency of the input electricity.
 MultifunctionalMembrane | A membrane integrating multiple processes (e.g., reduction, adsorption, filtration) for selective removal and recovery of contaminants. | SubEquipOf: Filter
 MolybdenumSulfideBasedMembrane | A specific material demonstrating effectiveness in removing heavy metals and oxyanions with high selectivity. | SubEquipOf: Filter
 ElectricallyConductingMembrane | A membrane capable of conducting electricity, used for in-situ cleaning or electro-oxidation processes. | SubEquipOf: Filter
-ElectroDialyticCrystallizer | A modular system designed for brine concentration and crystallization, integrating electrodialysis and crystallization.
+ElectroDialyticCrystallizer | A modular system designed for brine concentration and crystallization, integrating electrodialysis and crystallization. | Process: Process-Crystallization, Process-Electrodialysis
 Electrode | A component where electrochemical reactions occur in electrified processes.
 StandardizedFlowCell | An experimental apparatus developed for research experiments, for example in Electrocoagulation (EC), in continuous flow mode.
-UVH2O2Reactor | A specific reactor used in Advanced Oxidation Processes (AOPs) combining UV light with hydrogen peroxide. | SubEquipOf: Reactor
-BiologicalAeratedFilter | A filter that uses biological processes to remove contaminants. | SubEquipOf: Reactor, Filter
-ElectrocoagulationUnit | A unit that uses electrocoagulation for contaminant removal. | SubEquipOf: Reactor
-OzonationUnit | A unit that uses ozone for water treatment. | SubEquipOf: Reactor
-GranularActivatedCarbonAdsorber | A unit that uses granulated activated carbon to adsorb impurities from water.
-Grinder | Machine that shreds solid waste into tiny particles
+UVH2O2Reactor | A specific reactor used in Advanced Oxidation Processes (AOPs) combining UV light with hydrogen peroxide. | SubEquipOf: Reactor | Process: Process-AdvancedOxidation
+BiologicalAeratedFilter | A filter that uses biological processes to remove contaminants. | SubEquipOf: Reactor, Filter | Process: Process-BiologicallyActiveFiltration
+ElectrocoagulationUnit | A unit that uses electrocoagulation for contaminant removal. | SubEquipOf: Reactor | Process: Process-Electrocoagulation
+OzonationUnit | A unit that uses ozone for water treatment. | SubEquipOf: Reactor | Process: Process-Ozonation
+GranularActivatedCarbonAdsorber | A unit that uses granulated activated carbon to adsorb impurities from water. | Process: Process-GranularActivatedCarbon
+Grinder | Machine that shreds solid waste into tiny particles | Process: Process-Comminution
 SluiceGate | Large gate that slide vertically to control flow in channels, reservoirs, or treatment basins | SubEquipOf: Gate
 
 ########################

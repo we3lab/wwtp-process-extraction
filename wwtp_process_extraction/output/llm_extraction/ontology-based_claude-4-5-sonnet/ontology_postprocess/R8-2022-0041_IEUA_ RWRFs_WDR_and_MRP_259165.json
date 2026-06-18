@@ -33,22 +33,6 @@
       ]
     },
     {
-      "Equipment": "Reactor",
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens, grit chambers, chemical addition, primary clarifiers, and flow equalization/emergency storage basins.",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -83,7 +67,6 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -221,6 +204,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
@@ -239,6 +223,7 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
+        "Thickening",
         "Flotation"
       ],
       "Role": [
@@ -251,6 +236,7 @@
       "Location": "on-site",
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering.",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -274,10 +260,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -290,14 +276,14 @@
       "Sentence": "Solids treatment at RP-1 includes gravity thickener and dissolved air flotation thickeners, anaerobic digestion, digester gas utilization, and centrifuge dewatering.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"

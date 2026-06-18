@@ -41,8 +41,7 @@
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -57,27 +56,25 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge",
-        "Nitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids.",
       "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
+        "Unspecified AS"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Filtration"
+        "Biofiltration",
+        "Separation"
       ],
       "Role": [
         "Tertiary"
@@ -93,8 +90,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -113,7 +109,9 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Currently, disinfected tertiary-treated wastewater is stored in one 3.08 million gallon (MG) bolted-steel tank.",
@@ -125,23 +123,25 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "A second 3.08 MG bolted-steel tank will be added with the completion of Phase II, as described in section II.E of this Fact Sheet.",
       "trigger_process": []
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "Tank",
       "Process": [
         "Hydrolysis"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Detention"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -168,10 +168,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -184,8 +184,7 @@
       "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -194,7 +193,9 @@
         "Landfill"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill.",
@@ -208,7 +209,9 @@
         "LandApplication"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
@@ -222,7 +225,9 @@
         "Composting"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",

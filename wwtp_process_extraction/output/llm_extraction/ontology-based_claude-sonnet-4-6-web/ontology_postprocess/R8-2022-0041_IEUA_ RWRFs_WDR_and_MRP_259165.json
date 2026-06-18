@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens...",
+      "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens, grit chambers, chemical addition, primary clarifiers, and flow equalization/emergency storage basins.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...grit chambers, chemical addition, primary clarifiers...",
+      "Sentence": "Preliminary and primary treatment at RP-1 includes mechanical bar screens, grit chambers, chemical addition, primary clarifiers, and flow equalization/emergency storage basins.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -37,12 +37,12 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "ChemicalAddition"
       ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -52,23 +52,6 @@
       "Website": null,
       "trigger_process": [
         "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...flow equalization/emergency storage basins",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -82,11 +65,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarifiers, and flow equalization/emergency storage basins",
+      "Sentence": "Preliminary and primary treatment at RP-1 includes...primary clarifiers, and flow equalization/emergency storage basins.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary and primary treatment at RP-1 includes...flow equalization/emergency storage basins.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -189,9 +189,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -203,14 +203,13 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
@@ -232,7 +231,8 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -252,7 +252,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -266,6 +267,7 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -295,9 +297,7 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -306,11 +306,11 @@
       "Website": null,
       "trigger_process": [
         "Cogeneration",
-        "Unspecified Incineration"
+        "Heat Recovery"
       ]
     },
     {
-      "Equipment": "BeltThickener",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Filtration",
         "Dewatering"
@@ -327,13 +327,14 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -343,12 +344,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids treatment at RP-1 includes...centrifuge dewatering. Centrifuge concentrate is pumped to the Non-Reclaimable Waste System (NRWS) line...",
+      "Sentence": "Solids treatment at RP-1 includes...centrifuge dewatering. Centrifuge concentrate is pumped to the Non-Reclaimable Waste System (NRWS) line.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Centrifuge",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -359,9 +360,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "biosolids are hauled to the Inland Empire Regional Composting Facility in the city of Rancho Cucamonga for further treatment to produce Class A compost",

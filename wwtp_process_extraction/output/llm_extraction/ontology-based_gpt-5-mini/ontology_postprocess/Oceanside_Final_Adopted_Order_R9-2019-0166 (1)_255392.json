@@ -63,7 +63,7 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
         "ActivatedSludge"
       ],
@@ -101,14 +101,15 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Discharger disinfects the secondary-treated wastewater with sodium hypochlorite",
+      "Sentence": "At the effluent pump station wet well, the Discharger disinfects the secondary-treated wastewater with sodium hypochlorite",
       "trigger_process": [
         "Chlorination"
       ]
@@ -117,12 +118,13 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "send the disinfected secondary-treated wastewater to the secondary effluent equalization pond (new emergency pond)",
+      "Sentence": "the disinfected secondary-treated wastewater to the secondary effluent equalization pond (new emergency pond)",
       "trigger_process": [
         "Equalization"
       ]
@@ -130,7 +132,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -152,6 +154,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Anaerobic"
       ],
       "Substance": [
@@ -165,7 +168,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering",
         "Centrifugation"
@@ -181,8 +184,7 @@
       "Sentence": "dewatering of digested sludge using centrifuges",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -198,7 +200,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "SLRWRF Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
+      "Sentence": "The SLRWRF Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
       "trigger_process": [
         "Land Application"
       ]
@@ -211,9 +213,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Screenings from the headworks and solids from the grit removal are collected onsite and trucked to a local landfill",

@@ -54,8 +54,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -84,12 +83,10 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -101,22 +98,23 @@
     },
     {
       "Equipment": "Reservoir",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
+        "Equalization",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility also has holding basins with a combined capacity of 168 million gallons. The Discharger uses these holding basins to temporarily store peak wet weather flows ... routes stored wastewater back to the headworks for full primary and secondary treatment.",
-      "trigger_process": []
+      "Sentence": "The Facility also has holding basins with a combined capacity of 168 million gallons.",
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -132,18 +130,18 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Recycling Plant further treats the UV-disinfected effluent with sand/anthracite filtration and sodium hypochlorite disinfection ...",
+      "Sentence": "The Recycling Plant further treats the UV-disinfected effluent with ... sodium hypochlorite disinfection ...",
       "trigger_process": [
         "Chlorination"
       ]
@@ -173,16 +171,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger thickens secondary sludge with a dissolved air flotation unit ...",
+      "Sentence": "The Discharger thickens secondary sludge with a dissolved air flotation unit",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
-        "pHAdjustment",
-        "ChemicalAddition"
+        "pHAdjustment"
       ],
       "Role": [
         "SolidsHandling",
@@ -196,14 +194,13 @@
       "Sentence": "combines secondary sludge with primary sludge that it treats with lime",
       "trigger_process": [
         "Lime Stabilization",
-        "Lime Treatment"
+        "Neutralization"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -213,28 +210,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and dewaters the combined sludge with centrifuges.",
+      "Sentence": "dewaters the combined sludge with centrifuges.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Incineration"
+        "Combustion"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Discharger incinerates the final dewatered sludge onsite, which produces ash.",
-      "trigger_process": [
-        "Unspecified Incineration"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -263,7 +259,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "If Facility incinerators are inoperable, the Discharger may haul biosolids to a landfill, an organic materials recovery facility, or the East Bay Municipal Utility District wastewater treatment plant.",
+      "Sentence": "If Facility incinerators are inoperable, the Discharger may haul biosolids to a landfill ...",
       "trigger_process": [
         "Biosolids Landfill"
       ]

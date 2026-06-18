@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes screening",
+      "Sentence": "includes the following wastewater treatment unit operations and processes: screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -109,7 +109,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary filtration",
+      "Sentence": "receives tertiary treatment through ... tertiary filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -125,7 +125,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and disinfection (2.4-MGD capacity)",
+      "Sentence": "receives tertiary treatment through ... disinfection (2.4-MGD capacity)",
       "trigger_process": [
         "Unspecified Disinfection"
       ]
@@ -145,6 +145,7 @@
       "Location": "on-site",
       "Sentence": "Biosolids are treated through dissolved air floatation",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -155,7 +156,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -168,7 +170,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -181,11 +183,46 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "centrifuge dewatering",
+      "Sentence": "Biosolids are treated through ... centrifuge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are hauled to either the Prima Deshecha Landfill in Orange County or the Otay Landfill in San Diego County",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings and grit from the 3A WRP are transported by a private contractor to a Class 1 sanitary landfill in Simi Valley",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

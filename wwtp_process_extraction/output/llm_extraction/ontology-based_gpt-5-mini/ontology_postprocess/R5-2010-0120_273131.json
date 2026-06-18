@@ -3,24 +3,34 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two oxidation ditches",
       "trigger_process": [
-        "Oxidation Ditch"
+        "Nitrification",
+        "Oxidation Ditch",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "MixingBasin",
       "Process": [
+        "Mixing",
         "Denitrification"
       ],
       "Role": [
-        "Anoxic"
+        "Anoxic",
+        "NitrogenRemoval",
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -49,12 +59,15 @@
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -62,8 +75,9 @@
       "trigger_process": []
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -77,28 +91,26 @@
       "Sentence": "three centrifuges",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Posttreatment"
       ],
-      "Substance": [
-        "Constituent-Nitrate"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "undisinfected secondary effluent is discharged to six percolation ponds",
+      "Sentence": "Undisinfected secondary effluent is discharged to six percolation ponds",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
         "Drying"
       ],
@@ -112,7 +124,66 @@
       "Location": "on-site",
       "Sentence": "Historically, sludge handling practices included discharging sludge to unlined sludge drying beds",
       "trigger_process": [
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
         "Drying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The WWTF does have approximately 1.5 acres of asphalt-lined sludge drying beds. The asphalt-lined sludge drying beds are only used in case of emergency.",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Drying",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sludge generated at the WWTF will continue to be hauled off-site and discharged to McCarthy Family Farms Inc., near Corcoran, California, for composting",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Metals"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Pretreatment consists of cerium settling through small tubs and silver recovery unit utilizing ultrafiltration.",
+      "trigger_process": [
+        "Ultrafiltration"
       ]
     }
   ]

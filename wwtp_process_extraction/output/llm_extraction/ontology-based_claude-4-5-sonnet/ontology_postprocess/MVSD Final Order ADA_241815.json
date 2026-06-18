@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -43,13 +43,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)...",
       "trigger_process": [
         "Trickling Filter"
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "TricklingFilter",
       "Process": [
         "Nitrification"
       ],
@@ -62,9 +62,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "...ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation...",
       "trigger_process": [
         "Nitrification",
+        "Trickling Filter",
         "Unspecified Nutrient Removal"
       ]
     },
@@ -79,7 +80,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -95,7 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -111,33 +112,37 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "...sand filtration, and ultraviolet light (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Nitrification"
+      ],
       "Role": [
         "Posttreatment",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "NutrientRemoval"
       ],
       "Substance": [
         "Constituent-Ammonia"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for 'polishing' treatment to remove ammonia and other pollutants before being discharged to Peyton Slough at Discharge Point 001.",
+      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for 'polishing' treatment to remove ammonia and other pollutants before being discharged to Peyton Slough...",
       "trigger_process": [
+        "Nitrification",
         "Unspecified Nutrient Removal",
         "Wetland"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -146,7 +151,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
       "trigger_process": [
         "Thickening"
       ]
@@ -165,13 +170,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -187,26 +192,7 @@
       "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
-      "trigger_process": [
-        "Biosolids Landfill"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -228,6 +214,57 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "...dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition",
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": [
+        "pHAdjuster"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger has since modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day.",
+      "trigger_process": [
+        "Lime Treatment"
+      ]
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
         "UVDisinfection"
@@ -244,9 +281,8 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -260,8 +296,7 @@
       "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -282,7 +317,9 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Nitrification"
+      ],
       "Role": [
         "Posttreatment",
         "NutrientRemoval"
@@ -292,6 +329,7 @@
       "Location": "on-site",
       "Sentence": "Nutrient Removal in Moorhen Marsh: The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
       "trigger_process": [
+        "Nitrification",
         "Unspecified Nutrient Removal",
         "Wetland"
       ]

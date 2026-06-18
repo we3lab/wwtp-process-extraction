@@ -6,7 +6,6 @@
         "Comminution"
       ],
       "Role": [
-        "Primary",
         "Pretreatment"
       ],
       "Substance": null,
@@ -25,7 +24,6 @@
         "Screening"
       ],
       "Role": [
-        "Primary",
         "Pretreatment"
       ],
       "Substance": null,
@@ -90,7 +88,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "waste activated sludge is aerobically digested and pumped to a centrifuge for partial thickening",
+      "Sentence": "The waste activated sludge is aerobically digested",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -115,6 +113,22 @@
         "Coagulation",
         "Unspecified Chemical Addition"
       ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary treatment is provided through coagulation, rapid mix, flocculation, and sand filtration",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": []
     },
     {
       "Equipment": "FlocculationBasin",
@@ -174,7 +188,8 @@
     {
       "Equipment": "CentrifugalThickener",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -188,7 +203,6 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Centrifuge",
         "Thickening"
       ]
     },
@@ -204,10 +218,30 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "thickened, digested sludge is stored in a 10,000-gallon underground storage tank prior to hauling to the Donald C. Tillman Water Reclamation Plant",
+      "Sentence": "The thickened, digested sludge is stored in a 10,000-gallon underground storage tank prior to hauling",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauling to the Donald C. Tillman Water Reclamation Plant located at 6100 Woodley Avenue, Van Nuys, California",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
     },
     {
       "Equipment": "Screen",
@@ -220,99 +254,58 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "installation of fine screens, anoxic/aerobic bioreactors, membrane tanks, and permeate pumps",
+      "Sentence": "installation of a Parshall flume, pump station with diversion structure, fine screens, anoxic/aerobic bioreactors, membrane tanks",
       "Source": "web_search",
-      "Website": "https://ceqanet.lci.ca.gov/2021040474/3",
+      "Website": "https://ceqanet.opr.ca.gov/2021040474/3",
       "trigger_process": [
         "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "installation of anoxic/aerobic bioreactors; MBR capable of reducing the amount of nitrogen compounds including ammonia",
-      "Source": "both",
-      "Website": "https://ceqanet.lci.ca.gov/2021040474/3",
-      "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
-        "Nitrification"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary",
+        "Anoxic",
         "Aerobic",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "installation of anoxic/aerobic bioreactors; MBR capable of reducing the amount of nitrogen compounds including ammonia",
-      "Source": "both",
-      "Website": "https://ceqanet.lci.ca.gov/2021040474/3",
+      "Sentence": "fine screens, anoxic/aerobic bioreactors, membrane tanks",
+      "Source": "web_search",
+      "Website": "https://ceqanet.opr.ca.gov/2021040474/3",
       "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Microfiltration"
+        "Biofiltration"
       ],
       "Role": [
-        "Tertiary",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": [
-        "Constituent-Ammonia"
+        "Constituent-Ammonia",
+        "Constituent-Nitrate"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "upgrade the facility with a Membrane Bioreactor (MBR) that is capable of reducing the amount of nitrogen compounds including ammonia",
+      "Sentence": "plans to upgrade the facility with a Membrane Bioreactor (MBR) that is capable of reducing the amount of nitrogen compounds including ammonia from the effluent discharge",
       "Source": "both",
-      "Website": "https://ceqanet.lci.ca.gov/2021040474/3",
+      "Website": "https://ceqanet.opr.ca.gov/2021040474/3",
       "trigger_process": [
-        "Membrane Bioreactor"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "installation of a new standby generator, new process equipment and pump replacement; new UV system",
-      "Source": "web_search",
-      "Website": "https://ceqanet.lci.ca.gov/2021040474/3",
-      "trigger_process": [
-        "UV Disinfection"
+        "Membrane Bioreactor",
+        "Unspecified Nutrient Removal"
       ]
     }
   ]

@@ -1,70 +1,6 @@
 {
   "items": [
     {
-      "Equipment": null,
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
-      "trigger_process": [
-        "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
-    },
-    {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
@@ -72,8 +8,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Recycled water from MWRP is discharged through DP-003, DP-004 and DP-007 to Rattlesnake Reservoir, Sand Canyon Reservoir, and Syphon Reservoir respectively, for storage and subsequent distribution.",
+      "Location": "off-site",
+      "Sentence": "recycled water from MWRP is discharged through DP-003, DP-004 and DP-007 to Rattlesnake Reservoir, Sand Canyon Reservoir, and Syphon Reservoir respectively, for storage and subsequent distribution.",
       "trigger_process": []
     },
     {
@@ -82,17 +18,21 @@
         "Dewatering"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Because of high groundwater elevation at the MWRP site, dewatering of the shallow groundwater zone is necessary... The area is dewatered through a network of shallow zone wells...",
+      "Sentence": "Because of high groundwater elevation at the MWRP site, dewatering of the shallow groundwater zone is necessary... The area is dewatered through a network of shallow zone wells",
       "trigger_process": [
         "Unspecified Dewatering"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -113,6 +53,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -120,14 +61,15 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "IRWD is constructing a Biosolids Handling and Energy Recovery Facility... and anaerobic digesters",
+      "Sentence": "includes the construction and/or installation of... anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -141,12 +83,11 @@
       "Sentence": "includes the construction and/or installation of... centrifuges for sludge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
@@ -164,6 +105,19 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "includes the construction and/or installation of an anaerobically digestable material receiving station",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
@@ -172,15 +126,16 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of... microturbines for generation of electricity and heat. The microturbines would operate with biogas produced in the anaerobic digesters.",
+      "Sentence": "includes the construction and/or installation of... microturbines for generation of electricity and heat",
       "trigger_process": [
-        "Cogeneration"
+        "Cogeneration",
+        "Heat Recovery"
       ]
     },
     {
       "Equipment": "Wetland",
       "Process": [
-        "Denitrification"
+        "Biofiltration"
       ],
       "Role": [
         "NitrogenRemoval",
@@ -189,10 +144,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "IRWD operates a network of natural treatment wetlands in the San Diego Creek Watershed that remove nitrogen and phosphorus from San Diego Creek and its tributaries.",
+      "Sentence": "IRWD operates a network of natural treatment wetlands in the San Diego Creek Watershed that remove nitrogen and phosphorus",
       "trigger_process": [
-        "Denitrification",
-        "Unspecified AS",
         "Wetland"
       ]
     }

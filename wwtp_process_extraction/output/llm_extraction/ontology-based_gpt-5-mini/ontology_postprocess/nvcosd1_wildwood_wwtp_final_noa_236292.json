@@ -33,10 +33,8 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
@@ -58,13 +56,16 @@
       "Role": [
         "Secondary",
         "NutrientRemoval",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two oxidation ditches providing biological nutrient removal;",
       "trigger_process": [
+        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification",
         "Oxidation Ditch"
@@ -105,8 +106,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -122,8 +122,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "AerobicDigestion",
-        "Aeration"
+        "Aeration",
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -131,8 +131,7 @@
         "Aerobic"
       ],
       "Substance": [
-        "Fluid-Sludge",
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -142,10 +141,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -158,8 +157,7 @@
       "Sentence": "sludge from the digestion area is pumped to a centrifuge for dewatering;",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -183,8 +181,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -194,7 +191,7 @@
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The Facility includes sludge drying beds; however, the sludge drying beds have not been used for that purpose for several years.",
+      "Sentence": "the sludge drying beds have not been used for that purpose for several years.",
       "trigger_process": [
         "Drying"
       ]

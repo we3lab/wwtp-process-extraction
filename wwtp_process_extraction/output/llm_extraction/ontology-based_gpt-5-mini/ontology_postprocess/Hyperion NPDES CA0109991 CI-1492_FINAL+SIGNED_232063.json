@@ -11,7 +11,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks removes coarse solids (bar screens) ... headworks consists of eight barscreens",
+      "Sentence": "The headworks removes coarse solids (bar screens)",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "provisions for two future bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,9 +43,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sand and silt (grit removal) from wastewater ... grit capture classifier",
+      "Sentence": "sand and silt (grit removal) from wastewater",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Flocculant-Polymer",
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Advanced Primary Treatment \u2013 Includes primary sedimentation with coagulation and flocculation using anionic polymer and ferric chloride, and surface skimming",
+      "trigger_process": [
+        "Coagulation",
+        "Ferric Chloride Addition",
+        "Flocculation",
+        "Polymer Addition",
+        "Primary Clarification"
       ]
     },
     {
@@ -45,61 +86,6 @@
       "trigger_process": []
     },
     {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": [
-        "Coagulant-FerricChloride"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "primary sedimentation with coagulation ... using ... ferric chloride",
-      "trigger_process": [
-        "Coagulation",
-        "Ferric Chloride Addition",
-        "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "FlocculationBasin",
-      "Process": [
-        "Flocculation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": [
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "primary sedimentation with ... flocculation using anionic polymer",
-      "trigger_process": [
-        "Flocculation",
-        "Polymer Addition"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "four primary batteries consisting of a total of 26 primary sedimentation tanks",
-      "trigger_process": [
-        "Primary Clarification"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -110,8 +96,7 @@
         "Aerobic"
       ],
       "Substance": [
-        "HighPurityOxygen",
-        "Sludge-MixedLiquor"
+        "HighPurityOxygen"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -131,7 +116,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "36 circular clarifiers each with a design capacity of about 30 MGD",
+      "Sentence": "secondary clarification...36 circular clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -142,30 +127,28 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary",
-        "SolidsHandling"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return Activated Sludge (RAS) pumping system",
+      "Sentence": "and a Return Activated Sludge (RAS) pumping system",
       "trigger_process": []
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "MakeUp"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Approximately 5 MGD of the secondary effluent is directed through a filtration process",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -174,15 +157,30 @@
         "Disinfection"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The remaining service water is disinfected and used as high-pressure effluent for a variety of uses within the Facility",
+      "Sentence": "The remaining service water is disinfected and used as high-pressure effluent",
       "trigger_process": [
         "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "thickened waste activated sludge",
+      "trigger_process": [
+        "Thickening"
       ]
     },
     {
@@ -199,7 +197,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the remaining solid fractions ... are anaerobically digested onsite ... using 18 anaerobic digesters",
+      "Sentence": "the remaining solid fractions ... are anaerobically digested onsite",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -221,10 +219,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -234,19 +231,50 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The digested solids ... are dewatered using centrifuges",
+      "Sentence": "and dewatered using centrifuges",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The fine solids ... are hauled away to landfills",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication",
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The biosolids ... are beneficially reused offsite at the Green Acre Farm ... for land application and composting projects",
+      "trigger_process": [
+        "Composting",
+        "Land Application"
       ]
     },
     {
       "Equipment": "Conditioner",
       "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -258,21 +286,20 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "a major part of the gas is currently exported to the ... Scattergood Steam Generating Plant ... used as fuel in the generation of electricity",
+      "Sentence": "digester gas is currently exported to the ... Scattergood Steam Generating Plant ... used as fuel in the generation of electricity",
       "trigger_process": [
-        "Cogeneration"
+        "Cogeneration",
+        "Heat Recovery"
       ]
     },
     {
       "Equipment": "Boiler",
       "Process": [
-        "Incineration"
+        "Combustion"
       ],
       "Role": [
         "SolidsHandling"
@@ -280,48 +307,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "During interruptions in the export of steam ... digester gas can be used as fuel for in-plant boilers that provide steam to heat the anaerobic digesters",
-      "trigger_process": [
-        "Unspecified Incineration"
-      ]
+      "Sentence": "digester gas can be used as fuel for in-plant boilers that provide steam to heat the anaerobic digesters",
+      "trigger_process": []
     },
     {
       "Equipment": "Flare",
       "Process": [
-        "Incineration"
+        "Combustion"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Any remaining non-exported digester gas may be flared",
-      "trigger_process": [
-        "Unspecified Incineration"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "HAWPF will process up to 2 MGD primary treated effluent through fine screening",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess",
-        "ActivatedSludge"
+        "Biofiltration"
       ],
       "Role": [
         "Tertiary"
@@ -329,7 +333,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "HAWPF will process ... membrane bioreactor (MBR)",
+      "Sentence": "The Permittee plans to conduct a Membrane Bioreactor (MBR) Pilot Facility project",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -345,15 +349,14 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "HAWPF will process ... reverse osmosis (RO)",
+      "Sentence": "will be treated by MBR process, reverse osmosis (RO), and advanced oxidation process (AOP)",
       "trigger_process": [
         "Reverse Osmosis"
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": null,
       "Process": [
-        "UVDisinfection",
         "AdvancedOxidation"
       ],
       "Role": [
@@ -362,17 +365,32 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "HAWPF will process ... UV disinfection/advanced oxidation process (UV/AOP)",
+      "Sentence": "will be treated by MBR process, reverse osmosis (RO), and advanced oxidation process (AOP)",
       "trigger_process": [
-        "UV Disinfection",
+        "Oxidation",
         "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "HAWPF will process up to 2 MGD primary treated effluent through fine screening",
+      "trigger_process": [
+        "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess",
-        "ActivatedSludge"
+        "Biofiltration"
       ],
       "Role": [
         "Tertiary"
@@ -380,27 +398,43 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Permittee plans to conduct a Membrane Bioreactor (MBR) Pilot Facility project in the next permitting cycle ... treated by MBR process, reverse osmosis (RO), and advanced oxidation process (AOP) ",
+      "Sentence": "HAWPF ... through ... membrane bioreactor (MBR)",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "LandApplication",
-        "Composting"
+        "ReverseOsmosis"
       ],
       "Role": [
-        "SolidsHandling"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The biosolids ... are beneficially reused offsite at the Green Acre Farm in Kern County for land application and composting projects",
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "HAWPF ... through ... reverse osmosis (RO)",
       "trigger_process": [
-        "Composting",
-        "Land Application"
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation",
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "HAWPF ... UV disinfection/advanced oxidation process (UV/AOP) to produce 1.5 MGD of advanced treated recycled water",
+      "trigger_process": [
+        "UV Disinfection",
+        "UV-AOP"
       ]
     }
   ]

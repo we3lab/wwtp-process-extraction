@@ -6,7 +6,7 @@
         "Screening"
       ],
       "Role": [
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -22,71 +22,44 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "vortex grit removal mechanism",
+      "Sentence": "a bypass channel/bar with screens and a vortex grit removal mechanism",
       "trigger_process": [
         "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pumped the combined flow to the Facility",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "ActivatedSludge",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Each bioreactor train consists of two anoxic zones",
-      "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
-        "Nitrification"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by one aerobic zone with two aeration grids",
+      "Sentence": "Each bioreactor train consists of two anoxic zones followed by one aerobic zone with two aeration grids",
       "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MicrofiltrationUnit",
       "Process": [
-        "MembraneProcess"
+        "Microfiltration"
       ],
       "Role": [
         "Tertiary"
@@ -94,9 +67,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the membrane filtration units, which provide tertiary treatment",
+      "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment",
       "trigger_process": [
-        "Unspecified Membrane Process"
+        "Microfiltration"
       ]
     },
     {
@@ -146,14 +119,15 @@
         "Digestion"
       ],
       "Role": [
-        "Detention"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The return activated sludge (RAS) is held in the interchange tanks for approximately 10 days",
+      "Sentence": "Solids are passed through a solids reduction process utilizing interchange tanks",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -163,39 +137,29 @@
       "Process": [
         "Digestion"
       ],
-      "Role": null,
-      "Substance": [
-        "Sludge-MixedLiquor"
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "reduced solids are purged into the digester, which holds the solids for 10 to 15 days",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the solids are sent to dewatering equipment",
+      "Sentence": "the reduced solids are purged into the digester, which holds the solids for 10 to 15 days",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -204,8 +168,7 @@
       "Sentence": "dewatering equipment, which includes a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -213,7 +176,9 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -229,11 +194,15 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility",
+      "Sentence": "the biosolids could be hauled to a Class B Solids land application facility",
       "trigger_process": [
         "Land Application"
       ]
@@ -243,11 +212,15 @@
       "Process": [
         "Composting"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "As a backup option, the biosolids could be hauled ... to a composting facility",
+      "Sentence": "the biosolids could be hauled to ... a composting facility.",
       "trigger_process": [
         "Composting"
       ]

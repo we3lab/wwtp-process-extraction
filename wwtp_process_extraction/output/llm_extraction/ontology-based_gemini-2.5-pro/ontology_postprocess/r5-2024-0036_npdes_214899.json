@@ -36,15 +36,15 @@
       "Equipment": "Reactor",
       "Process": [
         "ActivatedSludge",
-        "Denitrification",
-        "Nitrification"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Anoxic",
         "Aerobic",
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -57,9 +57,9 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MembraneBioreactor",
       "Process": [
-        "Filtration"
+        "Biofiltration"
       ],
       "Role": [
         "Tertiary"
@@ -69,17 +69,17 @@
       "Location": "on-site",
       "Sentence": "Flow from the aerobic zone is pumped to the membrane filtration units, which provide tertiary treatment.",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Membrane Bioreactor"
       ]
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -123,7 +123,7 @@
         "Stabilization"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -139,7 +139,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Detention"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -152,7 +153,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering",
         "Centrifugation"
@@ -168,8 +169,7 @@
       "Sentence": "After detainment in the digester, the solids are sent to dewatering equipment, which includes a centrifuge.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -180,7 +180,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered biosolids are hauled off-site to the Clovis Municipal Solid Waste Landfill.",
@@ -196,7 +198,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",
@@ -212,7 +216,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "As a backup option, the biosolids could be hauled to a Class B Solids land application facility or a composting facility.",

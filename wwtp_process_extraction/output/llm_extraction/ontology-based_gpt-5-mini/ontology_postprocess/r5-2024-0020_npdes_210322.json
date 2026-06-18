@@ -33,14 +33,12 @@
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "MixingBasin",
       "Process": [
         "Denitrification"
       ],
       "Role": [
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -54,7 +52,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -70,13 +69,12 @@
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "MixingBasin",
       "Process": [
         "Denitrification"
       ],
       "Role": [
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -123,8 +121,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -169,7 +167,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -191,14 +189,13 @@
     {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are hauled off-site for disposal at the Altamont Landfill",
@@ -212,6 +209,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "Anaerobic",
         "SolidsHandling",
         "Stabilization"
       ],
@@ -226,7 +224,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
@@ -238,15 +236,14 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "intend to implement ... centrifuge dewatering system",
+      "Sentence": "the Discharger intends to implement ... a centrifuge dewatering system",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
         "Drying"
       ],
@@ -262,13 +259,31 @@
       ]
     },
     {
+      "Equipment": "OxidationDitch",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "retrofit the two existing oxidation ditches into staged basins with diffused air",
+      "trigger_process": [
+        "Oxidation Ditch"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -300,18 +315,21 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "return activated sludge (RAS) pump station will be constructed",
+      "Sentence": "a return activated sludge (RAS) pump station will be constructed",
       "trigger_process": []
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
+        "Tertiary",
         "Feed"
       ],
       "Substance": null,
@@ -334,7 +352,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "plans to upgrade the chlorine disinfection facilities to utilize free chlorine with a lower CT ... modifying one of the existing chlorine contact basins to incorporate two new separate chlorine contact basins",
+      "Sentence": "plans to upgrade the chlorine disinfection facilities to utilize free chlorine with a lower CT...modifying one of the existing chlorine contact basins to incorporate two new separate chlorine contact basins",
       "trigger_process": [
         "Chlorination"
       ]

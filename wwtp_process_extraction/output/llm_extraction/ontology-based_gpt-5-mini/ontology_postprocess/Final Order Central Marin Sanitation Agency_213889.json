@@ -1,22 +1,6 @@
 {
   "items": [
     {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Primary treatment at CMSA includes chemical injection",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -27,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment at CMSA includes ... screening",
+      "Sentence": "Primary treatment at CMSA includes chemical injection, screening, grit removal, and primary clarification.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -43,9 +27,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment at CMSA includes ... grit removal",
+      "Sentence": "Primary treatment at CMSA includes chemical injection, screening, grit removal, and primary clarification.",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary treatment at CMSA includes chemical injection...",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
       ]
     },
     {
@@ -59,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment at CMSA includes ... primary clarification",
+      "Sentence": "Primary treatment at CMSA includes ... primary clarification.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -87,13 +87,12 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the remainder is routed directly from the primary clarifiers to the aeration basins",
+      "Sentence": "From the aeration basins, the remaining treatment process consists of secondary clarification, chlorine disinfection, and dechlorination...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -109,7 +108,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the aeration basins, the remaining treatment process consists of secondary clarification",
+      "Sentence": "From the aeration basins, the remaining treatment process consists of secondary clarification...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -121,20 +120,22 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the remaining treatment process consists of ... chlorine disinfection, and dechlorination with sodium bisulfite",
+      "Sentence": "From the aeration basins, the remaining treatment process consists of secondary clarification, chlorine disinfection, and dechlorination with sodium bisulfite.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage"
@@ -142,25 +143,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the treatment plant uses an onsite 7 MG storage basin",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Mixing"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "primary-treated wastewater above 30 MGD is bypassed around the biological treatment processes when necessary and blended with the biologically-treated wastewater prior to disinfection",
+      "Sentence": "During wet weather or plant upset, the treatment plant uses an onsite 7 MG storage basin.",
       "trigger_process": []
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -170,7 +159,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing at the treatment plant includes rotary drum thickeners",
+      "Sentence": "Sludge processing at the treatment plant includes rotary drum thickeners...",
       "trigger_process": [
         "Thickening"
       ]
@@ -182,24 +171,23 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing at the treatment plant includes ... anaerobic digesters",
+      "Sentence": "Sludge processing at the treatment plant includes ... anaerobic digesters.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -209,28 +197,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing at the treatment plant includes ... dewatering centrifuges",
+      "Sentence": "Sludge processing at the treatment plant includes ... dewatering centrifuges.",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication",
-        "Landfill"
-      ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Biosolids are land applied at ranches in Solano County, used for cover at landfill and recycling centers, or developed into fertilizer for agricultural use",
-      "trigger_process": [
-        "Biosolids Landfill",
-        "Land Application"
       ]
     },
     {
@@ -242,59 +212,42 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "In 2022, CMSA started operation and began commissioning a newly installed 995-kilowatt cogeneration system",
+      "Sentence": "In 2022, CMSA started operation and began commissioning a newly installed 995-kilowatt cogeneration system.",
       "trigger_process": [
-        "Cogeneration"
+        "Cogeneration",
+        "Heat Recovery"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": null,
       "Process": [
-        "Centrifugation"
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "CMSA also plans to replace all three of its dewatering centrifuges during the next permit term",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Biosolids are land applied at ranches in Solano County...",
       "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Land Application"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": null,
       "Process": [
-        "Sedimentation"
+        "Landfill"
       ],
       "Role": [
-        "Secondary"
+        "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "CMSA ... plans ... to rehabilitate one of its secondary clarifiers in 2023",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Biosolids are ... used for cover at landfill and recycling centers...",
       "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "CMSA rehabilitated the other secondary clarifiers during the previous permit term",
-      "trigger_process": [
-        "Secondary Clarification"
+        "Biosolids Landfill"
       ]
     }
   ]

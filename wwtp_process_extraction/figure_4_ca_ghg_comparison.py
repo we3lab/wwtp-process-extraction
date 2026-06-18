@@ -922,7 +922,7 @@ if __name__ == '__main__':
 
     summary = pd.DataFrame(rows)
     print(summary.to_string(index=False))
-    summary.to_csv(OUTPUT_DIR / 'ca_ghg_summary.csv', index=False)
+    summary.to_csv(OUTPUT_DIR / 'ghg' / 'ca_ghg_summary.csv', index=False)
 
     print('\n── % change relative to El Abbadi (CWNS-only) ──')
     for key, name in [('source2', 'El Abbadi (all sources)'),

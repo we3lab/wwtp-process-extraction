@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Perforated plate screens",
+      "Sentence": "Plate screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Vortex-type grit basins",
+      "Sentence": "Vortex-type grit chambers",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -49,28 +49,11 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "flow equalization basins",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "ChemicalAddition"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -82,12 +65,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Activated sludge (AS) process operated in nitrification/denitrification ... may use methanol augmentation in the anoxic zone at the head of each aeration basin",
+      "Sentence": "Activated sludge (AS) process operated in nitrification/denitrification",
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
-        "Nitrification",
-        "Unspecified Chemical Addition"
+        "Nitrification"
       ]
     },
     {
@@ -101,7 +83,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by secondary clarification",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -109,7 +91,7 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
+        "Biofiltration",
         "Microfiltration"
       ],
       "Role": [
@@ -119,16 +101,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Membrane bioreactor (MBR) process with nutrient removal operated as separate treatment train",
+      "Sentence": "Membrane bioreactor (MBR) process with nutrient removal",
       "trigger_process": [
         "Membrane Bioreactor",
         "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": "MicrofiltrationUnit",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Microfiltration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -136,9 +118,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Microfiltration membrane technology that is part of the MBR treatment train",
+      "Sentence": "Conventional down flow dual media filters",
       "trigger_process": [
-        "Microfiltration"
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "CoagulationBasin",
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Coagulant-Alum"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Addition of Alum prior to filtration",
+      "trigger_process": [
+        "Alum Addition",
+        "Coagulation"
       ]
     },
     {
@@ -158,76 +159,6 @@
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Addition of Alum prior to filtration and high rate clarification",
-      "trigger_process": [
-        "Alum Addition",
-        "Coagulation"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "high rate clarification",
-      "trigger_process": [
-        "Unspecified Clarification"
-      ]
-    },
-    {
-      "Equipment": "RapidSandFilter",
-      "Process": [
-        "RapidSandFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Conventional down flow dual media filters",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "disinfection by chlorination",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
         "pHAdjustment"
@@ -244,9 +175,44 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "may use methanol augmentation in the anoxic zone at the head of each aeration basin",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sludge and scum are collected and pumped into an OCSD sewer line, then to OCSD's Reclamation Plant No. 1 for treatment and disposal",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
       "Equipment": "Thickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -282,7 +248,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -298,15 +264,13 @@
       "Sentence": "centrifuges for sludge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -322,18 +286,6 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "anaerobically digestable material receiving station",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
@@ -344,23 +296,8 @@
       "Location": "on-site",
       "Sentence": "microturbines for generation of electricity and heat",
       "trigger_process": [
-        "Cogeneration"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "sludge and scum are collected and pumped into an OCSD sewer line, then to OCSD's Reclamation Plant No. 1 for treatment and disposal",
-      "trigger_process": [
-        "Unspecified Disposal"
+        "Cogeneration",
+        "Heat Recovery"
       ]
     }
   ]

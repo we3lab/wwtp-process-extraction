@@ -5,13 +5,11 @@
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of screening, grit removal...",
+      "Location": "off-site",
+      "Sentence": "screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -21,13 +19,11 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of screening, grit removal...",
+      "Location": "off-site",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -35,17 +31,19 @@
     {
       "Equipment": "SequencingBatchReactor",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Sedimentation"
       ],
       "Role": [
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "seven sequencing batch reactors (activated sludge/secondary clarification)",
       "trigger_process": [
-        "SBR"
+        "SBR",
+        "Secondary Clarification"
       ]
     },
     {
@@ -56,41 +54,34 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "flow equalization",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "StaticMixer",
       "Process": [
-        "Coagulation"
+        "Mixing"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "rapid mix/flocculation",
-      "trigger_process": [
-        "Coagulation",
-        "Unspecified Chemical Addition"
-      ]
+      "Location": "off-site",
+      "Sentence": "rapid mix",
+      "trigger_process": []
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
         "Flocculation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "rapid mix/flocculation",
+      "Location": "off-site",
+      "Sentence": "flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -105,7 +96,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "filtration",
       "trigger_process": [
         "Media Filtration"
@@ -115,15 +106,14 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "chlorination and dechlorination",
       "trigger_process": [
         "Chlorination",
@@ -136,24 +126,22 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "waste activated sludge is conveyed to three aerobic digesters",
+      "Location": "off-site",
+      "Sentence": "three aerobic digesters",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -162,12 +150,11 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "Digested sludge is dewatered with a centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -182,11 +169,27 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility can also utilize on-site lined drying beds as a secondary method of dewatering.",
+      "Location": "off-site",
+      "Sentence": "on-site lined drying beds as a secondary method of dewatering",
       "trigger_process": [
         "Drying"
       ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Filtrate from the dewatering process is returned to the headworks",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -196,40 +199,14 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "sludge cake (Class B Biosolids) is delivered directly to a local composting facility",
       "trigger_process": [
         "Composting"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Filtrate from the dewatering process is returned to the headworks",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Undisinfected secondary treated wastewater may be discharged to an unlined storage/percolation basin",
-      "trigger_process": [
-        "Unspecified Lagoon"
       ]
     }
   ]

@@ -59,8 +59,7 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Retention"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -77,33 +76,32 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "MLE"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins",
-      "Source": "both",
-      "Website": "https://www.dupont.com/knowledge/success-with-mbr-technology-healdsburg-wastewater.html",
+      "Source": "permit_text",
+      "Website": null,
       "trigger_process": [
         "AO (anoxic/oxic)",
         "Denitrification",
-        "MLE",
         "Nitrification"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Microfiltration",
-        "ActivatedSludge"
+        "Biofiltration",
+        "Microfiltration"
       ],
       "Role": [
         "Secondary",
@@ -114,9 +112,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration through a membrane bioreactor (MBR)\u2026 The MBR combines the secondary biological treatment and immersed membrane filtration processes",
+      "Sentence": "microfiltration through a membrane bioreactor (MBR); The MBR combines the secondary biological treatment and immersed membrane filtration processes... separates suspended solids from the wastewater using a very fine filter (i.e., ultrafilter)",
       "Source": "both",
-      "Website": "https://www.wwdmag.com/wastewater-treatment/article/10937815/10-years-counting-healdsburg-wwtp-mempulse-system-with-original-b40n-membranes",
+      "Website": "https://www.dupont.com/knowledge/success-with-mbr-technology-healdsburg-wastewater.html",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -140,6 +138,24 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": []
+    },
+    {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
@@ -149,7 +165,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Facility has two recycled water storage ponds, 25 million gallon and 15 million gallon capacity, with synthetic liners to provide storage for the disinfected tertiary treated recycled water",
+      "Sentence": "Filtered and UV disinfected wastewater flows by gravity to the 25 million gallon recycled water storage pond, 15 million gallon recycled water storage pond, or Basalt Pond",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -157,9 +173,9 @@
       ]
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Screening"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -173,14 +189,14 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Screening/Microstrainer"
+        "Thickening"
       ]
     },
     {
       "Equipment": "Digester",
       "Process": [
-        "AnaerobicDigestion",
-        "AerobicDigestion"
+        "AerobicDigestion",
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -191,7 +207,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two digester tanks, referred to as interchange reactors\u2026 proprietary solids removal and digestion process that combines aerobic and anaerobic processes",
+      "Sentence": "proprietary solids removal and digestion process that combines aerobic and anaerobic processes. Solids are periodically removed from the biological process and transferred to two digester tanks, referred to as interchange reactors",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -200,7 +216,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -214,14 +230,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge",
+      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge and conveyed to a dumpster",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering",
-        "Polymer Addition",
-        "Thickening"
+        "Polymer Addition"
       ]
     },
     {

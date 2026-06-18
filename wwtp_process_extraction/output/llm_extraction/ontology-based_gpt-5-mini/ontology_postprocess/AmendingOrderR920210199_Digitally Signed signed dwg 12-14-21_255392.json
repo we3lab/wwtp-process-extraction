@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the headworks of the SLRWRF includes mechanical bar screens",
+      "Sentence": "The headworks of the SLRWRF includes mechanical bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,14 +27,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the headworks of the SLRWRF includes ... aerated grit removal",
+      "Sentence": "The headworks of the SLRWRF includes ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -57,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant 1 consists of ... primary sedimentation ... Plant 2 consists of primary sedimentation",
+      "Sentence": "Plant 1 consists of ... primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -68,8 +70,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -96,15 +97,22 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger may send the Plant 1 effluent to the effluent pump station wet well",
+      "trigger_process": []
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -116,23 +124,12 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Drain"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pumps the disinfected secondary-treated wastewater to the OOO",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -145,7 +142,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -155,7 +152,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "features gravity belt thickeners for thickening secondary sludge",
+      "Sentence": "The SLRWRF features gravity belt thickeners for thickening secondary sludge",
       "trigger_process": [
         "Thickening"
       ]
@@ -166,8 +163,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -180,7 +176,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Dewatering"
       ],
@@ -194,50 +190,13 @@
       "Location": "on-site",
       "Sentence": "dewatering of digested sludge using centrifuges",
       "trigger_process": [
+        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatering of digested sludge using centrifuges",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
@@ -252,59 +211,19 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": null,
       "Process": [
-        "Sedimentation"
+        "LandApplication"
       ],
       "Role": [
-        "Primary"
+        "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "addition of two primary clarifiers",
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The SLRWRF Class B biosolids are hauled offsite by a contractor and used for land application in Arizona",
       "trigger_process": [
-        "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "addition of two aeration basins ... upgrading Plant 2\u2019s secondary process from non-nitrifying/partial nitrifying to full nitrification-denitrification",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Nitrification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "addition of ... two secondary clarifiers",
-      "trigger_process": [
-        "Secondary Clarification"
+        "Land Application"
       ]
     },
     {
@@ -312,9 +231,7 @@
       "Process": [
         "Microfiltration"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -328,9 +245,7 @@
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -344,9 +259,7 @@
       "Process": [
         "AdvancedOxidation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -362,9 +275,7 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -373,6 +284,57 @@
       "Sentence": "The AWPF treatment will include ... free chlorine disinfection",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "This capacity upgrade includes the addition of two primary clarifiers",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the upgrades include ... addition of two aeration basins ... upgrading Plant 2\u2019s secondary process from non-nitrifying/partial nitrifying to full nitrification-denitrification",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "This capacity upgrade includes the addition of ... two secondary clarifiers",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     }
   ]

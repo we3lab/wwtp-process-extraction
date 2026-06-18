@@ -1,7 +1,7 @@
 {
   "items": [
     {
-      "Equipment": "Bar Screens",
+      "Equipment": "Bar Screen",
       "Process": [
         "Screening"
       ],
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "Equipment": "Barminutors",
+      "Equipment": "Barminutor",
       "Process": [
         "Comminution"
       ],
@@ -68,7 +68,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -102,14 +103,15 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine",
-        "Disinfectant-Dechlorination"
+        "Disinfectant-Sodium Bisulfite"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -125,8 +127,7 @@
         "Flotation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Thickening"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -135,6 +136,7 @@
       "Location": "on-site",
       "Sentence": "Waste activated sludge is thickened by dissolved air floatation and blended with primary solids before anaerobic digestion.",
       "trigger_process": [
+        "Flotation",
         "Thickening"
       ]
     },
@@ -160,10 +162,11 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Dewatering"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -208,25 +211,42 @@
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "FlowEqualizationBasin",
       "Process": [
-        "Chlorination"
+        "Equalization"
       ],
       "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Tertiary Facilities include a flow equalization basin, four chlorine contact basins, a Lamella Thickener, and a reclamation wet well and conveyance pumps.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "ChlorineContactBasin",
+      "Process": [
+        "Chlorination",
         "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Finished water is then conveyed to the Tertiary Facility for chlorination.",
+      "Sentence": "The Tertiary Facilities include a flow equalization basin, four chlorine contact basins, a Lamella Thickener, and a reclamation wet well and conveyance pumps.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "LamellaTank",
+      "Equipment": "LamellaTankThickener",
       "Process": [
         "Sedimentation"
       ],
@@ -242,65 +262,23 @@
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Disinfection"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "Disinfectant-Dechlorination"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Reverse osmosis reject water is chlorinated and dechlorinated before it is sent to the effluent station for ocean discharge.",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation"
       ],
       "Role": [
         "SolidsHandling",
-        "Thickening"
-      ],
-      "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The following projects are planned: Thickener replacement",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Polymer Addition",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "ScrewPress",
-      "Process": [
         "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The following projects are planned: Dewatering Improvements \u2013 install new screw press and backup system",
+      "Sentence": "Dewatering Improvements \u2013 install new screw press and backup system",
       "trigger_process": [
-        "Unspecified Dewatering"
+        "Centrifuge",
+        "Mechanical Dewatering"
       ]
     }
   ]

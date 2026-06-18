@@ -11,35 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The SRTTP headworks consists of the coarse bar screens",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "influent pump station wet-well",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "fine drum screens",
+      "Sentence": "coarse bar screens, influent pump station wet-well, flow meter, fine drum screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -61,43 +33,64 @@
       ]
     },
     {
-      "Equipment": "SeparationTank",
+      "Equipment": "GritChamber",
       "Process": [
+        "Cleaning",
         "Sedimentation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit classifiers, grit and debris is washed to remove organics",
+      "Sentence": "In the grit classifiers, grit and debris is washed to remove organics",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Grit Removal"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "influent pump station wet-well",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "drain pump station to receive the SRTTP return flows",
+      "trigger_process": []
     },
     {
       "Equipment": "SequencingBatchReactor",
       "Process": [
         "ActivatedSludge",
         "Aeration",
-        "Sedimentation",
-        "Recirculation"
+        "Sedimentation"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The SBRs operate in four different sequences or steps which are fill, react/compressed air, settle, and decant",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "SBR",
         "Secondary Clarification"
       ]
@@ -107,39 +100,46 @@
       "Process": [
         "ChemicalAddition"
       ],
-      "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval"
-      ],
-      "Substance": [
-        "WastewaterTreatmentChemical"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A methanol feed system is available to provide supplemental carbon to the SBRs",
       "trigger_process": [
-        "Alum Addition",
-        "Ferric Chloride Addition",
-        "Lime Treatment",
-        "Oxidation",
-        "Polymer Addition",
-        "Reduction",
-        "Unspecified Nutrient Removal"
+        "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": null,
       "Process": [
-        "Mixing"
+        "ChemicalAddition",
+        "Coagulation"
       ],
       "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-Alum"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "alum feed system...to neutralize phosphorous",
+      "trigger_process": [
+        "Alum Addition",
+        "Coagulation"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
         "Equalization",
-        "Storage"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The SRTTP\u2019s tertiary treatment process includes three flow equalization basins",
+      "Sentence": "three flow equalization basins",
       "trigger_process": [
         "Equalization"
       ]
@@ -162,8 +162,7 @@
         "Filtration"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -176,8 +175,7 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Chlorination"
       ],
       "Role": [
         "Tertiary"
@@ -209,40 +207,29 @@
       ]
     },
     {
-      "Equipment": "SluiceGate",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "overflow weir structure that can send the filtered/unchlorinated flow to the Oceanside Ocean Outfall Pump Station (OOOPS)",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Containment",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "flow will automatically be diverted to the Lemon Grove Impoundment Basins for containment to prevent a spill",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Drain"
+        "Tertiary",
+        "Permeate",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "drain pump station to receive the SRTTP return flows",
+      "Sentence": "recycled water pumps and metering facilities",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flow will automatically be diverted to the Lemon Grove Impoundment Basins for containment",
       "trigger_process": []
     },
     {
@@ -263,8 +250,7 @@
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion",
-        "Digestion"
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -284,7 +270,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -300,10 +286,10 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "Dewatering",
+        "Centrifugation"
       ],
       "Role": [
         "SolidsHandling"
@@ -316,8 +302,7 @@
       "Sentence": "centrifuges for sludge dewatering",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -332,7 +317,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "onsite biosolids storage facility",
+      "Sentence": "an onsite biosolids storage facility",
       "trigger_process": []
     },
     {
@@ -343,44 +328,14 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "If the sludge is non-hazardous, the Discharger send the biosolids to the municipal landfill",
+      "Sentence": "send the biosolids to the municipal landfill",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "recycled water pumps and metering facilities",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Coagulation"
-      ],
-      "Role": [
-        "PhosphorusRemoval"
-      ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "alum feed system (if necessary, to neutralize phosphorous)",
-      "trigger_process": [
-        "Alum Addition",
-        "Chemical P Removal",
-        "Coagulation"
       ]
     }
   ]

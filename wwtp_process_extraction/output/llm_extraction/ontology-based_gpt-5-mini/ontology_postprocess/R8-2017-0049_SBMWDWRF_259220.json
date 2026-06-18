@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening and grit removal",
+      "Sentence": "The general treatment processes consists of screening and grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening and grit removal",
+      "Sentence": "The general treatment processes consists of screening and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -53,13 +53,13 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -100,9 +100,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination",
+      "Sentence": "secondary clarification, and chlorination",
       "trigger_process": [
         "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "effluent from the Facility is directed to the Colton/San Bernardino Regional Tertiary Treatment and Water Reclamation Agency's Rapid Infiltration and Extraction Facility for further treatment and disposal",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -112,7 +126,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -125,7 +140,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -143,8 +158,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Dewatering",
         "Centrifugation"
       ],
       "Role": [
@@ -158,8 +174,7 @@
       "Sentence": "dewatered using ... centrifuge",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -179,6 +194,16 @@
       "trigger_process": [
         "Unspecified Disposal"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a collection box with a pump installed to convey accumulated runoff to the treatment plant headworks",
+      "trigger_process": []
     }
   ]
 }

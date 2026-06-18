@@ -23,7 +23,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility improvements included... new ultra-fine screening and grit removal headworks...",
+      "Sentence": "...new ultra-fine screening and grit removal headworks...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -39,9 +39,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility improvements included... new ultra-fine screening and grit removal headworks...",
+      "Sentence": "...new ultra-fine screening and grit removal headworks...",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Storage",
+        "Containment",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility also includes two lined, aerated storage reservoirs for use during emergency situations and during plant maintenance.",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -55,7 +73,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "...replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs)...",
+      "Sentence": "...replacing the sequencing batch reactors (SBRs)...",
       "trigger_process": [
         "SBR"
       ]
@@ -65,11 +83,13 @@
       "Process": [
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "...replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs)...",
+      "Sentence": "...replacing the...disk filters with membrane bioreactors (MBRs)...",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -77,18 +97,26 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
+        "Biofiltration",
         "ActivatedSludge",
-        "Filtration"
+        "Denitrification",
+        "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Tertiary",
+        "Anoxic",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs)...",
+      "Sentence": "...replacing the sequencing batch reactors (SBRs) and disk filters with membrane bioreactors (MBRs) for biological treatment and filtration...",
       "trigger_process": [
-        "Membrane Bioreactor"
+        "AO (anoxic/oxic)",
+        "Denitrification",
+        "Membrane Bioreactor",
+        "Unspecified AS"
       ]
     },
     {
@@ -108,27 +136,10 @@
       ]
     },
     {
-      "Equipment": "Reservoir",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility also includes two lined, aerated storage reservoirs for use during emergency situations and during plant maintenance.",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Drain"
+        "Discharge"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -158,6 +169,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -174,44 +186,23 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling",
+        "Centrifugation",
         "Dewatering"
       ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling at the Facility includes... a centrifuge.",
+      "Sentence": "Sludge handling at the Facility includes... and a centrifuge.",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Denitrification",
-        "Recirculation"
-      ],
-      "Role": [
-        "Anoxic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge supernatant is returned to the anoxic reactor headworks prior to proceeding to the fine screens.",
-      "trigger_process": [
-        "Denitrification",
-        "Unspecified AS"
+        "Mechanical Dewatering"
       ]
     },
     {

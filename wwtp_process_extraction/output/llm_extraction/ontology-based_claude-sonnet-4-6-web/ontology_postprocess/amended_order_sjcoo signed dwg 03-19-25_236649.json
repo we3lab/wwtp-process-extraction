@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "Wastewater treatment processes for both treatment trains include screening",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -30,7 +30,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "aerated grit removal",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -48,7 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment processes for both treatment trains include screening, aerated grit removal, primary sedimentation, and secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "primary sedimentation",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -68,7 +68,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "secondary treatment with activated sludge aeration",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -86,7 +86,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment with activated sludge aeration and secondary sedimentation.",
+      "Sentence": "secondary sedimentation",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -95,7 +95,9 @@
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -104,7 +106,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge)",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -125,35 +127,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion, and centrifuge dewatering.",
+      "Sentence": "Solids processing at the J.B. Latham Wastewater Treatment Plant includes thickening (secondary sludge), anaerobic digestion",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "centrifuge dewatering; centrifuge and polymer treatment is utilized for dewatering to 23% solids.",
-      "Source": "both",
-      "Website": "https://www.socwa.com/infrastructure/jb-latham-treatment-plant/",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Polymer Addition"
       ]
     },
     {
@@ -165,12 +143,50 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Approximately 40 percent of the power needs are produced on-site from methane gas that is a byproduct of the treatment process.",
+      "Sentence": "Approximately 40 percent of the power needs are produced on-site from methane gas that is a byproduct of the treatment process",
       "Source": "web_search",
       "Website": "https://www.socwa.com/infrastructure/jb-latham-treatment-plant/",
       "trigger_process": [
         "Cogeneration",
-        "Unspecified Incineration"
+        "Heat Recovery"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Centrifugation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "centrifuge dewatering",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -181,10 +197,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings from the J.B. Latham Wastewater Treatment Plant are hauled to a sanitary landfill.",
+      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -194,7 +212,6 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill",
         "Composting"
       ],
       "Role": [
@@ -205,11 +222,10 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill or a contractor-operated compost site.",
+      "Sentence": "dewatered biosolids from the J.B. Latham Wastewater Treatment Plant are hauled to either a sanitary landfill or a contractor-operated compost site",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Biosolids Landfill",
         "Composting"
       ]
     }

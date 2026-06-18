@@ -34,6 +34,7 @@ from helpers.utils import (
     cwns_mapping,
     no_cwns_pids,
     build_cwns_facility_processes,
+    add_county_and_sort,
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_and_close, set_thick_spines
 
@@ -382,6 +383,7 @@ for source_name, src_df in [("Clean Watershed Needs Survey", cwns_df), ("ciwqs",
 
 final_cols = ["source", "CWNS FACILITY_ID", "CWNS FACILITY_NAME", "CIWQS PLACE_ID", "CIWQS Facility Name"] + proc_cols
 final_df = pd.DataFrame(final_rows, columns=final_cols)
+final_df = add_county_and_sort(final_df, "CIWQS Facility Name", place_id_col="CIWQS PLACE_ID")
 final_path = f"{DATA_DIR}/unit_processes_by_facility.csv"
 final_df.to_csv(final_path, index=False)
 print(f"\nSaved merged unit processes ({len(final_df)} rows, "

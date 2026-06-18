@@ -86,10 +86,10 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Biological secondary treatment is accomplished using two trickling filters, followed by secondary clarification, and chlorine disinfection.",
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "Equipment": "DisinfectionUnit",
+      "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
@@ -123,7 +123,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged at Discharge Point 001 to Humboldt Bay",
+      "Sentence": "The chlorinated effluent is stored in a holding pond then dechlorinated and discharged...",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -149,7 +149,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -160,7 +161,7 @@
       ]
     },
     {
-      "Equipment": "CentrifugalThickener",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
         "Centrifugation",
         "Dewatering"
@@ -168,46 +169,32 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
+      "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge...",
       "trigger_process": [
         "Centrifuge",
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Digestion"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Solids are treated by anaerobic digestion and may be processed on site using a centrifuge or stored in one of two facultative sludge lagoons.",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Digestion",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "...blending primary treated effluent with secondary treated effluent in the storage pond. This practice is prohibited in the current permit...",
-      "trigger_process": [
         "Unspecified Lagoon"
       ]
     }

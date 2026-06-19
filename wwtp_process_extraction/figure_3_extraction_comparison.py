@@ -531,7 +531,7 @@ for group_title, json_cats in PLOT_GROUPS.items():
         fontsize=12,
     )
     plt.tight_layout()
-    save_and_close(fig, path, dpi=200)
+    save_and_close(fig, path, dpi=300)
 
 
 # ── 2. Major-categories plot ─────────────────────────────────────────────────
@@ -542,7 +542,7 @@ for comparison_type in ["llm", "kw"]:
     include_kw = comparison_type == "kw"
     common_facilities = llm_common_facilities if not include_kw else kw_common_facilities & llm_common_facilities
     cat_labels, all_cwns, all_llm, all_kw = build_major_category_sources(common_facilities, include_kw=include_kw)
-    suffix = "source_comparison" if comparison_type == "llm" else "kw_compare"
+    filename = "figure_3" if comparison_type == "llm" else "figure_s4"
     source_items = [
         ("Clean Watershed Needs Survey", "Clean Watershed Needs Survey"),
         ("Facility Permit - LLM extraction", "npdes_llm"),
@@ -561,7 +561,7 @@ for comparison_type in ["llm", "kw"]:
         legend_items = [it for it in legend_items if it[0] != "Offsite"]
     final_dir = f"wwtp_process_extraction/output/final"
     os.makedirs(final_dir, exist_ok=True)
-    path = f"{final_dir}/figure_3_major_categories_{suffix}.png"
+    path = f"{final_dir}/{filename}.png"
     fig, ax = plt.subplots(figsize=(max(14, n * (0.55 if not include_kw else 0.7)), 6))
     render_source_plot(
         ax=ax,
@@ -574,7 +574,7 @@ for comparison_type in ["llm", "kw"]:
         bar_width=bar_w if not include_kw else 0.24,
     )
     plt.tight_layout()
-    save_and_close(fig, path, dpi=200)
+    save_and_close(fig, path, dpi=300)
     print(f"    Saved {os.path.basename(path)}")
 
 

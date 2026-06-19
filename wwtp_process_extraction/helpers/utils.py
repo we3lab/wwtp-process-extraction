@@ -10,6 +10,11 @@ import unicodedata
 # Canonical status vocabulary: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, '' (absent)
 PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
 
+# States excluded entirely from accuracy/F1 scoring (neither a required positive nor a
+# false-positive trap if predicted) — a process that's decommissioned (PAST) or whose
+# equipment is physically elsewhere (OFFSITE) isn't a clean presence/absence signal.
+UNSCORED_STATUSES = frozenset({"PAST", "OFFSITE"})
+
 SEP = "\n\n===PLANNED CHANGES===\n\n"
 
 # Canonical project paths, resolved from this file so they survive any os.chdir.
@@ -132,9 +137,55 @@ def is_present(val) -> bool:
     return parse_status(val) in PRESENT_STATUSES
 
 
+def is_unscored(val) -> bool:
+    """True if val (PAST or OFFSITE) should be dropped entirely from accuracy/F1 scoring."""
+    return parse_status(val) in UNSCORED_STATUSES
+
+
+def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None,
+                   truth_present_fn=is_present, pred_present_fn=is_present):
+    """Per-column TP/FP/FN between a truth row and a prediction row.
+
+    A column is dropped entirely (counted toward neither TP, FP, nor FN) if either
+    side's status is PAST/OFFSITE (see UNSCORED_STATUSES) — same rule used for the
+    table_1 F1 metrics, centralized here so every comparison applies it consistently.
+    truth_present_fn/pred_present_fn let callers swap in a different presence
+    definition per side (e.g. CWNS counts FUTURE/PAST as detected; is_present doesn't).
+    Returns (tp, fp, fn, missed, extra) where missed/extra are sorted column-name lists.
+    """
+    truth_cols = truth_row.index if truth_cols is None else truth_cols
+    pred_cols = pred_row.index if pred_cols is None else pred_cols
+    tp = fp = fn = 0
+    missed, extra = [], []
+    for col in cols:
+        truth_val = truth_row.get(col, "") if col in truth_cols else ""
+        pred_val = pred_row.get(col, "") if col in pred_cols else ""
+        if is_unscored(truth_val) or is_unscored(pred_val):
+            continue
+        truth_positive = truth_present_fn(truth_val)
+        pred_positive = pred_present_fn(pred_val)
+        if truth_positive and pred_positive:
+            tp += 1
+        elif pred_positive:
+            fp += 1
+            extra.append(col)
+        elif truth_positive:
+            fn += 1
+            missed.append(col)
+    return tp, fp, fn, sorted(missed), sorted(extra)
+
+
+CWNS_PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
+
+
+def is_present_cwns(val) -> bool:
+    """Scalar counterpart to build_cwns_presence_mask, for use with presence_diff."""
+    return parse_status(val) in CWNS_PRESENT_STATUSES
+
+
 def build_cwns_presence_mask(series):
     """Return boolean mask for CWNS presence values (any detectable status, including FUTURE/PAST)."""
-    return series.map(parse_status).isin({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
+    return series.map(parse_status).isin(CWNS_PRESENT_STATUSES)
 
 
 def precision_recall_f1(tp, fp, fn, empty=float("nan")):

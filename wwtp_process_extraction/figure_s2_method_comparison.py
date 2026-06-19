@@ -3,8 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
+import sys
 import seaborn as sns
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from step6_postprocess_llm_output import build_model_comparison
 from helpers.metrics import (
     METRIC_SCORE_COLUMNS,
     compute_metrics,
@@ -205,27 +208,17 @@ def build_method_metric_inputs(process_names, manual_df, pred_df, pred_key_col="
     return manual_metric_df, pred_metric_df, common_keys
 
 
-def _add_split_violin_gap(ax, gap=0.04):
-    """Shift split violin halves away from center to create visible horizontal separation."""
-    for poly in ax.collections:
-        if not hasattr(poly, "get_paths"):
-            continue
-        paths = poly.get_paths()
-        if not paths:
-            continue
-        verts = paths[0].vertices
-        x_mean = float(np.mean(verts[:, 0]))
-        nearest_tick = round(x_mean)
-        side = np.sign(x_mean - nearest_tick)
-        if side != 0:
-            verts[:, 0] += side * gap
+_VIOLIN_SOURCES = ["Keyword", "GPT-5", "GPT-5 mini"]
+_PALETTE_METRIC = {
+    "Keyword": COLORS["npdes_kw"],
+    "GPT-5": COLORS["gpt-5"],
+    "GPT-5 mini": COLORS["gpt-5-mini"],
+}
 
-_PALETTE_METRIC = {"LLM": COLORS["npdes_llm"], "Keyword": COLORS["npdes_kw"]}
-
-def draw_split_violin(ax, facility_metrics_df, panel_label):
+def draw_violin(ax, facility_metrics_df, panel_label):
     score_cols = [c for c in VIOLIN_METRIC_COLUMNS if c in facility_metrics_df.columns]
     plot_df = (
-        facility_metrics_df[facility_metrics_df["Source"].isin(["LLM", "Keyword"])]
+        facility_metrics_df[facility_metrics_df["Source"].isin(_VIOLIN_SOURCES)]
         .melt(
             id_vars=["Source", "key"],
             value_vars=score_cols,
@@ -242,14 +235,13 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
         y="Value",
         hue="Source",
         order=score_cols,
-        hue_order=["Keyword", "LLM"],
-        split=True,
+        hue_order=_VIOLIN_SOURCES,
         palette=_PALETTE_METRIC,
         inner=None,
         cut=0,
         density_norm="width",
         common_norm=False,
-        width=0.6,
+        width=0.8,
         linewidth=1.2,
         ax=ax,
     )
@@ -258,7 +250,6 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
             poly.set_edgecolor("black")
         if hasattr(poly, "set_linewidth"):
             poly.set_linewidth(1.2)
-    _add_split_violin_gap(ax, gap=0.04)
     ax.set_ylim(0, 1)
     ax.set_ylabel(f"Facility-level score\n(N={n_fac})", fontsize=14)
     ax.tick_params(axis="x", rotation=0, labelsize=12)
@@ -266,7 +257,7 @@ def draw_split_violin(ax, facility_metrics_df, panel_label):
     ax.set_xticklabels([label.replace("_", " ") for label in score_cols], fontsize=12)
     ax.tick_params(axis="y", labelsize=12)
     ax.set_xlabel("")
-    ax.legend(loc="upper right", bbox_to_anchor=(1.01, 1.15), ncol=2, fontsize=11, frameon=False)
+    ax.legend(loc="upper right", bbox_to_anchor=(1.01, 1.18), ncol=3, fontsize=11, frameon=False)
     ax.text(-0.15, 1.05, panel_label, transform=ax.transAxes, ha="left", va="top", fontsize=16)
     set_thick_spines(ax, linewidth=1.6)
 
@@ -355,9 +346,9 @@ for category in categories_to_plot:
         llm_results_manual,
         unit_full_manual,
         category,
-        save_path=f"{figures_dir}/{safe_category}_npdes_method_comparison_deviation.png",
+        save_path=f"{figures_dir}/{safe_category}_method_comparison_deviation.png",
     )
-    print(f"  Saved {safe_category}_npdes_method_comparison_deviation.png")
+    print(f"  Saved {safe_category}_method_comparison_deviation.png")
 
 
 # ── Method comparison metrics ─────────────────────────────────────────────────
@@ -393,6 +384,26 @@ if llm_results_both is not None:
         compute_facility_metric_rows(manual_metric_llm, pred_metric_llm, unit_process_list, "LLM")
     )
 
+# Per-model ontology results (gpt-5, gpt-5-mini) for the violin comparison, sourced from
+# the same postprocessed JSONs table_1 uses — restricted to the manual-read benchmark facilities.
+model_comparison_wb = build_model_comparison()
+model_metric_inputs = {}
+for model_label, source_name in [("gpt-5", "GPT-5"), ("gpt-5-mini", "GPT-5 mini")]:
+    model_df = model_comparison_wb[
+        (model_comparison_wb["Method"] == "Ontology") & (model_comparison_wb["Model"] == model_label)
+    ]
+    manual_metric_m, pred_metric_m, _ = build_method_metric_inputs(
+        all_process_list, manual, model_df, "Place ID"
+    )
+    model_metric_inputs[source_name] = (manual_metric_m, pred_metric_m)
+    model_metrics = compute_metrics(manual_metric_m, pred_metric_m, unit_process_list, source_name)
+    metrics_frames.append(
+        model_metrics.rename(columns={"Label": "Process"}).assign(Level="Unit_Process")
+    )
+    facility_metric_rows.extend(
+        compute_facility_metric_rows(manual_metric_m, pred_metric_m, unit_process_list, source_name)
+    )
+
 unit_process_metrics_df = pd.DataFrame(facility_metric_rows)
 final_dir = f"wwtp_process_extraction/output/final"
 os.makedirs(final_dir, exist_ok=True)
@@ -419,12 +430,23 @@ if llm_results_both is not None:
     category_metric_rows.extend(
         compute_facility_metric_rows(manual_cat_llm, pred_cat_llm, categories_to_plot, "LLM")
     )
+
+for source_name, (manual_metric_m, pred_metric_m) in model_metric_inputs.items():
+    manual_cat_m = aggregate_to_category_states(manual_metric_m, category_to_leaves)
+    pred_cat_m = aggregate_to_category_states(pred_metric_m, category_to_leaves)
+    cat_metrics_m = compute_metrics(manual_cat_m, pred_cat_m, categories_to_plot, source_name)
+    metrics_frames.append(
+        cat_metrics_m.rename(columns={"Label": "Process"}).assign(Level="Category")
+    )
+    category_metric_rows.extend(
+        compute_facility_metric_rows(manual_cat_m, pred_cat_m, categories_to_plot, source_name)
+    )
 category_metrics_df = pd.DataFrame(category_metric_rows)
 
 metrics_df = pd.concat(metrics_frames, ignore_index=True)
-# metrics_path = f"wwtp_process_extraction/output/npdes_method_comparison_metrics.csv"
+# metrics_path = f"wwtp_process_extraction/output/method_comparison_metrics.csv"
 # metrics_df.to_csv(metrics_path, index=False)
-# print(f"\nSaved npdes_method_comparison_metrics.csv")
+# print(f"\nSaved method_comparison_metrics.csv")
 summary = metrics_df.groupby(["Level", "Source"])[
     [
         "Precision",
@@ -448,14 +470,14 @@ kw_hallucinated = (
 print("\nTop hallucinated unit processes (Keyword):")
 print(kw_hallucinated.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
 
-violin_path = f"{final_dir}/figure_s2_npdes_method_comparison_metrics_violin.png"
+violin_path = f"{final_dir}/figure_s2.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
-draw_split_violin(ax_top, unit_process_metrics_df, "A.")
-draw_split_violin(ax_bottom, category_metrics_df, "B.")
+draw_violin(ax_top, unit_process_metrics_df, "A.")
+draw_violin(ax_bottom, category_metrics_df, "B.")
 # subplot titles
-ax_top.set_title("Unit Process-Level Metrics")
-ax_bottom.set_title("Category-Level Metrics")
-fig.tight_layout(h_pad=2.0)
+ax_top.set_title("Unit Process-Level Metrics", y=1.22, fontsize=14)
+ax_bottom.set_title("Category-Level Metrics", y=1.22, fontsize=14)
+fig.tight_layout(h_pad=3.5)
 save_and_close(fig, violin_path, dpi=300)
 print(f"Saved {os.path.basename(violin_path)}")
 

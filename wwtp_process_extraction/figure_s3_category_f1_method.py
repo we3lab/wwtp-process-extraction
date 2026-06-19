@@ -65,6 +65,17 @@ def main():
     keep = [c for c in categories if support.get(c, 0) > 0]
     keep = sorted(keep, key=lambda c: per_method["Ontology"].loc[c, "F1"])  # ascending → best on top
 
+    # Per-category F1 by method; flag categories driving the methods apart (|diff| > 0.05)
+    print("\nCategory-level F1 (gpt-5-mini): Ontology vs List")
+    print(f"{'Category':25s} {'Ontology':>9s} {'List':>7s} {'Diff':>7s}")
+    by_diff = sorted(keep, key=lambda c: float(per_method["Ontology"].loc[c, "F1"]) - float(per_method["List"].loc[c, "F1"]))
+    for c in by_diff:
+        ontology_f1 = float(per_method["Ontology"].loc[c, "F1"])
+        list_f1 = float(per_method["List"].loc[c, "F1"])
+        diff = ontology_f1 - list_f1
+        flag = "  <-- driving (ontology higher)" if diff > 0.05 else "  <-- driving (list higher)" if diff < -0.05 else ""
+        print(f"{c:25s} {ontology_f1:9.3f} {list_f1:7.3f} {diff:+7.3f}{flag}")
+
     # grouped horizontal bars
     y = range(len(keep))
     h = 0.38
@@ -81,9 +92,9 @@ def main():
     ax.set_xlim(0, 1)
     ax.set_xlabel("Category-level F1 (gpt-5-mini)", fontsize=13)
     ax.grid(False)
-    ax.legend(loc="lower right", fontsize=11, frameon=False)
+    ax.legend(loc="lower right", fontsize=11, frameon=False, bbox_to_anchor=(1.02, 1.02))
     set_thick_spines(ax, linewidth=1.6)
-    fig_path = f"{FINAL_DIR}/figure_s3_category_f1_method.png"
+    fig_path = f"{FINAL_DIR}/figure_s3.png"
     save_and_close(fig, fig_path, dpi=300)
     print(f"Saved {fig_path}")
 

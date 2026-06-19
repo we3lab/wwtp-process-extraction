@@ -31,7 +31,7 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 - [wwtp_process_extraction/figure_3_source_comparison.py](wwtp_process_extraction/figure_3_source_comparison.py): CWNS vs LLM unit process detection comparison
 - [wwtp_process_extraction/figure_4_ca_ghg_comparison.py](wwtp_process_extraction/figure_4_ca_ghg_comparison.py): computes CA WWTP GHG emissions across three treatment process data sources (El Abbadi all-sources, El Abbadi CWNS-only, LLM permit scraping)
 - [wwtp_process_extraction/table_1_evaluate_model_performance.py](wwtp_process_extraction/table_1_evaluate_model_performance.py): evaluates LLM model performance against truth labels
-- [wwtp_process_extraction/figure_s2_npdes_method_comparison.py](wwtp_process_extraction/figure_s2_npdes_method_comparison.py): keyword vs LLM method comparison
+- [wwtp_process_extraction/figure_s2_method_comparison.py](wwtp_process_extraction/figure_s2_method_comparison.py): keyword vs LLM method comparison
 - [wwtp_process_extraction/figure_s3_category_f1_method.py](wwtp_process_extraction/figure_s3_category_f1_method.py): per-category F1 score comparison across methods
 
 ## Installation
@@ -49,10 +49,14 @@ python wwtp_process_extraction/step2_scrape_npdes.py
 python wwtp_process_extraction/step3_get_facility_descriptions.py
 python wwtp_process_extraction/step4_keyword_extraction.py
 python wwtp_process_extraction/step5_llm_extraction.py  # for all facilities
-python wwtp_process_extraction/step5_llm_extraction.py --max_facilities 5  # small test sweep
+python wwtp_process_extraction/step5_llm_extraction.py --all-methods  # test sweep
 python wwtp_process_extraction/step6_postprocess_llm_output.py
-python wwtp_process_extraction/figure_3_source_comparison.py
+python wwtp_process_extraction/table_1_evaluate_model_performance.py
+python wwtp_process_extraction/figure_2_data_source_comparison.py
+python wwtp_process_extraction/figure_3_extraction_comparison.py
 python wwtp_process_extraction/figure_4_ca_ghg_comparison.py
+python wwtp_process_extraction/figure_s2_method_comparison.py
+python wwtp_process_extraction/figure_s3_category_f1_method.py
 ```
 
 ## Contact 

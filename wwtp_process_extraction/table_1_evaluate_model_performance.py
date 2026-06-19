@@ -30,7 +30,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison
-from helpers.utils import get_leaf_names, precision_recall_f1
+from helpers.utils import get_leaf_names, precision_recall_f1, UNSCORED_STATUSES
 
 
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
@@ -135,11 +135,15 @@ def build_label_to_family_map(keywords: dict[str, Any]) -> dict[str, str]:
 
 
 def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[float, float, float, float]:
-    """Compute label-presence precision/recall/F1/Jaccard for one PDF."""
+    """Compute label-presence precision/recall/F1/Jaccard for one PDF.
+    """
 
     tp = fp = fn = 0
     for col in label_cols:
-        truth_positive = pd.notna(truth_row[col])
+        truth_state = normalize_status(truth_row[col])
+        if truth_state in UNSCORED_STATUSES:
+            continue
+        truth_positive = truth_state is not None
         pred_positive = pd.notna(pred_row[col])
         tp += int(truth_positive and pred_positive)
         fp += int((not truth_positive) and pred_positive)
@@ -149,9 +153,16 @@ def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: lis
 
 
 def family_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
-    """Compute presence metrics after collapsing labels to top-level ontology families."""
+    """Compute presence metrics after collapsing labels to top-level ontology families.
 
-    truth_families = {label_to_family.get(col, col) for col in label_cols if pd.notna(truth_row[col])}
+    Labels whose truth state is PAST/OFFSITE don't contribute to marking their
+    family truth-positive (same drop-the-cell rule as label_presence_f1).
+    """
+
+    truth_families = {
+        label_to_family.get(col, col) for col in label_cols
+        if normalize_status(truth_row[col]) not in UNSCORED_STATUSES | {None}
+    }
     pred_families = {label_to_family.get(col, col) for col in label_cols if pd.notna(pred_row[col])}
 
     tp = len(truth_families & pred_families)
@@ -172,7 +183,7 @@ def exact_state_accuracy(truth_row: pd.Series, pred_row: pd.Series, label_cols: 
     total = 0
     for col in label_cols:
         truth_state = normalize_status(truth_row[col])
-        if truth_state is None:
+        if truth_state is None or truth_state in UNSCORED_STATUSES:
             continue
         total += 1
         pred_state = normalize_status(pred_row[col])

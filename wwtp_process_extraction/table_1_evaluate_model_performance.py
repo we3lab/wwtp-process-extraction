@@ -23,14 +23,13 @@ from pathlib import Path
 from typing import Any
 import json
 import os
-import re
 import sys
 import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison
-from helpers.utils import get_leaf_names, precision_recall_f1, UNSCORED_STATUSES
+from helpers.utils import get_leaf_names, precision_recall_f1, UNSCORED_STATUSES, select_json_per_place_id
 
 
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
@@ -41,7 +40,7 @@ MAIN_DIR = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gp
 ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
 MANUAL_PATH = Path("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv")
 KEYWORDS_PATH = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
-OUTPUT_CSV = ADDITIONAL_DIR / "f1_variance.csv"
+OUTPUT_CSV = Path("wwtp_process_extraction/output/final/table_s2.csv")
 METRIC_COLS = ["Macro Unit Process F1", "Macro Category F1", "State Accuracy"]
 
 # Maps dir-name model labels to rows in model_costs.csv
@@ -331,17 +330,14 @@ def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def predictions_for_run(run_dir, label_cols):
+def predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id=None):
     """Postprocess every JSON in run_dir into a {place_id -> {col: status}} frame over label_cols."""
     rows = {}
-    for jf in sorted(run_dir.glob("*.json")):
-        m = re.search(r"_(\d+)\.json$", jf.name)
-        if not m:
-            continue
+    for place_id, jf in select_json_per_place_id(run_dir, pdf_stem_by_place_id=pdf_stem_by_place_id).items():
         with open(jf) as f:
             data = json.load(f)
         result = process_json_to_unit_process_dict(data)
-        rows[m.group(1)] = {c: (result.get(c) or np.nan) for c in label_cols}
+        rows[place_id] = {c: (result.get(c) or np.nan) for c in label_cols}
     return pd.DataFrame.from_dict(rows, orient="index").reindex(columns=label_cols)
 
 
@@ -494,6 +490,10 @@ def main() -> None:
     meta = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
     label_cols = [c for c in manual_full.columns if c not in meta]
     manual = manual_full.drop_duplicates("Place ID").set_index("Place ID")
+    pdf_stem_by_place_id = (
+        manual_full[["Place ID", "PDF_File"]].dropna(subset=["PDF_File"]).drop_duplicates("Place ID")
+        .set_index("Place ID")["PDF_File"].to_dict()
+    )
     _kw = json.loads(KEYWORDS_PATH.read_text())
     label_to_family = build_label_to_family_map(_kw)
     _included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val)}
@@ -509,7 +509,7 @@ def main() -> None:
     for label, run_dir in run_dirs:
         n = len(list(run_dir.glob("*.json")))
         print(f"Scoring {label} ({run_dir}) — {n} json")
-        metrics = run_metrics(predictions_for_run(run_dir, label_cols), manual, label_cols, label_to_family, unit_cols)
+        metrics = run_metrics(predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id), manual, label_cols, label_to_family, unit_cols)
         rows.append({"run": label, "n_facilities": n, **metrics})
 
     df = pd.DataFrame(rows)

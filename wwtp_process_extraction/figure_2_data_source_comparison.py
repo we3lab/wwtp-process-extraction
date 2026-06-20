@@ -336,6 +336,7 @@ def main(error_denominator="f1"):
     fig, (axA, axB) = plt.subplots(2, 1, figsize=(10, 10), gridspec_kw={"height_ratios": [1, 1]})
 
     # Panel A: boxplot comparing NPDES vs CWNS
+    panelA_metric = "(1 - Unit Process F1)" if error_denominator == "f1" else "(per unit-process column)"
     boxplot_cols = ["False Positive (FP) Rate", "False Negative (FN) Rate", "Error Rate"]
     plot_df = (
         fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=boxplot_cols, var_name="Metric", value_name="Value")
@@ -359,23 +360,17 @@ def main(error_denominator="f1"):
     axA.set_xlabel("")
     # Style boxplot elements with black edges and consistent linewidth
     for artist in axA.artists:
-        try:
-            artist.set_edgecolor("black")
-            artist.set_linewidth(1.0)
-            artist.set_facecolor(artist.get_facecolor())
-        except Exception:
-            pass
+        artist.set_edgecolor("black")
+        artist.set_linewidth(1.0)
+        artist.set_facecolor(artist.get_facecolor())
     for line in axA.lines:
-        try:
-            line.set_color("black")
-            line.set_linewidth(1.0)
-        except Exception:
-            pass
+        line.set_color("black")
+        line.set_linewidth(1.0)
     axA.set_ylim(0, 1)
-    panelA_metric = "(1 - Unit Process F1)" if error_denominator == "f1" else "(per unit-process column)"
-    axA.set_ylabel(f"Unit Process Error Rate\n{panelA_metric}\nPer-facility (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
+    axA.set_ylabel(f"Unit Process Error Metric\nPer-facility (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
     axA.set_xticks(range(len(boxplot_cols)))
-    axA.set_xticklabels([c.replace("_", " ") for c in boxplot_cols], fontsize=12)
+    xlabels = ["False Positive (FP) Rate", "False Negative (FN) Rate", f"Overall Error\n{panelA_metric}"]
+    axA.set_xticklabels(xlabels, fontsize=12)
     axA.tick_params(axis="y", labelsize=12)
     axA.legend(
         handles=[
@@ -433,7 +428,7 @@ def main(error_denominator="f1"):
         fontsize=tick_fontsize,
     )
     panelB_metric = "(1 - Categorical F1)" if error_denominator == "f1" else "(per GT occurrence)"
-    axB.set_ylabel(f"Categorical Error Rate\n{panelB_metric}\nAcross Facilities (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
+    axB.set_ylabel(f"Categorical Error Metric\n{panelB_metric}\nAcross Facilities (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
     axB.tick_params(axis="both", which="major", labelsize=tick_fontsize)
     set_thick_spines(axB, linewidth=1.6)
     axB.text(-0.17, 1.05, "B.", transform=axB.transAxes, ha="left", va="top", fontsize=16)

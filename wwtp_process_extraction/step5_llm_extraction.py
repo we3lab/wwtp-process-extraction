@@ -466,19 +466,3 @@ if __name__ == "__main__":
             run_extraction(args)
     else:
         run_extraction(args)
-
-
-
-# Terminal commands to run (uncommented)
-
-# MODEL COMPARISON (all manual-read facilities, default FACILITIES_INFO_PATH)
-# python wwtp_process_extraction/step5_llm_extraction.py --all_models
-
-# WEB SEARCH (claude-sonnet-4-6) — both methods in one command:
-# python wwtp_process_extraction/step5_llm_extraction.py  --model claude-sonnet-4-6 --web_search --all_methods
-
-# FULL CA (all relevant facilities), ONTOLOGY-BASED, GPT-5-MINI
-# python wwtp_process_extraction/step5_llm_extraction.py --all_facilities
-
-# F1 VARIANCE: 2 extra benchmark runs (default model/method) -> additional_runs/run_1..4,
-# python wwtp_process_extraction/step5_llm_extraction.py --repeat_runs 2

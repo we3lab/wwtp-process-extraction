@@ -48,8 +48,14 @@ python wwtp_process_extraction/step1_build_cwns_table.py
 python wwtp_process_extraction/step2_scrape_npdes.py
 python wwtp_process_extraction/step3_get_facility_descriptions.py
 python wwtp_process_extraction/step4_keyword_extraction.py
-python wwtp_process_extraction/step5_llm_extraction.py  # for all facilities
-python wwtp_process_extraction/step5_llm_extraction.py --all-methods  # test sweep
+# MODEL COMPARISON (all manual-read facilities, default FACILITIES_INFO_PATH)
+python wwtp_process_extraction/step5_llm_extraction.py --all_models
+# WEB SEARCH (claude-sonnet-4-6)
+python wwtp_process_extraction/step5_llm_extraction.py  --model claude-sonnet-4-6 --web_search --all_methods
+# FULL CA, ONTOLOGY-BASED, GPT-5-MINI
+python wwtp_process_extraction/step5_llm_extraction.py --all_facilities
+# F1 VARIANCE: 2 extra benchmark runs
+python wwtp_process_extraction/step5_llm_extraction.py --repeat_runs 2
 python wwtp_process_extraction/step6_postprocess_llm_output.py
 python wwtp_process_extraction/table_1_evaluate_model_performance.py
 python wwtp_process_extraction/figure_2_data_source_comparison.py
@@ -74,6 +80,7 @@ Meagan Mauter - mauter@stanford.edu
 ## Acknowledgements
 
 This work is funded in part by:
+Stanford Woods Institute for the Environment's Realizing Environmental Innovation Program (REIP)
 Stanford SURGE program
 National Alliance for Water Innovation
 

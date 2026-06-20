@@ -29,7 +29,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
-from helpers.plotting import COLORS
+from helpers.plotting import COLORS, save_and_close
 from helpers.utils import build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV
 GHG_ROOT = Path('/home/daly/git/US_WWTP_GHG')
 MC_DIR = GHG_ROOT / 'uncertainty_sensitivity_results/Monte_Carlo'  # MC files stay local
@@ -700,8 +700,7 @@ def plot_comparison(results, output_dir):
               bbox_to_anchor=(1.01, 1), borderaxespad=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    fig.savefig(output_dir / 'final' / 'figure_4.png', dpi=300, bbox_inches='tight')
-    plt.close(fig)
+    save_and_close(fig, output_dir / 'final' / 'figure_4', dpi=300)
 
 # ── N2O breakdown by secondary treatment ─────────────────────────────────────
 

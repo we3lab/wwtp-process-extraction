@@ -56,7 +56,9 @@ def make_grouped_legend(ax, groups, loc="upper left", bbox_to_anchor=(1.01, 1.0)
 
 def save_and_close(fig, path, dpi=300):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, dpi=dpi, bbox_inches="tight")
+    path = Path(path)
+    fig.savefig(path.with_suffix(".png"), dpi=dpi, bbox_inches="tight")
+    fig.savefig(path.with_suffix(".tiff"), dpi=dpi, bbox_inches="tight")
     plt.close(fig)
 
 

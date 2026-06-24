@@ -1,7 +1,6 @@
 import pandas as pd
 import json
 import os
-import re
 import sys
 from pathlib import Path
 from collections import Counter
@@ -16,7 +15,7 @@ GITHUB_BASE = (
 )
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 # Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
@@ -193,7 +192,8 @@ def normalize_component_name(component_type, name):
     return text
 
 
-def ontology_labels(component_type, name, include_descendants=False):
+def ontology_labels(component_type, name):
+    """Returns own label + rdfs:subClassOf ancestors."""
     clean_name = normalize_component_name(component_type, name)
     if not clean_name:
         return set()
@@ -211,12 +211,6 @@ def ontology_labels(component_type, name, include_descendants=False):
             fragment = ancestor_uri.fragment
             if fragment:
                 labels.add(normalize_component_name(component_type, fragment))
-
-        if include_descendants:
-            for descendant_uri in ontology.transitive_subjects(RDFS.subClassOf, uri):
-                fragment = descendant_uri.fragment
-                if fragment:
-                    labels.add(normalize_component_name(component_type, fragment))
 
     return labels
 
@@ -261,13 +255,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         for component_type in ["Process", "Equipment", "Substance"]:
             expanded = set()
             for name in components[component_type]:
-                expanded.update(
-                    ontology_labels(
-                        component_type,
-                        name,
-                        include_descendants=(component_type == "Substance"),
-                    )
-                )
+                expanded.update(ontology_labels(component_type, name))
             components[component_type] = expanded
 
         # Inject each equipment's own + inherited hasProcess (per the ontology's SHACL
@@ -512,6 +500,14 @@ def build_model_comparison():
     # The comparison only covers the benchmark (manually-read) facilities. The default
     # ontology-based_gpt-5-mini folder also holds the full CA set, so filter each model to these.
     benchmark_pids = set(manual_rows["Place ID"].astype(str).str.strip())
+    # Some facilities have multiple permit-document JSONs (an original + later
+    # modifications) sharing one Place ID; pick the document the manual ground
+    # truth was actually read from (see select_json_per_place_id).
+    stem_df = manual_rows[["Place ID", "PDF_File"]].copy()
+    stem_df["Place ID"] = stem_df["Place ID"].astype(str).str.strip()
+    pdf_stem_by_place_id = (
+        stem_df.dropna(subset=["PDF_File"]).drop_duplicates("Place ID").set_index("Place ID")["PDF_File"].to_dict()
+    )
 
     prediction_rows = []
     for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
@@ -527,16 +523,8 @@ def build_model_comparison():
         else:
             continue
 
-        # Identity is the Place ID, which step5 encodes in each output filename as
-        # {txt_stem}_{place_id}.json (a single PDF can cover multiple facilities, so the
-        # PDF name alone isn't enough). Parse the trailing _<id> off the filename.
         postprocess_dir = dir_path / "ontology_postprocess"
-        for json_file in sorted(dir_path.glob("*.json")):
-            m = re.search(r"_(\d+)\.json$", json_file.name)
-            place_id = m.group(1) if m else ""
-            if not place_id or place_id not in benchmark_pids:
-                continue
-
+        for place_id, json_file in select_json_per_place_id(dir_path, benchmark_pids, pdf_stem_by_place_id).items():
             with open(json_file) as f:
                 json_data = json.load(f)
 

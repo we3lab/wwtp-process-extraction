@@ -11,6 +11,9 @@ from helpers.utils import (
     extract_leaves,
     build_cwns_presence_mask,
     is_present,
+    is_present_cwns,
+    is_unscored,
+    presence_diff,
     get_leaf_names,
     precision_recall_f1,
     f1_error_parts,
@@ -32,37 +35,64 @@ def build_category_facility_sets(
 ):
     """
     Aggregate facility-level sets per top-level category for GT, NPDES text, and CWNS.
-    Returns three defaultdict(set): sd_fac, npdes_fac, cwns_fac.
-    Each set contains (Place ID, Facility Name) tuples.
+    Returns six defaultdict(set): sd_fac, npdes_fac, cwns_fac (present), and
+    sd_unscored, npdes_unscored, cwns_unscored (PAST/OFFSITE-only facilities for that
+    category — dropped from scoring downstream unless another leaf in the same
+    category is genuinely present).
     """
     sd_fac = defaultdict(set)
     npdes_fac = defaultdict(set)
     cwns_fac = defaultdict(set)
+    sd_unscored = defaultdict(set)
+    npdes_unscored = defaultdict(set)
+    cwns_unscored = defaultdict(set)
 
     for col in process_cols:
         category = leaf_to_category.get(col, col)
         if col in sd_common.columns:
             for _, row in sd_common.iterrows():
-                if is_present(row.get(col, "")):
+                val = row.get(col, "")
+                if is_present(val):
                     sd_fac[category].add(row["Place ID"])
+                elif is_unscored(val):
+                    sd_unscored[category].add(row["Place ID"])
         if col in text_common.columns:
             for _, row in text_common.iterrows():
-                if is_present(row.get(col, "")):
+                val = row.get(col, "")
+                if is_present(val):
                     npdes_fac[category].add(row["Place ID"])
+                elif is_unscored(val):
+                    npdes_unscored[category].add(row["Place ID"])
         if col in cwns_common.columns:
             mask = build_cwns_presence_mask(cwns_common[col])
             for pid in cwns_common.loc[mask, "Place ID"]:
                 cwns_fac[category].add(pid)
+            # CWNS statuses never include OFFSITE (step1 never emits it), so no
+            # cwns_unscored tracking is needed here.
 
-    return sd_fac, npdes_fac, cwns_fac
+    return sd_fac, npdes_fac, cwns_fac, sd_unscored, npdes_unscored, cwns_unscored
 
 
-def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
-    """Build summary rows for ground-truth comparison plotting from per-category facility sets."""
+def build_sd_rows(sd_fac, npdes_fac, cwns_fac, sd_unscored, npdes_unscored, cwns_unscored, common_facilities):
+    """Build summary rows for ground-truth comparison plotting from per-category facility sets.
+
+    A facility is dropped from a given comparison's universe if either side is
+    PAST/OFFSITE-only for that category (and not genuinely present via another
+    leaf) — same drop-the-cell rule as table_1's F1 metrics.
+    """
     all_cats = sorted(set(list(sd_fac.keys()) + list(npdes_fac.keys()) + list(cwns_fac.keys())))
     rows = []
     for cat in all_cats:
-        supplemental_data = len(sd_fac[cat])
+        sd_excl = (sd_unscored[cat] - sd_fac[cat]) & common_facilities
+        npdes_excl = (npdes_unscored[cat] - npdes_fac[cat]) & common_facilities
+        cwns_excl = (cwns_unscored[cat] - cwns_fac[cat]) & common_facilities
+
+        sd_for_npdes = (sd_fac[cat] & common_facilities) - sd_excl - npdes_excl
+        sd_for_cwns = (sd_fac[cat] & common_facilities) - sd_excl - cwns_excl
+        npdes_p = (npdes_fac[cat] & common_facilities) - sd_excl - npdes_excl
+        cwns_p = (cwns_fac[cat] & common_facilities) - sd_excl - cwns_excl
+
+        supplemental_data = len((sd_fac[cat] & common_facilities) - sd_excl)
         npdes = len(npdes_fac[cat])
         cwns = len(cwns_fac[cat])
         if supplemental_data == 0 and npdes == 0 and cwns == 0:
@@ -73,23 +103,20 @@ def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
         else:
             npdes_str = f"+{npdes}" if npdes > 0 else "0"
             cwns_str = f"+{cwns}" if cwns > 0 else "0"
-        sd_p = sd_fac[cat] & common_facilities
-        npdes_p = npdes_fac[cat] & common_facilities
-        cwns_p = cwns_fac[cat] & common_facilities
         rows.append(
             {
                 "Process_Category": cat,
                 "GroundTruth": supplemental_data,
                 "NPDES": npdes,
                 "NPDES_vs_GT": npdes_str,
-                "NPDES_TP": len(npdes_p & sd_p),
-                "NPDES_FP": len(npdes_p - sd_p),
-                "NPDES_FN": len(sd_p - npdes_p),
+                "NPDES_TP": len(npdes_p & sd_for_npdes),
+                "NPDES_FP": len(npdes_p - sd_for_npdes),
+                "NPDES_FN": len(sd_for_npdes - npdes_p),
                 "CWNS": cwns,
                 "CWNS_vs_GT": cwns_str,
-                "CWNS_TP": len(cwns_p & sd_p),
-                "CWNS_FP": len(cwns_p - sd_p),
-                "CWNS_FN": len(sd_p - cwns_p),
+                "CWNS_TP": len(cwns_p & sd_for_cwns),
+                "CWNS_FP": len(cwns_p - sd_for_cwns),
+                "CWNS_FN": len(sd_for_cwns - cwns_p),
             }
         )
     return rows
@@ -98,8 +125,10 @@ def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
 CWNS_CA_CSV = CWNS_TABLE_CSV
 
 
-def main():
-
+def main(error_denominator="f1"):
+    # "f1" (main figure): error = 1 - F1, split into FP/FN over 2*tp+fp+fn.
+    # "columns" (SI figure): old denominators - FP over absent columns, FN over GT count,
+    # total over all unit-process columns; panel B normalized per GT occurrence.
     ca_cwns_data = pd.read_csv(CWNS_CA_CSV, dtype=str, low_memory=False)
     ca_cwns_data["CWNS_ID"] = ca_cwns_data["CWNS_ID"].str.strip()
 
@@ -163,7 +192,7 @@ def main():
             print(f"  {pid}: {name}")
     # remove 'Unspecified' columns for unit-process-level analysis
     cols_no_unspec = [col for col in all_sheet_process_cols if "Unspecified" not in col]
-    sd_cat, npdes_cat, cwns_cat = build_category_facility_sets(
+    sd_cat, npdes_cat, cwns_cat, sd_cat_unscored, npdes_cat_unscored, cwns_cat_unscored = build_category_facility_sets(
         all_sheet_process_cols,
         supplemental_data_common,
         text_common,
@@ -171,7 +200,9 @@ def main():
         leaf_to_category,
     )
 
-    sd_simple_rows = build_sd_rows(sd_cat, npdes_cat, cwns_cat, common_facilities)
+    sd_simple_rows = build_sd_rows(
+        sd_cat, npdes_cat, cwns_cat, sd_cat_unscored, npdes_cat_unscored, cwns_cat_unscored, common_facilities
+    )
 
     tick_fontsize = 12
     label_fontsize = 14
@@ -181,25 +212,35 @@ def main():
 
     n_facilities = len(common_facilities)
     for source in ("NPDES", "CWNS"):
-        # Missed (FN) and extra (FP) shares of 1 - F1; they sum to the total F1 error, so
-        # both panels and table_1 share one bounded error definition.
-        parts = sd_plot_df.apply(
-            lambda r: f1_error_parts(r[f"{source}_TP"], r[f"{source}_FP"], r[f"{source}_FN"]),
-            axis=1,
-            result_type="expand",
-        )
-        sd_plot_df[[f"{source}_Missed_Rate", f"{source}_Extra_Rate", f"{source}_Error_Rate"]] = parts
+        tp_col, fp_col, fn_col = f"{source}_TP", f"{source}_FP", f"{source}_FN"
+        if error_denominator == "f1":
+            # Missed (FN) and extra (FP) shares of 1 - F1; they sum to the total F1 error, so
+            # both panels and table_1 share one bounded error definition.
+            parts = sd_plot_df.apply(
+                lambda r: f1_error_parts(r[tp_col], r[fp_col], r[fn_col]),
+                axis=1,
+                result_type="expand",
+            )
+            sd_plot_df[[f"{source}_Missed_Rate", f"{source}_Extra_Rate", f"{source}_Error_Rate"]] = parts
+        else:
+            # SI: rates normalized by GT occurrences in the category (per-GT)
+            gt = sd_plot_df["GroundTruth"]
+            sd_plot_df[f"{source}_Missed_Rate"] = sd_plot_df[fn_col] / gt
+            sd_plot_df[f"{source}_Extra_Rate"] = sd_plot_df[fp_col] / gt
+            sd_plot_df[f"{source}_Error_Rate"] = (sd_plot_df[fp_col] + sd_plot_df[fn_col]) / gt
     sd_plot_df = sd_plot_df.sort_values(
         ["CWNS_Error_Rate", "NPDES_Error_Rate"], ascending=[True, True]
     ).reset_index(drop=True)
 
     # Per-leaf (unit-process) rows for the printed GT=0 false-positive diagnostic below;
     # identity mapping keeps each leaf separate (panel B above stays category-level by design).
-    sd_leaf, npdes_leaf, cwns_leaf = build_category_facility_sets(
+    sd_leaf, npdes_leaf, cwns_leaf, sd_leaf_unscored, npdes_leaf_unscored, cwns_leaf_unscored = build_category_facility_sets(
         cols_no_unspec, supplemental_data_common, text_common, cwns_common,
         {leaf: leaf for leaf in cols_no_unspec},
     )
-    leaf_rows = pd.DataFrame(build_sd_rows(sd_leaf, npdes_leaf, cwns_leaf, common_facilities))
+    leaf_rows = pd.DataFrame(build_sd_rows(
+        sd_leaf, npdes_leaf, cwns_leaf, sd_leaf_unscored, npdes_leaf_unscored, cwns_leaf_unscored, common_facilities
+    ))
     leaf_gt = leaf_rows[leaf_rows["GroundTruth"] > 0]
 
     # Build facility-level comparison rows (used for violin panel)
@@ -217,43 +258,34 @@ def main():
         npdes = supplemental_data_row["NPDES No."]
         facility_name = supplemental_data_row["Facility Name"]
 
-        sd_set = {
-            col
-            for col in cols_no_unspec
+        sd_count = sum(
+            1 for col in cols_no_unspec
             if col in supplemental_data_common.columns and is_present(supplemental_data_row.get(col, ""))
-        }
-
-        npdes_set = {
-            col
-            for col in cols_no_unspec
-            if col in text_common.columns and is_present(text_row.get(col, ""))
-        }
-
-        cwns_set = {
-            col
-            for col in cols_no_unspec
-            if col in cwns_common.columns
-            and build_cwns_presence_mask(pd.Series([cwns_row.get(col, "")])).iloc[0]
-        }
+        )
 
         src_metrics = {}
-        for prefix, pred_set in [("NPDES", npdes_set), ("CWNS", cwns_set)]:
-            tp = len(sd_set & pred_set)
-            fp = len(pred_set - sd_set)
-            fn = len(sd_set - pred_set)
+        for prefix, pred_row, pred_cols, pred_present_fn in [
+            ("NPDES", text_row, text_common.columns, is_present),
+            ("CWNS", cwns_row, cwns_common.columns, is_present_cwns),
+        ]:
+            tp, fp, fn, missed, extra = presence_diff(
+                supplemental_data_row, pred_row, cols_no_unspec,
+                truth_cols=supplemental_data_common.columns, pred_cols=pred_cols,
+                pred_present_fn=pred_present_fn,
+            )
             p, r, f1, _ = precision_recall_f1(tp, fp, fn, empty=0)
             src_metrics[prefix] = dict(
                 TP=tp, FP=fp, FN=fn, Precision=p, Recall=r,
                 F1=f1,
-                Missed="|".join(sorted(sd_set - pred_set)),
-                Extra="|".join(sorted(pred_set - sd_set)),
+                Missed="|".join(missed),
+                Extra="|".join(extra),
             )
         nm, cm = src_metrics["NPDES"], src_metrics["CWNS"]
         facility_rows.append(
             {
                 "NPDES No.": npdes,
                 "Facility Name": facility_name,
-                "Supplemental_Data_Count": len(sd_set),
+                "Supplemental_Data_Count": sd_count,
                 "NPDES_TP": nm["TP"], "NPDES_FP": nm["FP"], "NPDES_FN": nm["FN"],
                 "NPDES_Precision": nm["Precision"], "NPDES_Recall": nm["Recall"], "NPDES_F1": nm["F1"],
                 "NPDES_Missed": nm["Missed"], "NPDES_Extra": nm["Extra"],
@@ -270,6 +302,7 @@ def main():
     sd_comparison_df.to_csv(sd_comparison_csv, index=False)
 
     # Build per-facility error-rate metrics for violin (panel A)
+    num_cols = len(cols_no_unspec)
     facility_metrics = []
     for _, frow in sd_comparison_df.iterrows():
         if frow["Supplemental_Data_Count"] == 0:
@@ -279,13 +312,20 @@ def main():
             tp = int(frow[f"{src}_TP"])
             fp = int(frow[f"{src}_FP"])
             fn = int(frow[f"{src}_FN"])
-            missed, extra, total = f1_error_parts(tp, fp, fn)
+            if error_denominator == "f1":
+                false_neg_rate, false_pos_rate, total = f1_error_parts(tp, fp, fn)
+            else:
+                # SI: FP over absent columns, FN over GT count, total over all columns
+                sd_count = tp + fn
+                false_pos_rate = fp / (num_cols - sd_count)
+                false_neg_rate = fn / sd_count
+                total = (fp + fn) / num_cols
             facility_metrics.append(
                 {
                     "Source": src,
                     "Key": key,
-                    "False Negative (FN) Rate": missed,
-                    "False Positive (FP) Rate": extra,
+                    "False Negative (FN) Rate": false_neg_rate,
+                    "False Positive (FP) Rate": false_pos_rate,
                     "Error Rate": total,
                 }
             )
@@ -296,6 +336,7 @@ def main():
     fig, (axA, axB) = plt.subplots(2, 1, figsize=(10, 10), gridspec_kw={"height_ratios": [1, 1]})
 
     # Panel A: boxplot comparing NPDES vs CWNS
+    panelA_metric = "(1 - Unit Process F1)" if error_denominator == "f1" else "(per unit-process column)"
     boxplot_cols = ["False Positive (FP) Rate", "False Negative (FN) Rate", "Error Rate"]
     plot_df = (
         fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=boxplot_cols, var_name="Metric", value_name="Value")
@@ -311,28 +352,25 @@ def main():
         width=0.6,
         linewidth=1.0,
         showfliers=False,
+        showmeans=True,
+        meanprops={"marker": "^", "markerfacecolor": "black", "markeredgecolor": "black"},
         ax=axA,
     )
     # change x-axis label to ""
     axA.set_xlabel("")
     # Style boxplot elements with black edges and consistent linewidth
     for artist in axA.artists:
-        try:
-            artist.set_edgecolor("black")
-            artist.set_linewidth(1.0)
-            artist.set_facecolor(artist.get_facecolor())
-        except Exception:
-            pass
+        artist.set_edgecolor("black")
+        artist.set_linewidth(1.0)
+        artist.set_facecolor(artist.get_facecolor())
     for line in axA.lines:
-        try:
-            line.set_color("black")
-            line.set_linewidth(1.0)
-        except Exception:
-            pass
+        line.set_color("black")
+        line.set_linewidth(1.0)
     axA.set_ylim(0, 1)
-    axA.set_ylabel(f"Unit Process Error Rate\n(1 - Unit Process F1)\nPer-facility (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
+    axA.set_ylabel(f"Unit Process Error Metric\nPer-facility (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
     axA.set_xticks(range(len(boxplot_cols)))
-    axA.set_xticklabels([c.replace("_", " ") for c in boxplot_cols], fontsize=12)
+    xlabels = ["False Positive (FP) Rate", "False Negative (FN) Rate", f"Overall Error\n{panelA_metric}"]
+    axA.set_xticklabels(xlabels, fontsize=12)
     axA.tick_params(axis="y", labelsize=12)
     axA.legend(
         handles=[
@@ -389,7 +427,8 @@ def main():
         ha="right",
         fontsize=tick_fontsize,
     )
-    axB.set_ylabel(f"Categorical Error Rate\n(1 - Categorical F1)\nAcross Facilities (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
+    panelB_metric = "(1 - Categorical F1)" if error_denominator == "f1" else "(per GT occurrence)"
+    axB.set_ylabel(f"Categorical Error Metric\n{panelB_metric}\nAcross Facilities (N={int(fac_metrics_df['Key'].nunique())})", fontsize=label_fontsize)
     axB.tick_params(axis="both", which="major", labelsize=tick_fontsize)
     set_thick_spines(axB, linewidth=1.6)
     axB.text(-0.17, 1.05, "B.", transform=axB.transAxes, ha="left", va="top", fontsize=16)
@@ -415,15 +454,16 @@ def main():
     )
 
     plt.subplots_adjust(hspace=0.35, bottom=0.33, top=0.90)
-    save_path = f"{figures_dir}/figure_2_supplemental_data_supplemental_data_vs_npdes_text_vs_cwns.png"
+    filename = "figure_2" if error_denominator == "f1" else "figure_s1"
+    save_path = f"{figures_dir}/{filename}.png"
     save_and_close(fig, save_path, dpi=300)
 
-    # Mean facility-level error rate (unit-process granularity) — matches panel A's Error Rate box.
+    # Mean facility-level F1 error rate (unit-process granularity) — matches panel A's Error Rate box.
     err_by_src = fac_metrics_df.groupby("Source")["Error Rate"].mean() * 100
-    npdes_avg = float(err_by_src.get("NPDES", 0.0))
-    cwns_avg = float(err_by_src.get("CWNS", 0.0))
+    npdes_avg = float(err_by_src["NPDES"])
+    cwns_avg = float(err_by_src["CWNS"])
     print(
-        f"\nMean facility-level error rate (unit processes): Facility Permit = {npdes_avg:.1f}%, CWNS = {cwns_avg:.1f}%"
+        f"\n[{error_denominator}] Mean facility-level error rate (unit processes): Facility Permit = {npdes_avg:.1f}%, CWNS = {cwns_avg:.1f}%"
     )
     for _, r in leaf_rows.iterrows():
         if r["GroundTruth"] == 0 and r["CWNS_FP"] > 0:
@@ -431,4 +471,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()  # main paper figure: error = 1 - F1
+    main(error_denominator="columns")  # SI figure: number-of-columns denominator

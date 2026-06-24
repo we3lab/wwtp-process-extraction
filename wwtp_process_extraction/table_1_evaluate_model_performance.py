@@ -23,14 +23,13 @@ from pathlib import Path
 from typing import Any
 import json
 import os
-import re
 import sys
 import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison
-from helpers.utils import get_leaf_names, precision_recall_f1
+from helpers.utils import get_leaf_names, precision_recall_f1, UNSCORED_STATUSES, select_json_per_place_id
 
 
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
@@ -41,7 +40,7 @@ MAIN_DIR = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gp
 ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
 MANUAL_PATH = Path("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv")
 KEYWORDS_PATH = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
-OUTPUT_CSV = ADDITIONAL_DIR / "f1_variance.csv"
+OUTPUT_CSV = Path("wwtp_process_extraction/output/final/table_s2.csv")
 METRIC_COLS = ["Macro Unit Process F1", "Macro Category F1", "State Accuracy"]
 
 # Maps dir-name model labels to rows in model_costs.csv
@@ -135,11 +134,15 @@ def build_label_to_family_map(keywords: dict[str, Any]) -> dict[str, str]:
 
 
 def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[float, float, float, float]:
-    """Compute label-presence precision/recall/F1/Jaccard for one PDF."""
+    """Compute label-presence precision/recall/F1/Jaccard for one PDF.
+    """
 
     tp = fp = fn = 0
     for col in label_cols:
-        truth_positive = pd.notna(truth_row[col])
+        truth_state = normalize_status(truth_row[col])
+        if truth_state in UNSCORED_STATUSES:
+            continue
+        truth_positive = truth_state is not None
         pred_positive = pd.notna(pred_row[col])
         tp += int(truth_positive and pred_positive)
         fp += int((not truth_positive) and pred_positive)
@@ -149,9 +152,16 @@ def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: lis
 
 
 def family_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
-    """Compute presence metrics after collapsing labels to top-level ontology families."""
+    """Compute presence metrics after collapsing labels to top-level ontology families.
 
-    truth_families = {label_to_family.get(col, col) for col in label_cols if pd.notna(truth_row[col])}
+    Labels whose truth state is PAST/OFFSITE don't contribute to marking their
+    family truth-positive (same drop-the-cell rule as label_presence_f1).
+    """
+
+    truth_families = {
+        label_to_family.get(col, col) for col in label_cols
+        if normalize_status(truth_row[col]) not in UNSCORED_STATUSES | {None}
+    }
     pred_families = {label_to_family.get(col, col) for col in label_cols if pd.notna(pred_row[col])}
 
     tp = len(truth_families & pred_families)
@@ -172,7 +182,7 @@ def exact_state_accuracy(truth_row: pd.Series, pred_row: pd.Series, label_cols: 
     total = 0
     for col in label_cols:
         truth_state = normalize_status(truth_row[col])
-        if truth_state is None:
+        if truth_state is None or truth_state in UNSCORED_STATUSES:
             continue
         total += 1
         pred_state = normalize_status(pred_row[col])
@@ -320,17 +330,14 @@ def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def predictions_for_run(run_dir, label_cols):
+def predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id=None):
     """Postprocess every JSON in run_dir into a {place_id -> {col: status}} frame over label_cols."""
     rows = {}
-    for jf in sorted(run_dir.glob("*.json")):
-        m = re.search(r"_(\d+)\.json$", jf.name)
-        if not m:
-            continue
+    for place_id, jf in select_json_per_place_id(run_dir, pdf_stem_by_place_id=pdf_stem_by_place_id).items():
         with open(jf) as f:
             data = json.load(f)
         result = process_json_to_unit_process_dict(data)
-        rows[m.group(1)] = {c: (result.get(c) or np.nan) for c in label_cols}
+        rows[place_id] = {c: (result.get(c) or np.nan) for c in label_cols}
     return pd.DataFrame.from_dict(rows, orient="index").reindex(columns=label_cols)
 
 
@@ -483,6 +490,10 @@ def main() -> None:
     meta = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
     label_cols = [c for c in manual_full.columns if c not in meta]
     manual = manual_full.drop_duplicates("Place ID").set_index("Place ID")
+    pdf_stem_by_place_id = (
+        manual_full[["Place ID", "PDF_File"]].dropna(subset=["PDF_File"]).drop_duplicates("Place ID")
+        .set_index("Place ID")["PDF_File"].to_dict()
+    )
     _kw = json.loads(KEYWORDS_PATH.read_text())
     label_to_family = build_label_to_family_map(_kw)
     _included = {leaf for cat, val in _kw.items() for leaf in get_leaf_names(cat, val)}
@@ -498,7 +509,7 @@ def main() -> None:
     for label, run_dir in run_dirs:
         n = len(list(run_dir.glob("*.json")))
         print(f"Scoring {label} ({run_dir}) — {n} json")
-        metrics = run_metrics(predictions_for_run(run_dir, label_cols), manual, label_cols, label_to_family, unit_cols)
+        metrics = run_metrics(predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id), manual, label_cols, label_to_family, unit_cols)
         rows.append({"run": label, "n_facilities": n, **metrics})
 
     df = pd.DataFrame(rows)

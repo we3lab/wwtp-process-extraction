@@ -7,6 +7,8 @@ COLORS = {
     "cwns_manual": "#7A6C04", # Darker gold for CWNS + El Abbadi manual corrections
     "npdes_kw": "#5bada5ff",  # Dark blue for NPDES keyword / manual readings
     "npdes_llm": "#305993ff",  # Orange for LLM results
+    "gpt-5": "#7B5EA7",  # Purple for GPT-5 ontology results
+    "gpt-5-mini": "#A98FD2",  # Lighter purple for GPT-5 mini ontology results
 }
 
 # Hatch patterns for status values
@@ -54,7 +56,9 @@ def make_grouped_legend(ax, groups, loc="upper left", bbox_to_anchor=(1.01, 1.0)
 
 def save_and_close(fig, path, dpi=300):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, dpi=dpi, bbox_inches="tight")
+    path = Path(path)
+    fig.savefig(path.with_suffix(".png"), dpi=dpi, bbox_inches="tight")
+    fig.savefig(path.with_suffix(".tiff"), dpi=dpi, bbox_inches="tight")
     plt.close(fig)
 
 

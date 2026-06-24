@@ -29,7 +29,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
-from helpers.plotting import COLORS
+from helpers.plotting import COLORS, save_and_close
 from helpers.utils import build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV
 GHG_ROOT = Path('/home/daly/git/US_WWTP_GHG')
 MC_DIR = GHG_ROOT / 'uncertainty_sensitivity_results/Monte_Carlo'  # MC files stay local
@@ -100,6 +100,40 @@ def load_cwns_col_to_werf():
     return mapping
 
 CWNS_COL_TO_WERF = load_cwns_col_to_werf()
+
+# Experimental: derive leaf -> WERF codes automatically from each leaf's cwns_processes
+# (FINAL_UNIT_PROCESS_NAME values) via the El Abbadi WERF CSV, instead of the curated
+# JSON werf_codes. Falls back to the curated werf_codes only for leaves with no
+# cwns_processes at all (ontology/LLM-only concepts with no CWNS name to look up).
+def load_cwns_col_to_werf_automatic():
+    kw_path = REPO_ROOT / 'wwtp_process_extraction/data/unitprocess_keywords.json'
+    werf_csv_path = REPO_ROOT / 'wwtp_process_extraction/data/el_abbadi/UNIT_PROCESS_EI_CODES_WERF_modified.csv'
+    with open(kw_path) as f:
+        keywords = json.load(f)
+    werf_csv = pd.read_csv(werf_csv_path, dtype=str)
+    csv_lookup = (werf_csv.groupby(werf_csv['FINAL_UNIT_PROCESS_NAME'].str.lower().str.strip())['WERF_CODE']
+                  .apply(lambda s: sorted(set(s.dropna()))).to_dict())
+
+    mapping = {}
+    def walk(node):
+        if not isinstance(node, dict):
+            return
+        for name, details in node.items():
+            if isinstance(details, dict) and 'alt_names' in details:
+                cwns_processes = details.get('cwns_processes') or []
+                codes = set()
+                for cwns_name in cwns_processes:
+                    codes.update(csv_lookup.get(cwns_name.lower().strip(), []))
+                if not codes:
+                    codes = set(c for c in details.get('werf_codes', []) if c)
+                if codes:
+                    mapping[name] = sorted(codes)
+            else:
+                walk(details)
+    walk(keywords)
+    return mapping
+
+CWNS_COL_TO_WERF_AUTO = load_cwns_col_to_werf_automatic()
 
 PRESENT_STATUSES = {'PRESENT', 'PRESENT_AND_FUTURE'}
 
@@ -445,20 +479,23 @@ def load_biogas_cwns_set():
 
 # ── WERF pivot (shared by CWNS and LLM sources) ──────────────────────────────
 
-def build_werf_pivot(facility_rows, present_statuses):
+def build_werf_pivot(facility_rows, present_statuses, col_to_werf=None):
     """
     Build a binary WERF-code pivot (one row per Place ID) from facility status columns.
     present_statuses selects which status strings count as present (CWNS and LLM differ).
+    col_to_werf overrides the default curated CWNS_COL_TO_WERF mapping (e.g. for the
+    automatic-derivation experiment on the CWNS-based source).
     Adds derived NIT and BIO-P indicators, then clears lagoon codes for any facility that
     also has secondary treatment. Returns (pivot, n_cleared).
     """
-    status_cols = [c for c in facility_rows.columns if c in CWNS_COL_TO_WERF]
+    col_to_werf = col_to_werf if col_to_werf is not None else CWNS_COL_TO_WERF
+    status_cols = [c for c in facility_rows.columns if c in col_to_werf]
     records = []
     for _, row in facility_rows.iterrows():
         werf_present = set()
         for col in status_cols:
             if str(row.get(col, '')).strip().upper() in present_statuses:
-                werf_present.update(CWNS_COL_TO_WERF[col])
+                werf_present.update(col_to_werf[col])
         record = {'Place ID': str(row['Place ID']).strip()}
         for code in werf_present:
             record[code] = 1
@@ -485,7 +522,7 @@ def build_werf_pivot(facility_rows, present_statuses):
 
 # ── Sources 1 & 2: El Abbadi (CWNS-based) ────────────────────────────────────
 
-def load_cwns_source(common_pids, include_manual=True):
+def load_cwns_source(common_pids, include_manual=True, use_automatic_werf=False):
     """
     Load El Abbadi CWNS-based treatment train data.
 
@@ -496,6 +533,11 @@ def load_cwns_source(common_pids, include_manual=True):
     include_manual=False (Source 2): re-derives TT assignments from
         unit_processes_by_facility_cwns.csv using our pipeline (same as Source 3),
         with BIOGAS_EL=0. No manual corrections of any kind.
+
+    use_automatic_werf=True: experimental — use CWNS_COL_TO_WERF_AUTO (derived live
+        from the El Abbadi WERF CSV via each leaf's cwns_processes) instead of the
+        curated CWNS_COL_TO_WERF, to test comparability against El Abbadi's own
+        methodology.
     """
     link = pid_to_cwns_flow(common_pids)
 
@@ -507,7 +549,8 @@ def load_cwns_source(common_pids, include_manual=True):
     cwns_by_pid, _ = build_cwns_facility_processes(ca_cwns, target_facilities=common_pids)
     cwns_by_pid = cwns_by_pid[cwns_by_pid['Place ID'].isin(common_pids)].copy()
 
-    cwns_pivot, _ = build_werf_pivot(cwns_by_pid, PRESENT_STATUSES)
+    col_to_werf = CWNS_COL_TO_WERF_AUTO if use_automatic_werf else None
+    cwns_pivot, _ = build_werf_pivot(cwns_by_pid, PRESENT_STATUSES, col_to_werf=col_to_werf)
     cwns_pivot['BIOGAS_EL'] = 0  # set after merge once CWNS_NUM is known
 
     merged = link.merge(cwns_pivot, on='Place ID', how='inner')
@@ -623,7 +666,7 @@ src_labels = {
     'source2': '\nCWNS +\nWEF + DOE',
     'source1': '\nCWNS',
     'source_manual': '\nCWNS +\nWEF + DOE\n+ El Abbadi\ncorrections',
-    'source3': '\nFacility Permits',
+    'source3': '\nFacility\nPermits',
     'source4': '\nFacility\nPermits +\nWEF + DOE',
 }
 
@@ -657,8 +700,7 @@ def plot_comparison(results, output_dir):
               bbox_to_anchor=(1.01, 1), borderaxespad=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    fig.savefig(output_dir / 'final' / 'figure_4.png', dpi=150, bbox_inches='tight')
-    plt.close(fig)
+    save_and_close(fig, output_dir / 'final' / 'figure_4', dpi=300)
 
 # ── N2O breakdown by secondary treatment ─────────────────────────────────────
 
@@ -767,16 +809,15 @@ def plot_n2o_breakdown(dfs, ef, output_dir):
 
     def _style_ax(ax):
         ax.set_xticks(x)
-        ax.set_xticklabels([src_labels[s] for s in sources], fontsize=12)
-        ax.set_ylabel(ylabel, fontsize=13)
+        ax.set_xticklabels([src_labels[s] for s in sources], fontsize=10)
+        ax.set_ylabel(ylabel, fontsize=11)
         y_max = max(breakdowns[s].get(c, 0) for s in sources for c in present_cats)
         y_ticks = np.arange(0, np.ceil(y_max / 1000) * 1000 + 1, 1000)
         ax.set_yticks(y_ticks)
-        ax.tick_params(axis='y', labelsize=12)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    fig, ax = plt.subplots(figsize=(7, 3.5))
+    fig, ax = plt.subplots(figsize=(6, 5))
     bottoms = np.zeros(len(sources))
     for cat in present_cats:
         vals = np.array([breakdowns[s].get(cat, 0) for s in sources])
@@ -790,7 +831,7 @@ def plot_n2o_breakdown(dfs, ef, output_dir):
     ]
     _grouped_legend(ax, [('Treatment Type', list(reversed(cat_handles)))])
     fig.tight_layout()
-    fig.savefig(output_dir / 'ghg' /'ca_n2o_by_secondary_color.png', dpi=150, bbox_inches='tight')
+    fig.savefig(output_dir / 'ghg' /'ca_n2o_by_secondary_color.png', dpi=300, bbox_inches='tight')
     plt.close(fig)
 
 
@@ -901,6 +942,41 @@ if __name__ == '__main__':
         fng_pct = (r['NG_comb_MTyr'] - totals2['NG_comb_MTyr']) / totals2['NG_comb_MTyr'] * 100
         tot_pct = (r['total_MTyr'] - totals2['total_MTyr']) / totals2['total_MTyr'] * 100
         print(f'  {name}: N2O {n2o_pct:+.1f}%,  FNG {fng_pct:+.1f}%,  Total {tot_pct:+.1f}%')
+
+    print('\n── % change relative to El Abbadi (CWNS + WEF + DOE Biogas) ──')
+    for key, name in [('source3', 'WE3Lab LLM'),
+                      ('source4', 'WE3Lab LLM + WEF Biogas')]:
+        r = results[key]
+        n2o_pct = (r['N2O_MTyr'] - totals1['N2O_MTyr']) / totals1['N2O_MTyr'] * 100
+        fng_pct = (r['NG_comb_MTyr'] - totals1['NG_comb_MTyr']) / totals1['NG_comb_MTyr'] * 100
+        tot_pct = (r['total_MTyr'] - totals1['total_MTyr']) / totals1['total_MTyr'] * 100
+        print(f'  {name}: N2O {n2o_pct:+.1f}%,  FNG {fng_pct:+.1f}%,  Total {tot_pct:+.1f}%')
+
+    print('\n── EXPERIMENT: automatic WERF mapping (CSV-derived) vs curated JSON werf_codes ──')
+    print('  (CWNS-based sources only, both compared against Source manual = El Abbadi & Feng published)')
+    df1_auto_raw = load_cwns_source(common_pids, include_manual=True, use_automatic_werf=True)
+    df2_auto_raw = load_cwns_source(common_pids, include_manual=False, use_automatic_werf=True)
+    df1_auto = df1_auto_raw[df1_auto_raw['CWNS_NUM'].isin(assigned_cwns)].copy()
+    df2_auto = df2_auto_raw[df2_auto_raw['CWNS_NUM'].isin(assigned_cwns)].copy()
+    df1_auto_ghg, _ = calc_ghg(df1_auto, ef, grid_carbon, 'Source 1 (auto WERF)')
+    df2_auto_ghg, _ = calc_ghg(df2_auto, ef, grid_carbon, 'Source 2 (auto WERF)')
+    df1_auto_ghg = df1_auto_ghg[df1_auto_ghg['CWNS_NUM'].isin(common_cwns)].copy()
+    df2_auto_ghg = df2_auto_ghg[df2_auto_ghg['CWNS_NUM'].isin(common_cwns)].copy()
+    totals1_auto = totals_from_df(df1_auto_ghg)
+    totals2_auto = totals_from_df(df2_auto_ghg)
+
+    def _dist_to_manual(r):
+        n2o = (r['N2O_MTyr'] - totalsm['N2O_MTyr']) / totalsm['N2O_MTyr'] * 100
+        tot = (r['total_MTyr'] - totalsm['total_MTyr']) / totalsm['total_MTyr'] * 100
+        return n2o, tot
+
+    for label, r in [('Source 1, curated werf_codes', totals1),
+                      ('Source 1, automatic WERF csv', totals1_auto),
+                      ('Source 2, curated werf_codes', totals2),
+                      ('Source 2, automatic WERF csv', totals2_auto)]:
+        n2o_d, tot_d = _dist_to_manual(r)
+        print(f'  {label}: N2O {n2o_d:+.1f}% vs manual,  Total {tot_d:+.1f}% vs manual  '
+              f'(Total={r["total_MTyr"]:.1f}, N2O={r["N2O_MTyr"]:.1f})')
 
     print('\nGenerating plots...')
     plot_comparison(results, OUTPUT_DIR)

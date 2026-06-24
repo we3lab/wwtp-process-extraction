@@ -10,6 +10,38 @@ import unicodedata
 # Canonical status vocabulary: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, '' (absent)
 PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
 
+# States excluded entirely from accuracy/F1 scoring (neither a required positive nor a
+# false-positive trap if predicted) — a process that's decommissioned (PAST) or whose
+# equipment is physically elsewhere (OFFSITE) isn't a clean presence/absence signal.
+UNSCORED_STATUSES = frozenset({"PAST", "OFFSITE"})
+
+PLACE_ID_RE = re.compile(r"_(\d+)\.json$")
+
+
+def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_id=None):
+    """Map place_id -> json Path for one model directory, one file per facility.
+
+    step5 encodes each output's Place ID and source PDF as a {pdf_stem}_{id}.json
+    filename. A facility with multiple permit documents (e.g. an original and a
+    later modification) gets one json per document; when pdf_stem_by_place_id (the
+    manual CSV's PDF_File column) is given, only the json matching that exact PDF
+    is kept, so every caller scores the same source document for a facility.
+    """
+    selected = {}
+    for json_file in sorted(Path(json_dir).glob("*.json")):
+        m = PLACE_ID_RE.search(json_file.name)
+        place_id = m.group(1) if m else ""
+        if not place_id:
+            continue
+        if place_id_filter is not None and place_id not in place_id_filter:
+            continue
+        if pdf_stem_by_place_id and place_id in pdf_stem_by_place_id:
+            stem = Path(pdf_stem_by_place_id[place_id]).stem
+            if json_file.name != f"{stem}_{place_id}.json":
+                continue
+        selected.setdefault(place_id, json_file)
+    return selected
+
 SEP = "\n\n===PLANNED CHANGES===\n\n"
 
 # Canonical project paths, resolved from this file so they survive any os.chdir.
@@ -132,9 +164,55 @@ def is_present(val) -> bool:
     return parse_status(val) in PRESENT_STATUSES
 
 
+def is_unscored(val) -> bool:
+    """True if val (PAST or OFFSITE) should be dropped entirely from accuracy/F1 scoring."""
+    return parse_status(val) in UNSCORED_STATUSES
+
+
+def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None,
+                   truth_present_fn=is_present, pred_present_fn=is_present):
+    """Per-column TP/FP/FN between a truth row and a prediction row.
+
+    A column is dropped entirely (counted toward neither TP, FP, nor FN) if either
+    side's status is PAST/OFFSITE (see UNSCORED_STATUSES) — same rule used for the
+    table_1 F1 metrics, centralized here so every comparison applies it consistently.
+    truth_present_fn/pred_present_fn let callers swap in a different presence
+    definition per side (e.g. CWNS counts FUTURE/PAST as detected; is_present doesn't).
+    Returns (tp, fp, fn, missed, extra) where missed/extra are sorted column-name lists.
+    """
+    truth_cols = truth_row.index if truth_cols is None else truth_cols
+    pred_cols = pred_row.index if pred_cols is None else pred_cols
+    tp = fp = fn = 0
+    missed, extra = [], []
+    for col in cols:
+        truth_val = truth_row.get(col, "") if col in truth_cols else ""
+        pred_val = pred_row.get(col, "") if col in pred_cols else ""
+        if is_unscored(truth_val) or is_unscored(pred_val):
+            continue
+        truth_positive = truth_present_fn(truth_val)
+        pred_positive = pred_present_fn(pred_val)
+        if truth_positive and pred_positive:
+            tp += 1
+        elif pred_positive:
+            fp += 1
+            extra.append(col)
+        elif truth_positive:
+            fn += 1
+            missed.append(col)
+    return tp, fp, fn, sorted(missed), sorted(extra)
+
+
+CWNS_PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
+
+
+def is_present_cwns(val) -> bool:
+    """Scalar counterpart to build_cwns_presence_mask, for use with presence_diff."""
+    return parse_status(val) in CWNS_PRESENT_STATUSES
+
+
 def build_cwns_presence_mask(series):
     """Return boolean mask for CWNS presence values (any detectable status, including FUTURE/PAST)."""
-    return series.map(parse_status).isin({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
+    return series.map(parse_status).isin(CWNS_PRESENT_STATUSES)
 
 
 def precision_recall_f1(tp, fp, fn, empty=float("nan")):

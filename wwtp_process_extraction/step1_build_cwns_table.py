@@ -300,35 +300,63 @@ ca_ids = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
 ca_up_check = up_old_raw[up_old_raw['CWNS_NUM'].astype(str).str.strip().isin(ca_ids)]
 ca_up_2022 = up2022[up2022['CWNS_NUM'].astype(str).str.strip().isin(ca_ids)]
 
-def ca_cwns_from_facility_file(path, cwns_col, state_col, state_val):
+def cwns_from_facility_file(path, cwns_col, state_col, state_val=None):
     df = pd.read_csv(path, dtype=str, encoding='latin1')
-    return set(df[df[state_col].str.strip() == state_val][cwns_col].apply(pad_cwns_id))
+    if state_val is not None:
+        df = df[df[state_col].str.strip() == state_val]
+    return set(df[cwns_col].apply(pad_cwns_id))
 
 fac_2004 = set(ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]['CWNS_NUM'].astype(str).str.strip()) & ca_ids
-fac_2008 = ca_cwns_from_facility_file('data/cwns/2008/Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
-fac_2012 = ca_cwns_from_facility_file('data/cwns/2012/Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
+fac_2008 = cwns_from_facility_file('data/cwns/2008/Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
+fac_2012 = cwns_from_facility_file('data/cwns/2012/Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
 fac_2022 = set(facilities_2022[facilities_2022['STATE_CODE'].str.strip() == 'CA']['CWNS_ID'].apply(pad_cwns_id)) & ca_ids
 
-print(f"\nCA survey coverage (total in export: {len(ca_consolidated)}):")
-cumulative = set()
-procs_prev = None
-for year, facs, up_data in [
-    (2004, fac_2004, ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]),
-    (2008, fac_2008, ca_up_check[ca_up_check['REPORT_YEAR'] == 2008]),
-    (2012, fac_2012, ca_up_check[ca_up_check['REPORT_YEAR'] == 2012]),
-    (2022, fac_2022, ca_up_2022),
+# US-wide equivalents of the per-year facility sets, over all contiguous US treatment plants
+us_ids = set(wwtps['CWNS_NUM'].astype(str).str.strip())
+usfac_2004 = set(up_old_raw[up_old_raw['REPORT_YEAR'] == 2004]['CWNS_NUM'].astype(str).str.strip()) & us_ids
+usfac_2008 = cwns_from_facility_file('data/cwns/2008/Facility_Details.csv', 'CWNS Number', 'State') & us_ids
+usfac_2012 = cwns_from_facility_file('data/cwns/2012/Facility_Details.csv', 'CWNS Number', 'State') & us_ids
+usfac_2022 = set(facilities_2022['CWNS_ID'].apply(pad_cwns_id)) & us_ids
+
+# Most recent CWNS survey year with unit process records; 0 = never reported
+up2022_active = up2022[(up2022['PRES_IND'] == 1) | (up2022['PROJ_IND'] == 1)]
+up_years = pd.concat([up_old_raw[['CWNS_NUM', 'REPORT_YEAR']], up2022_active[['CWNS_NUM', 'REPORT_YEAR']]])
+up_years['CWNS_NUM'] = up_years['CWNS_NUM'].astype(str).str.strip()
+latest_year = up_years.groupby('CWNS_NUM')['REPORT_YEAR'].max()
+
+us = pd.Series(sorted(us_ids)).map(latest_year).fillna(0).astype(int).value_counts()
+ca_rec = pd.Series(sorted(ca_ids)).map(latest_year).fillna(0).astype(int).value_counts()
+
+us_up_check = up_old_raw[up_old_raw['CWNS_NUM'].astype(str).str.strip().isin(us_ids)]
+us_up_2022 = up2022[up2022['CWNS_NUM'].astype(str).str.strip().isin(us_ids)]
+
+print(f"\nCWNS survey coverage (CA export: {len(ca_consolidated)} facilities; "
+      f"denominator is the cumulative facility count through each year)")
+for label, year_data, rec in [
+    ('CA', [(2004, fac_2004, ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]),
+            (2008, fac_2008, ca_up_check[ca_up_check['REPORT_YEAR'] == 2008]),
+            (2012, fac_2012, ca_up_check[ca_up_check['REPORT_YEAR'] == 2012]),
+            (2022, fac_2022, ca_up_2022)], ca_rec),
+    ('US', [(2004, usfac_2004, us_up_check[us_up_check['REPORT_YEAR'] == 2004]),
+            (2008, usfac_2008, us_up_check[us_up_check['REPORT_YEAR'] == 2008]),
+            (2012, usfac_2012, us_up_check[us_up_check['REPORT_YEAR'] == 2012]),
+            (2022, usfac_2022, us_up_2022)], us),
 ]:
-    new = facs - cumulative
-    cumulative |= facs
-    procs = up_data.groupby('CWNS_NUM')['FINAL_UNIT_PROCESS_NAME'].apply(set)
-    n_confirmed = len(set(up_data['CWNS_NUM'].astype(str).str.strip()) & ca_ids)
-    new_str = f", {len(new)} new" if procs_prev is not None else ""
-    if procs_prev is not None:
-        common = procs_prev.index.intersection(procs.index)
-        n_changed = sum(procs_prev[c] != procs[c] for c in common)
-        pct = 100 * n_changed / len(cumulative) if cumulative else 0
-        change_str = f", {n_changed}/{len(cumulative)} with process updates ({pct:.0f}%)"
-    else:
-        change_str = ""
-    print(f"  {year}: {len(facs)} facilities ({n_confirmed} with process records{new_str}{change_str})")
-    procs_prev = procs
+    print(f"{label}:")
+    cum = set()
+    procs_prev = None
+    for year, facs, up_data in year_data:
+        new = facs - cum
+        cum |= facs
+        n = len(cum)
+        procs = up_data.groupby('CWNS_NUM')['FINAL_UNIT_PROCESS_NAME'].apply(set)
+        if procs_prev is not None:
+            common = procs_prev.index.intersection(procs.index)
+            n_changed = sum(procs_prev[c] != procs[c] for c in common)
+            change_str = f" {100 * n_changed / n:.0f}% ({n_changed}/{n}) with process updates in {year}."
+        else:
+            change_str = ""
+        print(f"  - {100 * rec.get(year, 0) / n:.0f}% ({rec.get(year, 0)}/{n}) with most recent process update in {year}. "
+              f"{100 * len(new) / n:.0f}% ({len(new)}/{n}) added in {year}.{change_str}")
+        procs_prev = procs
+    print(f"  - {100 * rec.get(0, 0) / len(cum):.0f}% ({rec.get(0, 0)}/{len(cum)}) with no process record in any year.")

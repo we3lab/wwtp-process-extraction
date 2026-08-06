@@ -330,33 +330,47 @@ ca_rec = pd.Series(sorted(ca_ids)).map(latest_year).fillna(0).astype(int).value_
 us_up_check = up_old_raw[up_old_raw['CWNS_NUM'].astype(str).str.strip().isin(us_ids)]
 us_up_2022 = up2022[up2022['CWNS_NUM'].astype(str).str.strip().isin(us_ids)]
 
-print(f"\nCWNS survey coverage (CA export: {len(ca_consolidated)} facilities; "
-      f"denominator is the cumulative facility count through each year)")
+# Table S1: CWNS survey coverage by report year, CA vs. US-wide
+# all percentages are of the 2022 cumulative facility count (CA 389, US 16201)
+table_rows = []
 for label, year_data, rec in [
     ('CA', [(2004, fac_2004, ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]),
             (2008, fac_2008, ca_up_check[ca_up_check['REPORT_YEAR'] == 2008]),
             (2012, fac_2012, ca_up_check[ca_up_check['REPORT_YEAR'] == 2012]),
             (2022, fac_2022, ca_up_2022)], ca_rec),
-    ('US', [(2004, usfac_2004, us_up_check[us_up_check['REPORT_YEAR'] == 2004]),
-            (2008, usfac_2008, us_up_check[us_up_check['REPORT_YEAR'] == 2008]),
-            (2012, usfac_2012, us_up_check[us_up_check['REPORT_YEAR'] == 2012]),
-            (2022, usfac_2022, us_up_2022)], us),
+    ('US-wide', [(2004, usfac_2004, us_up_check[us_up_check['REPORT_YEAR'] == 2004]),
+                 (2008, usfac_2008, us_up_check[us_up_check['REPORT_YEAR'] == 2008]),
+                 (2012, usfac_2012, us_up_check[us_up_check['REPORT_YEAR'] == 2012]),
+                 (2022, usfac_2022, us_up_2022)], us),
 ]:
-    print(f"{label}:")
     cum = set()
     procs_prev = None
+    n_new, n_upd, n_recent = {}, {}, {}
     for year, facs, up_data in year_data:
-        new = facs - cum
+        n_new[year] = len(facs - cum)
         cum |= facs
-        n = len(cum)
         procs = up_data.groupby('CWNS_NUM')['FINAL_UNIT_PROCESS_NAME'].apply(set)
         if procs_prev is not None:
             common = procs_prev.index.intersection(procs.index)
-            n_changed = sum(procs_prev[c] != procs[c] for c in common)
-            change_str = f" {100 * n_changed / n:.0f}% ({n_changed}/{n}) with process updates in {year}."
+            n_upd[year] = sum(procs_prev[c] != procs[c] for c in common)
         else:
-            change_str = ""
-        print(f"  - {100 * rec.get(year, 0) / n:.0f}% ({rec.get(year, 0)}/{n}) with most recent process update in {year}. "
-              f"{100 * len(new) / n:.0f}% ({len(new)}/{n}) added in {year}.{change_str}")
+            n_upd[year] = ''  # no prior survey to compare against
+        n_recent[year] = int(rec.get(year, 0))
         procs_prev = procs
-    print(f"  - {100 * rec.get(0, 0) / len(cum):.0f}% ({rec.get(0, 0)}/{len(cum)}) with no process record in any year.")
+
+    years = [y for y, _, _ in year_data]
+    total = len(cum)
+    pct = lambda v: '' if v == '' else round(100 * v / total, 1)
+    for metric, counts in [
+        ('New facilities added (#)', n_new),
+        ('New facilities added (% of 2022 cumulative)', {y: pct(n_new[y]) for y in years}),
+        ('Facilities with process updates (#)', n_upd),
+        ('Facilities with process updates (% of 2022 cumulative)', {y: pct(n_upd[y]) for y in years}),
+        ('Facilities with most recent update in this year (#)', n_recent),
+        ('Facilities with most recent update in this year (% of 2022 cumulative)', {y: pct(n_recent[y]) for y in years}),
+    ]:
+        table_rows.append({'Region': label, 'Metric': metric, **{str(y): counts[y] for y in years}})
+
+table_s1 = pd.DataFrame(table_rows, dtype=object)
+table_s1.to_csv(os.path.join(OUTPUT_DATA_DIR, 'final', 'table_s1.csv'), index=False)
+print(f"Saved table_s1.csv (CA n={len(ca_ids)}, US n={len(us_ids)})")

@@ -38,9 +38,10 @@ MODEL_COMPARISON_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 MODEL_COSTS_CSV = Path("wwtp_process_extraction/data/model_costs.csv")
 MAIN_DIR = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gpt-5-mini")
 ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
+WATERRAG_CONTEXT_DIR = Path("wwtp_process_extraction/output/waterrag_retrieval")
 MANUAL_PATH = Path("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv")
 KEYWORDS_PATH = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
-OUTPUT_CSV = Path("wwtp_process_extraction/output/final/table_s2.csv")
+OUTPUT_CSV = Path("wwtp_process_extraction/output/final/table_s3.csv")
 METRIC_COLS = ["Macro Unit Process F1", "Macro Category F1", "State Accuracy"]
 
 # Maps dir-name model labels to rows in model_costs.csv
@@ -48,6 +49,7 @@ MODEL_COST_MAP = {
     # mappings from run-dir model labels to the Language Model names used in model_costs.csv
     "gpt-5": "GPT 5",
     "gpt-5-mini": "GPT 5 mini",
+    "gpt-5-mini-waterrag": "GPT 5 mini",
     "gpt-pro": "GPT 5",
     "gpt-mini": "GPT 5 mini",
     "gemini-2.5-pro": "Gemini 2.5 Pro",
@@ -255,6 +257,26 @@ def load_price_per_pdf(benchmark_ids=None) -> pd.DataFrame:
     costs_df.columns = ["model_name", "input_per_m", "output_per_m"]
     costs_df["model_name"] = costs_df["model_name"].str.strip()
 
+    def token_cost(usage_df, cost_name, prompt_col="prompt_token"):
+        cost_row = costs_df[costs_df["model_name"] == cost_name]
+        input_per_m = cost_row["input_per_m"].iloc[0]
+        output_per_m = cost_row["output_per_m"].iloc[0]
+        prompt_vals = pd.to_numeric(usage_df.get(prompt_col, pd.Series(dtype=float)), errors="coerce")
+        comp_vals = pd.to_numeric(usage_df.get("completion_token", pd.Series(dtype=float)), errors="coerce")
+        return ((prompt_vals / 1_000_000 * input_per_m) + (comp_vals / 1_000_000 * output_per_m)).mean()
+
+    # step5b's reranker calls are billed separately from the extraction call, so add them
+    # in or the -waterrag rows understate their true cost.
+    rerank_cost = 0.0
+    rerank_usage_path = WATERRAG_CONTEXT_DIR / "token_usage_summary.csv"
+    if rerank_usage_path.exists():
+        rerank_usage = pd.read_csv(rerank_usage_path)
+        if benchmark_ids is not None:
+            rerank_usage = rerank_usage[rerank_usage["place_id"].astype(str).str.strip().isin(benchmark_ids)]
+        rerank_models = rerank_usage.get("rerank_model", pd.Series(dtype=str)).dropna().unique()
+        if len(rerank_models):
+            rerank_cost = token_cost(rerank_usage, MODEL_COST_MAP.get(rerank_models[0]))
+
     rows = []
     for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
         if not dir_path.is_dir():
@@ -277,17 +299,11 @@ def load_price_per_pdf(benchmark_ids=None) -> pd.DataFrame:
         if "cost_usd" in usage_df.columns and usage_df["cost_usd"].notna().any():
             cost = usage_df["cost_usd"].astype(float).mean()
         else:
-            cost_name = MODEL_COST_MAP.get(model_label)
-            cost_row = costs_df[costs_df["model_name"] == cost_name]
-            input_per_m = cost_row["input_per_m"].iloc[0]
-            output_per_m = cost_row["output_per_m"].iloc[0]
             # column is "prompt_toke" (typo in source files)
             prompt_col = "prompt_toke" if "prompt_toke" in usage_df.columns else "prompt_token"
-            # Ensure numeric conversion; missing values will become NaN
-            prompt_vals = pd.to_numeric(usage_df.get(prompt_col, pd.Series(dtype=float)), errors="coerce")
-            comp_vals = pd.to_numeric(usage_df.get("completion_token", pd.Series(dtype=float)), errors="coerce")
-            per_row_cost = (prompt_vals / 1_000_000 * input_per_m) + (comp_vals / 1_000_000 * output_per_m)
-            cost = per_row_cost.mean()
+            cost = token_cost(usage_df, MODEL_COST_MAP.get(model_label), prompt_col)
+        if model_label.endswith("-waterrag"):
+            cost += rerank_cost
         rows.append({"Method": method_label, "Model": model_label, "Price per PDF": cost})
     return pd.DataFrame(rows)
 
@@ -445,6 +461,7 @@ def main() -> None:
     desired_order = [
         ("Keyword", "NPDES Keyword"),
         ("Ontology", "gpt-5-mini"),
+        ("Ontology", "gpt-5-mini-waterrag"),
         ("Ontology", "gpt-5"),
         ("Ontology", "gemini-2.5-pro"),
         ("Ontology", "gemini-2.0-flash-001"),

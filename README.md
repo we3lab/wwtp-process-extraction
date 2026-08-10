@@ -52,6 +52,12 @@ python wwtp_process_extraction/step4_keyword_extraction.py
 python wwtp_process_extraction/step5_llm_extraction.py --all_models
 # WEB SEARCH (claude-sonnet-4-6)
 python wwtp_process_extraction/step5_llm_extraction.py  --model claude-sonnet-4-6 --web_search --all_methods
+# WATERRAG (gpt-5-mini)
+# Run step5b must in a SEPARATE Python 3.11 env with torch/langchain/faiss. 
+# wwtp-process-extraction uses Python 3.12 which has no torch
+# --overwrite; it redoes all facilities
+conda run --no-capture-output -n waterrag python wwtp_process_extraction/step5b_waterrag_retrieval.py
+python wwtp_process_extraction/step5_llm_extraction.py --method ontology-based --model gpt-5-mini --waterrag_context
 # FULL CA, ONTOLOGY-BASED, GPT-5-MINI
 python wwtp_process_extraction/step5_llm_extraction.py --all_facilities
 # F1 VARIANCE: 2 extra benchmark runs

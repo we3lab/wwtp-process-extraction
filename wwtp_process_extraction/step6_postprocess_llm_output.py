@@ -10,9 +10,10 @@ WATR = Namespace("urn:nawi-water-ontology#")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 ontology = Graph()
 
-GITHUB_BASE = (
-    "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
-)
+# Pinned local copy of DataDrivenCPS/water-ontology PR #30 (constance/ontology_to_txt),
+# commit 760a6709094845ace3233f34acee00c5e83ef392. Local edit: Boiler hasProcess changed
+# from Process-Incineration (a class the ontology never defines) to Process-Combustion.
+ONTOLOGY_DIR = Path("wwtp_process_extraction/data/ontology")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id
@@ -81,7 +82,7 @@ for name, details, _, _ in leaves:
             facility_multi_rules.append((name, rule))
 facility_multi_rules.sort(key=lambda r: r[1].get("priority", 1))
 
-# Load ontology from GitHub
+# Load ontology from the pinned local copy
 for filename in [
     "ontology.ttl",
     "equipment.ttl",
@@ -90,9 +91,9 @@ for filename in [
     "substances.ttl",
 ]:
     try:
-        ontology.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
+        ontology.parse(ONTOLOGY_DIR / filename, format="turtle")
     except Exception as e:
-        print(f"Could not download {filename} from GitHub")
+        print(f"Could not load {ONTOLOGY_DIR / filename}: {e}")
 
 # Direct (own-class only) hasProcess fragments, keyed by equipment class fragment.
 equipment_own_processes = {

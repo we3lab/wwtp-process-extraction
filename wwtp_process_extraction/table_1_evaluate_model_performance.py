@@ -3,7 +3,7 @@
 This script compares each (Method, Model) row in the workbook against the
 corresponding Truth row for the same PDF.
 
-It reports three useful families of metrics for this sparse multi-label setup:
+It reports three families of metrics for this sparse multi-label setup:
 
 - PDF-macro F1: average label-presence F1 computed separately for each PDF,
   then averaged over PDFs so every PDF counts equally.
@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any
 import json
 import os
+import re
 import sys
 import numpy as np
 import pandas as pd
@@ -41,8 +42,19 @@ ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
 WATERRAG_CONTEXT_DIR = Path("wwtp_process_extraction/output/waterrag_retrieval")
 MANUAL_PATH = Path("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv")
 KEYWORDS_PATH = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
-OUTPUT_CSV = Path("wwtp_process_extraction/output/final/table_s3.csv")
-METRIC_COLS = ["Macro Unit Process F1", "Macro Category F1", "State Accuracy"]
+OUTPUT_CSV = Path("wwtp_process_extraction/output/final/table_s5.csv")
+METRIC_COLS = ["Macro Unit Process F1", "Micro Unit Process F1", "Macro Category F1", "State Accuracy"]
+
+# table_s3: how the labeled sets compare to the full CA dataset on region, size and permit structure
+REPRESENTATIVENESS_CSV = Path("wwtp_process_extraction/output/final/table_s3.csv")
+SITE_DATA_PATH = Path("wwtp_process_extraction/output/site_data_relevant.csv")
+TXT_DIR = Path("wwtp_process_extraction/output/permits/text")
+SUPPLEMENTAL_PATH = Path("wwtp_process_extraction/data/unit_processes_by_facility_supplemental_data.csv")
+# figure_2 restricts the 17 supplemental facilities to those also present in the NPDES text and
+# CWNS mappings; its per-facility output is the definitive list of the 15 that survive.
+SUPPLEMENTAL_COMPARISON_PATH = Path("wwtp_process_extraction/output/supplemental_data_comparison_by_facility.csv")
+REGION_COLS = ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "Unspecified"]
+MULTI_PERMIT_MIN_DOCS = 2 # 2 perm
 
 # Maps dir-name model labels to rows in model_costs.csv
 MODEL_COST_MAP = {
@@ -135,9 +147,8 @@ def build_label_to_family_map(keywords: dict[str, Any]) -> dict[str, str]:
     return label_to_family
 
 
-def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[float, float, float, float]:
-    """Compute label-presence precision/recall/F1/Jaccard for one PDF.
-    """
+def label_presence_counts(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[int, int, int]:
+    """Raw tp/fp/fn for one PDF. Split out so callers can pool counts for a micro average."""
 
     tp = fp = fn = 0
     for col in label_cols:
@@ -150,7 +161,14 @@ def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: lis
         fp += int((not truth_positive) and pred_positive)
         fn += int(truth_positive and (not pred_positive))
 
-    return precision_recall_f1(tp, fp, fn)
+    return tp, fp, fn
+
+
+def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[float, float, float, float]:
+    """Compute label-presence precision/recall/F1/Jaccard for one PDF.
+    """
+
+    return precision_recall_f1(*label_presence_counts(truth_row, pred_row, label_cols))
 
 
 def family_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
@@ -219,12 +237,16 @@ def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataF
         per_pdf_label_f1: list[float] = []
         per_pdf_family_f1: list[float] = []
         per_pdf_state_acc: list[float] = []
+        # pooled over every facility x label pair, so one-label facilities can't swing the score
+        micro_tp = micro_fp = micro_fn = 0
 
         for place_id in manual.index:
             manual_row = manual.loc[place_id, label_cols]
             pred_row = subset.loc[place_id, label_cols]
 
-            _, _, label_f1, _ = label_presence_f1(manual_row, pred_row, unit_cols)
+            tp, fp, fn = label_presence_counts(manual_row, pred_row, unit_cols)
+            micro_tp += tp; micro_fp += fp; micro_fn += fn
+            _, _, label_f1, _ = precision_recall_f1(tp, fp, fn)
             _, _, family_f1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
             state_acc = exact_state_accuracy(manual_row, pred_row, unit_cols)
 
@@ -237,6 +259,7 @@ def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataF
                 "Method": method,
                 "Model": model,
                 "Macro Unit Process F1": pd.Series(per_pdf_label_f1).mean(),
+                "Micro Unit Process F1": precision_recall_f1(micro_tp, micro_fp, micro_fn)[2],
                 "Macro Category F1": pd.Series(per_pdf_family_f1).mean(),
                 "State Accuracy": pd.Series(per_pdf_state_acc).mean(),
             }
@@ -368,19 +391,73 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols=None):
         unit_cols = label_cols
     pred = pred_df.reindex(manual.index)  # missing facilities -> all-NaN (counts as no prediction)
     label_f1, family_f1, state_acc = [], [], []
+    micro_tp = micro_fp = micro_fn = 0
     for place_id in manual.index:
         truth_row = manual.loc[place_id, label_cols]
         pred_row = pred.loc[place_id, label_cols]
-        _, _, f1, _ = label_presence_f1(truth_row, pred_row, unit_cols)
+        tp, fp, fn = label_presence_counts(truth_row, pred_row, unit_cols)
+        micro_tp += tp; micro_fp += fp; micro_fn += fn
+        _, _, f1, _ = precision_recall_f1(tp, fp, fn)
         _, _, ff1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
         label_f1.append(f1)
         family_f1.append(ff1)
         state_acc.append(exact_state_accuracy(truth_row, pred_row, unit_cols))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
+        "Micro Unit Process F1": precision_recall_f1(micro_tp, micro_fp, micro_fn)[2],
         "Macro Category F1": pd.Series(family_f1).mean(),
         "State Accuracy": pd.Series(state_acc).mean(),
     }
+
+def build_representativeness_table() -> pd.DataFrame:
+    """Region, size and permit-structure profile of each labeled set against the full pool.
+
+    Benchmark Set is the 15 facilities figure_2 scores (the supplemental read, minus those with
+    no CWNS match), Evaluation Set the manually labeled facilities, and Full Dataset every CA
+    facility with an extracted permit text.
+    """
+    site_df = pd.read_csv(SITE_DATA_PATH, dtype=str).fillna("")
+
+    def region_for(row):
+        # Region is blank or "SB" for ~20% of rows, so prefer the R<n> prefix on the order number
+        match = re.search(r"\bR([1-9])[-_ ]", f"{row['Order_No']} {row['PDF_File']}", re.I)
+        if match:
+            return f"R{match.group(1)}"
+        return f"R{row['Region'][0]}" if row["Region"][:1].isdigit() else "Unspecified"
+
+    site_df["Region"] = site_df.apply(region_for, axis=1)
+    site_df["Place ID"] = site_df["Place ID"].str.strip()
+    site_df = site_df.drop_duplicates("Place ID").set_index("Place ID")
+
+    txt_stems = {p.stem for p in TXT_DIR.glob("*.txt")}
+    has_text = site_df["PDF_File"].str.replace(r"\.(pdf|txt)$", "", regex=True, case=False).isin(txt_stems)
+    scored_names = set(pd.read_csv(SUPPLEMENTAL_COMPARISON_PATH, dtype=str)["Facility Name"])
+    supplemental_df = pd.read_csv(SUPPLEMENTAL_PATH, dtype=str).fillna("")
+    benchmark_df = supplemental_df[supplemental_df["Facility Name"].isin(scored_names)]
+
+    populations = [
+        ("% of Benchmark Set", set(benchmark_df["Place ID"].str.strip())),
+        ("% of Evaluation Set", set(pd.read_csv(MANUAL_PATH, dtype=str)["Place ID"].str.strip())),
+        ("% of Full Dataset", set(site_df[has_text].index)),
+    ]
+
+    rows = []
+    for label, place_ids in populations:
+        subset = site_df.loc[[pid for pid in place_ids if pid in site_df.index]]
+        region_share = subset["Region"].value_counts(normalize=True).mul(100)
+        # Major/Minor is blank for most non-POTW rows, so that share covers classified rows only
+        is_major = subset["Major/Minor"].replace("", pd.NA).dropna().str.startswith("Major")
+        n_docs = pd.to_numeric(subset["Total_PDFs_Available"], errors="coerce").fillna(0)
+        row = {"": label, "n": len(subset)}
+        for region in REGION_COLS:
+            row[region] = round(region_share.get(region, 0.0), 1)
+        row["EPA Major"] = round(100 * is_major.mean())
+        row["EPA Minor"] = round(100 * (~is_major).mean())
+        row["Multiple Permits"] = round(100 * (n_docs >= MULTI_PERMIT_MIN_DOCS).mean(), 1)
+        row["Shared Permit"] = round(100 * subset["Shared_PDF"].eq("Yes").mean(), 1)
+        rows.append(row)
+    return pd.DataFrame(rows)
+
 
 def main() -> None:
     args = parse_args()
@@ -542,6 +619,11 @@ def main() -> None:
     OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(OUTPUT_CSV, index=False)
     # print(out.to_string(index=False))
+
+    # SET REPRESENTATIVENESS
+    representativeness = build_representativeness_table()
+    representativeness.to_csv(REPRESENTATIVENESS_CSV, index=False)
+    print(representativeness.to_string(index=False))
 
 if __name__ == "__main__":
     main()

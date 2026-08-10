@@ -252,15 +252,16 @@ def run_extraction(args, output_dir_override=None):
         args.method, args.model, args.web_search, args.waterrag_context
     )
 
-    if args.method == "ontology-based":
-        print("Initializing ontology from source repository...")
-        ontology_to_txt()
-        generated_path = Path(ontology_txt_file)
-        ontology_target = Path(ONTOLOGY_PATH)
-        if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
-            ontology_target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(generated_path, ontology_target)
-            print(f"Copied generated ontology file to {ontology_target}")
+    # ontology.txt is pinned to June 2026 from the DataDrivenCPS/water-ontology PR #30 branch.
+    # if args.method == "ontology-based":
+    #     print("Initializing ontology from source repository...")
+    #     ontology_to_txt()
+    #     generated_path = Path(ontology_txt_file)
+    #     ontology_target = Path(ONTOLOGY_PATH)
+    #     if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
+    #         ontology_target.parent.mkdir(parents=True, exist_ok=True)
+    #         shutil.copyfile(generated_path, ontology_target)
+    #         print(f"Copied generated ontology file to {ontology_target}")
 
     if args.method == "list-based":
         generated_list_path = init_unit_process_list_from_json(

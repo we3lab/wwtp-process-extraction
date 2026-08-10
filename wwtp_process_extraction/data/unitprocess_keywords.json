@@ -173,7 +173,8 @@
       "alt_names": ["aerated lagoon", "aerated pond", "oxidation pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Aerated"],
-      "ontology_triggers": ["Equipment-Pond", "Role-Aerobic"],
+      "ontology_triggers": [["Equipment-Pond", "Role-Aerobic"], ["Equipment-Pond", "Process-Aeration"]],
+      "exclude_if_any": ["Role-SolidsHandling", "Role-Storage", "Process-Evaporation"],
       "priority": 2,
       "werf_codes": ["LAGOON_AER"]
     },
@@ -219,23 +220,16 @@
   },
   "Nutrient Removal": {
     "Biological Nutrient Removal": {
-      "AO (anoxic/oxic)": {
+      "AnO": {
         "alt_names": ["anoxic-oxic", "a/o", "anoxic oxic", "anoxic-aerobic", "anoxic aerobic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
-        "ontology_triggers": [["Process-AO"], ["Role-Anoxic", "Role-Aerobic"], ["Process-Nitrification", "Process-Denitrification", "Equipment-Reactor"]],
-        "ontology_triggers_multi": [
-          {
-            "priority": 3,
-            "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
-            "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
-          }
-        ],
-        "exclude_if_any": ["Role-Anaerobic", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
+        "ontology_triggers": [["Process-AO"]],
+        "exclude_if_any": ["Role-Anaerobic", "Process-MLE", "Process-A2O", "Process-UCT", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
         "secondary_category": ["Activated Sludge"],
         "werf_codes": ["AS-BDENIT"]
       },
-      "AO (anaerobic/oxic)": {
+      "AO": {
         "alt_names": ["anaerobic-oxic", "anaerobic oxic", "anaerobic-aerobic", "anaerobic aerobic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
@@ -304,7 +298,16 @@
         "ontology_triggers": [
           ["Process-Nitrification"],
           ["Process-Denitrification"],
-          ["Role-NutrientRemoval"]
+          ["Role-NutrientRemoval"],
+          ["Role-Anoxic", "Role-Aerobic"],
+          ["Process-Nitrification", "Process-Denitrification", "Equipment-Reactor"]
+        ],
+        "ontology_triggers_multi": [
+          {
+            "priority": 3,
+            "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
+            "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
+          }
         ],
         "priority": 1000,
         "werf_codes": ["BNR"]
@@ -850,7 +853,7 @@
         "alt_names": ["incineration", "incinerator"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Co-Incineration With Solid Waste", "Biosolids Incineration (Other)", "Incineration - Rotary Kiln"],
-        "ontology_triggers": ["Process-Incineration"],
+        "ontology_triggers": [["Process-Combustion", "Substance-Fluid-Sludge"]],
         "priority": 1000,
         "werf_codes": []
       }

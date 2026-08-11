@@ -175,7 +175,7 @@
       "cwns_processes": ["Lagoon, Aerated"],
       "ontology_triggers": [["Equipment-Pond", "Role-Aerobic"], ["Equipment-Pond", "Process-Aeration"]],
       "exclude_if_any": ["Role-SolidsHandling", "Role-Storage", "Process-Evaporation"],
-      "priority": 2,
+      "priority": 1,
       "werf_codes": ["LAGOON_AER"]
     },
     "Anaerobic Lagoon": {
@@ -183,7 +183,7 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Anaerobic"],
       "ontology_triggers": ["Equipment-Pond", "Role-Anaerobic"],
-      "priority": 2,
+      "priority": 1,
       "werf_codes": ["LAGOON_ANAER"]
     },
     "Polishing Lagoon": {
@@ -428,7 +428,7 @@
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-NanofiltrationUnit"],
-        "priority": 2,
+        "priority": 1,
         "werf_codes": []
       },
       "Electrodialysis Reversal": {
@@ -460,7 +460,8 @@
         "alt_names_case_sensitive": ["UF"],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-UltrafiltrationUnit"],
-        "priority": 2,
+        "exclude_if_any": ["Equipment-MembraneBioreactor"],
+        "priority": 1,
         "werf_codes": []
       },
       "Microfiltration": {
@@ -468,7 +469,8 @@
         "alt_names_case_sensitive": ["MF"],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-MicrofiltrationUnit"],
-        "priority": 2,
+        "exclude_if_any": ["Equipment-MembraneBioreactor"],
+        "priority": 1,
         "werf_codes": []
       },
       "Membrane Bioreactor": {
@@ -490,7 +492,7 @@
     },
     "Unspecified Filtration": {
       "alt_names": ["pressure filter"],
-      "alt_names_case_sensitive": ["MF"],
+      "alt_names_case_sensitive": [],
       "cwns_processes": ["Filter, Other", "Filter, Pressure"],
       "ontology_triggers": ["Process-Filtration"],
       "priority": 1000,
@@ -645,7 +647,7 @@
         ["Process-pHAdjustment"],
         ["pHAdjuster"]
       ],
-      "priority": 10,
+      "priority": 1,
       "werf_codes": ["MOD_CHEM"]
     },
     "Unspecified Chemical Addition": {
@@ -746,7 +748,7 @@
     "Thickening": {
       "Thickening": {
         "alt_names": ["thicken"],
-        "alt_names_case_sensitive": ["DAF", "GBT"],
+        "alt_names_case_sensitive": ["DAF", "DAFT", "GBT"],
         "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other", "Swirl Concentrators", "Vortex Solids Separators"],
         "ontology_triggers": [
           ["Equipment-Thickener"],
@@ -837,7 +839,7 @@
     "Incineration": {
       "MHI": {
         "alt_names": ["multiple hearth incineration", "multiple hearth incinerator"],
-        "alt_names_case_sensitive": ["MHI"],
+        "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Incineration, Multiple Hearth"],
         "ontology_triggers": ["Process-MultipleHearthIncineration"],
         "werf_codes": ["MHI"]

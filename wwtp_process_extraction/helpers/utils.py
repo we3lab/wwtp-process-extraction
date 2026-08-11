@@ -125,14 +125,17 @@ def hasprocess_fragments(graph, cls, watr_ns, sh_ns):
     return fragments
 
 
-def normalize_text(text):
-    """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase."""
+def normalize_text(text, lower=True):
+    """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase.
+
+    lower=False keeps original case, for acronym keywords that must match case-sensitively.
+    """
     if not text:
         return ""
     text = unicodedata.normalize("NFKC", text)
     text = re.sub(r"[­​‌‍﻿]", "", text)  # zero-width chars
     text = re.sub(r"\s+", " ", text).strip()
-    return text.lower()
+    return text.lower() if lower else text
 
 def parse_status(val) -> str:
     """Normalize any status cell to a canonical token.

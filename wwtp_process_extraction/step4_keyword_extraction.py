@@ -1,5 +1,7 @@
 import csv
 import json
+import re
+from functools import lru_cache
 import pandas as pd
 from helpers.utils import (
     SEP,
@@ -14,7 +16,24 @@ from helpers.utils import (
 )
 
 
-def search_processes_in_text(text, processes_dict, results, parent_name=None):
+@lru_cache(maxsize=None)
+def _cs_pattern(term):
+    # Bare acronyms match case-sensitively on token boundaries (optional plural s), so TF
+    # doesn't hit WWTF, AD doesn't hit SCADA, and CAS doesn't hit permit number CAS000001.
+    # Anything else (prefix stems like "Aerobic Digest", mixed case like FeCl3) stays a
+    # plain substring so it still matches "Aerobic Digesters".
+    core = term.strip()
+    if core.isalnum() and core.isupper():
+        return re.compile(r"(?<![A-Za-z0-9])" + re.escape(core) + r"s?(?![A-Za-z0-9])")
+    return re.compile(re.escape(core))
+
+
+def search_processes_in_text(text, processes_dict, results, parent_name=None, text_cs=None):
+    # text is lowercased for alt_names; text_cs keeps original case for the acronym list.
+    # Defaults to text so callers passing raw (unnormalized) text still work.
+    if text_cs is None:
+        text_cs = text
+    text_lower = text.lower()
     sub_category_found = False
     for process_name, details in processes_dict.items():
         if isinstance(details, dict):
@@ -23,17 +42,13 @@ def search_processes_in_text(text, processes_dict, results, parent_name=None):
                     results[process_name] = 0
                 alt_names = details.get("alt_names", []) or []
                 cs_list = details.get("alt_names_case_sensitive", []) or []
-                for alt_name in alt_names:
-                    if alt_name in cs_list:
-                        found = alt_name in text
-                    else:
-                        found = alt_name.lower() in text.lower()
-                    if found:
-                        results[process_name] = 1
-                        sub_category_found = True
-                        break
+                found = (any(a.lower() in text_lower for a in alt_names)
+                         or any(_cs_pattern(c).search(text_cs) for c in cs_list))
+                if found:
+                    results[process_name] = 1
+                    sub_category_found = True
             else:
-                sub_found = search_processes_in_text(text, details, results, process_name)
+                sub_found = search_processes_in_text(text, details, results, process_name, text_cs)
                 if sub_found:
                     sub_category_found = True
     if parent_name and sub_category_found:
@@ -76,6 +91,8 @@ def main():
         parts = content.split(SEP, 1)
         txt_section = normalize_text(parts[0]) if parts else ""
         txt_changes = normalize_text(parts[1]) if len(parts) > 1 else ""
+        txt_section_cs = normalize_text(parts[0], lower=False) if parts else ""
+        txt_changes_cs = normalize_text(parts[1], lower=False) if len(parts) > 1 else ""
         if not txt_section.strip():
             txt_cache[stem] = None
             continue
@@ -84,9 +101,9 @@ def main():
             if not isinstance(processes, dict):
                 continue
             proc_dict = {category: processes} if "alt_names" in processes else processes
-            search_processes_in_text(txt_section, proc_dict, present_results, None)
+            search_processes_in_text(txt_section, proc_dict, present_results, None, txt_section_cs)
             if txt_changes:
-                search_processes_in_text(txt_changes, proc_dict, future_results, None)
+                search_processes_in_text(txt_changes, proc_dict, future_results, None, txt_changes_cs)
         txt_cache[stem] = (present_results, future_results)
 
     headers = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"]

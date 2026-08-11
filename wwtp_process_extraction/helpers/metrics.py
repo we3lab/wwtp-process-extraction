@@ -1,5 +1,5 @@
 import pandas as pd
-from wwtp_process_extraction.helpers.utils import is_present
+from helpers.utils import is_present
 
 # 0–1 scalar metrics (per label or per facility); violin / summaries use this order.
 METRIC_SCORE_COLUMNS = (

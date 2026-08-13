@@ -1,0 +1,105 @@
+{
+  "_source": "2022 CWNS Cost Estimation Tool Methods (EPA, April 2024), Table 2-3, p.13. https://www.epa.gov/system/files/documents/2024-05/2022-cwns-cost-estimation-tool-methods.pdf",
+  "_units": "C = capacity in MGD. Output = national-average January 2022 dollars.",
+  "_application": "Eq. 2-1: Cost = CPI x LF_zip x BaseCurve. We report in Jan-2022 dollars so CPI = 1. LF_zip is the RSMeans location factor (proprietary, unavailable); location_factor below is the national average of 100, i.e. no location adjustment.",
+  "_forms": "linear = a*C + b ; power = a*C^b. Multi-segment curves are split on max_mgd (null = no upper bound); segments are ordered.",
+  "_shared_curves": "Lagoon and aerated lagoon use one curve for rehabilitation/system_expansion/treatment_upgrade; secondary mechanical shares one curve between system_expansion and treatment_upgrade. Coefficients are repeated rather than aliased so each entry is readable on its own.",
+  "location_factor": 100.0,
+  "national_average_location_factor": 100.0,
+  "cpi_adjustment": 1.0,
+
+  "systems": {
+    "lagoon": {
+      "new": {
+        "limit_mgd": 5,
+        "segments": [{"max_mgd": null, "form": "linear", "a": 4978405, "b": 4259108, "r2": null, "basis": "Capdet"}]
+      },
+      "rehabilitation": {
+        "limit_mgd": 2.1,
+        "segments": [{"max_mgd": null, "form": "power", "a": 4334434, "b": 0.619, "r2": 0.83, "basis": "PCD"}]
+      },
+      "system_expansion": {
+        "limit_mgd": 2.1,
+        "segments": [{"max_mgd": null, "form": "power", "a": 4334434, "b": 0.619, "r2": 0.83, "basis": "PCD"}]
+      },
+      "treatment_upgrade": {
+        "limit_mgd": 2.1,
+        "segments": [{"max_mgd": null, "form": "power", "a": 4334434, "b": 0.619, "r2": 0.83, "basis": "PCD"}]
+      }
+    },
+
+    "aerated_lagoon": {
+      "new": {
+        "limit_mgd": 5,
+        "segments": [{"max_mgd": null, "form": "linear", "a": 8871326, "b": 4184999, "r2": null, "basis": "Capdet"}]
+      },
+      "rehabilitation": {
+        "limit_mgd": 2.1,
+        "segments": [{"max_mgd": null, "form": "linear", "a": 6663409, "b": 0, "r2": 0.87, "basis": "PCD"}]
+      },
+      "system_expansion": {
+        "limit_mgd": 2.1,
+        "segments": [{"max_mgd": null, "form": "linear", "a": 6663409, "b": 0, "r2": 0.87, "basis": "PCD"}]
+      },
+      "treatment_upgrade": {
+        "limit_mgd": 2.1,
+        "segments": [{"max_mgd": null, "form": "linear", "a": 6663409, "b": 0, "r2": 0.87, "basis": "PCD"}]
+      }
+    },
+
+    "secondary_mechanical": {
+      "new": {
+        "limit_mgd": 5,
+        "segments": [
+          {"max_mgd": 0.6, "form": "power", "a": 16221460, "b": 0.749, "r2": 0.89, "basis": "PCD"},
+          {"max_mgd": null, "form": "linear", "a": 5062323, "b": 8081189, "r2": null, "basis": "Capdet"}
+        ]
+      },
+      "rehabilitation": {
+        "limit_mgd": 15,
+        "segments": [{"max_mgd": null, "form": "power", "a": 2824125, "b": 0.383, "r2": 0.26, "basis": "PCD"}]
+      },
+      "system_expansion": {
+        "limit_mgd": 8,
+        "segments": [{"max_mgd": null, "form": "power", "a": 8177714, "b": 0.459, "r2": 0.29, "basis": "PCD"}]
+      },
+      "treatment_upgrade": {
+        "limit_mgd": 8,
+        "segments": [{"max_mgd": null, "form": "power", "a": 8177714, "b": 0.459, "r2": 0.29, "basis": "PCD"}]
+      }
+    },
+
+    "advanced": {
+      "new": {
+        "limit_mgd": 5,
+        "segments": [
+          {"max_mgd": 1.1, "form": "power", "a": 13657111, "b": 0.678, "r2": 0.79, "basis": "PCD"},
+          {"max_mgd": null, "form": "linear", "a": 6193944, "b": 8141130, "r2": null, "basis": "Capdet"}
+        ]
+      },
+      "rehabilitation": {
+        "limit_mgd": 15,
+        "segments": [{"max_mgd": null, "form": "power", "a": 2202081, "b": 0.605, "r2": 0.28, "basis": "PCD"}]
+      },
+      "system_expansion": {
+        "limit_mgd": 14,
+        "segments": [{"max_mgd": null, "form": "power", "a": 4854422, "b": 1.03, "r2": 0.65, "basis": "PCD"}]
+      },
+      "treatment_upgrade": {
+        "limit_mgd": 12,
+        "segments": [{"max_mgd": null, "form": "power", "a": 7161849, "b": 0.400, "r2": 0.47, "basis": "PCD"}]
+      }
+    },
+
+    "add_disinfection": {
+      "uv": {
+        "limit_mgd": 30,
+        "segments": [{"max_mgd": null, "form": "power", "a": 870933, "b": 0.699, "r2": null, "basis": "CAFCom"}]
+      },
+      "chlorine": {
+        "limit_mgd": 30,
+        "segments": [{"max_mgd": null, "form": "linear", "a": 78178, "b": 766233, "r2": null, "basis": "Capdet"}]
+      }
+    }
+  }
+}

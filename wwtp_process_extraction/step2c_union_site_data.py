@@ -14,10 +14,11 @@ import os
 
 import pandas as pd
 
+from helpers.utils import COLLECTIVE_AGENCY_RE
+
 OUT = "wwtp_process_extraction/output"
 SNAPSHOT_GLOB = os.path.join(OUT, "site_data", "*", "site_data_relevant.csv")
 UNION_PATH = os.path.join(OUT, "site_data_relevant.csv")
-PROVENANCE_PATH = os.path.join(OUT, "site_data", "_history", "document_snapshot_map.csv")
 
 # A facility can hold several orders across snapshots, and one order can carry several PDFs;
 # general orders (e.g. 2014-0153-DWQ) are shared by hundreds of facilities. Reg_Measure_ID is
@@ -49,6 +50,14 @@ def main():
     allrows["order_key"] = allrows["Reg_Measure_ID"].where(
         allrows["Reg_Measure_ID"].str.strip().ne(""), allrows["Order_No"])
 
+    # Older snapshots predate step2's collective-permittee filter, so drop those places here too
+    collective = allrows["Agency"].str.contains(COLLECTIVE_AGENCY_RE, na=False)
+    if collective.any():
+        dropped = allrows.loc[collective, ["Place ID", "Facility Name"]].drop_duplicates()
+        print(f"\ncollective-permittee places dropped (not facilities): {len(dropped)}")
+        print(dropped.to_string(index=False))
+        allrows = allrows[~collective]
+
     # provenance: which snapshots each document appears in, for the year-over-year join later
     prov = (allrows.groupby(KEY)["as_of"]
             .agg(lambda s: ";".join(sorted(set(s))))
@@ -58,7 +67,12 @@ def main():
     # keep one row per document, preferring the newest snapshot's metadata
     union = (allrows.sort_values("as_of", ascending=False)
              .drop_duplicates(subset=KEY, keep="first"))
-    cols = [c for c in allrows.columns if c not in ("as_of", "order_key")]
+
+    # provenance rides along as columns rather than a side file: the year-over-year figure
+    # needs to know which snapshots a document appeared in, and a second file only drifts
+    union = union.merge(prov, on=KEY, how="left")
+    cols = ([c for c in allrows.columns if c not in ("as_of", "order_key")]
+            + ["as_of_dates", "n_snapshots"])
     union = union[cols]
 
     current = pd.read_csv(UNION_PATH, dtype=str).fillna("") if os.path.exists(UNION_PATH) else pd.DataFrame()
@@ -82,11 +96,8 @@ def main():
     if args.dry_run:
         print("\n--dry-run: nothing written")
         return
-    os.makedirs(os.path.dirname(PROVENANCE_PATH), exist_ok=True)
-    prov.to_csv(PROVENANCE_PATH, index=False)
     union.to_csv(UNION_PATH, index=False)
     print(f"\nwrote {UNION_PATH} ({len(union)} rows)")
-    print(f"wrote {PROVENANCE_PATH} ({len(prov)} documents)")
     print("\nnow run step3 -> step5 --all_facilities -> step6; each skips work already done.")
 
 

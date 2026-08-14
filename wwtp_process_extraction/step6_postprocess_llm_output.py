@@ -119,15 +119,7 @@ def _norm_pdf(s):
     return s.lower().replace(" ", "_")
 
 
-def _row_info(row):
-    return {
-        "Place ID": row["Place ID"],
-        "WDID": row["WDID"],
-        "Order_No": row["Order_No"],
-        "NPDES No.": row["NPDES No."],
-        "Agency": row["Agency"],
-        "Facility Name": row["Facility Name"],
-    }
+ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File"]
 
 
 def normalize_records(json_data):
@@ -429,7 +421,7 @@ def main():
         # Use Path.stem so double-extension files (*.pdf.pdf) map to the same stem
         # the LLM JSON generator uses when naming output files.
         key = _norm_pdf(Path(row["PDF_File"]).stem)
-        pdf_map.setdefault(key, []).append(_row_info(row))
+        pdf_map.setdefault(key, []).append({c: row[c] for c in ID_COLS})
 
     # ── full dataset ────────────────────────────────────────────────────
     results = []
@@ -462,10 +454,9 @@ def main():
         results.append(result)
 
     df = pd.DataFrame(results)
-    id_cols = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"]
-    cols = id_cols + [c for c in columns if c in df.columns]
+    cols = ID_COLS + [c for c in columns if c in df.columns]
     for c in cols:
-        if c not in id_cols:
+        if c not in ID_COLS:
             df[c] = df[c].map(parse_status)
     df[cols].to_csv(output_csv, index=False)
     print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")

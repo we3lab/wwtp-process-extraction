@@ -18,17 +18,49 @@ UNSCORED_STATUSES = frozenset({"PAST", "OFFSITE"})
 PLACE_ID_RE = re.compile(r"_(\d+)\.json$")
 
 
+_document_recency_cache = None
+
+
+def document_recency():
+    """(place_id, pdf_stem) -> newest snapshot date that document appears in, '' if none.
+
+    step2 writes a dated site_data_relevant.csv per AS_OF run and step2c unions them into
+    as_of_dates. The document a facility holds in the newest snapshot is its current permit;
+    one absent from every snapshot is a leftover from a superseded order.
+    """
+    global _document_recency_cache
+    if _document_recency_cache is None:
+        recency = {}
+        rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False).fillna("")
+        dates_col = "as_of_dates" if "as_of_dates" in rel.columns else None
+        for _, row in rel.iterrows():
+            pdf = row["PDF_File"].strip()
+            if not pdf:
+                continue
+            key = (row["Place ID"].strip(), Path(pdf).stem)
+            newest = max(row[dates_col].split(";")) if dates_col and row[dates_col] else ""
+            recency[key] = max(recency.get(key, ""), newest)
+        _document_recency_cache = recency
+    return _document_recency_cache
+
+
 def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_id=None):
     """Map place_id -> json Path for one model directory, one file per facility.
 
-    step5 encodes each output's Place ID and source PDF as a {pdf_stem}_{id}.json
-    filename. A facility with multiple permit documents (e.g. an original and a
-    later modification) gets one json per document; when pdf_stem_by_place_id (the
-    manual CSV's PDF_File column) is given, only the json matching that exact PDF
-    is kept, so every caller scores the same source document for a facility.
+    step5 encodes each output's Place ID and source PDF as a {pdf_stem}_{id}.json filename. A
+    facility with several permit documents (an original plus later modifications) gets one json
+    per document, so a single one has to be chosen:
+
+      1. pdf_stem_by_place_id (the manual CSV's PDF_File) pins the exact document ground truth
+         was read from, so every caller scores the same source.
+      2. otherwise keep the most current document, by newest snapshot it appears in.
+
+    Never resolve ties by filename order -- sorted() picked "12-9-25_IndianSprings..." over the
+    current "2026-06-01_WDR_NOA_Revised_IndianSpringsWWTP...", silently scoring a superseded NOA.
+    A tie that recency cannot break raises rather than guessing.
     """
-    selected = {}
-    for json_file in sorted(Path(json_dir).glob("*.json")):
+    candidates = {}
+    for json_file in Path(json_dir).glob("*.json"):
         m = PLACE_ID_RE.search(json_file.name)
         place_id = m.group(1) if m else ""
         if not place_id:
@@ -39,10 +71,65 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
             stem = Path(pdf_stem_by_place_id[place_id]).stem
             if json_file.name != f"{stem}_{place_id}.json":
                 continue
-        selected.setdefault(place_id, json_file)
+        candidates.setdefault(place_id, []).append(json_file)
+
+    recency = document_recency()
+    selected = {}
+    for place_id, files in candidates.items():
+        if len(files) == 1:
+            selected[place_id] = files[0]
+            continue
+        ranked = sorted(
+            files,
+            key=lambda f: recency.get((place_id, f.name[: -(len(place_id) + 6)]), ""),
+            reverse=True,
+        )
+        best = recency.get((place_id, ranked[0].name[: -(len(place_id) + 6)]), "")
+        tied = [f for f in ranked if recency.get((place_id, f.name[: -(len(place_id) + 6)]), "") == best]
+        if len(tied) > 1:
+            raise ValueError(
+                f"Place {place_id} in {Path(json_dir).name}: {len(tied)} documents are equally "
+                f"current (snapshot {best or 'none'}), cannot pick one: "
+                f"{sorted(f.name for f in tied)}. Pass pdf_stem_by_place_id to disambiguate."
+            )
+        selected[place_id] = ranked[0]
     return selected
 
 SEP = "\n\n===PLANNED CHANGES===\n\n"
+
+# A statewide general order (2014-0153-DWQ, 97-010-DWQ) describes no single plant — its generic
+# process list ("septic tank, Imhoff tank, package treatment tank...") would otherwise be
+# attributed to every enrolled facility. Detection has to be content-based: the order number
+# can't discriminate, because an enrollee's order_no IS the general order number.
+_GENERAL_ORDER_RE = re.compile(r"general\s+waste\s+discharge\s+requirements", re.IGNORECASE)
+_NOA_HEADER_RE = re.compile(r"notice\s+of\s+applicability", re.IGNORECASE)
+_STATE_BOARD_RE = re.compile(r"state\s+water\s+resources\s+control\s+board", re.IGNORECASE)
+_ANY_PAGE_MARKER_RE = re.compile(r"===PAGE \d+===\n?|\[Page \d+\]\n?")
+GENERAL_ORDER_TITLE_CHARS = 300
+NOA_HEADER_CHARS = 900
+
+
+# Drop watershed permit "agency"
+COLLECTIVE_AGENCY_RE = re.compile(r"\borganizations?\s+under\b", re.IGNORECASE)
+
+
+def is_general_order(text):
+    """True if text opens as a statewide general order rather than a facility-specific permit.
+
+    Three conditions, each ruling out a distinct look-alike:
+      - title phrase in the opening block, because a general order announces itself there
+      - issued by the State Water Resources Control Board, because a REGIONAL board titles
+        individual permits the same way ("General WDRs for the Top O'Topanga Community
+        Association WWTS at 3360 N Topanga Canyon Blvd"), as do enrollment cover letters
+      - no "Notice of Applicability" heading, because an enrollee's own NOA cites the general
+        order in its header and would otherwise match
+    """
+    head = _ANY_PAGE_MARKER_RE.sub("", text[:NOA_HEADER_CHARS * 2])
+    if not _GENERAL_ORDER_RE.search(head[:GENERAL_ORDER_TITLE_CHARS]):
+        return False
+    if not _STATE_BOARD_RE.search(head[:NOA_HEADER_CHARS]):
+        return False
+    return not _NOA_HEADER_RE.search(head[:NOA_HEADER_CHARS])
 
 # Canonical project paths, resolved from this file so they survive any os.chdir.
 PACKAGE_DIR = Path(__file__).resolve().parent.parent

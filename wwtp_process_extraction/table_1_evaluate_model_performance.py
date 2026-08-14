@@ -372,7 +372,11 @@ def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
 def predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id=None):
     """Postprocess every JSON in run_dir into a {place_id -> {col: status}} frame over label_cols."""
     rows = {}
-    for place_id, jf in select_json_per_place_id(run_dir, pdf_stem_by_place_id=pdf_stem_by_place_id).items():
+    # Only the benchmark places are scored against the manual truth, and they are exactly the
+    # ones with a pinned document. Restricting here keeps the full CA set (whose co-current
+    # attachments have no single right answer) out of the selection.
+    place_filter = set(pdf_stem_by_place_id) if pdf_stem_by_place_id else None
+    for place_id, jf in select_json_per_place_id(run_dir, place_filter, pdf_stem_by_place_id).items():
         with open(jf) as f:
             data = json.load(f)
         result = process_json_to_unit_process_dict(data)

@@ -24,7 +24,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException
-from helpers.utils import normalize_text
+from helpers.utils import normalize_text, is_general_order, COLLECTIVE_AGENCY_RE
 # Modified using Claude 4.5
 
 # Link to Interactive Regulated Facilities Report
@@ -72,6 +72,9 @@ SNAPSHOT_DATE = os.environ.get("AS_OF") or RUN_DATE
 SNAPSHOT_DIR = os.path.join(OUT, "site_data", SNAPSHOT_DATE)
 SNAPSHOT_FILES = ("facilities.json", "site_data_all.csv", "site_data_relevant.csv")
 
+# The snapshot the top-level output/facilities.json should represent between runs
+BASE_SNAPSHOT_DATE = os.environ.get("BASE_SNAPSHOT_DATE", "2026-06-01")
+
 
 def snapshot(filename):
     """Copy a just-written top-level output into the dated batch folder.
@@ -85,6 +88,22 @@ def snapshot(filename):
     os.makedirs(SNAPSHOT_DIR, exist_ok=True)
     shutil.copy2(src, os.path.join(SNAPSHOT_DIR, filename))
     print(f"  snapshot -> site_data/{SNAPSHOT_DATE}/{filename}")
+
+
+def restore_base_facilities():
+    """Leave the top-level facilities.json holding the base snapshot, not this run's.
+
+    A retrospective run overwrites output/facilities.json with the orders in force at its
+    as-of date, so whichever year ran last would otherwise masquerade as current -- and this
+    script reads that same file as its starting facility list. The dated copies under
+    site_data/ are the durable per-year record; the top level always means "now".
+    """
+    src = os.path.join(OUT, "site_data", BASE_SNAPSHOT_DATE, "facilities.json")
+    dst = os.path.join(OUT, "facilities.json")
+    if SNAPSHOT_DATE == BASE_SNAPSHOT_DATE or not os.path.exists(src):
+        return
+    shutil.copy2(src, dst)
+    print(f"Top-level facilities.json restored to the {BASE_SNAPSHOT_DATE} snapshot")
 
 
 # PDF filenames matching this regex are skipped on the order page.
@@ -1117,6 +1136,12 @@ def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> str | None:
     has_noa = _rule_matches(pdf_file, RULES["NOA"], max_pages)
     has_cag = bool(_CAG_PERMIT_RE.search(noa_text))
 
+    # Statewide general order: _CAG_PERMIT_RE only catches CAG-numbered NPDES general permits,
+    # and a WDR general order has no CAG number. Test before the NOA check — the order describes
+    # the NOA process in its body prose, so has_noa is True and would otherwise rescue it.
+    if is_general_order(noa_text):
+        return None
+
     # Generic CAG order (no NOA): not facility-specific, skip
     if has_cag and not has_noa:
         return None
@@ -1168,11 +1193,13 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     # PDF to Reg MeasureGrouping
     pdf_to_groups, group_to_pdfs = {}, {}
     group_to_rm_type = {}
+    pdf_to_places = {}
     for place_id, entry in facilities_by_place.items():
         g = entry.get("reg_measure_id") or place_id
         group_to_rm_type[g] = entry.get("reg_measure_type", "")
         for pdf in entry.get("pdfs", []):
             pdf_to_groups.setdefault(pdf, set()).add(g)
+            pdf_to_places.setdefault(pdf, set()).add(place_id)
             group_to_pdfs.setdefault(g, set()).add(pdf)
     pdf_signals = {}
 
@@ -1214,9 +1241,11 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
             if assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
                 matched_type = None  # general order for enrolled facilities, not facility-specific
         elif matched_type == "NOA":
-            groups = pdf_to_groups.get(filename, set())
-            assoc_types = {group_to_rm_type.get(g, "") for g in groups}
-            if len(groups) > 1 and assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
+            # Count facilities, not reg-measure groups: enrollees under one general order share a
+            # single reg_measure_id, so the group count is 1 no matter how many plants point at it.
+            places = pdf_to_places.get(filename, set())
+            assoc_types = {group_to_rm_type.get(g, "") for g in pdf_to_groups.get(filename, set())}
+            if len(places) > 1 and assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
                 matched_type = None  # shared general order contains NOA language but not facility-specific
         if matched_type:
             os.rename(src, os.path.join(permit_path, filename))
@@ -1269,12 +1298,17 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
                 pdf_to_n_facilities[pdf] = pdf_to_n_facilities.get(pdf, 0) + 1
 
     rows = []
+    skipped_collective = []
     for place_id, entry in facilities_by_place.items():
         fac_url = facility_url(place_id)
         rm_type = entry.get("reg_measure_type")
         fac_name = entry.get("Facility Name", "")
         wdid = entry.get("WDID", "")
         meta = enrich.get((wdid, fac_name), {})
+        # Drop watershed permit "agencies"
+        if COLLECTIVE_AGENCY_RE.search(meta.get("Agency", "")):
+            skipped_collective.append(f"{place_id} {fac_name}")
+            continue
         facility_npdes_pdfs = [p for p in entry.get("pdfs", []) if p in npdes_pdfs]
         meta_dict = {key: meta.get(key, "") for key in meta_keys}
         if entry.get("order_no"):
@@ -1296,6 +1330,11 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
                     "Total_PDFs_Available": entry.get("total_pdfs")
                 }
             )
+
+    if skipped_collective:
+        print(f"  Collective-permittee places dropped (not facilities): {len(skipped_collective)}")
+        for label in skipped_collective:
+            print(f"    {label}")
 
     df_out = pd.DataFrame(rows)
     df_out.to_csv(os.path.join(OUT, "site_data_relevant.csv"), index=False)
@@ -1332,6 +1371,9 @@ if __name__ == "__main__":
     # To restart from a checkpoint, replace the step(s) above with:
     with open(os.path.join(OUT, "facilities.json")) as f:
         facilities = json.load(f)
-    facilities = download_facility_page_pdfs(facilities)
-    npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
-    create_site_data_csv(facilities, npdes_pdfs, pdf_signals)
+    try:
+        facilities = download_facility_page_pdfs(facilities)
+        npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
+        create_site_data_csv(facilities, npdes_pdfs, pdf_signals)
+    finally:
+        restore_base_facilities()

@@ -449,7 +449,11 @@ def main():
                     identity = matching[0] if matching else rows[0]
                 break
         if not identity:
+            # No row in site_data_relevant claims this document (a superseded order, or a place
+            # since filtered out). Without a Place ID it cannot be attributed to any facility,
+            # and keeping it would collapse into a phantom facility with no identity at all.
             unmatched_files.append(filename)
+            continue
         result.update(identity)
         results.append(result)
 

@@ -1,0 +1,332 @@
+{
+  "items": [
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "A comminutor/grinder at the lift station reduces large solids in size to less than a \u00bc-inch before being pumped to the treatment plant.",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system consists of influent screening and grit removal;",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system consists of influent screening and grit removal;",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-OrganicCarbon"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "biological removal of biochemical oxygen demand (BOD) and nitrogen in aerobic, anoxic, and pre-anoxic basins;",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Microfiltration",
+        "Ultrafiltration",
+        "Biofiltration",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Tertiary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The MBR combines the secondary biological treatment and immersed membrane filtration processes.",
+      "trigger_process": [
+        "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Disinfection is achieved in an open channel UV disinfection system with sufficient low pressure/high output lamps to disinfect a peak daily flow of 4.0 mgd.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "return activated sludge pumping from the MBR back to the aeration basins.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste activated sludge pumping removes excessive biomass from the system,",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All solids transferred from the biological process to the interchange tanks are first passed through a 250 micron rotary drum screen to remove inert non-biodegradable material,",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "AnaerobicDigestion",
+        "AerobicDigestion",
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Permittee uses a proprietary solids removal and digestion process that combines aerobic and anaerobic processes. Solids are periodically removed from the biological process and transferred to two digester tanks, referred to as interchange reactors.",
+      "trigger_process": [
+        "Aerobic Digestion",
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Thickening",
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "digested solids are pumped from the interchange reactor tanks, dosed with polymer for thickening, and then dewatered in a centrifuge",
+      "trigger_process": [
+        "Polymer Addition",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and then dewatered in a centrifuge and conveyed to a dumpster.",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "All solids are then transported and are either disposed of in the Recology Hay Road Landfill in Marin County",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "or incorporated into land application sites operated and managed by Synagro.",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility includes a 5 million gallon aerated influent equalization basin which provides equalization storage capacity for extended wet weather flows.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Storage",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Three ponds are available as emergency storage ponds, providing an additional 15 million gallons of storage capacity and 24 hours of emergency storage capacity during peak flows.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Storage"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility has a 25 million gallon recycled water storage pond with a synthetic liner to provide storage for the disinfected tertiary treated recycled water.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "MakeUp"
+      ],
+      "Role": [
+        "Feed",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Recycled water is delivered by an effluent pump station from the recycled water storage pond to the recycled water system",
+      "trigger_process": []
+    }
+  ]
+}

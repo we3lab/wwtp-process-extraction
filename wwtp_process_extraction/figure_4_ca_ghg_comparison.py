@@ -17,6 +17,7 @@
 
 import io
 import json
+import os
 import sys
 import urllib.request
 import numpy as np
@@ -31,9 +32,14 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
 from helpers.plotting import COLORS, save_and_close
 from helpers.utils import build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV
-GHG_ROOT = Path('/home/daly/git/US_WWTP_GHG')
-MC_DIR = GHG_ROOT / 'uncertainty_sensitivity_results/Monte_Carlo'  # MC files stay local
+# Only consulted if GitHub is unreachable. Defaults to a US_WWTP_GHG clone sitting beside this
+# repo; set GHG_ROOT to point elsewhere.
+GHG_ROOT = Path(os.environ.get('GHG_ROOT') or REPO_ROOT.parent / 'US_WWTP_GHG')
+MC_DIR = 'uncertainty_sensitivity_results/Monte_Carlo'
 GHG_INPUT = GHG_ROOT / 'GHG_accounting/input_data'
+# The 50th-percentile factors distilled from the ~180 MB of upstream Monte Carlo workbooks.
+# Cached because it is 49 rows of derived numbers; delete it to refetch and recompute.
+MC_EF_CSV = SCRIPT_DIR / 'data' / 'ghg_mc_emission_factors.csv'
 OUTPUT_DIR = SCRIPT_DIR / 'output'
 
 GHG_GITHUB = 'https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/main'
@@ -142,13 +148,22 @@ PRESENT_STATUSES = {'PRESENT', 'PRESENT_AND_FUTURE'}
 
 def load_mc_ef():
     """50th-percentile emission factors per TT (kg CO2e / m³ wastewater, except elec_50
-    which is kWh / MGD as per the original WWTP_GHG_accounting.py usage)."""
+    which is kWh / MGD as per the original WWTP_GHG_accounting.py usage).
+
+    Reads the cached CSV if present. Otherwise pulls each treatment train's Monte Carlo
+    workbook through _fetch (GitHub, falling back to a local GHG_ROOT clone), reduces it to
+    its median, and writes the cache -- the workbooks are ~3.6 MB each and only their
+    quantiles are ever used.
+    """
+    if MC_EF_CSV.exists():
+        return pd.read_csv(MC_EF_CSV, index_col=0)
+
     records = {}
     for tt in ALL_TT:
-        mc_file = MC_DIR / f'{tt}_MC.xlsx'
-        if not mc_file.exists():
+        try:
+            mc = pd.read_excel(_fetch(f'{MC_DIR}/{tt}_MC.xlsx'))
+        except FileNotFoundError:
             continue
-        mc = pd.read_excel(mc_file)
         records[tt] = {
             'CH4_50':     mc['CH4'].quantile(0.5),
             'N2O_50':     mc['N2O'].quantile(0.5),
@@ -158,7 +173,17 @@ def load_mc_ef():
             'NG_up_50':   mc['NG_upstream'].quantile(0.5),
             'solids_50':  mc['solids'].quantile(0.5),
         }
-    return pd.DataFrame(records).T
+    if not records:
+        raise FileNotFoundError(
+            f'No Monte Carlo workbooks reachable: neither {GHG_GITHUB}/{MC_DIR}/ nor '
+            f'{GHG_ROOT / MC_DIR}. Set GHG_ROOT to a US_WWTP_GHG clone, or restore network '
+            f'access. (Without this, ef comes back empty and the failure surfaces much later '
+            f'as KeyError: CH4_50.)')
+    ef = pd.DataFrame(records).T
+    MC_EF_CSV.parent.mkdir(parents=True, exist_ok=True)
+    ef.to_csv(MC_EF_CSV)
+    print(f'  cached {len(ef)} treatment-train emission factors → {MC_EF_CSV.name}')
+    return ef
 
 
 def load_grid_carbon():

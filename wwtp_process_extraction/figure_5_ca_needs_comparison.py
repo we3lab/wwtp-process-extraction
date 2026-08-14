@@ -43,6 +43,10 @@ CATEGORY_LABELS = {
     "add_disinfection": "New (Disinfection)",
 }
 
+# add_disinfection is costed off its own EPA curve (UV via CAFCom, chlorine via Capdet) but is
+# still a new-unit build, so the figure folds it into New. ca_needs_summary.csv keeps the split.
+DISPLAY_GROUP = {"add_disinfection": "new"}
+
 META_COLS = {"Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "County",
              "PDF_File"}
 
@@ -260,12 +264,16 @@ def main():
         est_y = cost_facilities(facs)
         scored_y = reportable(est_y)
         per_year[as_of] = scored_y
+        by_cat = (scored_y.replace({"construction_type": DISPLAY_GROUP})
+                  .groupby("construction_type")["cost_2022usd"].sum())
         year_rows.append({
             "as_of": as_of, "documents_in_force": len(docs_by_year[as_of]),
             "cohort_facilities": len(cohort_pids),
             "facilities_with_planned_changes": len(est_y),
             "facilities_costed": len(scored_y),
             "total_2022usd": scored_y["cost_2022usd"].sum(),
+            **{f"{cat}_2022usd": by_cat.get(cat, 0.0)
+               for cat in ("new", "system_expansion", "treatment_upgrade", "rehabilitation")},
         })
         print(f"  {as_of}: {len(docs_by_year[as_of]):5} documents in force, {len(est_y):3} cohort "
               f"facilities with planned changes, {len(scored_y):3} costed, "
@@ -316,61 +324,78 @@ PANEL_FONTSIZE = 16
 SPINE_WIDTH = 1.6
 
 def plot(per_year, cwns_reported, n_cohort):
-    """CWNS's documented need, then one permit-extraction bar per annual snapshot.
+    """Permit-extracted need as a stacked area over annual snapshots, with CWNS as one point.
 
-    Each permit bar is stacked by capital-need category; CWNS's is not, because it records
-    dollars per (document, needs category) and change types per (facility, facility type) with
-    no link between them, so a matching breakdown would be invented. Only the most recent bar
-    carries segment labels -- repeating them on every year would just be a legend six times.
+    Area rather than six stacked bars: four polygons instead of twenty-four rectangles for the
+    same part-to-whole reading, and the year axis reads continuously.
+
+    CWNS is a single marker at 2022, not a line across every year: it is one survey vintage,
+    so spanning it across the axis would imply an annual series that does not exist. It also
+    carries no comparable breakdown -- CWNS records dollars per (document, needs category) and
+    change types per (facility, facility type) with no link between them, so a matching
+    composition would be invented.
     """
-    years = sorted(per_year)
-    fig, ax = plt.subplots(figsize=(1.05 * (len(years) + 1) + 3.0, 5))
+    years = [int(y[:4]) for y in sorted(per_year)]
+    keys = sorted(per_year)
+    fig, ax = plt.subplots(figsize=(6, 5))
 
-    order = ("new", "system_expansion", "treatment_upgrade", "rehabilitation", "add_disinfection")
-    shades = ["#1f3b63", "#305993ff", "#5c82b8", "#8fabd2", "#c2d2e8"]
+    # bottom-to-top: biggest, steadiest category first so the thin ones ride on a flat base
+    order = ("rehabilitation", "treatment_upgrade", "system_expansion", "new")
+    shades = {"rehabilitation": "#8fabd2", "treatment_upgrade": "#5c82b8",
+              "system_expansion": "#305993", "new": "#1f3b63"}
 
-    ax.bar(0, cwns_reported / 1e6, width=0.55, color=COLORS["Clean Watershed Needs Survey"],
-           edgecolor="black", linewidth=0.4)
-    ax.text(0, cwns_reported / 1e6, f"${cwns_reported/1e6:,.0f}M",
-            ha="center", va="bottom", fontsize=LEGEND_FONTSIZE)
+    by_cat = {}
+    for cat in order:
+        by_cat[cat] = [
+            (per_year[k].replace({"construction_type": DISPLAY_GROUP})
+             .groupby("construction_type")["cost_2022usd"].sum() / 1e6).get(cat, 0.0)
+            for k in keys
+        ]
+    ax.stackplot(years, *[by_cat[c] for c in order],
+                 colors=[shades[c] for c in order], edgecolor="white", linewidth=1.2)
 
-    last_x, label_targets = len(years), []
-    for xi, as_of in enumerate(years, start=1):
-        by_type = per_year[as_of].groupby("construction_type")["cost_2022usd"].sum() / 1e6
-        bottom = 0.0
-        for name, shade in zip(order, shades):
-            v = by_type.get(name, 0.0)
-            if v <= 0:
-                continue
-            ax.bar(xi, v, bottom=bottom, width=0.55, color=shade,
-                   edgecolor="black", linewidth=0.4)
-            if as_of == years[-1]:
-                label_targets.append((CATEGORY_LABELS.get(name, name), bottom + v / 2))
-            bottom += v
-        ax.text(xi, bottom, f"${bottom:,.0f}M", ha="center", va="bottom", fontsize=LEGEND_FONTSIZE)
+    cwns_m = cwns_reported / 1e6
+    ax.plot(2022, cwns_m, marker="o", markersize=11, zorder=5,
+            color=COLORS["Clean Watershed Needs Survey"],
+            markeredgecolor="white", markeredgewidth=1.4)
+    ax.annotate(f"CWNS reported  ${cwns_m:,.0f}M", xy=(2022, cwns_m), xytext=(8, 6),
+                textcoords="offset points", ha="left", va="bottom",
+                fontsize=LEGEND_FONTSIZE, color=COLORS["Clean Watershed Needs Survey"])
 
-    # Nudge labels apart where thin segments would overlap (New and Expansion are a few $M each),
-    # keeping each leader line anchored on its own segment's midpoint.
-    top = ax.get_ylim()[1]
-    min_gap = 0.055 * top
-    placed = []
-    for name, mid in sorted(label_targets, key=lambda t: t[1]):
-        y = mid if not placed else max(mid, placed[-1][2] + min_gap)
-        placed.append((name, mid, y))
-    for name, mid, y in placed:
-        ax.annotate(name, xy=(last_x + 0.29, mid), xytext=(last_x + 0.42, y),
-                    ha="left", va="center", fontsize=LEGEND_FONTSIZE,
-                    arrowprops=dict(arrowstyle="-", lw=0.6, color="0.35",
-                                    shrinkA=0, shrinkB=0))
+    # Band edges at the final year, so labels can sit near the right edge inside their own band.
+    edges, bottom = {}, 0.0
+    for cat in order:
+        edges[cat] = (bottom, bottom + by_cat[cat][-1])
+        bottom += by_cat[cat][-1]
+    total_last = bottom
+    label_x = years[-1] - 0.12
 
-    ax.set_xticks(range(len(years) + 1))
-    ax.set_xticklabels(["CWNS\nreported"] + [y[:4] for y in years], fontsize=TICK_FONTSIZE)
+    # The three thick bands hold their label inside; ink is chosen for contrast against the
+    # fill, dark on the two lighter shades and white on the dark one.
+    inside_ink = {"rehabilitation": "#12263f", "treatment_upgrade": "#12263f",
+                  "system_expansion": "white"}
+    for cat, ink in inside_ink.items():
+        lo, hi = edges[cat]
+        ax.annotate(CATEGORY_LABELS[cat], xy=(label_x, (lo + hi) / 2),
+                    ha="right", va="center", fontsize=LEGEND_FONTSIZE, color=ink)
+
+    # New is only a few $M tall, so it gets a leader line out to open space above the area.
+    lo, hi = edges["new"]
+    ax.annotate(CATEGORY_LABELS["new"], xy=(years[-1] - 0.9, (lo + hi) / 2),
+                xytext=(label_x, total_last * 1.12),
+                ha="right", va="bottom", fontsize=LEGEND_FONTSIZE,
+                arrowprops=dict(arrowstyle="-", lw=0.7, color="0.35", shrinkA=0, shrinkB=2))
+
+    ax.set_xticks(years)
+    ax.set_xticklabels(years, fontsize=TICK_FONTSIZE)
     ax.tick_params(axis="y", labelsize=TICK_FONTSIZE)
-    ax.set_ylabel(f"CA treatment capital need, Cat. I+II\n"
-                  f"(Jan-2022 $M, plants < {MAX_MGD:.0f} MGD, n = {n_cohort})",
+    ax.set_ylabel(f"Estimated Investment Need\n"
+                  f"for CA WWTPs below {MAX_MGD:.0f} MGD (n = {n_cohort})"
+                  f"\nUSD 2022",
                   fontsize=LABEL_FONTSIZE)
     ax.set_xlabel("Permit extraction, as of 1 June", fontsize=LABEL_FONTSIZE)
-    ax.set_xlim(-0.5, len(years) + 1.9)
+    ax.set_xlim(years[0], years[-1])
+    ax.set_ylim(0, max(cwns_m, total_last) * 1.16)
     set_thick_spines(ax, linewidth=SPINE_WIDTH)
     fig.tight_layout()
     save_and_close(fig, OUT / "final" / "figure_5", dpi=300)

@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from pathlib import Path
 import json
 import os
 import re
@@ -74,6 +75,12 @@ SNAPSHOT_FILES = ("facilities.json", "site_data_all.csv", "site_data_relevant.cs
 
 # The snapshot the top-level output/facilities.json should represent between runs
 BASE_SNAPSHOT_DATE = os.environ.get("BASE_SNAPSHOT_DATE", "2026-06-01")
+
+# Standalone Chrome + matching driver, under the user's home rather than a hardcoded username.
+# Override with CHROME_BIN / CHROMEDRIVER_BIN if they live elsewhere.
+CHROME_BIN = Path(os.environ.get("CHROME_BIN") or Path.home() / "bin/chrome/chrome-linux64/chrome")
+CHROMEDRIVER_BIN = Path(os.environ.get("CHROMEDRIVER_BIN")
+                        or Path.home() / "bin/chrome/chromedriver-linux64/chromedriver")
 
 
 def snapshot(filename):
@@ -234,8 +241,8 @@ def new_chrome_driver(pdfs_path):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--headless")  # for server/SSH
-    options.binary_location = "/home/daly/bin/chrome/chrome-linux64/chrome"
-    service = Service("/home/daly/bin/chrome/chromedriver-linux64/chromedriver")
+    options.binary_location = str(CHROME_BIN)
+    service = Service(str(CHROMEDRIVER_BIN))
     return webdriver.Chrome(service=service, options=options)
 
 

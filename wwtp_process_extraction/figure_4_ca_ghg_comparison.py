@@ -836,13 +836,15 @@ def plot_n2o_breakdown(dfs, ef, output_dir):
         ax.set_xticks(x)
         ax.set_xticklabels([src_labels[s] for s in sources], fontsize=10)
         ax.set_ylabel(ylabel, fontsize=11)
-        y_max = max(breakdowns[s].get(c, 0) for s in sources for c in present_cats)
-        y_ticks = np.arange(0, np.ceil(y_max / 1000) * 1000 + 1, 1000)
-        ax.set_yticks(y_ticks)
+        # Scale to the tallest STACK, not the largest single segment: taking the max over
+        # individual categories left one tick at 1000 with bars topping out near 900.
+        y_top = max(sum(breakdowns[s].get(c, 0) for c in present_cats) for s in sources)
+        step = next(s for s in (25, 50, 100, 200, 250, 500, 1000, 2000) if y_top / s <= 6)
+        ax.set_yticks(np.arange(0, np.ceil(y_top / step) * step + step / 2, step))
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    fig, ax = plt.subplots(figsize=(6, 5))
+    fig, ax = plt.subplots(figsize=(8.6, 5))
     bottoms = np.zeros(len(sources))
     for cat in present_cats:
         vals = np.array([breakdowns[s].get(cat, 0) for s in sources])

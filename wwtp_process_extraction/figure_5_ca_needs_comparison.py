@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from helpers.utils import extract_leaves, parse_status, PRESENT_STATUSES
+from helpers.utils import extract_leaves, parse_status, PRESENT_STATUSES, cwns_mapping
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
 DATA = Path("wwtp_process_extraction/data")
@@ -22,7 +22,6 @@ CURVES_JSON = DATA / "cwns_cost_curves.json"
 KEYWORDS_JSON = DATA / "unitprocess_keywords.json"
 FLOW_CSV = DATA / "cwns/2022/FLOW.csv"
 NEEDS_CSV = DATA / "cwns/2022/NEEDS_COST_BY_CATEGORY.csv"
-MAPPING_CSV = DATA / "ciwqs_to_cwns.csv"
 LLM_CSV = OUT / "unit_processes_by_facility_llm.csv"
 # per-document, so a snapshot's document set can be costed on its own
 PERDOC_CSV = OUT / "unit_processes_by_pdf_llm.csv"
@@ -164,9 +163,9 @@ def main():
                          "(it now records each extraction's source document).")
     process_cols = [c for c in perdoc.columns if c not in META_COLS]
 
-    mapping = pd.read_csv(MAPPING_CSV, dtype=str).fillna("")
-    pid_to_cwns = (mapping[mapping["CWNS_ID"].str.strip().ne("") & mapping["CWNS_ID"].str.upper().ne("NA")]
-                   .drop_duplicates("Place ID").set_index("Place ID")["CWNS_ID"].str.strip())
+    # cwns_mapping is already ciwqs_to_cwns.csv filtered to rows with a real CWNS_ID
+    pid_to_cwns = (cwns_mapping.drop_duplicates("Place ID")
+                   .set_index("Place ID")["CWNS_ID"].str.strip())
 
     flow = pd.read_csv(FLOW_CSV, dtype={"CWNS_ID": str})
     flow = flow[(flow["STATE_CODE"] == "CA") & (flow["FLOW_TYPE"] == "Total Flow")]
@@ -264,7 +263,11 @@ def main():
         est_y = cost_facilities(facs)
         scored_y = reportable(est_y)
         per_year[as_of] = scored_y
-        by_cat = (scored_y.replace({"construction_type": DISPLAY_GROUP})
+        # Split the same way the figure stacks it: the per-category columns cover only the
+        # CWNS-matched facilities (what the CWNS marker can be compared against), with the
+        # unmatched ones carried as one total. Otherwise the CSV and the figure disagree.
+        is_matched = scored_y["CWNS_ID"].ne("")
+        by_cat = (scored_y[is_matched].replace({"construction_type": DISPLAY_GROUP})
                   .groupby("construction_type")["cost_2022usd"].sum())
         year_rows.append({
             "as_of": as_of, "documents_in_force": len(docs_by_year[as_of]),
@@ -272,6 +275,10 @@ def main():
             "facilities_with_planned_changes": len(est_y),
             "facilities_costed": len(scored_y),
             "total_2022usd": scored_y["cost_2022usd"].sum(),
+            "cwns_matched_facilities": int(is_matched.sum()),
+            "cwns_matched_2022usd": scored_y.loc[is_matched, "cost_2022usd"].sum(),
+            "no_cwns_match_facilities": int((~is_matched).sum()),
+            "no_cwns_match_2022usd": scored_y.loc[~is_matched, "cost_2022usd"].sum(),
             **{f"{cat}_2022usd": by_cat.get(cat, 0.0)
                for cat in ("new", "system_expansion", "treatment_upgrade", "rehabilitation")},
         })
@@ -315,7 +322,7 @@ def main():
 
     plot(per_year, cwns_reported, len(cohort))
     print(f"\nwrote {needs_dir/'ca_needs_summary.csv'}, {needs_dir/'ca_needs_by_year.csv'} "
-          f"and {OUT/'final'/'figure_5'}.png/.tiff")
+          f"and {OUT/'final'/'figure_4'}.png/.tiff")
 
 TICK_FONTSIZE = 12
 LABEL_FONTSIZE = 14
@@ -343,54 +350,74 @@ def plot(per_year, cwns_reported, n_cohort):
     order = ("rehabilitation", "treatment_upgrade", "system_expansion", "new")
     shades = {"rehabilitation": "#8fabd2", "treatment_upgrade": "#5c82b8",
               "system_expansion": "#305993", "new": "#1f3b63"}
+    UNMATCHED = "no_cwns_match"
+    shades[UNMATCHED] = "#b3b9c0"
 
-    by_cat = {}
+    # CWNS_ID is set from pid_to_cwns.get(..., "") upstream, so absence is just an empty string.
+    def matched(df):
+        return df["CWNS_ID"].ne("")
+
+    by_cat, n_cat = {}, {}
     for cat in order:
-        by_cat[cat] = [
-            (per_year[k].replace({"construction_type": DISPLAY_GROUP})
-             .groupby("construction_type")["cost_2022usd"].sum() / 1e6).get(cat, 0.0)
-            for k in keys
-        ]
-    ax.stackplot(years, *[by_cat[c] for c in order],
-                 colors=[shades[c] for c in order], edgecolor="white", linewidth=1.2)
+        sums, counts = [], []
+        for k in keys:
+            m = per_year[k][matched(per_year[k])].replace({"construction_type": DISPLAY_GROUP})
+            grp = m[m["construction_type"] == cat]
+            sums.append(grp["cost_2022usd"].sum() / 1e6)
+            counts.append(len(grp))
+        by_cat[cat], n_cat[cat] = sums, counts
+    unmatched_rows = [per_year[k][~matched(per_year[k])] for k in keys]
+    by_cat[UNMATCHED] = [r["cost_2022usd"].sum() / 1e6 for r in unmatched_rows]
+    n_cat[UNMATCHED] = [len(r) for r in unmatched_rows]
+    stack_order = order + (UNMATCHED,)
+
+    ax.stackplot(years, *[by_cat[c] for c in stack_order],
+                 colors=[shades[c] for c in stack_order], edgecolor="white", linewidth=1.2)
 
     cwns_m = cwns_reported / 1e6
     ax.plot(2022, cwns_m, marker="o", markersize=11, zorder=5,
             color=COLORS["Clean Watershed Needs Survey"],
             markeredgecolor="white", markeredgewidth=1.4)
-    ax.annotate(f"CWNS reported  ${cwns_m:,.0f}M", xy=(2022, cwns_m), xytext=(8, 6),
-                textcoords="offset points", ha="left", va="bottom",
+    ax.annotate(f"CWNS reported  ${cwns_m:,.0f}M (n = {n_cohort})", xy=(2022, cwns_m),
+                xytext=(8, 6), textcoords="offset points", ha="left", va="bottom",
                 fontsize=LEGEND_FONTSIZE, color=COLORS["Clean Watershed Needs Survey"])
 
     # Band edges at the final year, so labels can sit near the right edge inside their own band.
     edges, bottom = {}, 0.0
-    for cat in order:
+    for cat in stack_order:
         edges[cat] = (bottom, bottom + by_cat[cat][-1])
         bottom += by_cat[cat][-1]
     total_last = bottom
     label_x = years[-1] - 0.12
 
-    # The three thick bands hold their label inside; ink is chosen for contrast against the
+    # The thick bands hold their label inside; ink is chosen for contrast against the
     # fill, dark on the two lighter shades and white on the dark one.
     inside_ink = {"rehabilitation": "#12263f", "treatment_upgrade": "#12263f",
-                  "system_expansion": "white"}
+                  "system_expansion": "white", UNMATCHED: "#12263f"}
+    labels = {**CATEGORY_LABELS, UNMATCHED: "No CWNS match"}
+
+    def band_label(cat):
+        return f"{labels[cat]} (n = {n_cat[cat][-1]})"
+
     for cat, ink in inside_ink.items():
         lo, hi = edges[cat]
-        ax.annotate(CATEGORY_LABELS[cat], xy=(label_x, (lo + hi) / 2),
+        ax.annotate(band_label(cat), xy=(label_x, (lo + hi) / 2),
                     ha="right", va="center", fontsize=LEGEND_FONTSIZE, color=ink)
 
-    # New is only a few $M tall, so it gets a leader line out to open space above the area.
-    lo, hi = edges["new"]
-    ax.annotate(CATEGORY_LABELS["new"], xy=(years[-1] - 0.9, (lo + hi) / 2),
-                xytext=(label_x, total_last * 1.12),
-                ha="right", va="bottom", fontsize=LEGEND_FONTSIZE,
-                arrowprops=dict(arrowstyle="-", lw=0.7, color="0.35", shrinkA=0, shrinkB=2))
+    # New is a thin band, so it is labelled just above its own top edge at the left, where the
+    # stack is lowest -- close enough to read without a leader line crossing other bands.
+    new_top_first = sum(by_cat[c][0] for c in order)
+    ax.annotate(band_label("new"), xy=(years[0] + 0.08, new_top_first),
+                xytext=(0, 4), textcoords="offset points",
+                ha="left", va="bottom", fontsize=LEGEND_FONTSIZE, color="#12263f")
 
     ax.set_xticks(years)
     ax.set_xticklabels(years, fontsize=TICK_FONTSIZE)
     ax.tick_params(axis="y", labelsize=TICK_FONTSIZE)
+    # No n on the axis: the coloured stack and the CWNS marker cover n_cohort matched plants,
+    # the grey band adds the unmatched ones, so a single n would describe neither.
     ax.set_ylabel(f"Estimated Investment Need\n"
-                  f"for CA WWTPs below {MAX_MGD:.0f} MGD (n = {n_cohort})"
+                  f"for CA WWTPs below {MAX_MGD:.0f} MGD"
                   f"\nUSD 2022",
                   fontsize=LABEL_FONTSIZE)
     ax.set_xlabel("Permit extraction, as of 1 June", fontsize=LABEL_FONTSIZE)
@@ -398,7 +425,7 @@ def plot(per_year, cwns_reported, n_cohort):
     ax.set_ylim(0, max(cwns_m, total_last) * 1.16)
     set_thick_spines(ax, linewidth=SPINE_WIDTH)
     fig.tight_layout()
-    save_and_close(fig, OUT / "final" / "figure_5", dpi=300)
+    save_and_close(fig, OUT / "final" / "figure_4", dpi=300)
 
 
 if __name__ == "__main__":

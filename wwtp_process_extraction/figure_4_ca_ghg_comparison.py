@@ -725,7 +725,7 @@ def plot_comparison(results, output_dir):
               bbox_to_anchor=(1.01, 1), borderaxespad=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    save_and_close(fig, output_dir / 'final' / 'figure_4', dpi=300)
+    save_and_close(fig, output_dir / 'final' / 'figure_5', dpi=300)
 
 # ── N2O breakdown by secondary treatment ─────────────────────────────────────
 
@@ -938,6 +938,10 @@ if __name__ == '__main__':
         flow = r['total_flow_MGD']
         rows.append({
             'Source': name,
+            # Where each source's treatment trains come from. Only source_manual imports El
+            # Abbadi & Feng's published assignments; every other source re-derives the train
+            # from unit-process/WERF codes, which is the only path new process data can affect.
+            'TT assignment': 'published' if s == 'source_manual' else 're-derived',
             'N CWNS': r['n_facilities'],
             'Flow (MGD)': f"{flow:.0f}",
             'CH4 (kt/yr)': f"{r['CH4_MTyr']:.1f}",

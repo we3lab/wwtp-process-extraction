@@ -48,7 +48,6 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -64,9 +63,7 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a secondary clarifier"
@@ -88,23 +85,24 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection"
+      "Sentence": "chlorine disinfection ... ancillary systems for ... chemical feed for disinfection and de-chlorination"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
         "Pretreatment"
@@ -128,20 +126,6 @@
       "Sentence": "ancillary systems for pH adjustment"
     },
     {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "ancillary systems for ... chemical feed for disinfection and de-chlorination"
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
@@ -156,7 +140,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sludge by means of digestion in the heated unmixed anaerobic digester"
+      "Sentence": "digestion in the heated unmixed anaerobic digester"
     },
     {
       "Equipment": "AerobicDigester",
@@ -178,7 +162,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -193,10 +178,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -206,8 +192,23 @@
       "Sentence": "dried in sludge drying beds"
     },
     {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "biosolids are applied to land by Synagro"
+    },
+    {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Evaporation"
+      ],
       "Role": [
         "Storage"
       ],
@@ -219,6 +220,7 @@
     {
       "Equipment": "Pond",
       "Process": [
+        "Evaporation",
         "Recirculation"
       ],
       "Role": [
@@ -227,44 +229,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Water in Pond D can be returned to the treatment system for retreatment"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is applied to the DLDA land via sprinklers"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "off-site",
-      "Location": "off-site",
-      "Sentence": "biosolids are applied to land by Synagro within six hours of removal"
+      "Sentence": "Pond D can be returned to the treatment system for retreatment"
     },
     {
       "Equipment": null,
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",

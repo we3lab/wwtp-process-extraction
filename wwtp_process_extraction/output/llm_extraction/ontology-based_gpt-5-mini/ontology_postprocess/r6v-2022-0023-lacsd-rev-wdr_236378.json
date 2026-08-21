@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen...",
+      "Sentence": "The Facility provides tertiary, disinfected treatment by utilizing the following treatment process sequence: comminution...",
       "trigger_process": [
         "Comminution"
       ]
@@ -27,10 +27,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen...",
+      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks consists of an influent pump station...",
+      "trigger_process": []
     },
     {
       "Equipment": "GritChamber",
@@ -43,7 +55,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consists of... aerated grit chambers...",
+      "Sentence": "The headworks consists of ... aerated grit chambers...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -59,7 +71,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are six primary sedimentation tanks that are operated in parallel.",
+      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -69,7 +81,8 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Recirculation"
       ],
       "Role": [
         "Secondary",
@@ -81,7 +94,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "effluent is pumped into nine aeration tanks... with biological nitrification and denitrification.",
+      "Sentence": "Effluent is pumped into nine aeration tanks ... with biological nitrification and denitrification.",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -90,8 +103,7 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation",
-        "Recirculation"
+        "Sedimentation"
       ],
       "Role": [
         "Secondary"
@@ -99,7 +111,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary clarifiers consist of 14 tanks operating in parallel. Return activated sludge is sent back to one of each aeration tank.",
+      "Sentence": "The secondary clarifiers consist of 14 tanks operating in parallel.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -148,33 +160,12 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Biosolids from the digesters are temporarily stored in storage digesters.",
       "trigger_process": [
         "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering",
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dewatered biosolids are stored in drying beds... digested biosolids to be air dried.",
-      "trigger_process": [
-        "Drying"
       ]
     },
     {
@@ -184,14 +175,15 @@
         "Backwashing"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Backwash"
       ],
       "Substance": [
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "six dual media gravity filters for reduction of turbidity and suspended solids. Filtrate is sent to chlorine contact tanks while backwash is sent to influent sewer or aeration tanks.",
+      "Sentence": "Effluent is disinfected with chloramine ... prior to entering six dual media gravity filters for reduction of turbidity and suspended solids.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -207,32 +199,13 @@
         "Posttreatment"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite)...which are formed by the addition of ammonia and sodium hypochlorite to the effluent.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorine contact tanks provide residence time for disinfection by chloramines.",
+      "Sentence": "Chlorine contact tanks provide residence time for disinfection by chloramines, which are formed by the addition of ammonia and sodium hypochlorite to the effluent.",
       "trigger_process": [
-        "Unspecified Disinfection"
+        "Chlorination"
       ]
     },
     {
@@ -249,6 +222,24 @@
       "Sentence": "Prior to delivery to Piute Ponds, disinfected recycled water is dechlorinated to protect aquatic life.",
       "trigger_process": [
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The maintenance ... has allowed digested biosolids to be air dried, which helps reduce weight and hauling costs.",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -272,7 +263,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facility has four existing lined storage reservoirs that are used for seasonal...",
+      "Sentence": "The facility has four existing lined storage reservoirs that are used for seasonal storage of tertiary treated recycled water.",
       "trigger_process": []
     },
     {
@@ -281,7 +272,6 @@
         "Composting"
       ],
       "Role": [
-        "BiosolidsDisposal",
         "SolidsHandling"
       ],
       "Substance": [
@@ -289,7 +279,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "biosolids are hauled off-site for composting to an authorized facility.",
+      "Sentence": "Dewatered biosolids ... are eventually hauled off-site for composting to an authorized facility.",
       "trigger_process": [
         "Composting"
       ]

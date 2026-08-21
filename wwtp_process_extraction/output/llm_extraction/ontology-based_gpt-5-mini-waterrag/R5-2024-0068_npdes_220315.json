@@ -16,17 +16,22 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant 1 is equipped with influent pumps and a mechanical screen"
+      "Sentence": "Plant 1 is equipped with influent pumps"
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -36,7 +41,8 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -45,7 +51,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility’s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins, followed by secondary clarifiers."
+      "Sentence": "The Facility’s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -58,12 +64,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility’s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins, followed by secondary clarifiers."
+      "Sentence": "followed by secondary clarifiers."
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -84,7 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary effluent is treated using sand filters and disinfected via ultraviolet light prior to discharge to Old River via an upgraded multi-port diffuser."
+      "Sentence": "and disinfected via ultraviolet light prior to discharge to Old River"
     },
     {
       "Equipment": "AerobicDigester",
@@ -92,49 +98,20 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds."
+      "Sentence": "an aerated clay-lined pond (referred to as an aerobic digester)"
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds."
-    },
-    {
-      "Equipment": "BeltFilterPress",
-      "Process": [
-        "Dewatering",
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
       "Role": [
         "SolidsHandling",
         "Storage"
@@ -144,20 +121,54 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds."
+      "Sentence": "three clay lined sludge lagoons"
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three belt filter presses"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four greenhouse solar drying beds"
     },
     {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are stored on site in the covered solar drying bed buildings identified in Attachment C on a concrete floor and are hauled to a local landfill once per year."
+      "Sentence": "and are hauled to a local landfill once per year."
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of influent screening;",
+      "Sentence": "influent screening;",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,8 +24,8 @@
       ],
       "Role": [
         "Secondary",
-        "Extended",
-        "Aerobic"
+        "Aerobic",
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -46,7 +46,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment including extended aeration basins and secondary clarifiers;",
+      "Sentence": "secondary clarifiers;",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -58,8 +58,7 @@
         "Backwashing"
       ],
       "Role": [
-        "Tertiary",
-        "Backwash"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -73,36 +72,20 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection using sodium hypochlorite;",
+      "Sentence": "chlorine disinfection using sodium hypochlorite; dechlorination with sodium bisulfite;",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorination with sodium bisulfite;",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -116,7 +99,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and flow equalization storage basins.",
+      "Sentence": "flow equalization storage basins.",
       "trigger_process": [
         "Equalization"
       ]
@@ -124,11 +107,11 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -137,8 +120,8 @@
       "Location": "on-site",
       "Sentence": "Sludge from the secondary treatment system is temporarily stored and dried within two 3.75-million-gallon sludge lagoons.",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     }

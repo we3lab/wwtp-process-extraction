@@ -19,31 +19,37 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant 1 is equipped with influent pumps and a mechanical screen",
+      "Sentence": "Plant 1 is equipped with influent pumps",
       "trigger_process": []
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Emergency Storage Lagoon can be used, if needed, to capture peak flows in excess of the Facility\u2019s peak design capacity of 2.35 mgd.",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Equalization"
       ]
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -52,8 +58,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins, followed by secondary clarifiers.",
+      "Sentence": "The Facility\u2019s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins",
       "trigger_process": [
+        "Denitrification",
         "Oxidation Ditch"
       ]
     },
@@ -68,15 +75,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins, followed by secondary clarifiers.",
+      "Sentence": "followed by secondary clarifiers.",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -100,7 +107,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary effluent is treated using sand filters and disinfected via ultraviolet light prior to discharge to Old River via an upgraded multi-port diffuser.",
+      "Sentence": "and disinfected via ultraviolet light prior to discharge to Old River",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -111,14 +118,16 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds.",
+      "Sentence": "an aerated clay-lined pond (referred to as an aerobic digester)",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -126,44 +135,6 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "BeltFilterPress",
-      "Process": [
-        "Dewatering",
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
       "Role": [
         "SolidsHandling",
         "Storage"
@@ -173,9 +144,48 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge handling takes place at Plant 2 and consists of an aerated clay-lined pond (referred to as an aerobic digester), three clay lined sludge lagoons, three belt filter presses, and four greenhouse solar drying beds.",
+      "Sentence": "three clay lined sludge lagoons",
       "trigger_process": [
-        "Drying"
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three belt filter presses",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four greenhouse solar drying beds",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -183,13 +193,15 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are stored on site in the covered solar drying bed buildings identified in Attachment C on a concrete floor and are hauled to a local landfill once per year.",
+      "Sentence": "and are hauled to a local landfill once per year.",
       "trigger_process": [
         "Biosolids Landfill"
       ]

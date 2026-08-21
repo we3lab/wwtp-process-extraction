@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary treatment through a rock baffle and step-stair screens, for debris and trash removal.",
+      "Sentence": "influent undergoes preliminary treatment through a rock baffle and step-stair screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -22,13 +22,14 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment",
-        "SolidsHandling"
+        "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Grit and screenings are hauled off-site for disposal in a landfill.",
+      "Sentence": "Grit and screenings are hauled off-site for disposal in a landfill",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -36,17 +37,42 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary clarification: In the primary clarifiers, solids are settled out, thickened, and returned to the anaerobic digesters for additional treatment.",
+      "Sentence": "In the primary clarifiers, solids are settled out, thickened, and returned to the anaerobic digesters for additional treatment",
       "trigger_process": [
-        "Primary Clarification"
+        "Primary Clarification",
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "returned to the anaerobic digesters for additional treatment",
+      "trigger_process": [
+        "Anaerobic Digestion"
       ]
     },
     {
@@ -67,7 +93,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater that has received primary clarification enters the activated sludge basins to undergo nitrogen removal using the Modified Ludzak-Ettinger (MLE) process.",
+      "Sentence": "activated sludge basins to undergo nitrogen removal using the Modified Ludzak-Ettinger (MLE) process",
       "trigger_process": [
         "Denitrification",
         "MLE",
@@ -85,56 +111,43 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers is either pumped to the MLE process (return activated sludge) or to the gravity belt thickeners.",
+      "Sentence": "Secondary Clarification: Wastewater that has received primary clarification enters the activated sludge basins",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater that has undergone the nitrification/denitrificaton process is sent to the secondary filters.",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary filtration: The filtration process is used to remove or reduce suspended or colloidal matter from a liquid stream.",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Equalization",
-        "Detention"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Equalization Basins: Equalization basins allow for adjustments of flow of primary clarifier effluent to the MLE process and/or headworks throughout the day.",
+      "Sentence": "Equalization basins allow for adjustments of flow of primary clarifier effluent to the MLE process",
       "trigger_process": [
         "Equalization"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary",
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Tertiary filtration: The filtration process is used to remove or reduce suspended or colloidal matter ... Filter backwash water is returned to the headworks for treatment",
+      "trigger_process": [
+        "Media Filtration"
       ]
     },
     {
@@ -145,8 +158,7 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine",
@@ -154,7 +166,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorination: Sodium hypochlorite and aqueous ammonia are used as disinfectants in the chlorine contact chamber. Prior to discharge ... sodium bisulfite is added to the treated effluent to remove residual chlorine.",
+      "Sentence": "Sodium hypochlorite and aqueous ammonia are used as disinfectants in the chlorine contact chamber; prior to discharge ... sodium bisulfite is added to the treated effluent to remove residual chlorine",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -173,7 +185,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers ... to the gravity belt thickeners.",
+      "Sentence": "Sludge from secondary clarifiers is either pumped to the MLE process (return activated sludge) or to the gravity belt thickeners",
       "trigger_process": [
         "Thickening"
       ]
@@ -181,8 +193,7 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -192,29 +203,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the belt press is either sun dried at HCTP and hauled to a landfill or hauled directly to a landfill off the belt press.",
+      "Sentence": "Sludge from the belt press is either sun dried at HCTP and hauled to a landfill or hauled directly to a landfill off the belt press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "AnaerobicDigester",
+      "Equipment": "Pond",
       "Process": [
-        "AnaerobicDigestion"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary clarification: ...thickened, and returned to the anaerobic digesters for additional treatment.",
+      "Sentence": "Sludge from the belt press is either sun dried at HCTP",
       "trigger_process": [
-        "Anaerobic Digestion"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -223,61 +234,29 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation",
         "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers is either pumped to the MLE process (return activated sludge) or to the gravity belt thickeners.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is returned to the headworks for treatment.",
+      "Sentence": "Sludge from secondary clarifiers is either pumped to the MLE process (return activated sludge)",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sun dried at HCTP and hauled to a landfill",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and screenings are hauled off-site for disposal in a landfill.",
+      "Sentence": "Grit and screenings are hauled off-site for disposal in a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]

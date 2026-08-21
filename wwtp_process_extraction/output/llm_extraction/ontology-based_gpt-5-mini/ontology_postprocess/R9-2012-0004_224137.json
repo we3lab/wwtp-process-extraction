@@ -55,7 +55,8 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -76,7 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification (activated sludge treatment process)",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -175,10 +176,11 @@
     {
       "Equipment": "Evaporator",
       "Process": [
-        "Evaporation"
+        "ThermalDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -186,12 +188,14 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "thermal dryer system to produce Class A EQ sewage sludge",
-      "trigger_process": []
+      "trigger_process": [
+        "Heat Drying"
+      ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -203,7 +207,7 @@
       "Location": "on-site",
       "Sentence": "sewage sludge is dewatered via drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -214,9 +218,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "disposed of via land application",
@@ -232,10 +234,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "collected on-site and trucked to a landfill in San Diego County, California",
+      "Sentence": "Screenings from the headworks and solids from grit removal ... are collected on-site and trucked to a landfill in San Diego County, California",
       "trigger_process": [
         "Biosolids Landfill"
       ]

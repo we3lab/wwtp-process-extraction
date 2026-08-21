@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of ... grit chambers",
+      "Sentence": "Preliminary treatment consists of... grit chambers",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -36,10 +36,13 @@
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Nitrification"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -47,26 +50,26 @@
       "Location": "on-site",
       "Sentence": "Secondary treatment utilizes oxidation ditch technology",
       "trigger_process": [
+        "Denitrification",
         "Nitrification",
-        "Oxidation Ditch",
-        "Unspecified Nutrient Removal"
+        "Oxidation Ditch"
       ]
     },
     {
       "Equipment": "Reactor",
       "Process": [
-        "Denitrification",
-        "BiologicalProcess"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Anaerobic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment utilizes ... anaerobic reactors for carbonaceous and nitrogenous pollutant reduction",
+      "Sentence": "anaerobic reactors for carbonaceous and nitrogenous pollutant reduction",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
@@ -109,6 +112,7 @@
       "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering",
+        "Filtration",
         "Drying"
       ],
       "Role": [
@@ -122,14 +126,14 @@
       "Location": "on-site",
       "Sentence": "Primary sludge treatment consists of belt press mechanical dewatering and drying",
       "trigger_process": [
-        "Drying"
+        "Unspecified Filtration"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
         "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -139,9 +143,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge bed dewatering and drying is also employed",
+      "Sentence": "Sludge bed dewatering and drying is also employed, especially in summer",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     }
   ]

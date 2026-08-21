@@ -11,23 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mechanical bar screen",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "manual bypass bar screen",
+      "Sentence": "preliminary treatment systems, which consist of a mechanical bar screen, manual bypass bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -43,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aerated grit chamber",
+      "Sentence": "preliminary treatment systems, which consist of ... an aerated grit chamber",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -59,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two primary clarifiers",
+      "Sentence": "all influent flow is directed to the two primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -77,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three aeration basins which are operated in parallel",
+      "Sentence": "The activated sludge treatment system consists of three aeration basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -93,7 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three secondary clarifiers operated in parallel",
+      "Sentence": "Wastewater is then directed through three secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -101,8 +85,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration",
-        "BiologicalProcess"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -111,7 +94,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aerated lagoon treatment system ... consists of four lagoons operated in series",
+      "Sentence": "the aerated lagoon treatment system ... consists of four lagoons operated in series",
       "trigger_process": [
         "Aerated Lagoon"
       ]
@@ -119,30 +102,20 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfected by an ultraviolet (UV) disinfection system",
+      "Sentence": "combined and disinfected by an ultraviolet (UV) disinfection system",
       "trigger_process": [
         "UV Disinfection"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Primary sludge generated from the primary clarifiers is pumped to two anaerobic digesters",
-      "trigger_process": []
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -150,14 +123,16 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "Stabilization"
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to two anaerobic digesters for stabilization",
+      "Sentence": "Primary sludge generated from the primary clarifiers is pumped to two anaerobic digesters for stabilization",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -165,10 +140,10 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
-        "Stabilization",
         "SolidsHandling"
       ],
       "Substance": [
@@ -176,9 +151,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Stabilized primary and secondary sludge is discharged ... to fourteen sludge drying beds",
+      "Sentence": "Stabilized primary and secondary sludge is discharged from the two anaerobic digesters to fourteen sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -186,7 +161,9 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],

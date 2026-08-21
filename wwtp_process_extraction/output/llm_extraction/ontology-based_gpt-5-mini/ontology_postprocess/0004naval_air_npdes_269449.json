@@ -4,13 +4,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Pretreatment",
-        "Feed"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of an influent diversion box",
+      "Sentence": "influent diversion box",
       "trigger_process": []
     },
     {
@@ -23,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three equalization tanks",
+      "Sentence": "three 18,000-gallon equalization tanks",
       "trigger_process": [
         "Equalization"
       ]
@@ -56,7 +55,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater undergoes biological treatment in the oxidation ditch",
+      "Sentence": "the wastewater undergoes biological treatment in the oxidation ditch",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -70,12 +69,10 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by solids separation in the secondary clarifier",
+      "Sentence": "solids separation in the secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -88,10 +85,28 @@
       "Role": [
         "Recirculation"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a portion of the solids separated in the secondary clarifier is pumped back to the oxidation ditch",
+      "Sentence": "A portion of the solids separated in the secondary clarifier is pumped back to the oxidation ditch",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the remaining portion is pumped to one of six drying beds, dried",
       "trigger_process": []
     },
     {
@@ -102,14 +117,14 @@
         "Dechlorination"
       ],
       "Role": [
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater is disinfected in the chlorine contact chamber by injecting sodium hypochlorite followed by dechlorination using sodium bisulfite",
+      "Sentence": "Effluent is chlorinated using sodium hypochlorite solution and dechlorinated using a sodium bisulfite prior to discharge",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -120,41 +135,20 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Containment"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility also maintains an 4 million gallon overflow storage pond with a synthetic liner",
+      "Sentence": "4 million gallon overflow storage pond with a synthetic liner",
       "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering",
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "remaining portion is pumped to one of six drying beds, dried",
-      "trigger_process": [
-        "Drying"
+        "Equalization"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Landfill",
-        "BiosolidsDisposal"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"

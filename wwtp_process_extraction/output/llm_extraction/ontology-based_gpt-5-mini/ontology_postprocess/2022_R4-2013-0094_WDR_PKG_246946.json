@@ -19,11 +19,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
-        "Pretreatment",
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -70,12 +70,9 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge",
@@ -120,9 +117,7 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -135,22 +130,6 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Thickening"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "thickened waste activated sludge",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
@@ -158,14 +137,14 @@
       "Role": [
         "SolidsHandling",
         "Stabilization",
-        "Anaerobic"
+        "Feed"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "are anaerobically digested at the treatment plant",
+      "Sentence": "primary sludge, skimmings, and thickened waste activated sludge) are anaerobically digested at the treatment plant",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -173,7 +152,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -183,7 +163,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered using belt filter presses",
+      "Sentence": "The digested solids are dewatered using belt filter presses",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -193,13 +173,13 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
+      "Role": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
       ],
-      "Substance": null,
-      "Implementation": "present",
+      "Implementation": "off-site",
       "Location": "off-site",
-      "Sentence": "are hauled away to a landfill",
+      "Sentence": "The fine solids (screenings and grit) ... are hauled away to a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -209,13 +189,13 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
       ],
-      "Substance": null,
-      "Implementation": "present",
+      "Implementation": "off-site",
       "Location": "off-site",
-      "Sentence": "The biosolids are taken to the Toland Landfill in Ventura County",
+      "Sentence": "The biosolids are taken to the Toland Landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -223,35 +203,15 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "off-site",
       "Location": "off-site",
-      "Sentence": "dried in a dryer to approximately 70%",
+      "Sentence": "The biosolids at Toland are ... dried in a dryer to approximately 70%",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": [
-        "Constituent-Organics"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "uses the oil and grease in its digesters",
-      "trigger_process": [
-        "Anaerobic Digestion"
+        "Heat Drying"
       ]
     },
     {
@@ -260,13 +220,12 @@
         "Microfiltration"
       ],
       "Role": [
-        "Permeate",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration",
+      "Sentence": "through microfiltration",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -277,8 +236,7 @@
         "Ultrafiltration"
       ],
       "Role": [
-        "Permeate",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -294,8 +252,7 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Permeate",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -311,7 +268,7 @@
         "AdvancedOxidation"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",

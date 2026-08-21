@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped through two screw conveyed the inclined screens",
+      "Sentence": "wastewater in the wet well is pumped through two screw conveyed inclined screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,22 +24,31 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "directed to a grit removal and classification chamber. Solids from the grit removal process are collected in a bin",
+      "Sentence": "directed to a grit removal and classification chamber",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "influent pump station wet well chamber below the first level of the headworks building",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Primary",
-        "Pretreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -53,55 +62,22 @@
         "Sedimentation"
       ],
       "Role": [
-        "Equalization"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The equalization ponds ... leaving behind any settleable solids as it skims the wastewater off the top",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "SeparationTank",
-      "Process": [
-        "Separation"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "septage haulers who discharge into a solids separator and diverted directly into the solids handing portion of the WWTF",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "AerobicDigester",
-      "Process": [
-        "AerobicDigestion"
-      ],
-      "Role": [
-        "Aerobic",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Liquids separated from the processing of solids are held in the aerobic digester then returned for treatment to the headworks",
+      "Sentence": "The equalization ponds have a combined total capacity of approximately 16 million gallons",
       "trigger_process": [
-        "Aerobic Digestion"
+        "Equalization"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -111,16 +87,17 @@
         "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval",
-        "Stabilization"
+        "Extended"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The extended aeration system provides efficient biochemical oxygen demand (BOD) and nutrient removal",
+      "Sentence": "enhanced extended aeration activated sludge treatment process with nutrient removal",
       "trigger_process": [
         "Denitrification",
+        "Extended Aeration",
         "Nitrification"
       ]
     },
@@ -146,6 +123,7 @@
         "Recirculation"
       ],
       "Role": [
+        "Recirculation",
         "Secondary"
       ],
       "Substance": null,
@@ -156,24 +134,41 @@
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A 4-inch pump conveys waste activated sludge (WAS) to the aerobic digester",
       "trigger_process": []
     },
     {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Liquids separated from the processing of solids are held in the aerobic digester then returned for treatment to the headworks",
+      "trigger_process": [
+        "Aerobic Digestion"
+      ]
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -190,30 +185,21 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "BiologicallyActiveFiltration"
+        "Biofiltration",
+        "Sedimentation"
       ],
       "Role": [
+        "Tertiary",
         "Posttreatment",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "followed by enhanced effluent treatment and storage within the enhancement wetlands",
+      "Location": "on-site",
+      "Sentence": "effluent is discharged into an enhancement wetland for further treatment",
       "trigger_process": [
-        "Biologically Active Filtration",
         "Wetland"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The irrigation pump station includes vertical turbine pumps located in a rectangular reinforced concrete wet well",
-      "trigger_process": []
     },
     {
       "Equipment": "DewateringUnit",
@@ -230,19 +216,16 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A 36-inch rotary fan press is used for the dewatering and drying process and mechanically separates liquids and solids",
-      "trigger_process": [
-        "Drying"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Mixing",
-        "Composting",
-        "Drying"
+        "Composting"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -251,8 +234,7 @@
       "Location": "on-site",
       "Sentence": "Composting is achieved through a three-step process including mixing, composting and curing, and storage",
       "trigger_process": [
-        "Composting",
-        "Drying"
+        "Composting"
       ]
     },
     {
@@ -263,10 +245,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The finished compost is then land applied on Field 4 ... as a Class B biosolid",
+      "Sentence": "The finished compost is then land applied on Field 4, an 18-acre agricultural parcel owned by the Permittee",
       "trigger_process": [
         "Land Application"
       ]
@@ -274,18 +258,19 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Separation"
       ],
       "Role": [
+        "Pretreatment",
         "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "The Permittee has requested to expand their biosolids disposal area to include: Field 1, Field 2, and Field 3",
-      "trigger_process": [
-        "Land Application"
-      ]
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Septage ... discharg[e] into a solids separator and diverted directly into the solids handing portion of the WWTF",
+      "trigger_process": []
     }
   ]
 }

@@ -8,7 +8,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Influent enters the WWTP through a Chicago 7B Comminutor.",
@@ -21,19 +23,43 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "which settle out in a settling tank.",
+      "Sentence": "The comminutor automatically cuts coarse sewage solids into small settable solids, which settle out in a settling tank.",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Primary Clarification"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
+        "Mixing"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Constituent-DissolvedOxygen"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After sewage has gone through the comminutor, it enters an Aeration Tank. Inside the tank, air is bubbled through the sewage.",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
         "Aeration"
       ],
       "Role": [
@@ -43,35 +69,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge unit (aeration tank)... Inside the tank, air is bubbled through the sewage.",
+      "Sentence": "Aeration Pond No. 1... Oxygen is introduced into the pond by a mechanical floating aerator.",
       "trigger_process": [
-        "Unspecified AS"
+        "Aerated Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration",
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Aeration Pond No. 1 has a volume... Oxygen is introduced into the pond by a mechanical floating aerator.",
-      "trigger_process": [
-        "Aerated Lagoon",
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Aeration",
-        "Sedimentation"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -82,8 +88,7 @@
       "Location": "on-site",
       "Sentence": "Aeration Pond No. 2... Pond No.2 also has an aerator unit.",
       "trigger_process": [
-        "Aerated Lagoon",
-        "Secondary Clarification"
+        "Aerated Lagoon"
       ]
     },
     {
@@ -92,9 +97,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Pond No. 3 is used as a polishing and settling pond.",
@@ -115,11 +123,29 @@
       "trigger_process": []
     },
     {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "In anticipation of the WDRs being updated, the Discharger installed chlorination facilities consisting of pumps, chlorine storage, and a building.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -127,27 +153,50 @@
       "trigger_process": []
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "Pump",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Recirculation"
       ],
       "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "tailwater would flow to a tailwater return pump(s) and return the water back to the WWTP headworks.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying",
+        "Dewatering",
+        "Recirculation"
       ],
-      "Implementation": "present",
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite liquid will be used to disinfect wastewater prior to irrigation... The chlorine facilities are operational, but are not connected to the spray irrigation pump system.",
+      "Sentence": "The RWD indicates that the Discharger plans to modify the sludge drying facilities within the next 3 to 5 years.",
       "trigger_process": [
-        "Chlorination"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Just upstream of the comminutor there is a shallow manhole with a bypass side gate.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
         "SolidsHandling"
       ],
@@ -156,43 +205,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids are pumped from the bottom of the pond and disposed of into the sludge drying beds.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Purging"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Recirculation"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the Discharger plans to modify the sludge drying facilities within the next 3 to 5 years... A decant structure will be constructed which will drain the liquid as the solids settle to the bottom of the sludge bed.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "tailwater would flow to a tailwater return pump(s) and return the water back to the WWTP headworks.",
+      "Sentence": "Periodically, solids are pumped from the bottom of the pond and disposed of into the sludge drying beds.",
       "trigger_process": []
     }
   ]

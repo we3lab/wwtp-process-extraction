@@ -11,39 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of preliminary screening with mechanical bar screens, primary sedimentation,",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "New headworks, including new influent pump station, odor control, screening, and grit removal;",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "New headworks, including new influent pump station, odor control, screening, and grit removal;",
+      "Sentence": "The wastewater treatment process consists of preliminary screening with mechanical bar screens,",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -59,15 +27,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of preliminary screening with mechanical bar screens, primary sedimentation,",
+      "Sentence": "primary sedimentation,",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
-      "Equipment": "RotatingBiologicalContactor",
+      "Equipment": "TricklingFilter",
       "Process": [
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -77,7 +45,7 @@
       "Location": "on-site",
       "Sentence": "secondary biological treatment with fixed film reactors and aeration basins,",
       "trigger_process": [
-        "Rotating Biological Contactor"
+        "Trickling Filter"
       ]
     },
     {
@@ -87,8 +55,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -109,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary biological treatment with fixed film reactors and aeration basins, secondary clarification,",
+      "Sentence": "secondary clarification,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -117,7 +84,22 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "mono- or dual-media filtration (the Discharger occasionally routes flows around these filters when influent flows are high),",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Coagulation"
       ],
       "Role": [
@@ -128,10 +110,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mono- or dual-media filtration (the Discharger occasionally routes flows around these filters when influent flows are high),\nCoagulant may be added to the dual media filter flow for recycled water production.",
+      "Sentence": "Coagulant may be added to the dual media filter flow for recycled water production.",
       "trigger_process": [
         "Coagulation",
-        "Media Filtration",
         "Unspecified Chemical Addition"
       ]
     },
@@ -157,6 +138,50 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks, including new influent pump station, odor control, screening, and grit removal;",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks, including new influent pump station, odor control, screening, and grit removal;",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks, including new influent pump station, odor control, screening, and grit removal;",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
       "Equipment": "GravityThickener",
       "Process": [
         "Thickening"
@@ -169,7 +194,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary sludge is processed using a gravity thickener and rotating drum thickeners,",
+      "Sentence": "Primary sludge is processed using a gravity thickener and rotating drum thickeners, and secondary sludge is processed using gravity belt thickeners.",
       "trigger_process": [
         "Thickening"
       ]
@@ -187,7 +212,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary sludge is processed using a gravity thickener and rotating drum thickeners,",
+      "Sentence": "Primary sludge is processed using a gravity thickener and rotating drum thickeners, and secondary sludge is processed using gravity belt thickeners.",
       "trigger_process": [
         "Thickening"
       ]
@@ -205,7 +230,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sludge is processed using gravity belt thickeners.",
+      "Sentence": "Primary sludge is processed using a gravity thickener and rotating drum thickeners, and secondary sludge is processed using gravity belt thickeners.",
       "trigger_process": [
         "Thickening"
       ]
@@ -217,7 +242,25 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
+        "Anaerobic",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The thickened sludge is pumped to the anaerobic digestion process.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
         "Anaerobic"
       ],
       "Substance": [
@@ -227,7 +270,6 @@
       "Location": "on-site",
       "Sentence": "Ferric chloride is added to the anaerobic digester feed to reduce hydrogen sulfide in the digester gas.",
       "trigger_process": [
-        "Anaerobic Digestion",
         "Ferric Chloride Addition"
       ]
     },
@@ -252,30 +294,44 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The solids are transported to concrete lined air-drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "During the wet weather season, solids are conveyed to trucks for disposal.",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": null,
       "Process": [
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -286,8 +342,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying",
-        "BiosolidsDisposal"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -297,23 +352,23 @@
       "Location": "on-site",
       "Sentence": "Up to about 40 percent of the solids collected downstream from the fan press units is sent to an onsite biosolids drying process involving pyrolysis to create biochar used for beneficial reuse.",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "During the wet weather season, solids are conveyed to trucks for disposal.",
+      "Sentence": "Biochar system start-up to allow the Discharger to convert over 40 percent of its biosolids into biochar;",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Heat Drying"
       ]
     },
     {
@@ -328,35 +383,6 @@
       "Sentence": "An earth and rip-rap equalization basin owned by the West Bay Sanitary District may be used to reduce force main flows.",
       "trigger_process": [
         "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "New headworks, including new influent pump station, odor control, screening, and grit removal;",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal",
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Biochar system start-up to allow the Discharger to convert over 40 percent of its biosolids into biochar;",
-      "trigger_process": [
-        "Drying"
       ]
     }
   ]

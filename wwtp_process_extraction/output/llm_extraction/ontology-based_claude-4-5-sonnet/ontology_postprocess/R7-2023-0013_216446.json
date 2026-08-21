@@ -49,31 +49,20 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel, grit pump, grit cyclone separator, and influent pump dry well with three influent pumps.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoonsand two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds).",
       "trigger_process": [
-        "Unspecified AS"
+        "Aerated Lagoon"
       ]
     },
     {
@@ -96,7 +85,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -126,7 +116,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -136,63 +127,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Combined secondary effluent from each lagoon system module and the Biolac\u00ae system is conveyed to the chlorine contact basin to be disinfected and de-chlorinated prior to discharge into the Coachella Valley Storm Water Channel, using a chemical induction unit which employs a vacuum and gas system capable of dispersing the chlorine and sulfur dioxide gas with an airfoil design propeller.",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "In addition, 3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination.",
+      "Sentence": "Combined secondary effluent from each lagoon system module and the Biolac\u00ae system is conveyed to the chlorine contact basin to be disinfected and de-chlorinated prior to discharge into the Coachella Valley Storm Water Channel, using a chemical induction unit which employs a vacuum and gas system capable of dispersing the chlorine and sulfur dioxide gas with an airfoil design propeller. In addition, 3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Screening solids removed from the headworks system are routed to a grinderwasher/ compactor unit where the soft organics are separated from the screenings and returned to the process flow stream.",
-      "trigger_process": [
-        "Comminution"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Subsequently, the screenings are hauled off site for disposal at a County of Riverside landfill.",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
       "Equipment": "GravityBeltThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -211,23 +155,10 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank and is then pumped to a single 2-meter gravity belt filter press where it is dewatered.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "BeltThickener",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -239,60 +170,37 @@
       "Location": "on-site",
       "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank and is then pumped to a single 2-meter gravity belt filter press where it is dewatered.",
       "trigger_process": [
-        "Mechanical Dewatering",
-        "Thickening"
+        "Mechanical Dewatering"
       ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total). The solids are periodically transferred to a storage area for continued drying before transport off site by a private hauler for composting.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
         "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dewatered sludge is discharged into a truck trailer before being hauled off site by a private hauler for composting.",
-      "trigger_process": [
-        "Composting"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total). The solids are periodically transferred to a storage area for continued drying before transport off site by a private hauler for composting.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Composting"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The solids are periodically transferred to a storage area for continued drying before transport off site by a private hauler for composting.",
       "trigger_process": [
         "Composting"
       ]
@@ -308,7 +216,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase l is currently under design and includes diversion of 1.0 MGD of secondary effluent (expandable to 2.5 MGD) to a Title 22 compliant tertiary filtration and disinfection system to deliver recycled water (NPW) to nearby agricultural customers for unrestricted irrigation.",
+      "Sentence": "Phase l is currently under design and includes diversion of 1.0 MGD of secondary effluent (expandable to 2.5 MGD) to a Title 22 compliant tertiary filtration and disinfection system to deliver recycled water (NPW) to nearby agricultural customers for unrestricted irrigation. The Project also includes Phase 1B Planning Phases 2 and 3 that provide for future expansion of treatment and distribution of up to 2.5 MGD, and 10 MGD, respectively. The Phase l project design is currently 30 percent complete and includes a Filter Feed Pump Station, Tertiary Filters utilizing cloth disk filters, ultraviolet (UV) disinfection, a recycled water pump station, seasonal and operational storage, electrical building, and a chemical storage and feed system (sodium hypochlorite).",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -316,7 +224,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"

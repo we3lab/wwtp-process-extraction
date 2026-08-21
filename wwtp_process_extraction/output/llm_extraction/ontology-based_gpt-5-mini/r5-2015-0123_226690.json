@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facilities include coarse bar screening..."
+      "Sentence": "coarse bar screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facilities include ... grit removal ..."
+      "Sentence": "grit removal"
     },
     {
       "Equipment": "OxidationDitch",
@@ -37,12 +37,9 @@
         "Secondary",
         "Aerobic",
         "Extended",
-        "Stabilization",
-        "SolidsHandling"
+        "Stabilization"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "extended aeration in two oxidation ditches"
@@ -55,7 +52,9 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids settling in two secondary clarifiers"
@@ -90,19 +89,18 @@
       "Equipment": "OxidationDitch",
       "Process": [
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "ActivatedSludge"
       ],
       "Role": [
         "NitrogenRemoval",
         "NutrientRemoval",
-        "Aerobic",
-        "Anoxic",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "construction of a third oxidation ditch and clarifier and improvements to all three oxidation ditches to allow for reliable simultaneous nitrification/denitrification"
+      "Sentence": "improvements to all three oxidation ditches to allow for reliable simultaneous nitrification/denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -122,18 +120,7 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "installation of automated diversion facilities that will allow the Discharger to utilize the lined Auxiliary Basin for ... influent flow equalization"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
+        "Containment"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -143,52 +130,23 @@
       "Sentence": "pumped into the two existing, high-density polyethylene (HDPE) membrane-lined storage lagoons"
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "StaticMixer",
       "Process": [
         "Mixing"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids in the lagoons are blended using the mixers installed in each basin"
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "supernatant is decanted from the sludge and is returned to the oxidation ditches for further treatment"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "This portion of the solids stream is called waste activated sludge (WAS) and is pumped into the two existing ... storage lagoons"
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -211,7 +169,33 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Supplemental mechanical dewatering equipment is also being installed as part of the improvement project to increase the dewatering capacity of the Facility"
+      "Sentence": "Supplemental mechanical dewatering equipment is also being installed as part of the improvement project"
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary effluent reused for irrigation is typically directed ... to the Effluent Storage Reservoir"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "it is pumped to the land application area"
     },
     {
       "Equipment": null,
@@ -222,32 +206,12 @@
         "SolidsHandling",
         "Posttreatment"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "begun applying solids via surface spreading, followed by tilling, to incorporate the biosolids into the soil of the land application area fields"
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
+      "Substance": [
+        "Fluid-Sludge"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Undisinfected secondary effluent reused for irrigation is typically directed ... to the Effluent Storage Reservoir"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Flows from the Effluent Storage Reservoir may also be directed to three onsite ponds for additional storage prior to being returned to the Effluent Storage Reservoir"
+      "Sentence": "applying solids via surface spreading, followed by tilling, to incorporate the biosolids into the soil of the land application area fields"
     }
   ]
 }

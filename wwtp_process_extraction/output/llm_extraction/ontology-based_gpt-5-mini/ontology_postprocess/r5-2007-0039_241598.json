@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three influent headworks which include ... one channel is equipped with a Hycor screen, one with a manual bar screen",
+      "Sentence": "one channel is equipped with a Hycor screen, one with a manual bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -33,7 +33,9 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -61,7 +63,9 @@
       "Process": [
         "Flotation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -76,7 +80,9 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -86,17 +92,19 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two filters",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -108,7 +116,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a clear well",
+      "Sentence": "a clear well, two effluent storage reservoirs",
       "trigger_process": []
     },
     {
@@ -118,7 +126,9 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -133,8 +143,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -146,35 +155,38 @@
       "Location": "on-site",
       "Sentence": "sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "Reservoir",
-      "Process": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two effluent storage reservoirs",
+      "Sentence": "tail water return system",
       "trigger_process": []
     },
     {
       "Equipment": "Reactor",
       "Process": [
         "Denitrification",
-        "Mixing"
+        "Recirculation"
       ],
       "Role": [
         "Anoxic",
-        "Equalization"
+        "Equalization",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an anoxic reactor for flow/load equalization",
+      "Sentence": "anoxic reactor for flow/load equalization",
       "trigger_process": [
         "Denitrification",
         "Equalization",
@@ -206,40 +218,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "new tertiary filters",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "automated chemical feed",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -255,8 +236,7 @@
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion",
-        "Digestion"
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -271,76 +251,6 @@
       "trigger_process": [
         "Aerobic Digestion"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge supernatant will return to the anoxic reactor",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "replaces the Phase I WWTF with grit removal",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "an emergency storage reservoir",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Denitrification",
-        "Mixing"
-      ],
-      "Role": [
-        "Anoxic",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "an anoxic reactor/surge basin",
-      "trigger_process": [
-        "Denitrification",
-        "Equalization",
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Detention"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "an effluent surge basin",
-      "trigger_process": []
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
@@ -360,6 +270,37 @@
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "grit removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "an emergency storage reservoir",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -387,16 +328,6 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a larger influent pumping system and effluent pumping system",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -410,6 +341,30 @@
       "Sentence": "a larger bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a larger influent pumping system and effluent pumping system",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "automated chemical feed",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
       ]
     }
   ]

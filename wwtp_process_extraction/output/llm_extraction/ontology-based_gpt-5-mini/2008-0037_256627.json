@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "debris are removed from the flow stream by a mechanically cleaned bar screen."
+      "Sentence": "mechanically cleaned bar screen"
     },
     {
       "Equipment": "OxidationDitch",
@@ -23,13 +23,10 @@
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Constituent-OrganicCarbon",
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment system uses the activated sludge process and consists of an oxidation ditch with mechanical brush aerators"
+      "Sentence": "the secondary treatment system uses the activated sludge process and consists of an oxidation ditch with mechanical brush aerators"
     },
     {
       "Equipment": "Pump",
@@ -37,7 +34,8 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Feed",
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -52,9 +50,7 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two secondary clarifiers"
@@ -65,18 +61,39 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Recirculation"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "return activated sludge/waste activated sludge (RAS / WAS) control structure"
     },
     {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Feed",
+        "MakeUp",
+        "Tertiary"
+      ],
+      "Substance": [
+        "Coagulant-Alum",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "storage and feed facilities for alum and polymer"
+    },
+    {
       "Equipment": "CoagulationBasin",
       "Process": [
-        "Coagulation"
+        "Coagulation",
+        "Mixing"
       ],
       "Role": [
         "Tertiary"
@@ -86,12 +103,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "storage and feed facilities for alum and polymer, an alum mixer"
+      "Sentence": "an alum mixer"
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
-        "Flocculation"
+        "Flocculation",
+        "Mixing"
       ],
       "Role": [
         "Tertiary"
@@ -112,9 +130,7 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two automatic backwash filters"
@@ -123,7 +139,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -133,39 +150,18 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorine solution is added to the filter effluent and discharged to the chlorine contact basin for disinfection."
+      "Sentence": "Chlorine solution is added to the filter effluent ... Sulfur dioxide solution is added to the plant effluent prior to discharge ... to remove residual chlorine"
     },
     {
-      "Equipment": "Tank",
-      "Process": [
-        "Disinfection",
-        "Detention"
-      ],
+      "Equipment": "Reservoir",
+      "Process": null,
       "Role": [
-        "Tertiary",
-        "Detention"
+        "Storage"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The chlorinated plant effluent flows through the chlorine contact basin where the chlorine is contacted with the plant effluent for a minimum of two hours."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sulfur dioxide solution is added to the plant effluent prior to discharge into Churn Creek to remove residual chlorine."
+      "Sentence": "reclaimed water reservoir"
     },
     {
       "Equipment": "AerobicDigester",
@@ -182,12 +178,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastes activated sludge and scum from the secondary clarifiers are removed from the secondary treatment process and pumped to the aerobic digester."
+      "Sentence": "Wastes activated sludge ... are removed ... and pumped to the aerobic digester"
     },
     {
       "Equipment": "Tank",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Storage",
@@ -198,7 +194,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The sludge storage basins provide storage the stabilized solids during the wet weather periods and serve as drying beds during the warm summer months."
+      "Sentence": "The sludge storage basins provide storage ... and serve as drying beds"
     }
   ]
 }

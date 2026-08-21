@@ -19,11 +19,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -55,7 +55,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -118,8 +119,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -129,9 +129,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection. Dechlorination of chlorinated effluent is accomplished with sodium bisulfite",
+      "Sentence": "and chlorine disinfection",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dechlorination of chlorinated effluent is accomplished with sodium bisulfite",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
@@ -146,7 +162,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled to a local landfill for disposal",
+      "Sentence": "screenings from the headworks and solids from grit removal are ... hauled to a local landfill for disposal",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -158,12 +174,9 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge from the secondary treatment processes at the Fallbrook WRP is aerobically digested",
@@ -174,15 +187,13 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "then dewatered by a centrifuge",
@@ -194,7 +205,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -205,25 +216,7 @@
       "Location": "on-site",
       "Sentence": "Dewatered sludge is fed to a thermal dryer to meet Class A biosolids requirements",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sent to one of twelve drying beds for a minimum of three months",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
+        "Heat Drying"
       ]
     },
     {
@@ -232,7 +225,6 @@
         "LandApplication"
       ],
       "Role": [
-        "Posttreatment",
         "SolidsHandling"
       ],
       "Substance": null,
@@ -241,6 +233,22 @@
       "Sentence": "Class A biosolids are utilized as fertilizer by local farmers",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered sludge (Class B biosolids) is ... sent to one of twelve drying beds for a minimum of three months",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -261,10 +269,7 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization",
-        "Storage"
-      ],
+      "Process": null,
       "Role": [
         "Equalization",
         "Storage"
@@ -278,10 +283,8 @@
       ]
     },
     {
-      "Equipment": "Reservoir",
-      "Process": [
-        "Storage"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Storage"
       ],

@@ -3,9 +3,7 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -52,8 +50,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -72,8 +69,7 @@
         "Aeration"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -84,7 +80,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -94,9 +91,9 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "construct lined solar driers",
+      "Sentence": "lined solar driers",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -110,10 +107,22 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "influent pump station with fine screens",
+      "Sentence": "fine screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a new headworks and influent pump station",
+      "trigger_process": []
     },
     {
       "Equipment": "GritChamber",
@@ -132,7 +141,7 @@
       ]
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Retention"
@@ -141,7 +150,9 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "a storm water retention basin with overflow to the emergency storage basins",
-      "trigger_process": []
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
     },
     {
       "Equipment": "SedimentationTank",
@@ -168,6 +179,8 @@
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
+        "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -203,8 +216,7 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -213,6 +225,64 @@
       "Location": "on-site",
       "Sentence": "a solids holding tank",
       "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying",
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "additional lined solar driers",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a fourth primary clarifier",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a fifth activated sludge basin",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
     },
     {
       "Equipment": "SedimentationTank",
@@ -231,7 +301,26 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": null,
+      "Process": [
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "implementation of the SymBioTM process to facilitate nitrification and denitrification",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "Reactor",
       "Process": [
         "Denitrification"
       ],
@@ -246,25 +335,6 @@
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "All phases will include implementation of the SymBioTM process to facilitate nitrification and denitrification.",
-      "trigger_process": [
-        "Denitrification",
-        "Nitrification"
       ]
     }
   ]

@@ -68,7 +68,8 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Secondary"
@@ -76,26 +77,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of a two-stage biofiltration (trickling filters) process and clarification with chemical addition to enhance clarification.",
+      "Sentence": "...and clarification with chemical addition to enhance clarification.",
       "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Coagulation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "clarification with chemical addition to enhance clarification",
-      "trigger_process": [
-        "Coagulation",
         "Secondary Clarification",
         "Unspecified Chemical Addition"
       ]
@@ -146,15 +129,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the primary clarifier is pumped to a gravity thickener and then to two anaerobic digesters.",
+      "Sentence": "...and then to two anaerobic digesters.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -162,7 +144,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Storage",
@@ -173,17 +155,18 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Skimmings from the primary clarifier are directed to an unlined grease lagoon for drying and storage prior to final disposal in a municipal solid waste landfill.",
+      "Sentence": "Skimmings from the primary clarifier are directed to an unlined grease lagoon for drying and storage prior to final disposal...",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -201,7 +184,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -213,7 +197,7 @@
       "Location": "on-site",
       "Sentence": "Additional sludge drying takes place in sludge drying beds prior to disposal or reuse.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -224,9 +208,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Since 2005, the dried sludge has been hauled off-site to the Redwood Landfill in Novato.",

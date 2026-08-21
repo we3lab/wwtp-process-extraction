@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks (screening, grit removal, comminutors)"
+      "Sentence": "The treatment system at the Facility consists of headworks (screening, grit removal, comminutors)..."
     },
     {
       "Equipment": "GritChamber",
@@ -37,25 +37,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the wastewater flows via gravity through a grit chamber for removal of smaller grit particles"
+      "Sentence": "Following screening, the wastewater flows via gravity through a grit chamber for removal of smaller grit particles"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After effluent leaves the preliminary treatment stage, it is pumped to the oxidation ditch."
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Extended"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "extended aeration in an oxidation ditch"
+      "Sentence": "The treatment system at the Facility consists of ... extended aeration in an oxidation ditch"
     },
     {
       "Equipment": "SedimentationTank",
@@ -75,8 +83,7 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
-        "Backwashing"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -84,7 +91,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the clarified effluent is pumped through a filtration process... multimedia filters"
+      "Sentence": "the clarified effluent is pumped through a filtration process to remove most of the remaining solids... multimedia filters"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -105,42 +112,46 @@
       "Sentence": "Following filtration, effluent is disinfected with chlorine, and then dechlorinated"
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "an unlined aerated lagoon ... used to accept backwash water from the filters prior to recycling flow... provides treatment redundancy ... and flow equalization"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
+        "Equalization",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two unlined facultative ponds, which are currently used for retaining storm water on site"
+      "Sentence": "The Discharger has an unlined aerated lagoon with a surface area of 2.24 acres, which is used to accept backwash water ... and the lagoon additionally provides treatment redundancy ... as well as flow equalization"
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Storage",
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is dewatered in sand drying beds and transported for offsite disposal"
+      "Sentence": "The site also has two unlined facultative ponds, which are currently used for retaining storm water on site"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying",
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge is dewatered in sand drying beds and transported for offsite disposal."
     },
     {
       "Equipment": "CoagulationBasin",
@@ -169,26 +180,6 @@
       "Sentence": "Coagulation and flocculation facilities are available but are not currently in use."
     },
     {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "Biofiltration",
-        "ActivatedSludge",
-        "Nitrification",
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary",
-        "SolidsHandling",
-        "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the new wastewater treatment plant will include a Membrane Bioreactor (MBR) treatment system"
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -199,7 +190,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Raw sewage will flow into the coarse screening facility, which consists of a mechanical bar screen"
+      "Sentence": "each containing a perforated plate drum screen for fine screening"
     },
     {
       "Equipment": "Pump",
@@ -210,7 +201,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The screened sewage will then be sent to an influent pump station, which will consist of three 750 gallon per minute (GPM) pumps"
+      "Sentence": "the influent pump station, which will consist of three 750 gallon per minute (GPM) pumps"
     },
     {
       "Equipment": "GritChamber",
@@ -223,47 +214,39 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The wastewater will then be pumped to a grit removal facility for removal of smaller grit particles"
+      "Sentence": "The wastewater will then be pumped to a grit removal facility for removal of smaller grit particles."
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "MembraneBioreactor",
       "Process": [
-        "Screening"
+        "Biofiltration",
+        "Recirculation"
       ],
       "Role": [
-        "Pretreatment"
+        "Secondary",
+        "Tertiary",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the influent flow will be split into two channels, each containing a perforated plate drum screen for fine screening"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "After passing through the fine screens, the wastewater will then receive pH adjustments"
+      "Sentence": "The new wastewater treatment plant will ... include a Membrane Bioreactor (MBR) treatment system."
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification"
       ],
       "Role": [
         "Aerobic",
+        "NitrogenRemoval",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The aeration zone in each process train will operate as a conventional activated sludge process with nitrification occurring"
+      "Sentence": "The aeration zone in each process train will operate as a conventional activated sludge process with nitrification occurring."
     },
     {
       "Equipment": null,
@@ -277,12 +260,26 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Each train will have an anoxic zone... allowing denitrification to occur"
+      "Sentence": "Influent wastewater in the anoxic zone will be mixed with nitrified mixed liquor ... thereby allowing denitrification to occur."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "After passing through the fine screens, the wastewater will then receive pH adjustments and flow into an aeration tank."
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -290,18 +287,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The proposed facility includes ... an ultraviolet (UV) disinfection facility"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Permeate"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The MBR permeate pumps will lift the flow through a closed pipe UV system"
+      "Sentence": "The proposed facility includes ... ultraviolet (UV) disinfection facility ... The MBR permeate pumps will lift the flow through a closed pipe UV system."
     }
   ]
 }

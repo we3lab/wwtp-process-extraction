@@ -9,7 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "raw wastewater lift station"
+      "Sentence": "The WWTP consists of a raw wastewater lift station"
     },
     {
       "Equipment": "Screen",
@@ -22,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mechanical fine screen and screenings are then removed, collected and disposed"
+      "Sentence": "mechanical fine screen ... a single screen in the northern channel"
     },
     {
       "Equipment": "Screen",
@@ -36,19 +36,6 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "a second channel for a future screen"
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a bypass channel with a manual bar rack"
     },
     {
       "Equipment": "GritChamber",
@@ -66,7 +53,9 @@
     {
       "Equipment": "SluiceGate",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -86,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Activated Sludge Treatment system ... consists of two Contact Stabilization Tanks (CSTs)."
+      "Sentence": "The Activated Sludge Treatment system ... consists of two Contact Stabilization Tanks (CSTs)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -99,7 +88,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Clarified effluent from the center clarifier flows through a Parshall flume"
+      "Sentence": "clarification (clarifier)"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solids aeration (re-aeration tank)"
     },
     {
       "Equipment": "AerobicDigester",
@@ -115,26 +117,40 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge removed from the CST digester is conveyed via sludge wasting pumps"
+      "Sentence": "sludge digestion (digester). Air from centrifugal blowers is delivered ... to the ... digester"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from the CST digester is conveyed via sludge wasting pumps which pump the sludge to the drying beds"
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Anoxic",
         "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Oxidation Ditch treatment system ... includes a large aeration basin and a relatively smaller anoxic zone for denitrification"
+      "Sentence": "The Oxidation Ditch treatment system ... is characterized as a modified extended aeration activated sludge process ... include a large aeration basin and a relatively smaller anoxic zone for denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -157,21 +173,12 @@
       "Role": [
         "Recirculation"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "settled sludge is pulled from the bottom of the clarifier and continuously pumped back into the oxidation ditch"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "SolidsHandling"
+      "Substance": [
+        "Sludge-MixedLiquor"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a portion of the settled sludge is removed ... via sludge wasting pumps which pump the sludge to the drying beds"
+      "Sentence": "settled sludge is pulled from the bottom of the clarifier and continuously pumped back into the oxidation ditch to maintain the mixed liquor concentration"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -189,7 +196,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarified effluent ... is disinfected using an automated chlorine delivery system consisting of bulk sodium hypochlorite storage tanks"
+      "Sentence": "clarified effluent ... is disinfected using an automated chlorine delivery system ... The chlorinated effluent ... sodium bisulfite is added to remove any remaining residual chlorine"
     },
     {
       "Equipment": "Tank",
@@ -207,12 +214,13 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying",
+        "AirDrying",
+        "Evaporation",
         "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -231,21 +239,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "digested sludge ... are collected to a stockpile bed, further dried and disposed of by an approved solids disposal hauler"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "screenings are then removed, collected and disposed"
+      "Location": "on-site",
+      "Sentence": "they are collected to a stockpile bed, further dried and disposed of by an approved solids disposal hauler"
     }
   ]
 }

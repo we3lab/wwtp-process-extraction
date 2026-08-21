@@ -25,7 +25,8 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
+        "Aerobic",
+        "Anoxic",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -55,9 +56,9 @@
       ]
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "RapidSandFiltration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -104,10 +105,8 @@
       ]
     },
     {
-      "Equipment": "Reactor",
-      "Process": [
-        "Digestion"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "SolidsHandling",
         "Stabilization"
@@ -118,14 +117,13 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Biosolids treatment consists of solids stabilization basins and sludge drying beds",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -137,7 +135,7 @@
       "Location": "on-site",
       "Sentence": "Each summer, stabilized sludge is pumped into the drying beds for dewatering",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -145,7 +143,9 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",

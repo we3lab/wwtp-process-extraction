@@ -11,20 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal, and primary sedimentation."
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "installation of new influent screens at the headworks"
+      "Sentence": "All wastewater goes through primary treatment, including screening..."
     },
     {
       "Equipment": "GritChamber",
@@ -37,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal, and primary sedimentation."
+      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,12 +37,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal, and primary sedimentation."
+      "Sentence": "All wastewater goes through primary treatment, including...primary sedimentation."
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -67,14 +55,17 @@
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Flocculation",
+        "Mixing"
+      ],
       "Role": [
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a solids-contact chamber"
+      "Sentence": "A portion of the flow is diverted for secondary treatment process using biofilters, a solids-contact chamber..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -87,7 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "finally on to a secondary sedimentation tank."
+      "Sentence": "The secondary process also includes...and finally on to a secondary sedimentation tank."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -97,7 +88,8 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -105,6 +97,19 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "When flows exceed 1 MGD, secondary-treated effluent can be blended with primary treated effluent, and the blend is chlorinated and dechlorinated before discharge."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "When flows exceed 1 MGD, secondary-treated effluent can be blended with primary treated effluent..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -126,11 +131,12 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
+        "AirDrying",
         "Dewatering"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -140,18 +146,6 @@
       "Sentence": "Stabilized sludge from the secondary digester is transferred to one of 12 sludge-drying beds. Drying times range from two to four months..."
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "once dried, biosolids are removed from the beds and stored in a concrete containment area."
-    },
-    {
       "Equipment": null,
       "Process": [
         "Composting"
@@ -159,10 +153,25 @@
       "Role": [
         "BiosolidsDisposal"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are stored ... until they are removed from the WWTP for composting and eventual use as a soil amendment."
+      "Sentence": "Biosolids are removed from the WWTP for composting and eventual use as a soil amendment."
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The adopted budgets contain maintenance and improvement projects including the installation of new influent screens at the headworks..."
     }
   ]
 }

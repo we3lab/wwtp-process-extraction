@@ -19,14 +19,20 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "aeration basins",
-      "trigger_process": []
+      "trigger_process": [
+        "Unspecified AS"
+      ]
     },
     {
       "Equipment": "SedimentationTank",
@@ -48,9 +54,13 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -63,7 +73,9 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Containment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -75,10 +87,15 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dissolved aeration floatation thickener",
@@ -92,8 +109,14 @@
       "Process": [
         "AnaerobicDigestion"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "anaerobic digesters",
@@ -105,7 +128,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -114,15 +138,19 @@
       "Location": "on-site",
       "Sentence": "biosolids storage ponds",
       "trigger_process": [
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
+        "Dewatering",
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -134,11 +162,13 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -146,7 +176,7 @@
       "Location": "on-site",
       "Sentence": "biosolids drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     }
   ]

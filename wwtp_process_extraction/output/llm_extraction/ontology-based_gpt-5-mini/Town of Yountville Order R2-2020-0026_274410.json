@@ -3,8 +3,7 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
@@ -12,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of aerated grit removal..."
+      "Sentence": "aerated grit removal"
     },
     {
       "Equipment": "Grinder",
@@ -30,16 +29,19 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
         "Primary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification"
+      "Sentence": "primary clarifier, which operates as an initial sludge thickener"
     },
     {
       "Equipment": "TricklingFilter",
@@ -105,7 +107,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation and flocculation"
+      "Sentence": "coagulation"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -118,7 +120,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation and flocculation"
+      "Sentence": "flocculation"
     },
     {
       "Equipment": "SedimentationTank",
@@ -144,14 +146,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "compressible media filtration (Fuzzy Filter)"
+      "Sentence": "compressible media filtration"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -161,23 +162,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection using sodium hypochlorite, and dechlorination with sodium bisulfite."
+      "Sentence": "disinfection using sodium hypochlorite"
     },
     {
-      "Equipment": "OzonationUnit",
+      "Equipment": null,
       "Process": [
-        "Ozonation",
-        "Disinfection"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Ozone"
-      ],
-      "Implementation": "future",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Discharger may transition from chlorine disinfection to ozone disinfection"
+      "Sentence": "dechlorination with sodium bisulfite"
     },
     {
       "Equipment": "Pond",
@@ -188,19 +186,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "stored in a 3.8-million-gallon flow equalization pond for later treatment."
+      "Sentence": "stored in a 3.8-million-gallon flow equalization pond for later treatment"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated wastewater flows to a 2.7-million-gallon effluent storage pond prior to recycling or discharge to the Napa River."
+      "Sentence": "Treated wastewater flows to a 2.7-million-gallon effluent storage pond"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -215,7 +212,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The commingled sludge from these processes is then pumped to a Dissolved Air Flotation Thickener (DAFT)"
+      "Sentence": "pumped to a Dissolved Air Flotation Thickener (DAFT)"
     },
     {
       "Equipment": "Digester",
@@ -234,10 +231,9 @@
       "Sentence": "processed in primary and secondary sludge digesters"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -262,7 +258,23 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Typically, fewer than 100 tons of dried biosolids are hauled annually to the Clover Flat Landfill for disposal."
+      "Sentence": "dried biosolids are hauled annually to the Clover Flat Landfill for disposal"
+    },
+    {
+      "Equipment": "OzonationUnit",
+      "Process": [
+        "Ozonation",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Ozone"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the Discharger may transition from chlorine disinfection to ozone disinfection"
     }
   ]
 }

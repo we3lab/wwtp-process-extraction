@@ -349,6 +349,20 @@ def calc_ghg(wwtp_df, ef, grid_carbon, source_label=''):
 
     df['FLOW_2022_MGD_FINAL'] = pd.to_numeric(df['FLOW_2022_MGD_FINAL'], errors='coerce').fillna(0)
 
+    # A train with no Monte Carlo workbook upstream contributes nothing at all -- not a wrong
+    # number, an invisible facility. N1 (MBR-BNR without biogas recovery) is the only such
+    # train: El Abbadi never assign it so never needed its factors, but we re-derive trains
+    # from process codes and can reach it. Report the lost flow rather than substituting
+    # factors -- the cogeneration credit is ~556 kWh/MGD in absolute terms across the eight
+    # measurable E/base pairs, but N1E's demand (6023) is 2.5x any of their base trains, so no
+    # scaling of a measured pair is defensible here.
+    for tt in [t for t in tt_present if t not in ef.index]:
+        flow_lost = (pd.to_numeric(df[tt], errors='coerce').fillna(0)
+                     .div(df['TT_IDENTIFIED']).mul(df['FLOW_2022_MGD_FINAL']).sum())
+        if flow_lost > 0:
+            print(f'    WARNING {tt}: no upstream emission factors; {flow_lost:.1f} MGD '
+                  f'contributes zero emissions')
+
     valid_tt = [tt for tt in tt_present if tt in ef.index]
     tt_mat = df[valid_tt].apply(pd.to_numeric, errors='coerce').fillna(0)
     tt_flow = tt_mat.div(df['TT_IDENTIFIED'], axis=0).mul(df['FLOW_2022_MGD_FINAL'], axis=0)
@@ -661,7 +675,11 @@ def load_llm_source(common_pids, add_wef_biogas=False):
 
     and_col = merged['AND'] if 'AND' in merged.columns else pd.Series(0, index=merged.index)
     cogen_col = merged['BIOGAS_CWNS'] if 'BIOGAS_CWNS' in merged.columns else pd.Series(0, index=merged.index)
-    llm_biogas = (and_col > 0) | (cogen_col > 0)
+    # Digestion alone is not energy recovery -- biogas is often flared. El Abbadi treat recovery
+    # as a small subset of digestion (315 of 2644 AD plants, 11.9%, in tt_assignments_2022.csv),
+    # so an OR here promoted every digesting plant to an E-train, ~8x their share. Gas
+    # utilisation/cogeneration is the signal; digestion is a precondition, not evidence.
+    llm_biogas = (cogen_col > 0) & (and_col > 0)
     if add_wef_biogas:
         # LLM data takes priority; WEF only adds where LLM was silent.
         # OR logic: keep all LLM-detected AND/BIOGAS_EL, additionally set both for any

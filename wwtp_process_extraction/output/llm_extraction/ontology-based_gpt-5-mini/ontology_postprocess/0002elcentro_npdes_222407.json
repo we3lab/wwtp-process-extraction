@@ -1,18 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "wastewater from the community is pumped from seven lift stations to a final lift station",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -20,9 +8,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "preliminary treatment, where solids are removed by an automatic bar screen",
@@ -35,20 +21,21 @@
       "Process": [
         "ChemicalAddition",
         "Coagulation",
-        "Flocculation"
+        "Flocculation",
+        "ChemicalPrecipitation"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": [
         "Coagulant-FerricChloride",
-        "Flocculant-Polymer",
-        "Constituent-Metals"
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals from the wastewater",
       "trigger_process": [
+        "Chemical Precipitation",
         "Coagulation",
         "Ferric Chloride Addition",
         "Flocculation",
@@ -63,9 +50,7 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Wastewater is then directed through the plant\u2019s primary clarifiers",
@@ -99,12 +84,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification through four final clarifiers",
+      "Sentence": "and secondary clarification through four final clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -134,7 +117,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -149,8 +133,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Thickening",
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -185,9 +168,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -199,7 +182,7 @@
       "Location": "on-site",
       "Sentence": "dried to approximately 90 percent solids in drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -208,7 +191,8 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "LandApplication",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -221,18 +205,22 @@
       ]
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Pond",
       "Process": [
+        "Storage",
         "Evaporation"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility maintains an emergency storage basin ... but is typically allowed to evaporate",
-      "trigger_process": []
+      "Sentence": "The Facility maintains an emergency storage basin... but is typically allowed to evaporate",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
     }
   ]
 }

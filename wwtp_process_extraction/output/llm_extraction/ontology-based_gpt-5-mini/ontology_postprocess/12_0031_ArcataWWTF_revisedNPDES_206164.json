@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment is accomplished with...a grit removal chamber",
+      "Sentence": "Primary wastewater treatment is accomplished with ... a grit removal chamber",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment is accomplished with...two primary clarifiers.",
+      "Sentence": "Primary wastewater treatment is accomplished with ... two primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -55,6 +55,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -70,7 +71,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -80,9 +82,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary solids are sent to two anaerobic digesters, sludge drying beds",
+      "Sentence": "Primary solids are sent to ... sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -93,12 +95,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge composting operation",
+      "Sentence": "Primary solids are sent to ... a sludge composting operation",
       "trigger_process": [
         "Composting"
       ]
@@ -123,57 +123,32 @@
       "Equipment": "Wetland",
       "Process": [
         "Sedimentation",
-        "BiologicalProcess"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "4 treatment marshes are currently online",
-      "trigger_process": [
-        "Wetland"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Sedimentation",
-        "BiologicalProcess"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "marshes 5 and 6 were constructed in 2011 and will be fully operational in 2013",
-      "trigger_process": [
-        "Wetland"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Sedimentation",
-        "BiologicalProcess"
+        "Biofiltration"
       ],
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "Water-Brackish"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "brackish marsh, which was constructed in 2008",
+      "Sentence": "The AMWS consists of three freshwater wetlands: Allen, Gearheart, and Hauser Marshes",
+      "trigger_process": [
+        "Wetland"
+      ]
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": [
+        "Sedimentation",
+        "Biofiltration"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent will be discharged immediately after UV disinfection through Outfall No. 003 into Humboldt Bay via the brackish marsh, which was constructed in 2008",
       "trigger_process": [
         "Wetland"
       ]
@@ -182,11 +157,11 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -202,10 +177,12 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",

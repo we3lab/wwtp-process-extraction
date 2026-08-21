@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Mechanical screening device with compactor/washer, Parshall Flume/ultrasonic level read for influent flow",
+      "Sentence": "Mechanical screening device with compactor/washer",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,7 +24,9 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Three circular clarifiers operated in parallel.",
@@ -44,7 +46,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Three aerated lagoons: Pond 1, Pond 2, and Pond 3, equipped with total of 90 HP floating aerators (18-5HP Aerators).",
+      "Sentence": "Three aerated lagoons: Pond 1, Pond 2, and Pond 3, equipped with total of 90 HP floating aerators",
       "trigger_process": [
         "Aerated Lagoon"
       ]
@@ -52,7 +54,9 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -63,26 +67,36 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Land Application by Controlled Flood: 18-acres total area by controlled flood methods in currently 11 bermed rapid infiltration basins (RIBs, also called percolation fields).",
       "trigger_process": [
+        "Biosolids Lagoon",
+        "Land Application",
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Greenfield may dispose to emergency wastewater sprayfields only with Central Coast Water Board staff approval for specific calendar dates.",
+      "Sentence": "Greenfield may dispose to emergency wastewater sprayfields only with Central Coast Water Board staff approval... There are three spray disposal zones for a total of 16.5 acres, east of the ponds.",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Land Application"
       ]
     },
     {
@@ -92,7 +106,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -105,10 +120,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -120,7 +134,7 @@
       "Location": "on-site",
       "Sentence": "In 2023, to increase solids removal, Greenfield rented a belt press, which drys biosolids from the digestor.",
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
       ]
     },
     {

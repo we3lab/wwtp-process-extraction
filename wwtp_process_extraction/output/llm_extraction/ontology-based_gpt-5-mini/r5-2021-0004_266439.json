@@ -9,13 +9,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "fine screening"
+      "Sentence": "The treatment system at the Facility consists of fine screening followed by activated sludge treatment..."
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Reactor",
       "Process": [
-        "ActivatedSludge",
-        "Mixing"
+        "ActivatedSludge"
       ],
       "Role": [
         "Anoxic"
@@ -23,12 +22,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge treatment with anoxic ... basins"
+      "Sentence": "activated sludge treatment with anoxic and aerobic basins"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Aerobic"
@@ -36,7 +36,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge treatment with ... aerobic basins"
+      "Sentence": "activated sludge treatment with anoxic and aerobic basins"
     },
     {
       "Equipment": "MembraneBioreactor",
@@ -47,7 +47,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by membrane biological reactors (MBR’s), which separate the liquid from the solids"
+      "Sentence": "followed by membrane biological reactors (MBR’s), which separate the liquid from the solids."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -58,10 +58,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The liquid effluent from the MBR’s is disinfected using ultraviolet light (UV) disinfection"
+      "Sentence": "The liquid effluent from the MBR’s is disinfected using ultraviolet light (UV) disinfection."
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage"
@@ -69,7 +69,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 2.0-million-gallon emergency storage basin ... is used for storage of treated and untreated wastewater"
+      "Sentence": "A 2.0-million-gallon emergency storage basin lined with high density polyethylene liner is also used ... the emergency storage basin is used for storage of treated and untreated wastewater."
     },
     {
       "Equipment": "BeltFilterPress",
@@ -77,28 +77,31 @@
         "Dewatering",
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is dewatered using belt filter press technology"
+      "Sentence": "Sludge is dewatered using belt filter press technology followed by drying in solar greenhouses."
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "drying in solar greenhouses"
+      "Sentence": "drying in solar greenhouses. Once dried, the material meets “Exceptional Class A” biosolids criteria and is stockpiled in one of the solar greenhouses prior to disposal..."
     },
     {
       "Equipment": null,
@@ -109,7 +112,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal at a regulated Class III landfill"
+      "Sentence": "stockpiled in one of the solar greenhouses prior to disposal at a regulated Class III landfill or beneficial land application."
     },
     {
       "Equipment": null,
@@ -120,7 +123,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "beneficial land application"
+      "Sentence": "stockpiled in one of the solar greenhouses prior to disposal at a regulated Class III landfill or beneficial land application."
     }
   ]
 }

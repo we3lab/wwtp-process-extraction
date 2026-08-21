@@ -5,11 +5,13 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rotating screen for removal of large particles",
+      "Sentence": "Wastewater treatment at the Avalon WTF consists of a rotating screen for removal of large particles",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -20,11 +22,14 @@
         "TricklingFiltration",
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The trickling filter is only used during summer, when part of the influent is passed through the trickling filter to increase the dissolved oxygen content",
+      "Sentence": "The trickling filter is only used during summer...passed through the trickling filter to increase the dissolved oxygen content of the wastewater",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -34,11 +39,14 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge reactors for removal of organics",
+      "Sentence": "a trickling filter and activated sludge reactors for removal of organics",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -48,13 +56,15 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "clarifiers for separation of solids",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
     },
     {
@@ -63,7 +73,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -79,11 +91,17 @@
       "Process": [
         "AerobicDigestion"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste sludge from the activated sludge reactors is aerobically digested",
+      "Sentence": "waste sludge from the activated sludge reactors is aerobically digested",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -94,11 +112,15 @@
         "Centrifugation",
         "Dewatering"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered in a centrifuge",
+      "Sentence": "waste sludge ... is ... dewatered in a centrifuge",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
@@ -107,15 +129,19 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dried in sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -123,11 +149,33 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Solids separated at the rotating screen are sent to a landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dried in sludge drying beds before being hauled to a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]

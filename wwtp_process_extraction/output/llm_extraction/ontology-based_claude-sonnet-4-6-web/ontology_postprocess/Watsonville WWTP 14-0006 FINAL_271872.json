@@ -45,7 +45,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...pre-aeration/grit removal, primary sedimentation, biological filtration (trickling filters)...",
+      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -63,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary sedimentation, biological filtration (trickling filters), odor control...",
+      "Sentence": "...primary sedimentation, biological filtration (trickling filters), odor control, solids contact stabilization (activated sludge), and secondary clarification.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -82,7 +82,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological filtration (trickling filters), odor control, solids contact stabilization (activated sludge)...",
+      "Sentence": "...biological filtration (trickling filters)...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -90,18 +90,17 @@
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Stabilization"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...solids contact stabilization (activated sludge), and secondary clarification.",
+      "Sentence": "...solids contact stabilization (activated sludge)...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -127,26 +126,9 @@
       ]
     },
     {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Since approximately 1998, the Facility has not disinfected its effluent prior to ocean outfall discharge.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Unspecified Disinfection"
-      ]
-    },
-    {
       "Equipment": "GravityThickener",
       "Process": [
+        "Thickening",
         "Sedimentation"
       ],
       "Role": [
@@ -171,15 +153,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites.",
+      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -189,7 +170,27 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids...are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -200,17 +201,34 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...drying beds, and belt filter press dewatering, and are land-applied at various sites.",
+      "Sentence": "Biosolids...are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat, which are then used at the facility.",
+      "Source": "both",
+      "Website": "https://west.stanford.edu/news/trip-watsonville-recycled-water-facility",
+      "trigger_process": [
+        "Cogeneration",
+        "Heat Recovery"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
@@ -219,75 +237,12 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat, which are then used at the facility.",
+      "Location": "off-site",
+      "Sentence": "...and are land-applied at various sites.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Cogeneration",
-        "Heat Recovery",
-        "Unspecified Incineration"
-      ]
-    },
-    {
-      "Equipment": "SepticTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The leachate is hauled to the facility via trucks and is discharged into the septic receiving station and from there is directed into the headworks.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Septic Tank"
-      ]
-    },
-    {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation",
-        "Flocculation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Coagulant-Alum",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Tertiary/Recycled Water Facility: Moves secondary treated wastewater through the water recycling facility where coagulation, flocculation and sedimentation occurs after Alum and polymers are added",
-      "Source": "web_search",
-      "Website": "https://www.watsonville.gov/812/Wastewater-Division",
-      "trigger_process": [
-        "Alum Addition",
-        "Coagulation",
-        "Flocculation",
-        "Polymer Addition"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...next cloth media filtration occurs with 1,620 filters that provide a physical barrier to filter out most microorganisms, sediment and viruses, with a pore size of 10 microns.",
-      "Source": "web_search",
-      "Website": "https://www.watsonville.gov/812/Wastewater-Division",
-      "trigger_process": [
-        "Media Filtration"
+        "Land Application"
       ]
     }
   ]

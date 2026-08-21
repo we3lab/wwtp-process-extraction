@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plate screens",
+      "Sentence": "Perforated plate screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -49,6 +49,20 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flow equalization basins",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -82,7 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "followed by secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -90,7 +104,7 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Biofiltration",
+        "BiologicallyActiveFiltration",
         "Microfiltration"
       ],
       "Role": [
@@ -100,30 +114,32 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Membrane bioreactor (MBR) process with nutrient removal",
+      "Sentence": "Membrane bioreactor (MBR) ... Microfiltration membrane technology that is part of the MBR treatment train",
       "trigger_process": [
+        "Biologically Active Filtration",
         "Membrane Bioreactor",
         "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "UltravioletLightUnit",
       "Process": [
-        "MediaFiltration"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Conventional down flow dual media filters",
+      "Sentence": "21-mgd UV disinfection system",
       "trigger_process": [
-        "Media Filtration"
+        "UV Disinfection"
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": null,
       "Process": [
         "Coagulation"
       ],
@@ -142,45 +158,12 @@
       ]
     },
     {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "21-mgd UV disinfection system",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Potassium hydroxide pH adjustment capability is provided to regulate pH as needed",
-      "trigger_process": [
-        "Neutralization"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
         "ChemicalAddition"
       ],
       "Role": [
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -191,22 +174,16 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "sludge and scum are collected and pumped into an OCSD sewer line, then to OCSD's Reclamation Plant No. 1 for treatment and disposal",
-      "trigger_process": [
-        "Unspecified Disposal"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "Thickener",
@@ -221,7 +198,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "sludge thickening equipment",
+      "Sentence": "construction and/or installation of sludge thickening equipment",
       "trigger_process": [
         "Thickening"
       ]
@@ -241,7 +218,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "anaerobic digesters",
+      "Sentence": "installation of anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -267,7 +244,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -280,9 +257,7 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "sludge drying equipment",
-      "trigger_process": [
-        "Drying"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "Cogenerator",
@@ -297,6 +272,38 @@
       "trigger_process": [
         "Cogeneration",
         "Heat Recovery"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings and grit are removed and disposed of at a Class 1 landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Potassium hydroxide pH adjustment capability is provided to regulate pH as needed",
+      "trigger_process": [
+        "Neutralization"
       ]
     }
   ]

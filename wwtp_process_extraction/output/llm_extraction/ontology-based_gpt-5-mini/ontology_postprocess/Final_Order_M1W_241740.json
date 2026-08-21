@@ -65,14 +65,16 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Reactor",
       "Process": [
         "Flocculation"
       ],
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids contact (i.e., bio-flocculation)",
@@ -96,24 +98,6 @@
       "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Water-Brackish"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "held in a 375,000-gallon (approximate) lined pond and mixed with secondary effluent",
-      "trigger_process": [
-        "Unspecified Lagoon"
       ]
     },
     {
@@ -154,29 +138,9 @@
       ]
     },
     {
-      "Equipment": "CentrifugalDewateringUnit",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "mechanical dewatering using centrifuges",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -188,110 +152,21 @@
       "Location": "on-site",
       "Sentence": "open air drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hauled to the Monterey Regional Waste Management District\u2019s landfill in Marina",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "MembraneProcess"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will provide full advanced treatment including ... membrane filtration",
+      "Sentence": "held in a 375,000-gallon (approximate) lined pond",
       "trigger_process": [
-        "Unspecified Membrane Process"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Water-Brackish"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "including ... RO",
-      "trigger_process": [
-        "Reverse Osmosis"
-      ]
-    },
-    {
-      "Equipment": "OzonationUnit",
-      "Process": [
-        "Ozonation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "including ozone",
-      "trigger_process": [
-        "Oxidation",
-        "Ozonation"
-      ]
-    },
-    {
-      "Equipment": "UVH2O2Reactor",
-      "Process": [
-        "AdvancedOxidation"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "OxidizingAgent-HydrogenPeroxide"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "advanced oxidation using ultraviolet light and hydrogen peroxide",
-      "trigger_process": [
-        "Oxidation",
-        "UV-AOP"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Backwashing"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Membrane backwash produced by the AWPF will be sent to the Regional WWTP headworks for treatment",
-      "trigger_process": [
-        "Unspecified Filtration"
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -322,7 +197,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flocculation",
+      "Sentence": "tertiary treatment (through ... flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -338,7 +213,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "filtration",
+      "Sentence": "tertiary treatment (through ... filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -354,7 +229,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and disinfection",
+      "Sentence": "tertiary treatment (through ... disinfection)",
       "trigger_process": [
         "Unspecified Disinfection"
       ]
@@ -368,10 +243,92 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "holds tertiary treated wastewater in an 80-acre-foot storage pond",
+      "Sentence": "The SVRP holds tertiary treated wastewater in an 80-acre-foot storage pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
+    },
+    {
+      "Equipment": "OzonationUnit",
+      "Process": [
+        "Ozonation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Ozone"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "will provide full advanced treatment including ozone",
+      "trigger_process": [
+        "Oxidation",
+        "Ozonation"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "MembraneProcess"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "will provide full advanced treatment including ... membrane filtration",
+      "trigger_process": [
+        "Unspecified Membrane Process"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "will provide full advanced treatment including ... RO",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "advanced oxidation using ultraviolet light and hydrogen peroxide",
+      "trigger_process": [
+        "Oxidation",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "finished water stabilization",
+      "trigger_process": []
     }
   ]
 }

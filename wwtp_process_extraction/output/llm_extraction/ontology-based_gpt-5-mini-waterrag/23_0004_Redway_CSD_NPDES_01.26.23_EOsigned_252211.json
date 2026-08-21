@@ -1,35 +1,17 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Dogwood lift station pumps raw wastewater into an 8-inch pressure main down Dogwood Lane..."
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Grit is periodically removed from the lift station wet well."
-    },
-    {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection..."
+      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch"
     },
     {
       "Equipment": "SedimentationTank",
@@ -42,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection..."
+      "Sentence": "secondary clarifier"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -57,21 +39,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite."
+      "Sentence": "chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite"
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Separation"
+      ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The Facility discharges treated wastewater to three percolation ponds at Discharge Point 002."
+      "Sentence": "discharges treated wastewater to three percolation ponds"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -81,7 +65,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility’s sludge drying beds..."
+      "Sentence": "dewatered in the Facility’s sludge drying beds"
     },
     {
       "Equipment": "DewateringUnit",
@@ -96,20 +80,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility’s sludge drying beds or an Aeromod Draimad bagger..."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility’s sludge drying beds or an Aeromod Draimad bagger before being transported to an approved landfill for final disposal."
+      "Sentence": "an Aeromod Draimad bagger"
     },
     {
       "Equipment": null,
@@ -120,21 +91,73 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Decant water is returned to the inlet structure prior to the oxidation ditch."
+      "Sentence": "Decant water is returned to the inlet structure prior to the oxidation ditch"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "before being transported to an approved landfill for final disposal"
     },
     {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "past",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Solids were previously disposed of though land application in a wooded area owned by the Permittee north of the Facility; this practice was discontinued in 2018."
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Facility has historically received septage at a septage receiving station located at the Facility; however, the Permittee no longer accepts septage and does not anticipate accepting septage in the future."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Dogwood lift station pumps raw wastewater into an 8-inch pressure main down Dogwood Lane"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit is periodically removed from the lift station wet well."
+    },
+    {
+      "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
@@ -145,7 +168,7 @@
       "Sentence": "a new headworks process"
     },
     {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
@@ -171,7 +194,9 @@
       "Process": [
         "Digestion"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -189,7 +214,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new chlorine contact basin and effluent pump station"
+      "Sentence": "new chlorine contact basin"
     },
     {
       "Equipment": "Pump",
@@ -198,7 +223,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new chlorine contact basin and effluent pump station"
+      "Sentence": "effluent pump station"
     },
     {
       "Equipment": "Pump",
@@ -206,18 +231,16 @@
       "Role": null,
       "Substance": null,
       "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "lift station SCADA improvements and pump upgrades"
+      "Location": "off-site",
+      "Sentence": "lift station ... pump upgrades"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "sludge drying cover"

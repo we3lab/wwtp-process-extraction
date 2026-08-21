@@ -35,7 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal chamber"
+      "Sentence": "a grit removal chamber"
     },
     {
       "Equipment": "SedimentationTank",
@@ -54,16 +54,13 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "MLE",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -92,12 +89,15 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine contact chamber"
+      "Sentence": "a chlorine contact chamber"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -121,8 +121,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -134,12 +133,15 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sent to lagoons for storage and solar drying in drying beds"
@@ -147,7 +149,6 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
@@ -159,15 +160,43 @@
       "Sentence": "Dried biosolids are hauled offsite by truck for disposal at a municipal landfill"
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The digested sludge is pumped via force main to the West County Plant for drying and disposal"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All supernatant is returned at controlled volumes to the West County Plant"
+    },
+    {
       "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated, and then discharged"
+      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated, and then discharged through West County Agency\u0019s deep-water outfall"
     },
     {
       "Equipment": "Screen",
@@ -193,7 +222,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "construct a new headworks with ... grit removal"
+      "Sentence": "construct a new headworks with finer bar screens and grit removal"
     },
     {
       "Equipment": "AerationBasin",
@@ -201,25 +230,13 @@
         "Aeration"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "replace the mechanical surface aerators with a diffused aeration system"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "replace the secondary clarifier mechanisms"
+      "Sentence": "replace the mechanical surface aerators with a more efficient diffused aeration system"
     },
     {
       "Equipment": "RotaryDrumThickener",
@@ -235,12 +252,14 @@
       "Sentence": "replace the current dissolved air flotation thickener with a rotary drum thickener"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": null,
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "ChemicalAddition"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
@@ -251,7 +270,9 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",

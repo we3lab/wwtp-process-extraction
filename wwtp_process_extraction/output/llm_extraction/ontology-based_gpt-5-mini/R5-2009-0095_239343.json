@@ -37,28 +37,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment ... consists of ... primary sedimentation"
-    },
-    {
-      "Equipment": "TricklingFilter",
-      "Process": [
-        "TricklingFiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the primary effluent first undergoes additional treatment through two biotowers with high-rate plastic media"
+      "Sentence": "Primary treatment ... primary sedimentation"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -67,7 +54,9 @@
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Primary effluent undergoes biological treatment by ultra fine-bubble activated sludge aeration basins, nitrification and denitrification"
@@ -83,7 +72,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary effluent undergoes biological treatment ... and secondary sedimentation"
+      "Sentence": "secondary sedimentation at both treatment systems"
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary effluent first undergoes additional treatment through two biotowers with high-rate plastic media"
     },
     {
       "Equipment": "Pond",
@@ -91,7 +93,9 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Undisinfected secondary effluent is either stored for agricultural use in a 15 million gallon pond"
@@ -102,15 +106,33 @@
         "Aeration"
       ],
       "Role": [
+        "Pretreatment",
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The food processing wastewater is stored and aerated in a lined pond at the Facility"
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Tailwater ... is collected in a sump and pumped back to the irrigation supply system"
+    },
+    {
+      "Equipment": "StaticMixer",
       "Process": [
         "Mixing"
       ],
@@ -120,7 +142,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary effluent in excess of crop demands undergoes further treatment through rapid mixing"
+      "Sentence": "undergoes further treatment through rapid mixing"
     },
     {
       "Equipment": "CoagulationBasin",
@@ -133,7 +155,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "added ... coagulation and flocculation facilities"
+      "Sentence": "coagulation and flocculation facilities"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -146,7 +168,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "added ... coagulation and flocculation facilities"
+      "Sentence": "undergoes further treatment through ... flocculation"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -173,19 +195,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "an ultraviolet light pathogen deactivation system (UV Disinfection)"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "undisinfected secondary effluent ... applied directly to agricultural fields"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -237,7 +246,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -247,7 +256,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After digestion, the treated sludge is dewatered by ... drying beds"
+      "Sentence": "Digested sludge then undergoes dewatering by ... drying beds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "blended with food processing waste and applied directly to agricultural fields"
     },
     {
       "Equipment": null,
@@ -255,23 +277,14 @@
         "Landfill"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids, grit, and screenings are hauled offsite to a privately-owned landfill for disposal"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "added a secondary effluent equalization pond"
     }
   ]
 }

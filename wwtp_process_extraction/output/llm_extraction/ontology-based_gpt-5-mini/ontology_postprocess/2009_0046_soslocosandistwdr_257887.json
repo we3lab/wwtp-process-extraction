@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater is mechanically screened and pumped to two identical primary clarifiers",
+      "Sentence": "Wastewater is mechanically screened",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two identical primary clarifiers",
+      "Sentence": "pumped to two identical primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -55,7 +55,7 @@
         "pHAdjustment"
       ],
       "Role": [
-        "Secondary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -76,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary clarifier, which follows the fixed film reactor in the treatment scheme",
+      "Sentence": "The secondary clarifier, which follows the fixed film reactor",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -85,20 +85,32 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
         "Disinfection"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treated wastewater is chlorinated within a chlorine contact chamber and subsequently dechlorinated prior to discharge",
+      "Sentence": "Secondary treated wastewater is chlorinated within a chlorine contact chamber",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "subsequently dechlorinated prior to discharge",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
@@ -109,7 +121,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -135,7 +148,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered via a centrifuge andlor drying beds",
+      "Sentence": "dewatered via a centrifuge",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
@@ -144,7 +157,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -154,9 +167,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered via a centrifuge andlor drying beds",
+      "Sentence": "dewatered via ... drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -188,7 +201,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Addition of a second Secondary Clarifier (87' diameter, 10' below grade) is planned",
+      "Sentence": "Addition of a second Secondary Clarifier (87' diameter ... ) is planned",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -196,7 +209,6 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
@@ -206,7 +218,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Addition of ... an Aeration Tank (124' by 40' dual basin, 18' deep) is planned",
+      "Sentence": "Addition of ... an Aeration Tank (124' by 40' dual basin ... ) is planned",
       "trigger_process": [
         "Unspecified AS"
       ]

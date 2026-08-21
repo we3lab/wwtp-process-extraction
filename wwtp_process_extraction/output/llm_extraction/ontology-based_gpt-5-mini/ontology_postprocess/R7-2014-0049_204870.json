@@ -11,27 +11,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The preliminary treatment system consists of one channel grinder...",
+      "Sentence": "The preliminary treatment system consists of one channel grinder",
       "trigger_process": [
         "Comminution"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "one grit vortex inducer, two grit pumps and two grit classifiers.",
-      "trigger_process": [
-        "Grit Removal"
       ]
     },
     {
@@ -47,22 +29,50 @@
       "trigger_process": []
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "GritChamber",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
-        "Primary",
-        "Secondary",
-        "Aerobic"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater from the preliminary treatment system gravity flows to one or more of five extended aeration units for primary and secondary treatment.",
+      "Sentence": "The preliminary treatment system consists of ... one grit vortex inducer ... grit classifiers",
       "trigger_process": [
-        "Unspecified AS"
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The preliminary treatment system consists of ... two grit pumps ...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Primary",
+        "Secondary",
+        "Aerobic",
+        "Extended"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary and secondary treatment units consist of five extended aeration units",
+      "trigger_process": [
+        "Extended Aeration"
       ]
     },
     {
@@ -76,7 +86,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent from the extended aeration units then gravity flows to the secondary clarifiers...",
+      "Sentence": "Primary and secondary treatment units consist of ... five secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -93,7 +103,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then to the evaporation/percolation ponds for disposal.",
+      "Sentence": "Primary and secondary treatment units consist of ... five evaporation/percolation ponds",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -101,8 +111,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Filtration",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -120,8 +130,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -133,7 +142,25 @@
       "Location": "on-site",
       "Sentence": "As emergency back-up, twelve asphalt lined sludge drying beds are also available.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "A private contractor hauls away the trailers to a ... private composting facility.",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -144,28 +171,14 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "A private contractor hauls away the trailers to a land fill or private composting facility.",
+      "Sentence": "Scum, sludge, grit and screenings are loaded into trailers daily. A private contractor hauls away the trailers to a land fill",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Composting"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A private contractor hauls away the trailers to a land fill or private composting facility.",
-      "trigger_process": [
-        "Composting"
       ]
     }
   ]

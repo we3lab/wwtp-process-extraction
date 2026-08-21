@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by secondary treatment in oxidation ponds NO.1 through 10",
+      "Sentence": "secondary treatment in oxidation ponds No.1 through 10",
       "trigger_process": [
         "Aerated Lagoon"
       ]
@@ -37,9 +37,12 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
+        "SolidsHandling",
+        "Stabilization",
         "Anaerobic"
       ],
       "Substance": [
@@ -47,7 +50,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Anaerobic digesters treat sludge from the primary sedimentation tanks",
+      "Sentence": "Anaerobic digesters treat sludge from the primary sedimentation tanks.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -57,29 +60,30 @@
       "Process": [
         "Drying"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested slUdge is dried and stockpiled onsite",
-      "trigger_process": [
-        "Drying"
-      ]
+      "Sentence": "Digested slUdge is dried and stockpiled onsite until transport to a composting facility.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
         "BiosolidsDisposal"
       ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
+      "Role": [
+        "SolidsHandling"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried sludge ... will be hauled offsite for disposal/reuse at an authorized reuse or disposal site",
+      "Sentence": "Dried sludge that may be generated from pond cleaning will be hauled offsite for disposal/reuse at an authorized reuse or disposal site.",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -88,17 +92,20 @@
       "Equipment": null,
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "Flocculation",
+        "ChemicalPrecipitation"
       ],
       "Role": [
-        "PhosphorusRemoval"
+        "PhosphorusRemoval",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "This plant includes chemical addition for coagulation/flocculation and phosphorus removal",
+      "Sentence": "This plant includes chemical addition for coagulationlflocculation and phosphorus removal",
       "trigger_process": [
         "Chemical P Removal",
+        "Chemical Precipitation",
         "Coagulation",
         "Flocculation",
         "Unspecified Chemical Addition"
@@ -150,56 +157,44 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection with hypochlorite",
+      "Sentence": "disinfection with hypochlorite.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval",
-        "Anoxic",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "will provide removal of biochemical oxygen demand (BOD) and nitrogen using a single-sludge, suspended-growth biological treatment process ... with initial treatment in an anoxic zone followed by further treatment in an aerobic zone",
-      "trigger_process": [
-        "Denitrification",
-        "Nitrification"
-      ]
-    },
-    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Biofiltration",
+        "ActivatedSludge",
         "MembraneProcess",
-        "Recirculation",
+        "Nitrification",
+        "Denitrification",
         "Cleaning"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Anoxic",
+        "Aerobic",
+        "NitrogenRemoval",
+        "NutrientRemoval"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Flow from the activated sludge tanks will go to the MBR tanks for further treatment, including filtration by membranes and removal of sludge ... The Discharger will use citric acid and sodium hypochlorite solutions to periodically clean the surfaces of membranes in the MBR tanks",
+      "Sentence": "membrane bioreactors (MBRs)",
       "trigger_process": [
-        "Membrane Bioreactor"
+        "Denitrification",
+        "Membrane Bioreactor",
+        "Nitrification"
       ]
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -207,7 +202,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the proposed MBR plant ... (iii) two ultraviolet disinfection systems",
+      "Sentence": "two ultraviolet disinfection systems",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -218,33 +213,56 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger plans to initially disinfect combined effluents from the AVTTP and MBR plants using an auxiliary sodium hypochlorite disinfection system",
+      "Sentence": "The Discharger plans to initially disinfect combined effluents from the AVTTP and MBR plants using an auxiliary sodium hypochlorite disinfection system.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Anoxic",
+        "Aerobic",
+        "NitrogenRemoval",
+        "NutrientRemoval",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Suspended-growth biological treatment will occur in activated sludge tanks, with initial treatment in an anoxic zone followed by further treatment in an aerobic zone.",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
       "Equipment": null,
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Recirculation"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
+      "Role": [
+        "SolidsHandling"
       ],
+      "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Contact time for disinfection will occur in the effluent outfall pipeline to Eastern Agricultural Site No.1",
-      "trigger_process": [
-        "Chlorination"
-      ]
+      "Location": "on-site",
+      "Sentence": "Removed sludge will either be returned to the activated sludge tanks or wasted to Oxidation Pond No.1.",
+      "trigger_process": []
     }
   ]
 }

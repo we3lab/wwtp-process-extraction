@@ -35,7 +35,7 @@
     {
       "Equipment": "Tank",
       "Process": [
-        "Coagulation"
+        "ChemicalAddition"
       ],
       "Role": [
         "Pretreatment"
@@ -47,7 +47,6 @@
       "Location": "on-site",
       "Sentence": "An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control.",
       "trigger_process": [
-        "Coagulation",
         "Ferric Chloride Addition"
       ]
     },
@@ -76,13 +75,15 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval",
         "Aerobic",
         "Anoxic",
-        "Anaerobic"
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-OrganicCarbon",
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins.",
@@ -110,8 +111,7 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
-        "Backwashing"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -125,8 +125,26 @@
       ]
     },
     {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger backwashes the filters to clean the media.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization",
         "Storage"
@@ -134,7 +152,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage...",
+      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
       "trigger_process": [
         "Equalization"
       ]
@@ -144,13 +162,11 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation...",
+      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
       "trigger_process": [
         "Flocculation"
       ]
@@ -160,15 +176,33 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...followed by flocculation and sedimentation.",
+      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
       "trigger_process": [
         "Unspecified Clarification"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine",
+        "Constituent-Ammonia"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
+      "trigger_process": [
+        "Chlorination"
       ]
     },
     {
@@ -194,39 +228,38 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
-        "Aeration",
-        "Dechlorination"
+        "Aeration"
       ],
       "Role": [
-        "Stabilization",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system...",
+      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system in case upstream meters indicate there is remaining residual chlorine.",
       "trigger_process": [
-        "Dechlorination"
+        "Aerated Lagoon"
       ]
     },
     {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks",
+      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks...",
       "trigger_process": []
     },
     {
       "Equipment": "Reservoir",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization",
         "Storage"
@@ -243,8 +276,7 @@
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Containment",
-        "Storage"
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -263,7 +295,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of primary sludge screening...",
+      "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -282,7 +314,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of ... dissolved air flotation (DAF) thickening of primary and secondary sludges...",
+      "Sentence": "The process consists of primary sludge screening, dissolved air flotation (DAF) thickening of primary and secondary sludges, and TPAD.",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -296,8 +328,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -312,55 +343,20 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds...",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalDewateringUnit",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge",
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes ... mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering",
-        "Polymer Addition"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "This project will renew the mesophilic digester tanks and the mechanical, electrical, and instrumentation and control equipment associated with them, as well as replacing the existing floating covers with fixed covers.",
-      "trigger_process": [
-        "Anaerobic Digestion"
+        "Stabilization Pond"
       ]
     },
     {
@@ -385,12 +381,34 @@
       ]
     },
     {
-      "Equipment": "MicrofiltrationUnit",
+      "Equipment": null,
       "Process": [
-        "Microfiltration"
+        "Landfill",
+        "LandApplication",
+        "Composting"
       ],
       "Role": [
-        "Tertiary"
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
+      "trigger_process": [
+        "Biosolids Landfill",
+        "Composting",
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary",
+        "Permeate"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -403,10 +421,12 @@
     {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "ReverseOsmosis"
+        "ReverseOsmosis",
+        "Recirculation"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Permeate"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -433,7 +453,21 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Ancillary facilities include digested sludge pump stations and pipelines from digesters to a storage tank, digested sludge pump station and pipeline from the storage tank to the dewatering building, and a centrate return pump station and pipeline.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
@@ -445,6 +479,20 @@
       "Location": "on-site",
       "Sentence": "The settled solids from the backwash water are pumped back to primary treatment.",
       "trigger_process": []
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "This project will renew the mesophilic digester tanks and the mechanical, electrical, and instrumentation and control equipment associated with them, as well as replacing the existing floating covers with fixed covers.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
     }
   ]
 }

@@ -7,7 +7,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include four screw pumps,"
+      "Sentence": "The headworks include four screw pumps"
     },
     {
       "Equipment": "Screen",
@@ -18,7 +18,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include ... two 6mm punched plate screens,"
+      "Sentence": "two 6mm punched plate screens"
     },
     {
       "Equipment": "GritChamber",
@@ -29,7 +29,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include ... two aerated grit chambers,"
+      "Sentence": "two aerated grit chambers"
     },
     {
       "Equipment": null,
@@ -40,14 +40,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include ... a magnesium hydroxide alkalinity control system."
+      "Sentence": "a magnesium hydroxide alkalinity control system"
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -56,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The biological/secondary treatment consists of four 2 MG oxidation ditches using fine bubble diffusers, each with an anoxic zone for denitrification."
+      "Sentence": "The biological/secondary treatment consists of four 2 MG oxidation ditches using fine bubble diffusers, each with an anoxic zone for denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -89,9 +89,7 @@
       "Process": [
         "UVDisinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -100,7 +98,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "BiologicalProcess",
+        "Evaporation"
       ],
       "Role": [
         "Containment",
@@ -115,17 +114,17 @@
       "Equipment": "Pond",
       "Process": [
         "BiologicalProcess",
-        "Evaporation",
-        "Recirculation"
+        "Evaporation"
       ],
       "Role": [
-        "Containment",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "These ponds are primarily used for algae production to assist with onsite sludge stabilization."
+      "Sentence": "The Algae Production Ponds are primarily used for algae production to assist with onsite sludge stabilization."
     },
     {
       "Equipment": "Pond",
@@ -138,38 +137,15 @@
       "Role": [
         "Stabilization",
         "Anaerobic",
-        "Aerobic"
+        "Aerobic",
+        "SolidsHandling"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Facultative lagoons allow solids to separate by density, with anaerobic digestion occurring in the sludge layer and aerobic activity near the surface."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal",
-        "LandApplication",
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hiring a contractor the following summer to dry the material in place, test for compliance with the EPA 503 sludge disposal regulations (to determine future suitability for land application and for landfill regulations), and landfill disposal, land application, or other disposal off site."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Detention"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The emergency detention basin is expected to be in operation by 2036 and will receive excess sewage flows occurring during larger rain events and bypasses during finite emergency events."
+      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons ... anaerobic digestion occurring in the sludge layer and aerobic activity near the surface."
     },
     {
       "Equipment": "Pump",
@@ -178,18 +154,54 @@
       ],
       "Role": null,
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater would be pumped back to the headworks after the event concludes."
+      "Sentence": "Wastewater is distributed to these ponds via the pond pump station ... The system allows wastewater to circulate among the ponds"
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
+      "Process": [
+        "Recirculation",
+        "Containment"
+      ],
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The emergency detention basin is expected to be in operation by 2036 and will receive excess sewage flows ... The wastewater would be pumped back to the headworks after the event concludes."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Drying",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Stabilization"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The Central Valley Water Board determined that the North Ponds were properly closed in a 12 April 2012 Approval of Closure Letter"
+      "Sentence": "The former City of Woodland North Ponds (North Ponds) contained nine ponds that were used for sludge stabilization."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal",
+        "LandApplication",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hire a contractor the following summer to dry the material in place, test for compliance ... and landfill disposal, land application, or other disposal off site."
     }
   ]
 }

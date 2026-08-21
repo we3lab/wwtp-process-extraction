@@ -27,36 +27,38 @@
     {
       "Equipment": "MixingBasin",
       "Process": [
-        "Denitrification"
+        "Denitrification",
+        "Mixing",
+        "Recirculation"
       ],
       "Role": [
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one of two anoxic basins where denitrification occurs"
+      "Sentence": "it enters one of two anoxic basins where denitrification occurs"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
         "Aeration",
         "Nitrification",
-        "Denitrification"
+        "Recirculation"
       ],
       "Role": [
         "Secondary",
-        "Extended",
         "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Carrousels for nitrification and denitrification; extended aeration"
+      "Sentence": "Upon entering the carousels, the water is aerated by four large diameter ... to begin the nitrification process"
     },
     {
       "Equipment": "SedimentationTank",
@@ -64,28 +66,42 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary Clarification: ...where sludge settling and clarification of the wastewater is achieved"
+      "Sentence": "Secondary Clarification: Wastewater leaves the carousels and enters a pair of clarifiers where sludge settling and clarification of the wastewater is achieved"
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration",
-        "RapidSandFiltration",
         "Backwashing"
       ],
       "Role": [
-        "Tertiary",
-        "Backwash"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "10 Parkson® up-flow, continuous backwash, sand filters"
+      "Sentence": "The filtration process consists of 10 Parkson® up-flow, continuous backwash, sand filters"
+    },
+    {
+      "Equipment": "StaticMixer",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a flash mixer evenly distributes the disinfectant"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -95,14 +111,14 @@
       ],
       "Role": [
         "Tertiary",
-        "Detention"
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite is added ... the chlorinated water enters a 126,000 gallon chlorine contact chamber which provides a minimum of 2.03 hours of detention time"
+      "Sentence": "Sodium hypochlorite is added to the wastewater immediately prior to the chlorine contact basin for disinfection"
     },
     {
       "Equipment": "Pond",
@@ -110,12 +126,26 @@
         "Dechlorination"
       ],
       "Role": [
-        "Stabilization"
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The disinfected water enters an on-site flow stabilization holding pond where the surrounding environment assists in the dissipation of chlorine"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The disinfected water enters an on-site flow stabilization holding pond where the surrounding environment assists in the dissipation of chlorine"
+      "Sentence": "At the effluent pump station the treated water either leaves the plant to be used by local agricultural operations or it is diverted to an on-site booster station"
     },
     {
       "Equipment": "Pond",
@@ -129,32 +159,35 @@
       "Sentence": "Excess effluent is impounded for later use in two effluent holding ponds about three miles from the plant"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "This material is sent to a landfill for disposal"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the secondary clarifiers ... transferred to drying beds"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from the secondary clarifiers is either returned to the influent flow splitter"
+      "Sentence": "sludge from the secondary clarifiers is ... transferred to drying beds and then hauled away"
     },
     {
       "Equipment": null,
@@ -164,23 +197,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "hauled away for additional processing to an off-site composting facility in Bakersfield, CA"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Two bar screens mechanically remove ... This material is sent to a landfill for disposal"
     }
   ]
 }

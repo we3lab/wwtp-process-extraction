@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary screening and grit removal"
+      "Sentence": "The treatment system at the Facility consists of preliminary screening and grit removal"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "preliminary screening and grit removal"
+      "Sentence": "The treatment system at the Facility consists of preliminary screening and grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -55,7 +55,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -83,7 +84,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -94,7 +96,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection, and dechlorination. Chlorine disinfection and dechlorination are currently only required when discharging to Mill Creek"
+      "Sentence": "Chlorine disinfection and dechlorination are currently only required when discharging to Mill Creek"
     },
     {
       "Equipment": "GravityBeltThickener",
@@ -104,10 +106,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "gravity belt thickener filtrate"
+      "Sentence": "The Facility process return flows consist of gravity belt thickener filtrate"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -124,12 +128,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is anaerobically digested... The anaerobic digesters process sludge"
+      "Sentence": "Sludge is anaerobically digested"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -142,17 +147,33 @@
       "Sentence": "dried in unlined sludge drying beds"
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "discharge digested sludge to unlined sludge pits"
+    },
+    {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
       "Role": [
+        "Recirculation",
         "Feed"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Pumps extract supernatant ... and return it to the headworks for treatment"
+      "Sentence": "Pumps extract supernatant from near the surface of the unlined sludge pits and return it to the headworks for treatment"
     },
     {
       "Equipment": null,
@@ -162,15 +183,33 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "past",
       "Location": "off-site",
       "Sentence": "Historically, dried biosolids have been hauled to a land application area in Merced County"
     },
     {
+      "Equipment": null,
+      "Process": [
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NitrogenRemoval",
+        "NutrientRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "upgrading the Facility from secondary level treatment to tertiary level treatment ... and will provide nitrogen removal"
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -185,56 +224,12 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Drain"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "discharge to off-site percolation ponds (Basin No. 4)"
-    },
-    {
-      "Equipment": "TricklingFilter",
-      "Process": [
-        "TricklingFiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "one trickling filter ... will be taken out of service"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "two existing secondary sedimentation basins ... will be taken out of service"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "upgrading the Facility from secondary level treatment to tertiary level treatment ... and will provide nitrogen removal"
+      "Sentence": "build a pipeline that will bypass Mill Creek and allow it to discharge to off-site percolation ponds (Basin No. 4)"
     }
   ]
 }

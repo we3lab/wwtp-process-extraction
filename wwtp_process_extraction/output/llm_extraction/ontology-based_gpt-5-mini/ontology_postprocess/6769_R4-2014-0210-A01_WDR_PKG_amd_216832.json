@@ -8,10 +8,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of two bar screens",
+      "Sentence": "The treatment process consists of two bar screens... Screening: Two bar screens mechanically remove approximately 700 cubic feet of large debris per month from the waste stream.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -19,11 +21,13 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks lift pumps",
+      "Sentence": "The treatment process consists of... headworks lift pumps",
       "trigger_process": []
     },
     {
@@ -33,35 +37,45 @@
       ],
       "Role": [
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Secondary",
+        "NutrientRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Nitrate"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one of two anoxic basins where denitrification occurs",
+      "Sentence": "one of two anoxic basins where denitrification occurs... The water entering the anoxic basin is devoid of oxygen and rich in nitrates...",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Recirculation"
       ],
       "Role": [
         "Aerobic",
         "Secondary",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-DissolvedOxygen",
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two separate carrousels for nitrification and denitrification...the water is aerated by four large diameter impellers",
+      "Sentence": "The Facility is an Eimco System Carrousel\u00ae denitIR\u00ae extended aeration treatment facility... Upon entering the carousels, the water is aerated by four large diameter impellers that supply oxygen to the water to begin the nitrification process... the flow may either continue through the extended aeration carousel or it is returned to the anoxic basin.",
       "trigger_process": [
         "Nitrification",
+        "Oxidation Ditch",
         "Unspecified Nutrient Removal"
       ]
     },
@@ -71,12 +85,16 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "enters a pair of clarifiers where sludge settling and clarification of the wastewater is achieved",
+      "Sentence": "Secondary Clarification: Wastewater leaves the carousels and enters a pair of clarifiers where sludge settling and clarification of the wastewater is achieved.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -90,10 +108,12 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "10 Parkson\u00ae up-flow, continuous backwash, sand filters",
+      "Sentence": "The filtration process consists of 10 Parkson\u00ae up-flow, continuous backwash, sand filters that remove any floc particles remaining in the water after clarification.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -112,71 +132,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite is added to the wastewater immediately prior to the chlorine contact basin for disinfection",
+      "Sentence": "Sodium hypochlorite is added to the wastewater immediately prior to the chlorine contact basin for disinfection and a flash mixer evenly distributes the disinfectant.",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "Detention",
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The chlorinated water enters a 126,000 gallon chlorine contact chamber which provides a minimum of 2.03 hours of detention time",
-      "trigger_process": [
-        "Unspecified Disinfection"
-      ]
-    },
-    {
       "Equipment": "Pond",
       "Process": [
         "Dechlorination"
       ],
       "Role": [
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The disinfected water enters an on-site flow stabilization holding pond where the surrounding environment assists in the dissipation of chlorine",
+      "Sentence": "The disinfected water enters an on-site flow stabilization holding pond where the surrounding environment assists in the dissipation of chlorine.",
       "trigger_process": [
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treatment process consists of ... chlorination, and impoundment for reclamation",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Excess effluent is impounded for later use in two effluent holding ponds about three miles from the plant",
-      "trigger_process": [
-        "Unspecified Lagoon"
       ]
     },
     {
@@ -186,57 +160,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "At the effluent pump station the treated water either leaves the plant to be used by local agricultural operations or it is diverted to an on-site booster station",
+      "Sentence": "At the effluent pump station the treated water either leaves the plant to be used by local agricultural operations or it is diverted to an on-site booster station providing CSU Channel Islands with recycled water.",
       "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "transferred to drying beds and then hauled away for additional processing",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Composting"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled away for additional processing to an off-site composting facility in Bakersfield, CA",
+      "Sentence": "Excess effluent is impounded for later use in two effluent holding ponds about three miles from the plant.",
       "trigger_process": [
-        "Composting"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "This material is sent to a landfill for disposal",
-      "trigger_process": [
-        "Biosolids Landfill"
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -250,18 +188,78 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the secondary clarifiers is either returned to the influent flow splitter",
+      "Sentence": "Sludge from the secondary clarifiers is either returned to the influent flow splitter...",
       "trigger_process": []
     },
     {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from the secondary clarifiers is... transferred to drying beds and then hauled away for additional processing...",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
       "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "BiosolidsDisposal"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled away for additional processing to an off-site composting facility in Bakersfield, CA.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "BiosolidsDisposal"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Bar screenings are hauled off-site for disposal in a landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Storage"
+      ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": null,
-      "Sentence": "The CWD is reevaluating the treatment process train at the Facility in order to increase the rated capacity from 1.5 to 2.25 MGD",
-      "trigger_process": []
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment process consists of... impoundment for reclamation.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facilities include coarse bar screening...",
+      "Sentence": "coarse bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facilities include ... grit removal ...",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,12 +43,9 @@
         "Secondary",
         "Aerobic",
         "Extended",
-        "Stabilization",
-        "SolidsHandling"
+        "Stabilization"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "extended aeration in two oxidation ditches",
@@ -66,7 +63,9 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids settling in two secondary clarifiers",
@@ -110,19 +109,18 @@
       "Equipment": "OxidationDitch",
       "Process": [
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "ActivatedSludge"
       ],
       "Role": [
         "NitrogenRemoval",
         "NutrientRemoval",
-        "Aerobic",
-        "Anoxic",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "construction of a third oxidation ditch and clarifier and improvements to all three oxidation ditches to allow for reliable simultaneous nitrification/denitrification",
+      "Sentence": "improvements to all three oxidation ditches to allow for reliable simultaneous nitrification/denitrification",
       "trigger_process": [
         "Denitrification",
         "Nitrification",
@@ -150,21 +148,7 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "installation of automated diversion facilities that will allow the Discharger to utilize the lined Auxiliary Basin for ... influent flow equalization",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
+        "Containment"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -177,55 +161,24 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "StaticMixer",
       "Process": [
         "Mixing"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids in the lagoons are blended using the mixers installed in each basin",
       "trigger_process": []
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "supernatant is decanted from the sludge and is returned to the oxidation ditches for further treatment",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "This portion of the solids stream is called waste activated sludge (WAS) and is pumped into the two existing ... storage lagoons",
-      "trigger_process": []
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -237,7 +190,7 @@
       "Location": "on-site",
       "Sentence": "sent to the Facility\u2019s dewatering beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -251,31 +204,16 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Supplemental mechanical dewatering equipment is also being installed as part of the improvement project to increase the dewatering capacity of the Facility",
+      "Sentence": "Supplemental mechanical dewatering equipment is also being installed as part of the improvement project",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "begun applying solids via surface spreading, followed by tilling, to incorporate the biosolids into the soil of the land application area fields",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
       "Equipment": "Reservoir",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Storage"
       ],
@@ -286,17 +224,36 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Flows from the Effluent Storage Reservoir may also be directed to three onsite ponds for additional storage prior to being returned to the Effluent Storage Reservoir",
+      "Sentence": "it is pumped to the land application area",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "applying solids via surface spreading, followed by tilling, to incorporate the biosolids into the soil of the land application area fields",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Land Application"
       ]
     }
   ]

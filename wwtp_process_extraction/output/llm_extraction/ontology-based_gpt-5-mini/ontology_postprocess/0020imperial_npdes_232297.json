@@ -40,7 +40,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two oxidation ditches",
+      "Sentence": "the first treatment train ... consists of two oxidation ditches",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -56,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "followed by secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -64,8 +64,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -75,24 +74,63 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biolac\u00ae activated sludge basin",
+      "Sentence": "a Biolac\u0000ae activated sludge basin with integrated clarifiers",
       "trigger_process": [
         "Extended Aeration"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Recirculation"
+        "Sedimentation"
       ],
       "Role": [
-        "Recirculation"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The return activated sludge (RAS) is collected from the clarifiers and returned back into the biological treatment process",
-      "trigger_process": []
+      "Sentence": "two integrated clarifiers",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "ultraviolet (UV) disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sludge drying beds",
+      "trigger_process": [
+        "Air Drying"
+      ]
     },
     {
       "Equipment": "Pump",
@@ -109,40 +147,54 @@
       "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sludge drying beds",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "combined effluent is directed through the UV disinfection system prior to discharge",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
+      "Sentence": "The return activated sludge (RAS) is collected from the clarifiers and returned back into the biological treatment process",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The filtrate from the drying beds is conveyed through drain lines back to the plant head works",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The scum from the secondary clarifiers ... is pumped into the drying beds for dewatering",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger owns and operates a wastewater collection, treatment and disposal system",
+      "trigger_process": []
     }
   ]
 }

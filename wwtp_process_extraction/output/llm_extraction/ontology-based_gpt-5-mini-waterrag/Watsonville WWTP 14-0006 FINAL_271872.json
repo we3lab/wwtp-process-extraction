@@ -11,20 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation,"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation,"
+      "Sentence": "screening"
     },
     {
       "Equipment": "GritChamber",
@@ -37,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation,"
+      "Sentence": "pre-aeration/grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation,"
+      "Sentence": "primary sedimentation"
     },
     {
       "Equipment": "TricklingFilter",
@@ -63,7 +50,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation, biological filtration (trickling filters), odor control, solids contact stabilization (activated sludge), and secondary clarification."
+      "Sentence": "biological filtration (trickling filters)"
     },
     {
       "Equipment": "AerationBasin",
@@ -77,7 +64,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation, biological filtration (trickling filters), odor control, solids contact stabilization (activated sludge), and secondary clarification."
+      "Sentence": "solids contact stabilization (activated sludge)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -90,14 +77,17 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal, primary sedimentation, biological filtration (trickling filters), odor control, solids contact stabilization (activated sludge), and secondary clarification."
+      "Sentence": "secondary clarification"
     },
     {
-      "Equipment": null,
+      "Equipment": "DisinfectionUnit",
       "Process": [
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
@@ -111,10 +101,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites."
+      "Sentence": "gravity thickening"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -123,26 +115,29 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites."
+      "Sentence": "anaerobic digestion"
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites."
+      "Sentence": "drying beds"
     },
     {
       "Equipment": "BeltFilterPress",
@@ -152,21 +147,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Biosolids (sewage sludge or solid wastes) are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering, and are land-applied at various sites."
+      "Sentence": "belt filter press dewatering"
     },
     {
       "Equipment": "Cogenerator",
@@ -180,6 +166,21 @@
       "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat, which are then used at the facility."
     },
     {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "and are land-applied at various sites."
+    },
+    {
       "Equipment": "SepticTank",
       "Process": [
         "Sedimentation"
@@ -190,7 +191,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The leachate is hauled to the facility via trucks and is discharged into the septic receiving station and from there is directed into the headworks."
+      "Sentence": "discharged into the septic receiving station and from there is directed into the headworks."
     }
   ]
 }

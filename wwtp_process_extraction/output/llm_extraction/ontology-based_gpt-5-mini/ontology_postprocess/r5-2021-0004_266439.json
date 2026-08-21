@@ -9,16 +9,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "fine screening",
+      "Sentence": "The treatment system at the Facility consists of fine screening followed by activated sludge treatment...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Reactor",
       "Process": [
-        "ActivatedSludge",
-        "Mixing"
+        "ActivatedSludge"
       ],
       "Role": [
         "Anoxic"
@@ -26,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge treatment with anoxic ... basins",
+      "Sentence": "activated sludge treatment with anoxic and aerobic basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -34,7 +33,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Aerobic"
@@ -42,7 +42,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge treatment with ... aerobic basins",
+      "Sentence": "activated sludge treatment with anoxic and aerobic basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -56,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by membrane biological reactors (MBR\u2019s), which separate the liquid from the solids",
+      "Sentence": "followed by membrane biological reactors (MBR\u2019s), which separate the liquid from the solids.",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -70,13 +70,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The liquid effluent from the MBR\u2019s is disinfected using ultraviolet light (UV) disinfection",
+      "Sentence": "The liquid effluent from the MBR\u2019s is disinfected using ultraviolet light (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage"
@@ -84,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 2.0-million-gallon emergency storage basin ... is used for storage of treated and untreated wastewater",
+      "Sentence": "A 2.0-million-gallon emergency storage basin lined with high density polyethylene liner is also used ... the emergency storage basin is used for storage of treated and untreated wastewater.",
       "trigger_process": []
     },
     {
@@ -93,13 +93,15 @@
         "Dewatering",
         "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is dewatered using belt filter press technology",
+      "Sentence": "Sludge is dewatered using belt filter press technology followed by drying in solar greenhouses.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -107,19 +109,20 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "drying in solar greenhouses",
+      "Sentence": "drying in solar greenhouses. Once dried, the material meets \u201cExceptional Class A\u201d biosolids criteria and is stockpiled in one of the solar greenhouses prior to disposal...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -131,7 +134,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "disposal at a regulated Class III landfill",
+      "Sentence": "stockpiled in one of the solar greenhouses prior to disposal at a regulated Class III landfill or beneficial land application.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -145,7 +148,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "beneficial land application",
+      "Sentence": "stockpiled in one of the solar greenhouses prior to disposal at a regulated Class III landfill or beneficial land application.",
       "trigger_process": [
         "Land Application"
       ]

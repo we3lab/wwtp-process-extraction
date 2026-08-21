@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three influent headworks which include ... one channel is equipped with a Hycor screen, one with a manual bar screen"
+      "Sentence": "one channel is equipped with a Hycor screen, one with a manual bar screen"
     },
     {
       "Equipment": "Pump",
@@ -29,7 +29,9 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -51,7 +53,9 @@
       "Process": [
         "Flotation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -62,18 +66,22 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a flocculation unit"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -88,7 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a clear well"
+      "Sentence": "a clear well, two effluent storage reservoirs"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -97,7 +105,9 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -108,8 +118,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -122,30 +131,33 @@
       "Sentence": "sludge drying beds"
     },
     {
-      "Equipment": "Reservoir",
-      "Process": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two effluent storage reservoirs"
+      "Sentence": "tail water return system"
     },
     {
       "Equipment": "Reactor",
       "Process": [
         "Denitrification",
-        "Mixing"
+        "Recirculation"
       ],
       "Role": [
         "Anoxic",
-        "Equalization"
+        "Equalization",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an anoxic reactor for flow/load equalization"
+      "Sentence": "anoxic reactor for flow/load equalization"
     },
     {
       "Equipment": "SequencingBatchReactor",
@@ -167,34 +179,9 @@
       "Sentence": "sequencing batch reactors (SBRs) for biological treatment including nitrification and denitrification"
     },
     {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "new tertiary filters"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "automated chemical feed"
-    },
-    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -207,8 +194,7 @@
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion",
-        "Digestion"
+        "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -220,65 +206,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two stage aerobic digesters to achieve Class B biological sludge treatment"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge supernatant will return to the anoxic reactor"
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "replaces the Phase I WWTF with grit removal"
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "an emergency storage reservoir"
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Denitrification",
-        "Mixing"
-      ],
-      "Role": [
-        "Anoxic",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "an anoxic reactor/surge basin"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Detention"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "an effluent surge basin"
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
@@ -295,6 +222,31 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "sludge centrifuge"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "grit removal"
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "an emergency storage reservoir"
     },
     {
       "Equipment": "SequencingBatchReactor",
@@ -316,15 +268,6 @@
       "Sentence": "an additional SBR"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a larger influent pumping system and effluent pumping system"
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -336,6 +279,26 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "a larger bar screen"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a larger influent pumping system and effluent pumping system"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "automated chemical feed"
     }
   ]
 }

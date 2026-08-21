@@ -24,7 +24,10 @@
         "Denitrification"
       ],
       "Role": [
+        "Secondary",
         "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -57,7 +60,9 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -72,8 +77,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a chlorine contact basin",
@@ -86,7 +96,9 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -98,11 +110,14 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "series of seven percolation ponds",
+      "Sentence": "a series of seven percolation ponds",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -110,15 +125,17 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rotary drum thickener",
+      "Sentence": "a rotary drum thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -129,9 +146,13 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two anaerobic digesters",
@@ -140,36 +161,39 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Dewatering",
-        "Drying",
-        "Cleaning"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four sludge drying beds ... Annually, the sludge drying beds are manually cleaned and the dewatered solids are disposed of in a landfill",
+      "Sentence": "four sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a facultative sludge lagoon",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Lagoon"
+        "Stabilization Pond"
       ]
     },
     {
@@ -177,25 +201,46 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "the dewatered solids are disposed of in a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "screened raw wastewater from the City of Marysville\u2019s existing influent pump station",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "addition of a flow equalization tank for temporarily holding peak wet weather flows",
+      "Sentence": "the addition of a flow equalization tank for temporarily holding peak wet weather flows",
       "trigger_process": [
         "Equalization"
       ]
@@ -205,27 +250,15 @@
       "Process": [
         "ChemicalAddition"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
       "Sentence": "the addition of an odor and corrosion control chemical dosing system to inhibit the formation of sulfides in the force main",
       "trigger_process": [
         "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "screened raw wastewater from the City of Marysville\u2019s existing influent pump station",
-      "trigger_process": [
-        "Screening/Microstrainer"
       ]
     }
   ]

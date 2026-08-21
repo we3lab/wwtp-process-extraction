@@ -11,24 +11,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a Hycor headworks screen",
+      "Sentence": "each consist of a Hycor headworks screen",
       "trigger_process": [
         "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "flow equalization and storage basin (labeled \u201cEmergency Overflow Basin\u201d)",
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -37,7 +22,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -69,8 +55,7 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -81,14 +66,29 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Plant 1 also includes a flow equalization and storage basin (labeled \u201cEmergency Overflow Basin\u201d",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -104,8 +104,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -140,11 +140,11 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -153,7 +153,7 @@
       "Location": "on-site",
       "Sentence": "two greenhouse solar drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     }
   ]

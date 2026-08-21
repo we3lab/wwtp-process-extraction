@@ -6,14 +6,15 @@
         "BiologicalProcess"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing Facility consists of ... three facultative treatment ponds",
+      "Sentence": "three facultative treatment ponds",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Stabilization Pond"
       ]
     },
     {
@@ -44,39 +45,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two effluent storage ponds",
+      "Sentence": "two effluent storage ponds and one emergency storage pond",
       "trigger_process": [
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "one emergency storage pond",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "28.5 acres of pasture on land owned by the Discharger that is irrigated with disinfected secondary effluent",
-      "trigger_process": [
-        "Land Application"
       ]
     },
     {
@@ -90,7 +61,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new headworks including ... automated screening",
+      "Sentence": "new headworks including flow monitoring and automated screening and grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -106,16 +77,14 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new headworks including ... grit removal",
+      "Sentence": "new headworks including flow monitoring and automated screening and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
@@ -144,7 +113,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "secondary treatment facilities consisting of an activated sludge system with biological nutrient removal (BNR) ... aeration basins",
+      "Sentence": "activated sludge system with biological nutrient removal (BNR)...primary and secondary aeration basins",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -196,6 +165,25 @@
       "trigger_process": []
     },
     {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a belt filter press housed in an enclosed building",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering"
@@ -208,7 +196,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "sludge handling and storage facilities that will consist of a belt filter press ... and 6 bays of redundant dewatering facilities",
+      "Sentence": "6 bays of redundant dewatering facilities and storage",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -216,7 +204,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -228,7 +216,25 @@
       "Location": "on-site",
       "Sentence": "Two of the storage bays will be outfitted with synthetic filter media to act as sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "land apply treated, dewatered sludge on-site",
+      "trigger_process": [
+        "Land Application"
       ]
     },
     {
@@ -243,6 +249,24 @@
       "Sentence": "expanded storage ponds with a capacity of 70 million gallons",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "disposal of disinfected secondary treated effluent on 84 acres of agricultural spray fields",
+      "trigger_process": [
+        "Land Application"
       ]
     },
     {
@@ -273,7 +297,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "tertiary wastewater treatment facilities that will consist of ... filtration",
+      "Sentence": "tertiary wastewater treatment facilities that will consist of...filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -290,7 +314,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "tertiary wastewater treatment facilities that will consist of ... ultraviolet (UV) light disinfection",
+      "Sentence": "ultraviolet (UV) light disinfection for reuse",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -309,22 +333,10 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The new Facility includes ... chlorine disinfection facilities utilizing sodium hypochlorite",
+      "Sentence": "chlorine disinfection facilities utilizing sodium hypochlorite",
       "trigger_process": [
         "Chlorination"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "All of the storage bays will be constructed with concrete floors",
-      "trigger_process": []
     }
   ]
 }

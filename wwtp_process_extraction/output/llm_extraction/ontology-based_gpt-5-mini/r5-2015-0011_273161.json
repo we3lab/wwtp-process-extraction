@@ -19,8 +19,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -33,7 +32,8 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -43,9 +43,25 @@
       "Sentence": "a secondary clarifier"
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "ChlorinationUnit",
       "Process": [
-        "RapidSandFiltration"
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "chlorination ... and a final chlorine contact chamber"
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary",
@@ -57,41 +73,10 @@
       "Sentence": "two continuous backwash sand filters (used alternately)"
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "chlorination"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a final chlorine contact chamber"
-    },
-    {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Tertiary"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -99,10 +84,9 @@
       "Sentence": "stored in a 240,000 gallon concrete-lined storage pond"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -113,7 +97,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids/sludge produced from the secondary clarifier is dried in eight concrete-lined sludge drying beds"
+      "Sentence": "dried in eight concrete-lined sludge drying beds"
     }
   ]
 }

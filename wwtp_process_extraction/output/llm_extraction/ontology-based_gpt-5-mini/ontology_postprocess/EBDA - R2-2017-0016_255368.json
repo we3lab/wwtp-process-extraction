@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation...",
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation...",
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,14 +43,16 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation...",
+      "Sentence": "The treatment process consists of ... primary sedimentation ...",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -65,7 +67,8 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -132,23 +135,10 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The plant also has five acres of out-of-service oxidation ponds that can be used for emergency storage.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -160,7 +150,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested...",
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested ...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -184,9 +174,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -198,23 +188,7 @@
       "Location": "on-site",
       "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... air dried.",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The City hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids.",
-      "trigger_process": [
-        "Land Application"
+        "Air Drying"
       ]
     },
     {
@@ -230,22 +204,6 @@
       "trigger_process": [
         "Cogeneration",
         "Heat Recovery"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The City of San Leandro plans to install high efficiency turbo blowers in its aeration basins ...",
-      "trigger_process": [
-        "Unspecified AS"
       ]
     }
   ]

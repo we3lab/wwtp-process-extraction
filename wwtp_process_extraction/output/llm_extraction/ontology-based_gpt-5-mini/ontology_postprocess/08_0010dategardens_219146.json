@@ -1,6 +1,32 @@
 {
   "items": [
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "Pretreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "flows via gravity into a sump in front of the package plants",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and is pumped into the aeration chambers of the complete mix extended aeration package plants",
+      "trigger_process": []
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -9,10 +35,8 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
         "Extended",
-        "Stabilization",
-        "SolidsHandling"
+        "Aerobic"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
@@ -31,61 +55,18 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mixed liquor flows into a clarifier where solids settle out",
+      "Sentence": "The mixed liquor flows into a clarifier where solids settle out",
       "trigger_process": [
         "Secondary Clarification"
       ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "directed through two dual media filters",
-      "trigger_process": [
-        "Media Filtration"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "then through an ultraviolet (UV) disinfection system prior to entering an effluent weir box",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "is pumped into the aeration chambers of the complete mix extended aeration package plants",
-      "trigger_process": []
     },
     {
       "Equipment": "Pump",
@@ -104,6 +85,41 @@
       "trigger_process": []
     },
     {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent exiting the clarifier is directed through two dual media filters",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and then through an ultraviolet (UV) disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
       "Equipment": "Tank",
       "Process": [
         "Drying"
@@ -117,10 +133,8 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is discharged periodically to a cistern located next to the package plant",
-      "trigger_process": [
-        "Drying"
-      ]
+      "Sentence": "Digested sludge is discharged periodically to a cistern located next to the package plant. Once the sludge is dried",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -135,7 +149,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Once the sludge is dried, it is removed from the cistern and disposed off-site and transferred to the City of Holtville WWTP",
+      "Sentence": "it is removed from the cistern and disposed off-site and transferred to the City of Holtville WWTP",
       "trigger_process": [
         "Unspecified Disposal"
       ]

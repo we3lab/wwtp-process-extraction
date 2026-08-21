@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system at the Facility consists of the headworks, two primary clarifiers, trickling filter, secondary clarifier, chlorine contact basin, and dechlorination.",
+      "Sentence": "The existing treatment system at the Facility consists of ... trickling filter,",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system at the Facility consists of ... secondary clarifier, chlorine contact basin, and dechlorination.",
+      "Sentence": "The existing treatment system at the Facility consists of ... secondary clarifier,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -55,14 +55,13 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system at the Facility consists of ... chlorine contact basin, and dechlorination.",
+      "Sentence": "The existing treatment system at the Facility consists of the headworks, two primary clarifiers, trickling filter, secondary clarifier, chlorine contact basin, and dechlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -73,14 +72,11 @@
       "Process": [
         "Evaporation"
       ],
-      "Role": [
-        "Posttreatment",
-        "Storage"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger discharges to land using a series of seven percolation ponds that lie within the Feather River floodplain.",
+      "Sentence": "The Discharger discharges to land using a series of seven percolation ponds",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -91,14 +87,13 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Stabilization",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary sludge solids removed in the primary and secondary clarification process are pumped to a high-rate anaerobic digestion process for organics stabilization and supernatant separation.",
+      "Sentence": "primary and secondary sludge solids removed in the primary and secondary clarification process are pumped to a high-rate anaerobic digestion process for organics stabilization",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -106,8 +101,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Drying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -116,24 +111,56 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The stabilized and thickened sludge is periodically withdrawn and spread over sand drying beds for additional dewatering.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "RotaryDrumThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A new rotary drum thickener will be installed for waste activated sludge",
       "trigger_process": [
-        "Drying"
+        "Thickening"
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Sedimentation"
+        "Drying",
+        "Dewatering"
       ],
       "Role": [
-        "Primary"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded and expanded treatment system will consist of ... two rectangular primary clarifiers,",
+      "Sentence": "Digested sludge will be pumped to a new dewatering system ... sludge drying beds.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Digested sludge will be pumped to a new dewatering system, which will consist of a combination of facultative sludge lagoons and sludge drying beds.",
       "trigger_process": [
-        "Primary Clarification"
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -141,20 +168,18 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "four air activated sludge basins (that will provide nitrification and denitrification),",
+      "Sentence": "four air activated sludge basins (that will provide nitrification and denitrification)",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -171,30 +196,31 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded and expanded treatment system will consist of ... two new circular secondary clarifiers;",
+      "Sentence": "The upgraded and expanded treatment system will consist of ... two new circular secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "MediaFiltration"
+        "Sedimentation"
       ],
       "Role": [
-        "Tertiary"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded and expanded treatment system will consist of ... compressible media filters,",
+      "Sentence": "primary treatment in two new rectangular primary clarifiers;",
       "trigger_process": [
-        "Media Filtration"
+        "Primary Clarification"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
+        "MediaFiltration",
         "ChemicalAddition"
       ],
       "Role": [
@@ -205,73 +231,20 @@
       "Location": "on-site",
       "Sentence": "new tertiary treatment system with tertiary filters and chemical addition;",
       "trigger_process": [
+        "Media Filtration",
         "Unspecified Chemical Addition"
       ]
     },
     {
-      "Equipment": "RotaryDrumThickener",
-      "Process": [
-        "Thickening",
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "A new rotary drum thickener will be installed for waste activated sludge",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering",
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Digested sludge will be pumped to a new dewatering system, which will consist of a combination of facultative sludge lagoons and sludge drying beds.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Digested sludge will be pumped to a new dewatering system, which will consist of a combination of facultative sludge lagoons and sludge drying beds.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded and expanded treatment system will consist of a new headworks facility including screens and pumps;",
+      "Sentence": "a new headworks facility including screens and pumps;",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -279,41 +252,21 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded and expanded treatment system will consist of a new headworks facility including screens and pumps;",
+      "Sentence": "a new headworks facility including screens and pumps;",
       "trigger_process": []
     },
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "pumping screened raw wastewater from the City of Marysville\u2019s existing influent pump station",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "pumping screened raw wastewater from the City of Marysville\u2019s existing influent pump station approximately 3.4 miles through a force main to the primary influent structure of the Facility.",
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary and secondary sludge solids removed ... are pumped to a high-rate anaerobic digestion process",
       "trigger_process": []
     },
     {
@@ -335,16 +288,26 @@
       "Process": [
         "ChemicalAddition"
       ],
-      "Role": [
-        "Pretreatment"
+      "Role": null,
+      "Substance": [
+        "OdorControlAgent"
       ],
-      "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "the addition of an odor and corrosion control chemical dosing system to inhibit the formation of sulfides in the force main.",
+      "Sentence": "the addition of an odor and corrosion control chemical dosing system to inhibit the formation of sulfides in the force main",
       "trigger_process": [
         "Unspecified Chemical Addition"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "pumping screened raw wastewater from the City of Marysville\u2019s existing influent pump station",
+      "trigger_process": []
     }
   ]
 }

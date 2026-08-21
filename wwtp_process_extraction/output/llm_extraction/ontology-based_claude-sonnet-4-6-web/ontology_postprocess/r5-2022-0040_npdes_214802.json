@@ -1,23 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Detention"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Influent raw sewage flow that exceeds the operational setpoint is diverted to equalization ponds (Ponds 1A and 1B) by a control valve.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -28,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consist of two micro screens, a Parshall flume, a grit chamber, and weirs for flow control and distribution. The micro screens have a hydraulic capacity of 30 MGD each.",
+      "Sentence": "The headworks consist of two micro screens, a Parshall flume, a grit chamber, and weirs for flow control and distribution.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -54,6 +37,22 @@
       ]
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Influent raw sewage flow that exceeds the operational setpoint is diverted to equalization ponds (Ponds 1A and 1B) by a control valve.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -72,7 +71,7 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": null,
       "Process": [
         "Coagulation",
         "Flocculation"
@@ -100,21 +99,22 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "MLE",
-        "Aeration"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each basin now utilizes a diffused air system and has been configured as the Modified Ludzack Ettinger (MLE) activated sludge process. The MLE process consists of an anoxic zone followed by an aerobic zone, with internal mixed liquor recycle.",
+      "Sentence": "Each basin now utilizes a diffused air system and has been configured as the Modified Ludzack Ettinger (MLE) activated sludge process.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -134,11 +134,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment system consists of three aeration basins and four secondary clarifiers. Clarifiers 1, 2, and 3 are 80-foot diameter units, while Clarifier 4 is a 120-foot diameter unit.",
+      "Sentence": "The secondary treatment system consists of three aeration basins and four secondary clarifiers.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation",
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Scum and Waste Activated Sludge (WAS) are pumped to the DAFT mixing facility prior to conveyance to the primary anaerobic digesters. The Facility also has two DAFT units which may be utilized to thicken primary solids and WAS.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Flotation",
+        "Thickening"
       ]
     },
     {
@@ -181,6 +203,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
@@ -191,34 +214,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorine gas is stored in 1-ton containers and is used to make a concentrated chlorine/water solution to disinfect the filtered secondary effluent...A sulfur dioxide/water solution is injected into the secondary effluent flow stream for dechlorination near the outfall building.",
+      "Sentence": "Chlorine gas is stored in 1-ton containers and is used to make a concentrated chlorine/water solution to disinfect the filtered secondary effluent... A sulfur dioxide/water solution is injected into the secondary effluent flow stream for dechlorination near the outfall building.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "DissolvedAirFlotationThickener",
-      "Process": [
-        "Flotation",
-        "Thickening"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Scum and Waste Activated Sludge (WAS) are pumped to the DAFT mixing facility prior to conveyance to the primary anaerobic digesters. The Facility also has two DAFT units which may be utilized to thicken primary solids and WAS.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Flotation",
-        "Thickening"
       ]
     },
     {
@@ -236,7 +237,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biodegradation of organic materials and production of methane gas and carbon dioxide take place in the primary digesters, which are continually mixed and heated within the mesophilic temperature range (approximately 95\u00b0F).",
+      "Sentence": "Biodegradation of organic materials and production of methane gas and carbon dioxide take place in the primary digesters, which are continually mixed and heated within the mesophilic temperature range.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -249,6 +250,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "Secondary",
         "SolidsHandling",
         "Storage"
       ],
@@ -323,29 +325,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ponds 5A and 5B...are being used for centrifuge centrate flow management. Currently centrate is discharged to Pond 5A and 5B approximately 4 days per week.",
+      "Sentence": "Ponds 5A and 5B are constructed with a hydraulic asphalt-lined bottom and high density polyethylene-lined banks and are being used for centrifuge centrate flow management.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Historically, Ponds 3A, 3B, 5A, and 5B were used as the Facility's facultative sludge lagoons (FSLs); however upgrades to the Facility's solids treatment and handling processes has negated the need of the FSLs for solids stabilization.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Stabilization Pond"
       ]
     },
     {
@@ -369,21 +353,42 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Biosolids will be dried to approximately 80 percent solids. The dried solids will enter the pyrolysis unit.",
+      "Sentence": "Biosolids will be dried to approximately 80 percent solids. The dried solids will enter the pyrolysis unit and be heated to 1400 degrees Fahrenheit.",
       "Source": "both",
       "Website": "https://www.bidnetdirect.com/california/solicitations/open-bids/statewide/CM-Services-for-Clear-Creek-Wastewater-Treatment-Plant-Pyrolysis-Phase-1-Project/22482906319",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Digestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Historically, Ponds 3A, 3B, 5A, and 5B were used as the Facility's facultative sludge lagoons (FSLs); however upgrades to the Facility's solids treatment and handling processes has negated the need of the FSLs for solids stabilization.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Stabilization Pond",
+        "Unspecified Digestion"
       ]
     }
   ]

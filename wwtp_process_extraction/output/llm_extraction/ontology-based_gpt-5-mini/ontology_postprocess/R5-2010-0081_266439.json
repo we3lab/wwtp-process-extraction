@@ -9,36 +9,45 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility consists of fine screening...",
+      "Sentence": "The Facility consists of fine screening",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Mixing"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "activated sludge treatment with anoxic and aerobic basins",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
-      "Role": [
-        "Anoxic",
-        "Aerobic"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge treatment with anoxic and aerobic basins",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified AS"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Biofiltration",
-        "Separation"
+        "Biofiltration"
       ],
       "Role": null,
       "Substance": null,
@@ -66,12 +75,9 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -85,11 +91,9 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": [
-        "Storage"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -97,34 +101,13 @@
       "Location": "on-site",
       "Sentence": "followed by drying in solar greenhouses",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A 2 million gallon emergency storage basin lined with high density polyethylene liner",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treated effluent is pumped through approximately 2 miles of pipeline",
-      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
+        "Landfill",
         "LandApplication"
       ],
       "Role": null,
@@ -133,26 +116,37 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "prior to disposal at ... beneficial land application",
+      "Sentence": "prior to disposal at a regulated Class III landfill or beneficial land application",
       "trigger_process": [
+        "Biosolids Landfill",
         "Land Application"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
-        "Landfill"
+        "Recirculation"
       ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
+      "Role": [
+        "Storage"
       ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "prior to disposal at a regulated Class III landfill",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
+      "Location": "on-site",
+      "Sentence": "A 2 million gallon emergency storage basin ... is used for storage of treated and untreated wastewater",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent is pumped through approximately 2 miles of pipeline and discharged through a multi-port outfall diffuser",
+      "trigger_process": []
     }
   ]
 }

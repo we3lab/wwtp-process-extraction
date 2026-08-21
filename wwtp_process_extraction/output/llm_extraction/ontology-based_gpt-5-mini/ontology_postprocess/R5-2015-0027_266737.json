@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of screening, grit removal...",
+      "Sentence": "The treatment system at the Facility consists of screening, grit removal, primary flotation...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of screening, grit removal...",
+      "Sentence": "The treatment system at the Facility consists of screening, grit removal, primary flotation...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of ... primary flotation...",
+      "Sentence": "The treatment system at the Facility consists of... primary flotation...",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -56,9 +56,7 @@
         "Nitrification"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -88,12 +86,10 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation",
-        "Coagulation"
+        "Coagulation",
+        "Sedimentation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -104,9 +100,9 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -116,7 +112,7 @@
       "Location": "on-site",
       "Sentence": "tertiary treatment via cloth disk filters",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -144,14 +140,15 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a 37.2 million gallon earthen emergency storage basin",
+      "Sentence": "a 37.2 million gallon earthen emergency storage basin, which allows for the diversion and storage of primary effluent",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Equalization"
       ]
     },
     {
@@ -178,16 +175,14 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling consists of gravity belt thickener, anaerobic digestion, sludge drying beds...",
+      "Sentence": "Solids handling consists of... anaerobic digestion...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -195,7 +190,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -205,9 +201,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling consists of ... sludge drying beds...",
+      "Sentence": "Solids handling consists of... sludge drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -223,7 +219,7 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "beneficial reuse of biosolids via land application to farmland and co-compost for public distribution",
       "trigger_process": [
         "Composting",

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "unlined aerated lagoons",
+      "Sentence": "The current Facility consists of unlined aerated lagoons, unlined oxidation ponds, disinfection by chlorine, and dechlorination.",
       "trigger_process": [
         "Aerated Lagoon"
       ]
@@ -19,7 +19,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration"
+        "BiologicalProcess"
       ],
       "Role": [
         "Secondary"
@@ -27,9 +27,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "unlined oxidation ponds",
+      "Sentence": "The current Facility consists of unlined aerated lagoons, unlined oxidation ponds, disinfection by chlorine, and dechlorination.",
       "trigger_process": [
-        "Aerated Lagoon"
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -40,14 +40,14 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection by chlorine, and dechlorination",
+      "Sentence": "The current Facility consists of unlined aerated lagoons, unlined oxidation ponds, disinfection by chlorine, and dechlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -62,7 +62,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "lined equalization basin",
+      "Sentence": "The new tertiary treatment plant will include a lined equalization basin, an unlined emergency storage basin, and a stormwater detention basin.",
       "trigger_process": [
         "Equalization"
       ]
@@ -76,11 +76,11 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "an unlined emergency storage basin",
+      "Sentence": "The new tertiary treatment plant will include a lined equalization basin, an unlined emergency storage basin, and a stormwater detention basin.",
       "trigger_process": []
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Tank",
       "Process": null,
       "Role": [
         "Detention"
@@ -88,33 +88,31 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "stormwater detention basin",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
+      "Sentence": "The new tertiary treatment plant will include a lined equalization basin, an unlined emergency storage basin, and a stormwater detention basin.",
+      "trigger_process": []
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "secondary feed pump station",
+      "Sentence": "The treatment system will include nitrification and will consist of an odor control system at the headworks, secondary feed pump station, selector basin, two oxidation ditches, two secondary clarifiers, cloth media filters, and ultraviolet disinfection system.",
       "trigger_process": []
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Reactor",
+      "Process": null,
       "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "selector basin",
+      "Sentence": "The treatment system will include ... selector basin...",
       "trigger_process": []
     },
     {
@@ -124,7 +122,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "splitter box",
+      "Sentence": "The treatment system will include ... selector basin, two oxidation ditches, two secondary clarifiers, cloth media filters, and ultraviolet disinfection system.",
       "trigger_process": []
     },
     {
@@ -134,14 +132,13 @@
         "Nitrification"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "two oxidation ditches",
+      "Sentence": "The treatment system will include nitrification and will consist of ... two oxidation ditches ...",
       "trigger_process": [
         "Nitrification",
         "Oxidation Ditch",
@@ -159,7 +156,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "two secondary clarifiers",
+      "Sentence": "The treatment system will consist of ... two secondary clarifiers ...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -175,7 +172,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "cloth media filters",
+      "Sentence": "The treatment system will consist of ... cloth media filters ...",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -192,7 +189,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "ultraviolet light disinfection system",
+      "Sentence": "The treatment system will consist of ... ultraviolet disinfection system.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -207,13 +204,13 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "storage basins",
+      "Sentence": "Solids handling facilities will consist of storage basins and solar drying beds.",
       "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -221,9 +218,11 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "solar drying beds",
+      "Sentence": "Solids handling facilities will consist of storage basins and solar drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     }
   ]

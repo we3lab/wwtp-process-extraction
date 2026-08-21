@@ -7,22 +7,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of a headworks distribution box",
+      "Sentence": "headworks distribution box",
       "trigger_process": []
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration",
+        "BiologicalProcess",
         "Evaporation"
       ],
       "Role": [
-        "Retention"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "five unlined facultative treatment ponds",
+      "Sentence": "five unlined facultative treatment ponds; During periods in which discharge to receiving waters is prohibited, wastewater is held in the unlined ponds and allowed to either percolate or evaporate.",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -43,6 +43,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
+        "Disinfection",
         "Dechlorination"
       ],
       "Role": null,
@@ -51,7 +52,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination with liquid chlorine, and dechlorination.",
+      "Sentence": "chlorination with liquid chlorine, and dechlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -60,11 +61,9 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -72,17 +71,16 @@
       "Location": "on-site",
       "Sentence": "Biosolids are collected from all ponds as needed to maintain the Facility operation and allowed to dry on site.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -94,7 +92,19 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "alternatives to be considered in the PER include Facility upgrades to line ponds",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
@@ -102,8 +112,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the alternatives to be considered in the PER include Facility upgrades to line ponds and improve aeration",
-      "trigger_process": []
+      "Sentence": "alternatives to be considered in the PER include ... improve aeration",
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
     }
   ]
 }

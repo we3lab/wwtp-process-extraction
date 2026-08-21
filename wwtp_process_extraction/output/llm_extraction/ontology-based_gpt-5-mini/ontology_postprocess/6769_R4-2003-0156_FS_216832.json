@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "bar screen",
+      "Sentence": "Current treatment consists of a bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -20,8 +20,7 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed",
-        "Pretreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -34,38 +33,19 @@
       "Process": [
         "ActivatedSludge",
         "Aeration",
-        "Nitrification"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Extended"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Eimco\u00a9 Carousel denitIR\u00a9 extended aeration system",
-      "trigger_process": [
-        "Extended Aeration",
-        "Nitrification",
-        "Unspecified Nutrient Removal"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Denitrification"
-      ],
-      "Role": [
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "anoxic denitrification",
+      "Sentence": "Eimco\u00a9 Carousel denitIR\u00a9 extended aeration system, anoxic denitrification",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
@@ -77,9 +57,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "secondary clarification",
@@ -110,12 +93,15 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination",
+      "Sentence": "filtered, chlorinated effluent wastewater",
       "trigger_process": [
         "Chlorination"
       ]
@@ -124,21 +110,36 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "effluent disposal ponds north of the treatment facility",
+      "Sentence": "pumped to two of the four effluent disposal ponds north of the treatment facility",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "remainder of the excess flows directed to off-site evaporation/percolation ponds",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -150,7 +151,7 @@
       "Location": "on-site",
       "Sentence": "dried in sludge drying beds at the plant",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -159,7 +160,7 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"

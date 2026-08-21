@@ -61,7 +61,25 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The activated sludge treatment system consists of anoxic selectors, aeration basins, secondary clarifiers",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Reactor",
       "Process": [
         "Denitrification"
       ],
@@ -75,26 +93,6 @@
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Nitrification"
-      ],
-      "Role": [
-        "Aerobic",
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The activated sludge treatment system consists of ... aeration basins",
-      "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -120,60 +118,18 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated effluent from each treatment system ... is disinfected with sodium hypochlorite in separate chlorine contact tanks ... combined and dechlorinated with the addition of sodium bisulfite prior to discharge",
+      "Sentence": "Treated effluent from each treatment system ... is disinfected with sodium hypochlorite in separate chlorine contact tanks ... is then combined and dechlorinated with the addition of sodium bisulfite",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "BiologicalProcess"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The oxidation pond system consists of two oxidation ponds and two cells",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Screenings are removed ... and are sent to a grinder for washing and compaction",
-      "trigger_process": [
-        "Comminution"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The screening and grit dumpster are hauled to a landfill weekly for disposal",
-      "trigger_process": [
-        "Biosolids Landfill"
       ]
     },
     {
@@ -212,7 +168,7 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -224,7 +180,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids ... are pumped to a belt press for dewatering",
+      "Sentence": "Solids from the anaerobic digester and oxidation ponds are pumped to a belt press for dewatering",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -232,7 +188,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -244,7 +200,37 @@
       "Location": "on-site",
       "Sentence": "Dewatered solids are placed on drying beds for further moisture reduction prior to disposal",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screenings are removed ... and are sent to a grinder for washing and compaction",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The screening and grit dumpster are hauled to a landfill weekly for disposal",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -253,25 +239,31 @@
         "Composting"
       ],
       "Role": [
-        "LandApplication"
+        "BiosolidsDisposal"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids ... are transported to Arizona for further treatment by composting to ensure Class A requirements are met prior to land application",
+      "Sentence": "Biosolids are continuously removed from the facility site and are transported to Arizona for further treatment by composting",
       "trigger_process": [
         "Composting"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Rehabilitation of the Influent Pump Station",
-      "trigger_process": []
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "composting to ensure Class A requirements are met prior to land application",
+      "trigger_process": [
+        "Land Application"
+      ]
     },
     {
       "Equipment": "Screen",
@@ -307,7 +299,9 @@
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -337,8 +331,12 @@
     },
     {
       "Equipment": "Flare",
-      "Process": null,
-      "Role": null,
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -350,7 +348,9 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -358,21 +358,9 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Pond 2 and Pond 3 free water will drain and treated prior to discharge to the Coachella Valley Stormwater Channel",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -382,24 +370,18 @@
       "Location": "on-site",
       "Sentence": "Sludge from Pond 2 and Pond 3 will be dredged for solar drying",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Equipment": "Conditioner",
+      "Process": null,
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Construction of extension to sludge drying bed",
-      "trigger_process": [
-        "Drying"
-      ]
+      "Sentence": "Installation of digester gas holding facility (optional)",
+      "trigger_process": []
     },
     {
       "Equipment": "Cogenerator",
@@ -414,6 +396,30 @@
       "trigger_process": [
         "Cogeneration",
         "Heat Recovery"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The oxidation pond system consists of two oxidation ponds and two cells",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Pond 2 and Pond 3 free water will drain and treated prior to discharge to the Coachella Valley Stormwater Channel",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     }
   ]

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the headworks include two parallel process trains, each consisting of six-millimeter fine screens",
+      "Sentence": "the headworks include ... six-millimeter fine screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,54 +24,49 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit-removal vortex placed within the concrete channel structure...Accumulated grit is separated in the classifier",
+      "Sentence": "grit-removal vortex placed within the concrete channel structure",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Installation of the new dewatering by screw press is complete.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The newly constructed south process station facilitates RAS and WAS pumping",
-      "trigger_process": []
+      "Sentence": "lining Pond A (former emergency storage basin) with a 45-mil reinforced polypropylene liner to act as an emergency storage basin",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "adding a north process station to combine and equalize influent flows from different service areas",
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -83,7 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "adding two lined extended aeration activated sludge basins...Aerobic and anoxic conditions within the extended aeration activated sludge basins provide biological treatment",
+      "Sentence": "adding two lined extended aeration activated sludge basins ... Aerobic and anoxic conditions within the extended aeration activated sludge basins provide biological treatment",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -92,28 +87,11 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Coagulation"
       ],
       "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "adding two concrete 65-foot diameter secondary clarifiers...to remove suspended solids",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Coagulation",
-        "ChemicalAddition"
-      ],
-      "Role": [
+        "Secondary",
         "PhosphorusRemoval"
       ],
       "Substance": [
@@ -121,11 +99,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aluminum coagulant will automatically dose the effluent...a coagulant or alkaline addition will be provided upstream of the clarifiers to enhance settling, phosphorus removal",
+      "Sentence": "Two new 65-foot diameter secondary clarifiers ... If turbidity is high ... aluminum coagulant will automatically dose the effluent",
       "trigger_process": [
         "Alum Addition",
         "Chemical P Removal",
-        "Coagulation"
+        "Coagulation",
+        "Secondary Clarification"
       ]
     },
     {
@@ -135,13 +114,12 @@
         "Backwashing"
       ],
       "Role": [
-        "Tertiary",
-        "Backwash"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "adding two media disk filters to achieve tertiary filtration...Filter backwash discharges to an overflow weir box connected to the emergency storage basin",
+      "Sentence": "The upgraded Facility includes tertiary treatment consisting of ... two Veolia Hydrotech\u2122 Disk Filters. Filter backwash discharges to an overflow weir box",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -160,29 +138,46 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two chlorine contact basins provide a minimum of 90 minutes of modal contact time...using a sodium hypochlorite solution",
+      "Sentence": "Two chlorine contact basins provide a minimum of 90 minutes ... using a sodium hypochlorite solution",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "SolidsHandling",
+        "Recirculation"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The newly constructed south process station facilitates RAS and WAS pumping and scum removal",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "lining Pond A (former emergency storage basin) with a 45-mil reinforced polypropylene liner to act as an emergency storage basin",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
+      "Sentence": "Effluent from the secondary clarifier will be lifted to the pre-filter channel by the filter feed pumps",
+      "trigger_process": []
     },
     {
       "Equipment": "Thickener",
       "Process": [
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -194,24 +189,6 @@
       "Location": "on-site",
       "Sentence": "adding ... four digester thickeners",
       "trigger_process": [
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Thickener",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "old anaerobic digesters are being converted to include a membrane thickener",
-      "trigger_process": [
-        "Mechanical Dewatering",
         "Thickening"
       ]
     },
@@ -224,10 +201,12 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "old anaerobic digesters are being converted to include ... two-stage aerobic digestion (two digesters)",
+      "Sentence": "the old anaerobic digesters are being converted to include ... two-stage aerobic digestion (two digesters)",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -238,21 +217,40 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "converting the anaerobic digesters to aerobic digestion",
+      "Sentence": "the old anaerobic digesters are being converted",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the old anaerobic digesters are being converted to include a membrane thickener",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -262,15 +260,33 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two concrete lined sludge drying beds remain onsite for emergency use",
+      "Sentence": "Installation of the new dewatering by screw press is complete",
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Two existing concrete lined sludge drying beds remain onsite ... but they are currently not in use and TUD does not anticipate using them in the foreseeable future",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -278,10 +294,40 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Three sand drying beds were demolished.",
+      "Sentence": "Three sand drying beds were demolished",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "One unlined sludge drying bed exists, however, TUD has decommissioned it and stated that they no longer intend on using it",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "SluiceGate",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "recycle out-of-compliance water by closing two automated gates when post filtration turbidity exceeds 2 NTU",
+      "trigger_process": []
     }
   ]
 }

@@ -21,13 +21,13 @@
       ],
       "Role": [
         "Secondary",
-        "Extended",
-        "Aerobic"
+        "Aerobic",
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility consists of comminution, extended aeration activated sludge, secondary clarification, and tertiary filtration."
+      "Sentence": "The Facility consists of ... extended aeration activated sludge ..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -40,7 +40,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification"
+      "Sentence": "The Facility consists of ... secondary clarification ..."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -53,17 +53,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility consists of comminution, extended aeration activated sludge, secondary clarification, and tertiary filtration."
+      "Sentence": "The Facility consists of ... tertiary filtration."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -80,18 +81,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flows by gravity to a flow equalization pond."
+      "Sentence": "Effluent is chlorinated, dechlorinated, and flows by gravity to a flow equalization pond."
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Influent flows in excess of the design flow can be routed to a 300,000 gallon overflow pond for storage until flows diminish"
+      "Sentence": "Influent flows in excess of the design flow can be routed to a 300,000 gallon overflow pond for storage until flows diminish, when the excess flow is routed back to the headworks for treatment."
     },
     {
       "Equipment": "SluiceGate",
@@ -119,7 +123,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are aerobically digested"
+      "Sentence": "Solids are aerobically digested ..."
     },
     {
       "Equipment": "BeltFilterPress",
@@ -135,12 +139,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered to approximately 12 percent solids by a belt filter press"
+      "Sentence": "... dewatered to approximately 12 percent solids by a belt filter press ..."
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "Drying",
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -150,7 +155,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then dehydrated to approximately 90 percent solids using a sludge dryer"
+      "Sentence": "then dehydrated to approximately 90 percent solids using a sludge dryer."
     },
     {
       "Equipment": null,
@@ -160,21 +165,24 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "off-site",
+      "Location": "off-site",
       "Sentence": "Biosolids are transported to a landfill for final disposal."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "tertiary treated effluent is distributed to a water recycling system at Discharge Point 002, which consists of a 55,000 gallon storage tank"
+      "Location": "off-site",
+      "Sentence": "tertiary treated effluent is distributed to a water recycling system at Discharge Point 002, which consists of a 55,000 gallon storage tank ... located on the Mendocino High School athletic fields."
     },
     {
       "Equipment": "Pump",
@@ -192,7 +200,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -200,20 +208,20 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "plans to rebuild the sludge drying beds"
+      "Sentence": "The Permittee has notified the Regional Water Board of plans to rebuild the sludge drying beds,"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Compressor",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "plans ... to install a new blower for the activated sludge basins"
+      "Sentence": "... and to install a new blower for the activated sludge basins ..."
     }
   ]
 }

@@ -10,7 +10,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary treatment plant influent pump station and headworks structures provide pumping, screening, grit removal, and flow measurement of the influent.",
+      "Sentence": "The primary treatment plant influent pump station and headworks structures provide pumping",
       "trigger_process": []
     },
     {
@@ -24,9 +24,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the pumps, wastewater passes through four climber-type mechanical bar screens.",
+      "Sentence": "wastewater passes through four climber-type mechanical bar screens",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screenings are dropped to a continuous conveyor for transfer to a compactor for additional dewatering",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -40,9 +57,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater flow from the screens passes to one of three grit chambers...",
+      "Sentence": "wastewater flow from the screens passes to one of three grit chambers",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the separated grit slurry is pumped to cyclone separators for additional dewatering",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -56,7 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...then distributed to one of two primary clarifiers.",
+      "Sentence": "then distributed to one of two primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -69,12 +103,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the clarifiers is transferred to thickeners...",
+      "Sentence": "Sludge from the clarifiers is transferred to thickeners",
       "trigger_process": [
         "Thickening"
       ]
@@ -93,29 +125,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the clarifiers is transferred to thickeners, then processed and stabilized through digesters.",
+      "Sentence": "processed and stabilized through digesters",
       "trigger_process": [
         "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -125,15 +143,33 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds...",
+      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Biofiltration"
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger applies the stabilized sludge as a soil amendment on the City\u0002s 2,526 agricultural fields",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -141,40 +177,40 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Approximately half of the primary effluent receives treatment with fixed film reactors (FFR\u2019s)...",
+      "Sentence": "approximately half of the primary effluent receives treatment with fixed film reactors (FFR\u0002s)",
       "trigger_process": [
-        "Secondary Filtration",
-        "Unspecified FFR",
-        "Unspecified Filtration"
+        "Trickling Filter"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
         "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and then is combined with primary effluent in an aerated recirculation channel.",
-      "trigger_process": []
+      "Sentence": "then is combined with primary effluent in an aerated recirculation channel",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "BiologicalProcess"
-      ],
+      "Process": null,
       "Role": [
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Flow in the recirculation channel is then distributed to three parallel facultative ponds for further treatment...",
+      "Sentence": "distributed to three parallel facultative ponds for further treatment",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -188,7 +224,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and then transferred to one of two storage ponds until it can be discharged to the SJR...",
+      "Sentence": "then transferred to one of two storage ponds until it can be discharged",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -197,19 +233,18 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Prior to discharge to the SJR, the secondary-level treated effluent is disinfected with chlorine in a contact basin, then dechlorinated with sulfur dioxide.",
+      "Sentence": "the secondary-level treated effluent is disinfected with chlorine in a contact basin, then dechlorinated with sulfur dioxide",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -218,28 +253,23 @@
     {
       "Equipment": null,
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Tertiary"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The proposed advanced treatment process is a biological nutrient removal (BNR) process...",
+      "Sentence": "The proposed advanced treatment process is a biological nutrient removal (BNR) process",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": null,
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -247,9 +277,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The proposed advanced treatment process is a biological nutrient removal (BNR) process followed by filtration...",
+      "Sentence": "followed by filtration",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
@@ -258,13 +288,12 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "...followed by filtration and ultra violet (UV) light disinfection.",
+      "Sentence": "followed by ... ultra violet (UV) light disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]

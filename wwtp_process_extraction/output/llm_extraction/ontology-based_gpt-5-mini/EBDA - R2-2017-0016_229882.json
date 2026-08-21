@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of comminution, grit removal, primary sedimentation..."
+      "Sentence": "The treatment process consists of ... primary sedimentation ..."
     },
     {
       "Equipment": "Tank",
@@ -48,7 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... flow equalization, trickling filtration..."
+      "Sentence": "The treatment process consists of ... flow equalization ..."
     },
     {
       "Equipment": "TricklingFilter",
@@ -61,7 +61,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... trickling filtration, activated sludge aeration..."
+      "Sentence": "The treatment process consists of ... trickling filtration ..."
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City of Hayward plans to ... replace its aged trickling filter"
     },
     {
       "Equipment": "AerationBasin",
@@ -76,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... activated sludge aeration, secondary clarification..."
+      "Sentence": "The treatment process consists of ... activated sludge aeration ..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -89,7 +102,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "The treatment process consists of ... secondary clarification ..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -105,7 +118,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... secondary clarification, and chlorine disinfection."
+      "Sentence": "The treatment process consists of ... chlorine disinfection."
     },
     {
       "Equipment": "Pond",
@@ -116,7 +129,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The plant also has 240 acres of out-of-service oxidation ponds that can be used for emergency storage."
+      "Sentence": "The plant also has 240 acres of out-of-service oxidation ponds that can be used for emergency storage"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -124,8 +137,9 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "Anaerobic",
+        "Stabilization",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -137,8 +151,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -148,7 +161,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge ... is anaerobically digested, dewatered in dewatering beds, and air dried for up to two years."
+      "Sentence": "Sludge ... is ... dewatered in dewatering beds ..."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge ... is ... air dried for up to two years."
     },
     {
       "Equipment": null,
@@ -158,9 +187,11 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "The City hauls dried biosolids to an authorized disposal site for use as alternative daily cover."
     },
     {
@@ -174,7 +205,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The City of Hayward plans to install bar screens, screen washers, and compactors at its plant headworks."
+      "Sentence": "The City of Hayward plans to install bar screens, screen washers, and compactors at its plant headworks"
     }
   ]
 }

@@ -20,6 +20,7 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
+        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
@@ -27,12 +28,13 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aeration basins; The Plant nitrifies and denitrifies",
+      "Sentence": "completed construction of denitrification facilities which included modification to existing aeration basins and adding aeration basins; The Plant nitrifies and denitrifies.",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -62,7 +64,8 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -83,7 +86,9 @@
         "Stabilization",
         "Anaerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge is anaerobically digested",
@@ -94,13 +99,14 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dewatered using a belt filter press",
@@ -111,17 +117,19 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "air-dried to produce biosolids",
+      "Sentence": "then air-dried to produce biosolids",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -132,7 +140,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "hauled to the Recology Landfill",
@@ -151,7 +161,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Construction has begun on the filtration facilities",
+      "Sentence": "The Discharger is constructing the Easterly Wastewater Treatment Plant Filtration Project",
       "trigger_process": [
         "Media Filtration"
       ]

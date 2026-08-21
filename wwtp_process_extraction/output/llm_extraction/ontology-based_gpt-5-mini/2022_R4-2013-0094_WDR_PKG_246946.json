@@ -16,11 +16,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
-        "Pretreatment",
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -57,12 +57,9 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge"
@@ -98,28 +95,13 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "chlorine disinfection, and dechlorination"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Thickening"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "thickened waste activated sludge"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -129,19 +111,20 @@
       "Role": [
         "SolidsHandling",
         "Stabilization",
-        "Anaerobic"
+        "Feed"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "are anaerobically digested at the treatment plant"
+      "Sentence": "primary sludge, skimmings, and thickened waste activated sludge) are anaerobically digested at the treatment plant"
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -151,61 +134,44 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered using belt filter presses"
+      "Sentence": "The digested solids are dewatered using belt filter presses"
     },
     {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "are hauled away to a landfill"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The biosolids are taken to the Toland Landfill in Ventura County"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "dried in a dryer to approximately 70%"
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": [
-        "Constituent-Organics"
+        "Constituent-SuspendedSolids"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "uses the oil and grease in its digesters"
+      "Implementation": "off-site",
+      "Location": "off-site",
+      "Sentence": "The fine solids (screenings and grit) ... are hauled away to a landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "off-site",
+      "Location": "off-site",
+      "Sentence": "The biosolids are taken to the Toland Landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ThermalDrying"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "off-site",
+      "Location": "off-site",
+      "Sentence": "The biosolids at Toland are ... dried in a dryer to approximately 70%"
     },
     {
       "Equipment": "MicrofiltrationUnit",
@@ -213,13 +179,12 @@
         "Microfiltration"
       ],
       "Role": [
-        "Permeate",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "microfiltration"
+      "Sentence": "through microfiltration"
     },
     {
       "Equipment": "UltrafiltrationUnit",
@@ -227,8 +192,7 @@
         "Ultrafiltration"
       ],
       "Role": [
-        "Permeate",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -241,8 +205,7 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Permeate",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -255,7 +218,7 @@
         "AdvancedOxidation"
       ],
       "Role": [
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",

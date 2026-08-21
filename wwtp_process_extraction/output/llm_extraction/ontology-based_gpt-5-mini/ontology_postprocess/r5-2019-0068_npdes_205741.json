@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a backup comminutor",
+      "Sentence": "a back up communator",
       "trigger_process": [
         "Comminution"
       ]
@@ -41,13 +41,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The influent pump station and headworks includes a bar screen",
+      "Sentence": "The influent pump station",
       "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -96,9 +97,7 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -114,33 +113,17 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one chlorine contact basin, and sulfur dioxide dechlorination",
+      "Sentence": "After filtration, two chlorinators supply a gas solution for disinfection...Contact chamber discharge is dosed with a sulfur dioxide gas solution for dechlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "does not account for RAS (return activated sludge) flow",
-      "trigger_process": []
     },
     {
       "Equipment": "AerobicDigester",
@@ -149,8 +132,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -164,24 +146,8 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pond stabilization",
-      "trigger_process": [
-        "Stabilization Pond"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -191,9 +157,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solar drying",
+      "Sentence": "pond stabilization, and solar drying",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -201,15 +169,13 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "land applied on Fields A1 and A2 North Gate",
+      "Sentence": "Dried biosolids are disposed at Anderson Landfill and/or land applied on Fields A1 and A2 North Gate",
       "trigger_process": [
         "Land Application"
       ]
@@ -219,33 +185,15 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried biosolids are disposed at Anderson Landfill",
+      "Sentence": "Dried biosolids are disposed at Anderson Landfill and/or land applied on Fields A1 and A2 North Gate",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "replacement of chlorination/dechlorination chamber with a UV disinfection system",
-      "trigger_process": [
-        "UV Disinfection"
       ]
     },
     {
@@ -257,6 +205,20 @@
       "Location": "on-site",
       "Sentence": "replacing filter pumps and motors with higher efficiency pumps",
       "trigger_process": []
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "replacement of chlorination/dechlorination chamber with a UV disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
     }
   ]
 }

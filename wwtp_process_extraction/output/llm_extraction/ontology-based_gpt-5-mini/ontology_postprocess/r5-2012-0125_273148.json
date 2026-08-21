@@ -1,17 +1,20 @@
 {
   "items": [
     {
-      "Equipment": "SequencingBatchReactor",
+      "Equipment": "Screen",
       "Process": [
-        "ActivatedSludge"
+        "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "additional blowers and fine bubble diffuser racks in the sequencing batch reactors (SBRs).",
+      "Sentence": "head works, bar screen,",
       "trigger_process": [
-        "SBR"
+        "Screening/Microstrainer"
       ]
     },
     {
@@ -23,40 +26,46 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The WWTF consists of a 110,000-gallon flow equalization tank",
+      "Sentence": "installing an influent equalization tank",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "SequencingBatchReactor",
       "Process": [
-        "Screening"
+        "ActivatedSludge",
+        "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The WWTF consists of ... head works, bar screen, two SBR\u2019s",
+      "Sentence": "additional blowers and fine bubble diffuser racks in the sequencing batch reactors (SBRs).",
       "trigger_process": [
-        "Screening/Microstrainer"
+        "SBR"
       ]
     },
     {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion",
-        "Flocculation",
-        "Recirculation"
+        "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
       "Substance": [
         "Flocculant-Polymer",
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the SBR\u2019s is pumped into an aerobic digester where a polymer is added to aid in flocculation. Clear liquid is decanted from the digester and returned to the SBR\u2019s.",
+      "Sentence": "Sludge from the SBR\u2019s is pumped into an aerobic digester where a polymer is added to aid in flocculation.",
       "trigger_process": [
         "Aerobic Digestion",
         "Flocculation",
@@ -64,28 +73,14 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The remaining sludge in the digester is pumped to a vacuum-assisted drying floor within the main WWTF building.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
       "Equipment": "Tank",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Storage",
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -93,17 +88,19 @@
       "trigger_process": []
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a tertiary disk filter",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
@@ -112,7 +109,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -136,59 +135,99 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Evaporation"
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
       ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated effluent is discharged to percolation/evaporation ponds in summer through early fall",
+      "Sentence": "an existing 21,000 gallon effluent storage tank near the percolation ponds.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation",
+        "Aeration"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent is discharged to percolation/evaporation ponds... Surface aerators are in ponds 1 and combined pond 5/6.",
       "trigger_process": [
         "Evaporation Pond"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": null,
       "Process": [
-        "Aeration"
+        "Separation"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Surface aerators are in ponds 1 and combined pond 5/6.",
-      "trigger_process": [
-        "Aerated Lagoon"
-      ]
+      "Sentence": "daily maximum discharge of 0.200 million gallons to either evaporation/percolation ponds or leach trenches.",
+      "trigger_process": []
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "LandApplication"
+        "Dewatering",
+        "Drying"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treated effluent from the evaporation/percolation ponds is used to sprinkler-irrigate a 3.2-acre reclamation area (also referred to as sprayfield)",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
+      "Role": [
+        "SolidsHandling"
       ],
-      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dried sludge is used as a soil amendment at the site",
+      "Sentence": "a vacuum-assisted sludge drying floor",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "spread on bare ground for further drying by the sun.",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dried sludge is used as a soil amendment at the site",
       "trigger_process": [
         "Land Application"
       ]
@@ -196,17 +235,19 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "LandApplication"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dried sludge is used as a soil amendment at the site or hauled off-site",
+      "Sentence": "or hauled off-site.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Land Application"
       ]
     }
   ]

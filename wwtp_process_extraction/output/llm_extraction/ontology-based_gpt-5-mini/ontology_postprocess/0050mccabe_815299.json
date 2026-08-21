@@ -3,17 +3,20 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater is pumped from the lift station via one of two 3-inch submersible sewage pumps into a 5,000-gallon flow equalization tank",
+      "Sentence": "pumped from the lift station via one of two 3-inch submersible sewage pumps",
       "trigger_process": []
     },
     {
-      "Equipment": "MixingBasin",
+      "Equipment": "Tank",
       "Process": [
         "Mixing",
+        "Recirculation",
         "Denitrification"
       ],
       "Role": [
@@ -25,7 +28,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a 5,000-gallon flow equalization tank, where it is mixed with return activated sludge under anoxic conditions to encourage denitrification",
+      "Sentence": "5,000-gallon flow equalization tank, where it is mixed with return activated sludge under anoxic conditions to encourage denitrification",
       "trigger_process": [
         "Denitrification",
         "Equalization",
@@ -35,23 +38,21 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
         "ActivatedSludge",
-        "Nitrification"
+        "Nitrification",
+        "Aeration"
       ],
       "Role": [
-        "Aerobic",
-        "Extended",
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transferred via an airlift pipe into a 15,592-gallon extended aeration tank, where nitrification takes place",
+      "Sentence": "15,592-gallon extended aeration tank, where nitrification takes place",
       "trigger_process": [
-        "Extended Aeration",
         "Nitrification",
         "Unspecified Nutrient Removal"
       ]
@@ -63,15 +64,15 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary",
-        "Recirculation"
+        "Secondary"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Sludge-MixedLiquor",
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the stabilized wastewater (mixed liquor) then flows into a 3,758-gallon circular secondary clarifier, where the mixed liquor suspended solids are settled and recirculated back to the flow equalization tank",
+      "Sentence": "3,758-gallon circular secondary clarifier, where the mixed liquor suspended solids are settled and recirculated back to the flow equalization tank",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -81,11 +82,13 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The effluent flows over the clarifier\u2019s weirs for treatment by two dual media (sand/anthracite) gravity filters",
+      "Sentence": "two dual media (sand/anthracite) gravity filters",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -95,11 +98,13 @@
       "Process": [
         "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtered effluent then passes through an ultraviolet light disinfection system, which is comprised of two separate modules",
+      "Sentence": "filtered effluent then passes through an ultraviolet light disinfection system",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -107,7 +112,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -119,7 +124,7 @@
       "Location": "on-site",
       "Sentence": "Biosolids are dried in drying beds prior to disposal",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -130,12 +135,10 @@
       "Role": [
         "Drain"
       ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "future",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "MUESD is currently constructing three new evaporation/percolation ponds to dispose of treated domestic wastewater",
+      "Sentence": "Wastewater will be discharged to one of three evaporation/percolation ponds located south of the campus",
       "trigger_process": [
         "Evaporation Pond"
       ]

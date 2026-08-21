@@ -110,8 +110,7 @@
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -150,6 +149,22 @@
       "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation.",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation.",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
@@ -192,24 +207,9 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids from the digesters are temporarily stored in storage digesters.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -219,9 +219,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered biosolids are stored in drying beds covering 130,860 square feet",
+      "Sentence": "Dewatered biosolids are stored in drying beds covering 130,860 square feet and are eventually hauled off-site for composting to an authorized facility.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -233,9 +233,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "biosolids are hauled off-site for composting",
+      "Sentence": "Dewatered biosolids are stored in drying beds covering 130,860 square feet and are eventually hauled off-site for composting to an authorized facility.",
       "trigger_process": [
         "Composting"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Filtrate is sent to chlorine contact tanks while backwash is sent to influent sewer or aeration tanks.",
+      "trigger_process": [
+        "Unspecified Filtration"
       ]
     },
     {
@@ -247,7 +263,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "All of the unlined oxidation ponds and unlined storage reservoirs have not been in use since 2012",
+      "Sentence": "All of the unlined oxidation ponds and unlined storage reservoirs have not been in use since 2012 when use of the new lined Storage V Reservoirs was initiated.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

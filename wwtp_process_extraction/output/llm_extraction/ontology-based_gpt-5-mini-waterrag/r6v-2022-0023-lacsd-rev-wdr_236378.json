@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation."
+    },
+    {
       "Equipment": "Grinder",
       "Process": [
         "Comminution"
@@ -11,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility provides tertiary, disinfected treatment by utilizing the following treatment process sequence: comminution, grit removal, primary sedimentation..."
+      "Sentence": "The Facility provides tertiary, disinfected treatment by utilizing the following treatment process sequence: comminution, grit removal, primary sedimentation, ..."
     },
     {
       "Equipment": "Screen",
@@ -25,15 +36,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The headworks consists of an influent pump station..."
     },
     {
       "Equipment": "GritChamber",
@@ -62,6 +64,22 @@
       "Sentence": "There are six primary sedimentation tanks that are operated in parallel."
     },
     {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Anaerobic sludge digestion occurs in the digesters."
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -79,6 +97,17 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Following primary sedimentation, effluent is pumped into nine aeration tanks divided into three aeration units operating in parallel with biological nitrification and denitrification."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge is sent back to one of each aeration tank."
     },
     {
       "Equipment": "SedimentationTank",
@@ -109,43 +138,71 @@
       "Sentence": "Waste activated sludge is sent to the dissolved air flotation system prior to being sent to the anaerobic digestion system."
     },
     {
-      "Equipment": "AnaerobicDigester",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "AnaerobicDigestion"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Anaerobic sludge digestion occurs in the digesters."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
+        "Tertiary",
+        "Backwash"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids from the digesters are temporarily stored in storage digesters."
+      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite) prior to entering six dual media gravity filters for reduction of turbidity and suspended solids."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Tank",
       "Process": [
-        "Drying"
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Filtrate is sent to chlorine contact tanks while backwash is sent to influent sewer or aeration tanks."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite) prior to entering six dual media gravity filters for reduction of turbidity and suspended solids."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Prior to delivery to Piute Ponds, disinfected recycled water is dechlorinated to protect aquatic life."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Dewatered biosolids are stored in drying beds covering 130,860 square feet and are eventually hauled off-site for composting to an authorized facility."
@@ -162,91 +219,6 @@
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered biosolids ... are eventually hauled off-site for composting to an authorized facility."
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration",
-        "Backwashing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite) prior to entering six dual media gravity filters for reduction of turbidity and suspended solids."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite) prior to entering six dual media gravity filters..."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Filtrate is sent to chlorine contact tanks..."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Prior to delivery to Piute Ponds, disinfected recycled water is dechlorinated to protect aquatic life."
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Grit removal from the interceptor is conducted on a biweekly basis."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Return activated sludge is sent back to one of each aeration tank."
     },
     {
       "Equipment": "Reservoir",
@@ -267,6 +239,17 @@
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "All of the unlined oxidation ponds and unlined storage reservoirs have not been in use since 2012 when use of the new lined Storage V Reservoirs was initiated."
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids from the digesters are temporarily stored in storage digesters."
     }
   ]
 }

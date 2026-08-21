@@ -17,29 +17,17 @@
       ]
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "GritChamber",
       "Process": [
-        "Screening"
+        "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the influent will go through new bar screens",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a new grit removal system prior to flowing through to the existing treatment system",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -61,28 +49,27 @@
       ]
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": null,
       "Process": [
-        "TricklingFiltration",
-        "BiologicalProcess"
+        "Biofiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "secondary biological treatment with fixed film reactors",
       "trigger_process": [
-        "Trickling Filter"
+        "Secondary Filtration",
+        "Unspecified FFR",
+        "Unspecified Filtration"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "BiologicalProcess"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -120,12 +107,10 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Coagulant"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mono- or dual-media filtration ... Coagulant may be added to the dual media filter flow",
+      "Sentence": "mono- or dual-media filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -152,14 +137,81 @@
       ]
     },
     {
-      "Equipment": "GravityThickener",
+      "Equipment": null,
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Coagulant"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Coagulant may be added to the dual media filter flow for recycled water production",
+      "trigger_process": [
+        "Coagulation",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks ... screening",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks ... grit removal",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks, including new influent pump station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Primary sludge is processed using a gravity thickener",
@@ -170,12 +222,14 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Primary sludge is processed using ... rotating drum thickeners",
@@ -186,13 +240,14 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "secondary sludge is processed using gravity belt thickeners",
@@ -203,8 +258,7 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "ChemicalAddition"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -212,14 +266,30 @@
         "Stabilization"
       ],
       "Substance": [
-        "Coagulant-FerricChloride",
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Three primary anaerobic digesters ... Ferric chloride is added to the anaerobic digester feed",
+      "Sentence": "The thickened sludge is pumped to the anaerobic digestion process",
       "trigger_process": [
-        "Anaerobic Digestion",
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Ferric chloride is added to the anaerobic digester feed",
+      "trigger_process": [
         "Ferric Chloride Addition"
       ]
     },
@@ -244,9 +314,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -258,7 +328,7 @@
       "Location": "on-site",
       "Sentence": "The solids are transported to concrete lined air-drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -283,8 +353,7 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation",
-        "Feed"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -295,7 +364,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -307,42 +376,30 @@
       "Location": "on-site",
       "Sentence": "onsite biosolids drying process involving pyrolysis to create biochar",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Biochar system start-up to allow the Discharger to convert over 40 percent of its biosolids into biochar",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the plant\u2019s booster station and influent lift station may be used to handle elevated force main flows",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -355,38 +412,18 @@
       ]
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": "Pump",
       "Process": [
-        "TricklingFiltration",
-        "BiologicalProcess"
+        "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Feed"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Fixed film reactor refurbishment and media replacement",
-      "trigger_process": [
-        "Trickling Filter"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Anaerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Anaerobic digester refurbishing and replacement of all digester sludge and gas piping",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
+      "Sentence": "it consists of ... four pump stations",
+      "trigger_process": []
     }
   ]
 }

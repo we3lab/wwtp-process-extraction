@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the upgraded primary and secondary treatment systems consist of an in-channel screening (Aqua Guard\u00ae screens)",
+      "Sentence": "in-channel screening (Aqua Guard\u00ae screens)",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the upgraded primary and secondary treatment systems consist of ... grit removal",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -35,8 +35,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -46,7 +45,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "conversion of the aeration/polishing ponds secondary treatment system to an activated sludge process",
+      "Sentence": "Biolac\u00ae extended aeration system",
       "trigger_process": [
         "Extended Aeration"
       ]
@@ -62,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the upgraded primary and secondary treatment systems consist of ... secondary clarification",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -78,26 +77,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treated effluent is discharged to 30 onsite percolation/evaporation ponds",
+      "Sentence": "Secondary treated effluent is discharged to 30 onsite percolation/evaporation ponds",
       "trigger_process": [
         "Evaporation Pond"
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "Pond",
       "Process": [
-        "Coagulation"
+        "Aeration"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment system consists of chemical flocculation",
+      "Sentence": "conversion of the aeration/polishing ponds secondary treatment system to an activated sludge process",
       "trigger_process": [
-        "Coagulation",
-        "Unspecified Chemical Addition"
+        "Aerated Lagoon"
       ]
     },
     {
@@ -127,7 +126,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment system consists of ... gravity settling",
+      "Sentence": "gravity settling",
       "trigger_process": [
         "Unspecified Clarification"
       ]
@@ -143,7 +142,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment system consists of ... up-flow Dynasand\u00ae filtration",
+      "Sentence": "up-flow Dynasand\u00ae filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -163,7 +162,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection using sodium hypochlorite solution...the disinfected tertiary treated effluent is dechlorinated prior to discharging",
+      "Sentence": "disinfection using sodium hypochlorite solution... the disinfected tertiary treated effluent is dechlorinated prior to discharging into Arroyo Las Posas",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -172,12 +171,15 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
+        "Dewatering",
         "Filtration"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Waste sludge is either dewatered using a belt press",
@@ -188,36 +190,94 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solar sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered cake storage pad",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": [
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase II plant upgrades that include ... providing nitrogen removal",
+      "Sentence": "increasing the secondary treatment capacity to 5 mgd by expanding the Biolac\u00ae extended aeration system",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": null,
+      "Role": [
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "providing nitrogen removal",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "expanding the tertiary treatment capacity to 3 mgd",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "improve the solids handling capacity",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     }
   ]

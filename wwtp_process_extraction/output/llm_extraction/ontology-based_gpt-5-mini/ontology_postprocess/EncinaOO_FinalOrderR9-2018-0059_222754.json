@@ -5,7 +5,9 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -17,7 +19,6 @@
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition",
         "Oxidation"
       ],
       "Role": null,
@@ -36,7 +37,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -99,7 +102,10 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -135,7 +141,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -150,7 +157,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -169,7 +177,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -181,7 +189,7 @@
       "Location": "on-site",
       "Sentence": "heat drying",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
       ]
     },
     {
@@ -189,10 +197,12 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "inline sewage grinding, grinding with augers",
       "trigger_process": [
         "Comminution"
@@ -208,7 +218,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
@@ -219,10 +229,12 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "roughing filtration",
       "trigger_process": [
         "Media Filtration"
@@ -238,7 +250,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "biological treatment using activated sludge",
       "trigger_process": [
         "Unspecified AS"
@@ -254,7 +266,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
@@ -270,7 +282,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "tertiary filtration",
       "trigger_process": [
         "Media Filtration"
@@ -282,12 +294,15 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "chlorine disinfection",
       "trigger_process": [
         "Chlorination"
@@ -296,12 +311,15 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "continuous backwash granulated media filtration",
       "trigger_process": [
         "Media Filtration"
@@ -312,11 +330,13 @@
       "Process": [
         "Microfiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "microfiltration (MF)",
+      "Location": "off-site",
+      "Sentence": "microfiltration or ultrafiltration (MF/UF)",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -326,11 +346,13 @@
       "Process": [
         "Ultrafiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "ultrafiltration (UF)",
+      "Location": "off-site",
+      "Sentence": "microfiltration or ultrafiltration (MF/UF)",
       "trigger_process": [
         "Ultrafiltration"
       ]
@@ -340,28 +362,16 @@
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": null,
-      "Substance": [
-        "Water-Brackish"
+      "Role": [
+        "Tertiary"
       ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "reverse osmosis (RO) membrane filtration (typically bypassed)",
       "trigger_process": [
         "Reverse Osmosis"
       ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Stripping"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "decarbonation (typically bypassed)",
-      "trigger_process": []
     },
     {
       "Equipment": "Thickener",
@@ -373,8 +383,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "solids thickening",
+      "Location": "off-site",
+      "Sentence": "MF/UF backwash...is thickened and returned to the EWPCF for treatment and disposal",
       "trigger_process": [
         "Thickening"
       ]

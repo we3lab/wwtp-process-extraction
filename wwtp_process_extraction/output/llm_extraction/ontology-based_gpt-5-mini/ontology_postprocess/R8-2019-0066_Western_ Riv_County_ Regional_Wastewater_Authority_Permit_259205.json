@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Headworks: Three (3) new\u00bc\" fine screens, each with capacity of 17.5 mgd, with associated wash presses were installed.",
+      "Sentence": "Three (3) new\u00bc\" fine screens, each with capacity of 17.5 mgd, with associated wash presses were installed.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -36,15 +36,29 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Equalization Tank: A new 2.2 million gallon (180' x 120' x 15') concrete equalization tank was installed near the new primary clarifiers.",
+      "Sentence": "A new 2.2 million gallon (180' x 120' x 15') concrete equalization tank was installed near the new primary clarifiers.",
       "trigger_process": [
         "Equalization"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The existing flow equalization tank will be converted into a recycled water storage tank.",
+      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -57,24 +71,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two (2) new 95' diameter primary clarifiers, including a splitter box, ... were installed.",
+      "Sentence": "Two (2) new 95' diameter primary clarifiers, including a splitter box...were installed.",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Feed",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Feed"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a primary sludge pump station with two (2) sludge pumps ... pump the primary sludge directly to the digesters.",
+      "Sentence": "a primary sludge pump station with two (2) sludge pumps were installed...and pump the primary sludge directly to the digesters.",
       "trigger_process": []
     },
     {
@@ -94,25 +110,20 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
         "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a second activated sludge basin was also constructed with a 600,000 gallon anoxic zone and a 1,290,000 gallon aerobic zone... The oxidation ditch has eight axial propeller-type mixers",
+      "Sentence": "A second activated sludge basin was also constructed with a 600,000 gallon anoxic zone and a 1,290,000 gallon aerobic zone.",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification",
-        "Oxidation Ditch"
+        "Oxidation Ditch",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -126,7 +137,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "One (1) 130' diameter secondary clarifier was added",
+      "Sentence": "One (1) 130' diameter secondary clarifier was added.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -169,7 +180,7 @@
       ]
     },
     {
-      "Equipment": "RotaryDrumThickener",
+      "Equipment": "Thickener",
       "Process": [
         "Thickening"
       ],
@@ -227,14 +238,25 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The aerobic digesters were converted to anaerobic digesters by installing digester covers, a pump mixing system...",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Boiler",
       "Process": [
         "Combustion"
       ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -246,58 +268,30 @@
       "Process": [
         "Combustion"
       ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "This includes...flame and sediment traps, and flare.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and flare.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Solar drying beds were added to the facility, including floor heating using excess methane gas",
+      "Sentence": "Solar drying beds were added to the facility, including floor heating using excess methane gas...",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "infrastructure provisions were included to allow for the future construction of a third digester.",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The existing flow equalization tank will be converted into a recycled water storage tank.",
-      "trigger_process": []
     },
     {
       "Equipment": "Pump",
@@ -308,7 +302,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a new utility water pump station was constructed so that recycled water can be used at the treatment plant as utility water serving various purposes around the plant.",
+      "Sentence": "Additionally, a new utility water pump station was constructed so that recycled water can be used at the treatment plant as utility water...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "This tank will serve as a wet well for the new recycled water pump station.",
       "trigger_process": []
     }
   ]

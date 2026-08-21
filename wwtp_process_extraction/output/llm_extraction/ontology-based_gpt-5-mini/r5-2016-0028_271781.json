@@ -28,22 +28,18 @@
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater in the tank is automatically returned to the influent pump station as treatment capacity becomes available."
+      "Sentence": "prior to entering the influent pump station."
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "Equalization",
         "Storage"
@@ -55,32 +51,30 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
-        "Storage",
-        "Equalization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Additional short-term emergency storage of influent is available in Pond S4... Wastewater in Pond S4 is returned to the headworks (rotary drum screens) when treatment capacity is available."
+      "Sentence": "Additional short-term emergency storage of influent is available in Pond S4 which is lined and has a storage capacity of approximately 11 million gallons (mgal)."
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Biofiltration",
-        "ActivatedSludge"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary",
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the influent pump station, wastewater is distributed evenly to two Membrane Bioreactor (MBR) treatment trains..."
+      "Sentence": "From the influent pump station, wastewater is distributed evenly to two Membrane Bioreactor (MBR) treatment trains for a combined treatment capacity of 1.0 mgd as an average dry weather flow (ADWF)."
     },
     {
       "Equipment": "MixingBasin",
@@ -95,7 +89,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each MBR train includes an anoxic basin, recirculation mixers..."
+      "Sentence": "Each MBR train includes an anoxic basin"
+    },
+    {
+      "Equipment": "StaticMixer",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each MBR train includes ... recirculation mixers"
     },
     {
       "Equipment": "AerationBasin",
@@ -112,7 +119,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each MBR train includes... an aeration basin, ... aeration and membrane blowers and diffusers..."
+      "Sentence": "Each MBR train includes ... an aeration basin"
     },
     {
       "Equipment": "Pump",
@@ -122,10 +129,49 @@
       "Role": [
         "Recirculation"
       ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each MBR train includes ... mixed liquor recycle pumps (RAS pumps)"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Permeate"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each MBR train includes... mixed liquor recycle pumps (RAS pumps), and filtrate pumps."
+      "Sentence": "Each MBR train includes ... filtrate pumps."
+    },
+    {
+      "Equipment": "Compressor",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each MBR train includes ... aeration and membrane blowers and diffusers"
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater treatment processes at the CTF include secondary treatment, tertiary filtration, and disinfection prior to storage and reuse for irrigation of agricultural and landscape Use Areas."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -153,7 +199,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfected tertiary treated effluent is discharged into Pond S5 for immediate storage."
+      "Sentence": "Disinfected tertiary treated effluent is discharged into Pond S5 for immediate storage"
     },
     {
       "Equipment": "Pond",
@@ -194,29 +240,32 @@
         "Recirculation"
       ],
       "Role": [
-        "Feed"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Recycled water is pumped from the storage ponds as needed and conveyed to Use Areas for agricultural irrigation."
+      "Sentence": "Waste activated sludge (WAS) generated from the CTF is pumped to the solids handling facility located at the adjacent Crossroads WWTF."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
         "Storage",
-        "SolidsHandling"
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The solids handling facility includes a 190,000 gallon aerobic sludge storage tank..."
+      "Sentence": "The solids handling facility includes a 190,000 gallon aerobic sludge storage tank"
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -227,12 +276,12 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The solids handling facility includes... two belt filter presses..."
+      "Sentence": "The solids handling facility includes ... two belt filter presses"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -250,7 +299,6 @@
         "LandApplication"
       ],
       "Role": [
-        "BiosolidsDisposal",
         "SolidsHandling"
       ],
       "Substance": [
@@ -261,15 +309,53 @@
       "Sentence": "Air-dried sludge is temporarily stored on the drying bed until a sufficient volume has accumulated to warrant transporting the material to the City of Merced for land application."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "Land application site LAS-3... will be converted into a future percolation pond(s) with an expected completion date by August 2016."
+      "Sentence": "The City proposes the following Crossroads WWTF components to be retained and incorporated in the CTF: Influent pump station, piping, and associated Motor Control Centers."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "The City proposes the following Crossroads WWTF components to be retained and incorporated in the CTF: Former chlorine contact basin."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "The City proposes the following Crossroads WWTF components to be retained and incorporated in the CTF: Recycled water pump station."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "Land application site LAS-3: LAS-3 is approximately 19.5 acres and will be converted into a future percolation pond(s) with an expected completion date by August 2016."
     }
   ]
 }

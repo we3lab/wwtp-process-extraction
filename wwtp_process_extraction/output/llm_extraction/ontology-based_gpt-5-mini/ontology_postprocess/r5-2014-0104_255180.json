@@ -35,10 +35,11 @@
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition",
         "pHAdjustment"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -104,7 +105,7 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "NutrientRemoval",
+        "Extended",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -112,6 +113,7 @@
       "Location": "on-site",
       "Sentence": "extended aeration activated sludge processing",
       "trigger_process": [
+        "Extended Aeration",
         "Nitrification",
         "Unspecified Nutrient Removal"
       ]
@@ -142,7 +144,9 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "cloth media filtration (including coagulation and flocculation)",
@@ -157,26 +161,41 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination, dechlorination",
+      "Sentence": "chlorination",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dechlorination",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration",
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -186,7 +205,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "filter press",
+      "Sentence": "dewatering using the belt filter press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -206,15 +225,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "heated unmixed anaerobic digester",
+      "Sentence": "digestion in the heated unmixed anaerobic digester",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -225,43 +244,48 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds",
+      "Sentence": "asphalt lined drying pad where ... biosolids are spread out to air dry for a minimum of 90 days",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Evaporation"
+      ],
       "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ponds B and C",
+      "Sentence": "six million gallon storage reservoir (Pond D)",
       "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Pond D",
-      "trigger_process": [
-        "Unspecified Lagoon"
+        "Evaporation Pond"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
+        "LandApplication"
+      ],
+      "Role": [
+        "LandApplication"
+      ],
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Disposal of treated wastewater is accomplished solely by land application",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "LandApplication"
       ],
       "Role": [
@@ -272,44 +296,10 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Synagro typically removes biosolids from the Facility once per year, biosolids are applied to land by Synagro within six hours of removal",
+      "Sentence": "biosolids are applied to land by Synagro within six hours of removal",
       "trigger_process": [
         "Land Application"
       ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "the practice of combining primary sludge and WAS for digestion has been halted",
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Runoff from the biosolids drying bed is sent to the process feed station to be introduced into the treatment train for treatment",
-      "trigger_process": []
     }
   ]
 }

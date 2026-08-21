@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks with an auger-type fine screen",
+      "Sentence": "headworks with an auger-type fine screen,",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,22 +27,30 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "equalization basin",
+      "Sentence": "equalization basin,",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "Reactor",
+      "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "nitrification/denitrification basins",
+      "Sentence": "nitrification/denitrification basins,",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -53,11 +61,14 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two oxidation ditches",
+      "Sentence": "two oxidation ditches,",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -73,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two secondary clarifiers",
+      "Sentence": "two secondary clarifiers,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -83,11 +94,13 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four parallel dual media (anthracite coal and sand) filters",
+      "Sentence": "four parallel dual media (anthracite coal and sand) filters,",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -95,16 +108,32 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ultraviolet light (UV) disinfection",
+      "Sentence": "and ultraviolet light (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Scum and waste activated sludge (WAS) from the secondary clarifiers are pumped to the Walker Tank",
+      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -112,12 +141,13 @@
         "Aeration"
       ],
       "Role": [
-        "Aerobic"
+        "Aerobic",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Walker Tank which has an aeration basin",
+      "Sentence": "Walker Tank which has an aeration basin,",
       "trigger_process": []
     },
     {
@@ -126,14 +156,14 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Walker Tank which has ... secondary clarifier",
+      "Sentence": "Walker Tank which has ... secondary clarifier,",
       "trigger_process": [
-        "Secondary Clarification"
+        "Unspecified Clarification"
       ]
     },
     {
@@ -141,11 +171,14 @@
       "Process": [
         "Digestion"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Walker Tank which has ... digestion area",
+      "Sentence": "Walker Tank which has ... digestion area.",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -156,28 +189,18 @@
         "Centrifugation",
         "Dewatering"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the digestion area is pumped to a centrifuge for dewatering",
+      "Sentence": "Sludge from the digestion area is pumped to a centrifuge for dewatering.",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "The Facility includes sludge drying beds; however, the sludge drying beds have not been used for that purpose for several years",
-      "trigger_process": [
-        "Drying"
       ]
     },
     {
@@ -185,13 +208,32 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The dewatered sludge is taken off-site for disposal as alternative daily cover at a regional municipal solid waste landfill",
+      "Sentence": "The dewatered sludge is taken off-site for disposal as alternative daily cover at a regional municipal solid waste landfill.",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying",
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Facility includes sludge drying beds; however, the sludge drying beds have not been used for that purpose for several years.",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -199,14 +241,40 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "add ... grit removal",
+      "Sentence": "add better screening capabilities, grit removal, and odor control for the influent sewer;",
       "trigger_process": [
         "Grit Removal"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New septage and vactor waste receiving facilities;",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "installation of a sewage force main and lift station from the Penn Valley collection system to the Facility.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -214,30 +282,16 @@
         "ChemicalAddition",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "may construct upgrades to add peracetic acid (PAA) upstream of the UV disinfection to enhance disinfection",
+      "Sentence": "the Discharger may construct upgrades to add peracetic acid (PAA) upstream of the UV disinfection to enhance disinfection at the Facility.",
       "trigger_process": [
         "Unspecified Chemical Addition",
         "Unspecified Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Upgrading or replacing the existing headworks to add better screening capabilities",
-      "trigger_process": [
-        "Screening/Microstrainer"
       ]
     }
   ]

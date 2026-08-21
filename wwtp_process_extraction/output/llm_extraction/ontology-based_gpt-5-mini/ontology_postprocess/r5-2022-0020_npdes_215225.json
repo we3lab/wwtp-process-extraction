@@ -23,7 +23,13 @@
         "Nitrification",
         "Denitrification"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NitrogenRemoval",
+        "NutrientRemoval"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -50,16 +56,34 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a chemical feed facility;",
+      "trigger_process": [
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
       "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation",
         "Mixing"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a chemical feed facility; a rapid mix basin; two flocculation basins;",
+      "Sentence": "a rapid mix basin;",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -70,7 +94,9 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -80,7 +106,7 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration"
       ],
@@ -117,7 +143,10 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -125,9 +154,9 @@
       "trigger_process": []
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "MixingBasin",
       "Process": [
-        "Equalization"
+        "Mixing"
       ],
       "Role": [
         "Equalization"
@@ -144,47 +173,52 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and an emergency storage basin.",
+      "Sentence": "an emergency storage basin.",
       "trigger_process": []
     },
     {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "For storage of recycled water to be used for reclamation, the Facility includes an operational storage basin",
+      "Sentence": "the Facility includes an operational storage basin and a seasonal storage basin.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "from which the recycled water is pumped to various reclamation uses",
       "trigger_process": []
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and a seasonal storage basin.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Dewatering",
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -193,14 +227,18 @@
       "Location": "on-site",
       "Sentence": "Sludge is anaerobically digested in HDPE-lined facultative sludge lagoons.",
       "trigger_process": [
-        "Anaerobic Digestion"
+        "Air Drying",
+        "Anaerobic Digestion",
+        "Anaerobic Lagoon",
+        "Biosolids Lagoon",
+        "Stabilization Pond"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Dewatering",
-        "Drying"
+        "BiosolidsDisposal",
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
@@ -208,22 +246,6 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "one of the two basins is emptied, dewatered, and dried in place.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are hauled to a landfill for disposal.",
@@ -239,26 +261,14 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "off-site",
       "Sentence": "If suitable, the Discharger plans to use the dried biosolids on the City-owned farmland.",
       "trigger_process": [
         "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a chemical feed facility;",
-      "trigger_process": [
-        "Unspecified Chemical Addition"
       ]
     }
   ]

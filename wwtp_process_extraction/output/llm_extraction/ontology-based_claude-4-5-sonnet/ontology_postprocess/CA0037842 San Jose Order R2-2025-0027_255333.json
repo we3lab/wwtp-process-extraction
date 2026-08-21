@@ -67,6 +67,20 @@
       ]
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -142,27 +156,24 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Process": null,
       "Role": [
-        "Equalization",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation and sedimentation.",
-      "trigger_process": [
-        "Equalization"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -176,7 +187,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -199,7 +212,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -207,22 +220,37 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition",
         "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "ReducingAgent"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection. As the effluent leaves the contact channels, its chlorine residual is measured, and an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "As the effluent leaves the contact channels, its chlorine residual is measured, and an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Reduction"
       ]
     },
     {
@@ -319,7 +347,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -331,7 +359,7 @@
       "Location": "on-site",
       "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -359,9 +387,7 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -375,9 +401,7 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -391,9 +415,7 @@
       "Process": [
         "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -452,16 +474,11 @@
     },
     {
       "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "This project will renew the mesophilic digester tanks and the mechanical, electrical, and instrumentation and control equipment associated with them, as well as replacing the existing floating covers with fixed covers.",
@@ -501,6 +518,26 @@
         "Centrifuge",
         "Mechanical Dewatering",
         "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing.",
+      "trigger_process": [
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     }
   ]

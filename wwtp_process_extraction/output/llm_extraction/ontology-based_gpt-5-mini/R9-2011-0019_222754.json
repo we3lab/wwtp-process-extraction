@@ -22,7 +22,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "peroxide addition"
@@ -54,13 +56,12 @@
       "Sentence": "primary sedimentation"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -94,13 +95,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection (chlorination) capabilities limited to the capacity necessary to disinfect secondary effluent currently reused on-site"
+      "Sentence": "disinfection (chlorination) capabilities limited to the capacity necessary to disinfect secondary effluent"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation",
-        "Thickening"
+        "Flotation"
       ],
       "Role": [
         "SolidsHandling"
@@ -119,7 +119,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -146,9 +145,9 @@
       "Sentence": "mechanical dewatering (centrifuges)"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -159,95 +158,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "heat drying"
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "inline sewage grinders"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "primary sedimentation tanks"
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "roughing filters"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "an activated sludge process utilizing aeration tanks"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "secondary clarifiers"
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "tertiary filtration"
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "chlorine disinfection"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -303,19 +213,113 @@
       "Sentence": "reverse osmosis (RO) membrane filtration"
     },
     {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "chlorine disinfection"
+    },
+    {
       "Equipment": "Thickener",
       "Process": [
-        "Thickening"
+        "Thickening",
+        "Recirculation"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "solids thickening"
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "inline sewage grinders"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "primary sedimentation tanks"
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "roughing filters"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "an activated sludge process utilizing aeration tanks"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "secondary clarifiers"
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "tertiary filtration"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -347,7 +351,7 @@
       "Sentence": "chlorine disinfection only"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
         "ActivatedSludge"
       ],

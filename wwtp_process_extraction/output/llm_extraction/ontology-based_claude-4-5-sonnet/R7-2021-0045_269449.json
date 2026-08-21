@@ -6,8 +6,7 @@
         "Equalization"
       ],
       "Role": [
-        "Equalization",
-        "Pretreatment"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -33,8 +32,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -44,7 +42,8 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Separation"
       ],
       "Role": [
         "Secondary"
@@ -85,10 +84,11 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Storage"
+      ],
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -96,24 +96,10 @@
       "Sentence": "The Facility also maintains a 4-million-gallon overflow storage pond with a synthetic liner, which can divert flow from the equalization tanks."
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A portion of the solids separated in the secondary clarifier is pumped back to the oxidation ditch for additional treatment"
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -123,7 +109,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the remaining portion is pumped to one of six drying beds, dried, and placed in trash bins prior to being hauled away by a contractor"
+      "Sentence": "A portion of the solids separated in the secondary clarifier is pumped back to the oxidation ditch for additional treatment and the remaining portion is pumped to one of six drying beds, dried, and placed in trash bins prior to being hauled away by a contractor."
     },
     {
       "Equipment": null,
@@ -138,7 +124,22 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled away by a contractor (currently, Allied Waste Services) to the Allied Waste Imperial Landfill (Imperial, CA) for disposal."
+      "Sentence": "placed in trash bins prior to being hauled away by a contractor (currently, Allied Waste Services) to the Allied Waste Imperial Landfill (Imperial, CA) for disposal."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A portion of the solids separated in the secondary clarifier is pumped back to the oxidation ditch for additional treatment."
     }
   ]
 }

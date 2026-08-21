@@ -1,19 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "wastewater is conveyed from the mobile home and RV park by gravity into a series of two lift stations that pump collected wastewater to the Facility for secondary treatment."
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -24,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater pumped to the Facility passes through a manual bar rack, into a primary aeration basin..."
+      "Sentence": "passes through a manual bar rack"
     },
     {
       "Equipment": "AerationBasin",
@@ -34,12 +21,13 @@
       ],
       "Role": [
         "Primary",
-        "Aerobic"
+        "Aerobic",
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater pumped to the Facility passes through a manual bar rack, into a primary aeration basin..."
+      "Sentence": "into a primary aeration basin"
     },
     {
       "Equipment": "AerationBasin",
@@ -48,14 +36,13 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Aerobic",
         "Secondary",
-        "Extended"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a re-aeration basin, then into a clarifier located in the center of the package plant."
+      "Sentence": "followed by a re-aeration basin"
     },
     {
       "Equipment": "SedimentationTank",
@@ -68,7 +55,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then into a clarifier located in the center of the package plant."
+      "Sentence": "then into a clarifier located in the center of the package plant"
     },
     {
       "Equipment": "Pump",
@@ -78,12 +65,10 @@
       "Role": [
         "Recirculation"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return activated sludge from the clarifier is pumped into the re-aeration phase of the plant."
+      "Sentence": "Return activated sludge from the clarifier is pumped into the re-aeration phase of the plant"
     },
     {
       "Equipment": "Digester",
@@ -99,7 +84,37 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge from the clarifier is pumped to a sludge digester section of the package plant."
+      "Sentence": "Waste activated sludge from the clarifier is pumped to a sludge digester section of the package plant"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from the digester is discharged to two on-site sludge drying beds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried sludge is disposed of at the CR&R Inc. landfill located in El Centro, California"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -115,7 +130,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Clarifier wastewater effluent is treated by gravel filtration."
+      "Sentence": "Clarifier wastewater effluent is treated by gravel filtration. The gravel filter is backwashed once per day and the backwash is recycled to the headworks"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -124,42 +139,13 @@
         "Cleaning"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following the backwash, wastewater undergoes ultraviolet (UV) disinfection."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from the digester is discharged to two on-site sludge drying beds."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dried sludge is disposed of at the CR&R Inc. landfill located in El Centro, California."
+      "Sentence": "Following the backwash, wastewater undergoes ultraviolet (UV) disinfection. The UV system is inspected and cleaned twice per year"
     }
   ]
 }

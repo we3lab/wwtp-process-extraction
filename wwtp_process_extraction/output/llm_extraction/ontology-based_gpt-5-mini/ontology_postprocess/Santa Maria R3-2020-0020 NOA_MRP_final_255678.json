@@ -19,7 +19,8 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
         "Pretreatment"
@@ -27,7 +28,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by two aerated grit chambers",
+      "Sentence": "two aerated grit chambers",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +44,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary treatment consists of two primary clarifiers",
+      "Sentence": "two primary clarifiers that operate in parallel",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -60,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two primary ... aerobic trickling filters",
+      "Sentence": "Secondary treatment is performed using two primary and two secondary aerobic trickling filters",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -77,15 +78,46 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two ... secondary aerobic trickling filters",
+      "Sentence": "Each of the primary trickling filters has a volume of 543,000 gallons",
       "trigger_process": [
         "Trickling Filter"
       ]
     },
     {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Each of the secondary trickling filters has a volume of 170,000 gallons",
+      "trigger_process": [
+        "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Discharge"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater Disposal Method Percolation Ponds, 123 acres",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -107,6 +139,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Anaerobic"
       ],
       "Substance": [
@@ -122,8 +155,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -135,19 +167,7 @@
       "Location": "on-site",
       "Sentence": "Sludge Drying Beds",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Percolation Ponds, 123 acres",
-      "trigger_process": [
-        "Unspecified Lagoon"
+        "Air Drying"
       ]
     },
     {
@@ -155,7 +175,9 @@
       "Process": [
         "Composting"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -171,7 +193,9 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],

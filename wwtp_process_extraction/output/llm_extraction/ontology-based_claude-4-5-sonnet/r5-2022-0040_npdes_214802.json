@@ -27,13 +27,10 @@
       "Sentence": "Liquid stream treatment processes include influent screening, grit removal, primary clarification, aeration basins, secondary clarification, filtration, and disinfection."
     },
     {
-      "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -57,7 +54,7 @@
       "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "ChemicalAddition"
       ],
       "Role": [
         "Primary"
@@ -74,7 +71,6 @@
       "Equipment": "AerationBasin",
       "Process": [
         "MLE",
-        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
@@ -84,7 +80,9 @@
         "Aerobic",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Each basin now utilizes a diffused air system and has been configured as the Modified Ludzack Ettinger (MLE) activated sludge process. The MLE process consists of an anoxic zone followed by an aerobic zone, with internal mixed liquor recycle to recycle aerobic effluent back to the anoxic zone for denitrification of ammonia oxidized to nitrate in the aerobic zone."
@@ -145,11 +143,10 @@
       "Sentence": "Currently all flow is being filtered using the cloth media filtration system, with the conventional media filters held in standby for high flows or for backup of the cloth filters, as necessary."
     },
     {
-      "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
+        "Equalization",
         "Backwash"
       ],
       "Substance": null,
@@ -193,8 +190,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -202,22 +198,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Facility has three primary digesters and one secondary digester, each with a 65-foot diameter and a working volume of 662,000 gallons. The primary digesters can process solids directly from the primary and secondary clarifiers. Biodegradation of organic materials and production of methane gas and carbon dioxide take place in the primary digesters, which are continually mixed and heated within the mesophilic temperature range (approximately 95°F)."
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Fitted with a floating gasholder cover, the secondary digester stores primary digested sludge and biogas produced in the primary digesters."
     },
     {
       "Equipment": "Boiler",
@@ -259,9 +239,7 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Equalization"
-      ],
+      "Process": null,
       "Role": [
         "Equalization"
       ],
@@ -275,7 +253,8 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Emergency"
+        "Equalization",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -283,29 +262,19 @@
       "Sentence": "The Facility has 13 ponds used for influent flow equalization, emergency storage, and facultative treatment and/or centrifuge centrate management, and solids drying (if necessary)."
     },
     {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal",
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dried biosolids are hauled to a landfill."
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Pyrolysis system will be added to the process after the centrifuge. Biosolids will be dried to approximately 80 percent solids."
+      "Sentence": "During the next five years a Pyrolysis system is projected to be installed at the Facility. The Pyrolysis system will be added to the process after the centrifuge. Biosolids will be dried to approximately 80 percent solids."
     },
     {
       "Equipment": "Reactor",
@@ -316,7 +285,20 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "During the next five years a Pyrolysis system is projected to be installed at the Facility. The dried solids will enter the pyrolysis unit and be heated to 1400 degrees Fahrenheit."
+      "Sentence": "The dried solids will enter the pyrolysis unit and be heated to 1400 degrees Fahrenheit. This process will discharge a ninety-nine percent dried carbon-based product known as Biochar."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried biosolids are hauled to a landfill."
     }
   ]
 }

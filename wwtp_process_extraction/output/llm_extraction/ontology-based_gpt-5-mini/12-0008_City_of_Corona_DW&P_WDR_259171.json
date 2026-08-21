@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consist of two channel grinders and a grit removal system"
+      "Sentence": "the headworks consist of two channel grinders and a grit removal system"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consist of two channel grinders and a grit removal system"
+      "Sentence": "the headworks consist of two channel grinders and a grit removal system"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,16 +37,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The design capacity of Plant 1A is 5.5 MGD. Treatment processes consists of two rectangular primary sedimentation units"
+      "Sentence": "two rectangular primary sedimentation units"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
+        "Anoxic",
         "NutrientRemoval",
+        "NitrogenRemoval",
         "Stepfeed"
       ],
       "Substance": null,
@@ -72,13 +78,16 @@
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -108,7 +117,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treated wastewater from Plants 1A and 1 B is discharged to a flow equalization basin"
+      "Sentence": "Secondary treated wastewater from Plants 1A and 1B is discharged to a flow equalization basin"
     },
     {
       "Equipment": "CoagulationBasin",
@@ -121,7 +130,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment train consists of coagulation"
+      "Sentence": "The tertiary treatment train consists of coagulation,"
     },
     {
       "Equipment": "RapidSandFilter",
@@ -135,7 +144,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment train consists of ... continuous backwash sand filtration"
+      "Sentence": "The tertiary treatment train consists of ... continuous backwash sand filtration,"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -153,6 +162,18 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "chlorination with sodium hypochlorite in two serpentine chlorine contact tanks followed by dechlorination with sodium bisulfate"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "can be pumped directly to three percolation ponds, located one mile east of the plant"
     },
     {
       "Equipment": "Tank",
@@ -183,7 +204,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -202,45 +224,20 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sent to one of three anaerobic digesters"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Waste activated sludge from Plant 1B is pumped to the two belt presses or the gravity belt thickeners"
+      "Sentence": "prior to being sent to one of three anaerobic digesters"
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "All belt press filtrate is reintroduced to the oxidation ditches"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -264,28 +261,17 @@
       "Sentence": "sludge cake ... is transported to an approved composting facility"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Posttreatment",
-        "Secondary"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Secondary treated wastewater is discharged at DP 002 to nearby percolation ponds"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "Tertiary treated effluent (after 5/31/2014) discharged to three large percolation ponds"
+      "Location": "on-site",
+      "Sentence": "All belt press filtrate is reintroduced to the oxidation ditches"
     }
   ]
 }

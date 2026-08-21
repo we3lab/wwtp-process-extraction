@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening",
+      "Sentence": "the plant\u2019s existing secondary treatment: screening, grit removal, primary sedimentation...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "the plant\u2019s existing secondary treatment: screening, grit removal, primary sedimentation...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,21 +43,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sedimentation",
+      "Sentence": "the plant\u2019s existing secondary treatment: ...primary sedimentation...",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flow equalization",
+      "Sentence": "the plant\u2019s existing secondary treatment: ...flow equalization...",
       "trigger_process": [
         "Equalization"
       ]
@@ -65,8 +67,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -74,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "trickling filtration",
+      "Sentence": "the plant\u2019s existing secondary treatment: ...trickling filtration...",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -92,7 +93,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge aeration",
+      "Sentence": "the plant\u2019s existing secondary treatment: ...activated sludge aeration...",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -108,7 +109,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "the plant\u2019s existing secondary treatment: ...secondary clarification...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -127,7 +128,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection",
+      "Sentence": "the plant\u2019s existing secondary treatment: ...and chlorine disinfection.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -143,7 +144,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "routed to the EBDA pipeline for dechlorination and subsequent discharge through a deepwater outfall",
+      "Sentence": "EBDA transports treated wastewater from its member agencies to its Marina Dechlorination Facility near the San Leandro Marina...",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -154,12 +155,13 @@
         "Dechlorination"
       ],
       "Role": [
+        "Pretreatment",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will be dechlorinated and routed through an enclosed nitrification system",
+      "Sentence": "the Discharger plans to install a dechlorination system ... to further treat a portion of its flows",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -167,18 +169,17 @@
     {
       "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
-        "Aeration",
-        "Nitrification"
+        "Nitrification",
+        "Aeration"
       ],
       "Role": [
         "NitrogenRemoval",
-        "Aerobic",
-        "Secondary"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "enclosed nitrification system, consisting of membrane aerated biofilm reactors",
+      "Sentence": "the Discharger plans to install ... an enclosed nitrification system, consisting of membrane aerated biofilm reactors...",
       "trigger_process": [
         "Membrane Aerated Biofilm Reactor",
         "Nitrification",
@@ -197,7 +198,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "terraced denitrification bioreactors, consisting of a series of woodchip-filled crates",
+      "Sentence": "distributed to the top of terraced denitrification bioreactors ... that will provide a carbon-rich anoxic zone suitable for denitrification.",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
@@ -210,14 +211,15 @@
       ],
       "Role": [
         "Tertiary",
-        "Posttreatment"
+        "Posttreatment",
+        "NitrogenRemoval"
       ],
       "Substance": [
         "Constituent-Organics"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "convert its existing 6.9-acre wastewater storage basin into a shallow, freshwater, open-water wetland",
+      "Sentence": "convert its existing 6.9-acre wastewater storage basin into a shallow, freshwater, open-water wetland that will allow photolysis ... The wetland will also provide additional denitrification...",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS",
@@ -225,24 +227,9 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "its existing 6.9-acre wastewater storage basin",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -254,7 +241,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is anaerobically digested",
+      "Sentence": "Sludge is anaerobically digested...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -262,7 +249,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -272,7 +260,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered using a belt filter press",
+      "Sentence": "Sludge is ... dewatered using a belt filter press...",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -280,7 +268,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -290,25 +278,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and air dried",
+      "Sentence": "Sludge is ... air dried.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "LandApplication"
       ],
       "Role": [
-        "SolidsHandling"
+        "BiosolidsDisposal"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauls dried biosolids to an authorized disposal site or applies the biosolids to land",
+      "Sentence": "The Discharger hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Land Application"
       ]
     }
   ]

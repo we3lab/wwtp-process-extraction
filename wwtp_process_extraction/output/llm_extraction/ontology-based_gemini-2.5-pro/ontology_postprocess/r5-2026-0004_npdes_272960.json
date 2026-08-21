@@ -4,12 +4,12 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include four screw pumps, two 6mm punched plate screens, and two aerated grit chambers",
+      "Sentence": "The headworks include four screw pumps, two 6mm punched plate screens, and two aerated grit chambers...",
       "trigger_process": []
     },
     {
@@ -23,7 +23,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include four screw pumps, two 6mm punched plate screens, and two aerated grit chambers",
+      "Sentence": "The headworks include four screw pumps, two 6mm punched plate screens, and two aerated grit chambers...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -40,13 +40,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include four screw pumps, two 6mm punched plate screens, and two aerated grit chambers",
+      "Sentence": "...and two aerated grit chambers, along with a magnesium hydroxide alkalinity control system.",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": null,
       "Process": [
         "pHAdjustment"
       ],
@@ -58,7 +58,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks include... a magnesium hydroxide alkalinity control system.",
+      "Sentence": "...along with a magnesium hydroxide alkalinity control system.",
       "trigger_process": [
         "Neutralization"
       ]
@@ -67,12 +67,14 @@
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
+        "Denitrification",
+        "Nitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Anoxic",
+        "Aerobic",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -81,6 +83,7 @@
       "Sentence": "The biological/secondary treatment consists of four 2 MG oxidation ditches using fine bubble diffusers, each with an anoxic zone for denitrification.",
       "trigger_process": [
         "Denitrification",
+        "Nitrification",
         "Oxidation Ditch"
       ]
     },
@@ -119,7 +122,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -153,9 +157,10 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation",
         "AnaerobicDigestion",
-        "AerobicDigestion"
+        "AerobicDigestion",
+        "Drying",
+        "Sedimentation"
       ],
       "Role": [
         "SolidsHandling",
@@ -168,7 +173,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Facultative lagoons allow solids to separate by density, with anaerobic digestion occurring in the sludge layer and aerobic activity near the surface.",
+      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons... with anaerobic digestion occurring in the sludge layer and aerobic activity near the surface.",
       "trigger_process": [
         "Aerobic Digestion",
         "Anaerobic Digestion",
@@ -179,29 +184,9 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Dewatering"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "...allowing that pond to rest/digest for two years, and hiring a contractor the following summer to dry the material in place...",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "LandApplication",
         "Landfill"
       ],
@@ -213,7 +198,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...landfill disposal, land application, or other disposal off site.",
+      "Sentence": "...and landfill disposal, land application, or other disposal off site.",
       "trigger_process": [
         "Biosolids Landfill",
         "Land Application"
@@ -226,15 +211,13 @@
       ],
       "Role": [
         "Detention",
-        "Equalization"
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger is preparing to assess alternatives, design, secure funding, permit and construct improvements to the Erskine Pond that will convert it or portions of it into an emergency detention basin and pump station",
-      "trigger_process": [
-        "Equalization"
-      ]
+      "Sentence": "The emergency detention basin is expected to be in operation by 2036 and will receive excess sewage flows occurring during larger rain events and bypasses during finite emergency events.",
+      "trigger_process": []
     },
     {
       "Equipment": "Pond",

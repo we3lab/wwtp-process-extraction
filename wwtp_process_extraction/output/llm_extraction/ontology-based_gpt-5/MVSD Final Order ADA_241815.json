@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification..."
+      "Sentence": "The treatment system consists of screening..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -42,11 +42,12 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "Nitrification",
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": [
@@ -85,8 +86,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -100,18 +100,22 @@
       "Equipment": "Wetland",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": [
         "Constituent-Ammonia"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for “polishing” treatment to remove ammonia..."
+      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for “polishing” treatment to remove ammonia and other pollutants..."
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -120,7 +124,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened..."
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -129,19 +133,19 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...anaerobically digested..."
+      "Sentence": "Sludge is... anaerobically digested..."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -157,7 +161,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -185,10 +189,20 @@
       "Sentence": "...placed as alternative daily cover at a landfill."
     },
     {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day."
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -196,22 +210,21 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls..."
+      "Sentence": "The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment and controls."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls."
+      "Sentence": "The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls."
     },
     {
       "Equipment": "Screen",
@@ -224,13 +237,12 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism."
+      "Sentence": "The Discharger plans to rebuild the headworks automatic screening mechanism."
     },
     {
       "Equipment": "Wetland",
       "Process": null,
       "Role": [
-        "Posttreatment",
         "NutrientRemoval"
       ],
       "Substance": null,

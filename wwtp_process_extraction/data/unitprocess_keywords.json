@@ -714,18 +714,37 @@
         "exclude_if_any": ["Equipment-CentrifugalThickener"],
         "werf_codes": ["DEWATER"]
       },
-      "Drying": {
-        "alt_names": ["drying"],
+      "Heat Drying": {
+        "alt_names": ["heat drying", "thermal drying", "heat dryer", "thermal dryer", "sludge dryer", "rotary dryer", "belt dryer", "heat treatment"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [
-          "Biosolids Heat Drying", 
-          "Biosolids Air Drying, Sand Beds", 
-          "Biosolids Air Drying, Other Media", 
-          "Biosolids Air Drying", 
-          "Biosolids (Heat Treatment-Blowers)", 
+          "Biosolids Heat Drying",
+          "Biosolids (Heat Treatment-Blowers)",
           "Biosolods (Heat Treatment)"
         ],
-        "ontology_triggers": [],
+        "ontology_triggers": [["Process-ThermalDrying"]],
+        "priority": 1,
+        "werf_codes": ["BIODRY"]
+      },
+      "Air Drying": {
+        "alt_names": ["air drying", "drying bed", "sludge drying bed", "drying lagoon", "solar drying", "sand bed"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [
+          "Biosolids Air Drying, Sand Beds",
+          "Biosolids Air Drying, Other Media",
+          "Biosolids Air Drying"
+        ],
+        "ontology_triggers": [["Process-AirDrying"]],
+        "priority": 1,
+        "werf_codes": []
+      },
+      "Unspecified Drying": {
+        "alt_names": ["drying"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [],
+        "ontology_triggers": [["Process-Drying"]],
+        "exclude_if_any": ["Process-ThermalDrying", "Process-AirDrying"],
+        "priority": 2,
         "werf_codes": []
       },
       "Elutriation": {
@@ -865,7 +884,7 @@
         "alt_names": ["cogeneration", "chp", "combined heat and power"],
         "alt_names_case_sensitive": ["CHP"],
         "cwns_processes": ["Biosolids Digestor Gas Utilization Facilities"],
-        "ontology_triggers": ["Process-Cogeneration"],
+        "ontology_triggers": [["Process-Cogeneration"], ["Equipment-Cogenerator"]],
         "werf_codes": ["BIOGAS_CWNS"]
       },
       "Heat Recovery": {

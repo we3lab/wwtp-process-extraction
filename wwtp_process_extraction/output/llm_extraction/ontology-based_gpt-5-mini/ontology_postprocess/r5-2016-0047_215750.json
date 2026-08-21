@@ -22,11 +22,10 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge treatment with a single oxidation ditch",
@@ -45,7 +44,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three secondary clarifiers;",
+      "Sentence": "three secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -54,30 +53,21 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection with gaseous chlorine;",
+      "Sentence": "disinfection with gaseous chlorine; and dechlorination.",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and dechlorination.",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -102,7 +92,9 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -114,7 +106,7 @@
       "Location": "on-site",
       "Sentence": "dewatered via sludge drying beds;",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {

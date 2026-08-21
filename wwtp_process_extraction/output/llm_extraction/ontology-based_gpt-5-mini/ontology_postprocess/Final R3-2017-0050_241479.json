@@ -11,23 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal, and primary sedimentation.",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "installation of new influent screens at the headworks",
+      "Sentence": "All wastewater goes through primary treatment, including screening...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -43,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal, and primary sedimentation.",
+      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -59,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All wastewater goes through primary treatment, including screening, grit removal, and primary sedimentation.",
+      "Sentence": "All wastewater goes through primary treatment, including...primary sedimentation.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -67,7 +51,8 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -82,15 +67,22 @@
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Flocculation",
+        "Mixing"
+      ],
       "Role": [
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a solids-contact chamber",
-      "trigger_process": []
+      "Sentence": "A portion of the flow is diverted for secondary treatment process using biofilters, a solids-contact chamber...",
+      "trigger_process": [
+        "Flocculation",
+        "Primary Clarification",
+        "Secondary Clarification"
+      ]
     },
     {
       "Equipment": "SedimentationTank",
@@ -103,7 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "finally on to a secondary sedimentation tank.",
+      "Sentence": "The secondary process also includes...and finally on to a secondary sedimentation tank.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -116,7 +108,8 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -128,6 +121,20 @@
         "Chlorination",
         "Dechlorination"
       ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "When flows exceed 1 MGD, secondary-treated effluent can be blended with primary treated effluent...",
+      "trigger_process": []
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -152,11 +159,12 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
+        "AirDrying",
         "Dewatering"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -165,21 +173,8 @@
       "Location": "on-site",
       "Sentence": "Stabilized sludge from the secondary digester is transferred to one of 12 sludge-drying beds. Drying times range from two to four months...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Containment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "once dried, biosolids are removed from the beds and stored in a concrete containment area.",
-      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -189,12 +184,30 @@
       "Role": [
         "BiosolidsDisposal"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are stored ... until they are removed from the WWTP for composting and eventual use as a soil amendment.",
+      "Sentence": "Biosolids are removed from the WWTP for composting and eventual use as a soil amendment.",
       "trigger_process": [
         "Composting"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The adopted budgets contain maintenance and improvement projects including the installation of new influent screens at the headworks...",
+      "trigger_process": [
+        "Screening/Microstrainer"
       ]
     }
   ]

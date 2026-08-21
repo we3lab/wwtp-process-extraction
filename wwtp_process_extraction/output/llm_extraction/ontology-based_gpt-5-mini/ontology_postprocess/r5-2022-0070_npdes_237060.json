@@ -21,13 +21,15 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -85,7 +87,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a chlorine contact basin, and dechlorination using sulfur dioxide",
+      "Sentence": "chlorine contact basin, and dechlorination using sulfur dioxide",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -95,20 +97,20 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "discharges to land using a series of five percolation ponds",
+      "Sentence": "The Facility discharges to land using a series of five percolation ponds",
       "trigger_process": [
-        "Polishing Lagoon"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -127,11 +129,13 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -144,12 +148,14 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -158,28 +164,34 @@
       "Location": "on-site",
       "Sentence": "eight sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "SolidsHandling"
+      "Process": [
+        "Digestion"
       ],
-      "Substance": null,
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two facultative sludge lagoons",
       "trigger_process": [
         "Biosolids Lagoon",
+        "Unspecified Digestion",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Tank",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Equalization",
@@ -193,7 +205,7 @@
       "Location": "on-site",
       "Sentence": "construct an 8-million-gallon concrete-lined flow equalization and sludge storage basin",
       "trigger_process": [
-        "Drying",
+        "Air Drying",
         "Equalization"
       ]
     },
@@ -208,7 +220,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "evaluating the need for additional grit removal to accommodate high influent grit loading",
+      "Sentence": "The Discharger is also evaluating the need for additional grit removal",
       "trigger_process": [
         "Grit Removal"
       ]

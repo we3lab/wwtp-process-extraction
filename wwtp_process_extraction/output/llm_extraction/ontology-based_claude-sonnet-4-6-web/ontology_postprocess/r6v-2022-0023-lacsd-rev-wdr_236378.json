@@ -56,7 +56,7 @@
       ]
     },
     {
-      "Equipment": "SepticTank",
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
@@ -70,7 +70,7 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Septic Tank"
+        "Grit Removal"
       ]
     },
     {
@@ -81,10 +81,12 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are six primary sedimentation tanks that are operated in parallel.",
+      "Sentence": "There are six primary sedimentation tanks that are operated in parallel. Primary sludge and skimmings are pumped to the anaerobic digestion system.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -100,13 +102,14 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
+        "Aerobic",
+        "Anoxic",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following primary sedimentation, effluent is pumped into nine aeration tanks divided into three aeration units operating in parallel with biological nitrification and denitrification.",
+      "Sentence": "effluent is pumped into nine aeration tanks divided into three aeration units operating in parallel with biological nitrification and denitrification.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -163,10 +166,12 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite) prior to entering six dual media gravity filters for reduction of turbidity and suspended solids. Filtrate is sent to chlorine contact tanks while backwash is sent to influent sewer or aeration tanks.",
+      "Sentence": "six dual media gravity filters for reduction of turbidity and suspended solids. Filtrate is sent to chlorine contact tanks while backwash is sent to influent sewer or aeration tanks.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -226,7 +231,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Anaerobic sludge digestion occurs in the digesters. Biosolids from the digesters are temporarily stored in storage digesters.",
+      "Sentence": "Anaerobic sludge digestion occurs in the digesters. Primary sludge and skimmings are pumped to the anaerobic digestion system.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -234,9 +239,31 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Drying"
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids from the digesters are temporarily stored in storage digesters.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -246,11 +273,32 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered biosolids are stored in drying beds covering 130,860 square feet and are eventually hauled off-site for composting to an authorized facility.",
+      "Sentence": "wastewater solids are anaerobically digested, centrifugally dewatered, and further dried in drying beds",
+      "Source": "web_search",
+      "Website": "https://www.lacsd.org/services/wastewater-sewage/facilities/lancaster-water-reclamation-plant",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dewatered biosolids are stored in drying beds covering 130,860 square feet... digested biosolids to be air dried, which helps reduce weight and hauling costs.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -258,9 +306,7 @@
       "Process": [
         "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -289,7 +335,10 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Aeration",
+        "Sedimentation"
+      ],
       "Role": null,
       "Substance": null,
       "Implementation": "past",
@@ -298,7 +347,7 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Aerated Lagoon"
       ]
     }
   ]

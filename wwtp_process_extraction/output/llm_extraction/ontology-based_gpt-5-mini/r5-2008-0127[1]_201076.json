@@ -5,18 +5,16 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Primary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the secondary WWTF consists of a septic tank effluent pumping (STEP) system"
+      "Sentence": "consists of a septic tank effluent pumping (STEP) system"
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "SlowSandFiltration"
+        "MediaFiltration"
       ],
       "Role": [
         "Secondary"
@@ -24,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary WWTF ... consists of ... recirculating sand filter"
+      "Sentence": "consists of ... recirculating sand filter"
     },
     {
       "Equipment": "Pond",
@@ -37,29 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two evaporation ponds with 40 mil plastic lining to minimize percolation"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a lined emergency storage pond (Pond 1)"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Pond 2 was recently enlarged and reconditioned with a new high-density polyethylene liner with a permeability less than 10-7 cm/sec"
+      "Sentence": "two evaporation ponds with 40 mil plastic lining"
     },
     {
       "Equipment": "Screen",
@@ -72,7 +48,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Influent to the tertiary WWTF will be screened with duplex mechanical fine screens to remove solids"
+      "Sentence": "Influent to the tertiary WWTF will be screened with duplex mechanical fine screens"
     },
     {
       "Equipment": "AerationBasin",
@@ -85,7 +61,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "then stored in an enclosed aerated flow equalization tank"
+      "Sentence": "stored in an enclosed aerated flow equalization tank"
     },
     {
       "Equipment": "TricklingFilter",
@@ -93,29 +69,36 @@
         "TricklingFiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The new secondary treatment system will consist of four trickling filters operated in series"
+      "Sentence": "the new secondary treatment system will consist of four trickling filters operated in series"
     },
     {
       "Equipment": "CoagulationBasin",
       "Process": [
-        "Coagulation",
-        "Flocculation"
+        "Coagulation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Coagulant-PolyaluminumChloride"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Prior to final clarification, a coagulant (polyaluminum hydroxychloride or aluminum chlorohydrate) will be added"
+      "Sentence": "a coagulant (polyaluminum hydroxychloride or aluminum chlorohydrate) will be added"
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "coagulation/flocculation, filtration, disinfection"
     },
     {
       "Equipment": "SedimentationTank",
@@ -128,7 +111,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Prior to final clarification, a coagulant ... will be added to the effluent"
+      "Sentence": "Prior to final clarification, a coagulant ... will be added"
     },
     {
       "Equipment": "RapidSandFilter",
@@ -137,9 +120,12 @@
         "Backwashing"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Backwash"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The clarified effluent will be filtered using duplex sand filters ... The filters will be backwashed"
@@ -158,7 +144,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the treated effluent will be disinfected using a duplex feed system to pump a 12.5% solution of liquid sodium hypochlorite into the filtered effluent"
+      "Sentence": "treated effluent will be disinfected using a duplex feed system to pump a 12.5% solution of liquid sodium hypochlorite"
     },
     {
       "Equipment": "Pond",
@@ -169,20 +155,18 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Following treatment and disinfection the tertiary treated effluent will be discharged into lined effluent storage ponds"
+      "Sentence": "will be discharged into lined effluent storage ponds with a permeability less than 10-7 cm/sec"
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Discharger currently disposes of sludge at the Fresno County landfill"
+      "Location": "on-site",
+      "Sentence": "WWTF currently has three ponds for effluent storage; a lined emergency storage pond (Pond 1)"
     },
     {
       "Equipment": "AerobicDigester",
@@ -202,8 +186,9 @@
       "Sentence": "wasted sludge will be pumped to an aerated sludge storage tank for digestion and initial thickening"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -214,44 +199,38 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "a sludge dewatering unit, such as a centrifuge, screw, or belt press, will be added"
+      "Sentence": "a sludge dewatering unit, such as a centrifuge ... will be added"
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Filtration",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a sludge dewatering unit, such as ... a belt press, will be added"
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
+        "Landfill"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Decant water from the sludge storage tanks will be returned to the treatment system at the headworks"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
+      "Substance": [
+        "Fluid-Sludge"
       ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The ponds will serve as source water for the irrigation pumping station that pressurizes the recycled water distribution system"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "allow for the use disinfected tertiary recycled water for unrestricted irrigation of landscaped and open space areas"
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger currently disposes of sludge at the Fresno County landfill"
     }
   ]
 }

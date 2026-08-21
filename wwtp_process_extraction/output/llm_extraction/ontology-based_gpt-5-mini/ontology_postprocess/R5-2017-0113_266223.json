@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "main treatment facility consists of raw influent bar screening",
+      "Sentence": "raw influent bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -55,13 +55,12 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "main treatment facility consists of...biological nutrient removal",
+      "Sentence": "biological nutrient removal",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -94,7 +93,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "main treatment facility consists of...tertiary filtration",
+      "Sentence": "tertiary filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -109,10 +108,12 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "main treatment facility consists of...chlorination, dechlorination",
+      "Sentence": "chlorination, dechlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -129,20 +130,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "main treatment facility consists of...post-aeration",
+      "Sentence": "post-aeration",
       "trigger_process": []
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Containment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The emergency storage pond is used infrequently to divert effluent",
+      "Sentence": "emergency storage",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -172,16 +172,14 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are...anaerobically digested",
+      "Sentence": "anaerobically digested",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -189,8 +187,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -202,28 +200,43 @@
       "Location": "on-site",
       "Sentence": "dewatered in impermeable asphalt-paved drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "LandApplication",
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The dried biosolids are hauled off-site for land application or disposed in a landfill",
+      "Sentence": "dried biosolids are hauled off-site for land application or disposed in a landfill",
       "trigger_process": [
         "Biosolids Landfill",
         "Land Application"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "industrial facility consists of four unlined industrial ponds",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
@@ -233,8 +246,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Leprino...leases two lined aerated lagoons...for preliminary treatment",
-      "trigger_process": []
+      "Sentence": "leases two lined aerated lagoons ... for preliminary treatment",
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
     },
     {
       "Equipment": "Pond",
@@ -245,19 +260,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Leprino...leases...one 8-acre unlined oxidation pond from the Discharger for preliminary treatment",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger's industrial facility consists of four unlined industrial ponds",
+      "Sentence": "one 8-acre unlined oxidation pond ... for preliminary treatment",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -273,26 +276,22 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "proposed Phase 2 improvements include...construction of a new primary clarifier",
+      "Sentence": "construction of a new primary clarifier",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "MediaFiltration"
-      ],
+      "Process": null,
       "Role": [
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "proposed Phase 3 improvements include...installation of a new filter pump for tertiary treatment",
-      "trigger_process": [
-        "Media Filtration"
-      ]
+      "Sentence": "installation of a new filter pump for tertiary treatment",
+      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -305,7 +304,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "proposed Phase 4 improvements include the construction of a new secondary clarifier",
+      "Sentence": "construction of a new secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -313,8 +312,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
         "Secondary"
@@ -322,7 +320,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "proposed Phase 4 improvements include the construction of a new...aeration basin",
+      "Sentence": "construction of a ... aeration basin",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -338,7 +336,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "proposed Phase 4 improvements include...the construction of a sludge digester",
+      "Sentence": "construction of a sludge digester",
       "trigger_process": [
         "Unspecified Digestion"
       ]

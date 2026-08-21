@@ -11,13 +11,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The influent flows through a comminutor"
+      "Sentence": "The influent flows through a comminutor..."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -27,17 +28,18 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Extended"
+        "Extended",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge extended aeration"
+      "Sentence": "The secondary-23 treatment process ... consists of ... activated sludge extended aeration..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,21 +52,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarification"
+      "Sentence": "The secondary-23 treatment process ... consists of ... clarification..."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
+        "Tertiary",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination, and dechlorination."
+      "Sentence": "The secondary-23 treatment process ... consists of ... chlorination, and dechlorination."
     },
     {
       "Equipment": "Screen",
@@ -72,117 +76,45 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "includes fine screening"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "flow equalization"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sludge storage"
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": null,
-      "Role": [
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "anoxic zones"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic",
-        "Secondary",
+        "Pretreatment",
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an aeration zone including an immersion-type membrane module"
+      "Sentence": "The Smith and Loveless Titan Membrane Bio Reactor Package, which includes fine screening..."
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Biofiltration"
+        "Biofiltration",
+        "Filtration",
+        "Aeration"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Anoxic",
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a filtration zone"
+      "Sentence": "the Smith and Loveless Titan Membrane Bio Reactor Package, which includes ... anoxic zones, an aeration zone including an immersion-type membrane module ..."
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "chlorine contact, and dechlorination."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The sludge is either dried in drying beds or bagged for dewatering over plastic pallets."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treated wastewater, prior to dechlorination, is pumped to either a tertiary or a secondary-23 recycled water storage tank"
+      "Sentence": "The Smith and Loveless Titan Membrane Bio Reactor Package, which includes ... sludge storage..."
     },
     {
       "Equipment": "Tank",
@@ -193,7 +125,37 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a tertiary or a secondary-23 recycled water storage tank"
+      "Sentence": "Treated wastewater, prior to dechlorination, is pumped to either a tertiary or a secondary-23 recycled water storage tank..."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The sludge is either dried in drying beds..."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The sludge is ... bagged for dewatering over plastic pallets."
     }
   ]
 }

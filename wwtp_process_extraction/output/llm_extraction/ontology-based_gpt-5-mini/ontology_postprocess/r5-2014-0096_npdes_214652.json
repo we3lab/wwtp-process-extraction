@@ -27,10 +27,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks pump station with fine screens and grit removal",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks pump station",
+      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -52,6 +64,7 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -59,6 +72,7 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -121,7 +135,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -140,13 +155,12 @@
         "Aeration"
       ],
       "Role": [
-        "Tertiary",
-        "Aerobic"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a re-aeration outfall",
+      "Sentence": "re-aeration outfall",
       "trigger_process": []
     },
     {
@@ -191,10 +205,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids holding tank",
@@ -233,8 +249,12 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "centrate pump station",
@@ -244,9 +264,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "equalization tank",
@@ -255,8 +278,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
@@ -267,9 +291,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a lined active solar dryer",
+      "Sentence": "lined active solar dryer",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -278,13 +302,13 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "LandApplication",
+        "BiosolidsDisposal",
+        "Posttreatment"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "All dried biosolids are applied to the Land Application Area (LAA)",
       "trigger_process": [
         "Land Application"
@@ -294,22 +318,17 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "adding a fourth activated sludge basin",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified AS"
       ]
     },
     {
@@ -318,13 +337,14 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding ... a third sludge digester",
+      "Sentence": "a third sludge digester",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -339,12 +359,13 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding ... a solids holding tank",
+      "Sentence": "a solids holding tank",
       "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
@@ -355,7 +376,7 @@
       "Location": "on-site",
       "Sentence": "additional active solar driers",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -369,7 +390,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding a fourth primary clarifier",
+      "Sentence": "a fourth primary clarifier",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -378,22 +399,17 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "a fifth activated sludge basin",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified AS"
       ]
     },
     {

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "raw influent bar screening",
+      "Sentence": "main treatment facility consists of raw influent bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -55,6 +55,8 @@
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
+        "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -103,7 +105,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -134,7 +137,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -157,8 +161,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -173,7 +176,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -185,28 +189,39 @@
       "Location": "on-site",
       "Sentence": "dewatered in impermeable drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
-        "LandApplication",
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dried biosolids are hauled off-site for land application",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried biosolids are hauled off-site for land application or disposed in a landfill.",
+      "Sentence": "disposed in a landfill",
       "trigger_process": [
-        "Biosolids Landfill",
-        "Land Application"
+        "Biosolids Landfill"
       ]
     },
     {
@@ -216,7 +231,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four unlined industrial ponds",
+      "Sentence": "industrial facility consists of four unlined industrial ponds",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -224,22 +239,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "leases two lined aerated lagoons",
-      "trigger_process": [
-        "Aerated Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
+        "Aeration",
         "BiologicalProcess"
       ],
       "Role": [
@@ -248,9 +248,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one 8-acre unlined oxidation pond",
+      "Sentence": "leases two lined aerated lagoons and one 8-acre unlined oxidation pond from the Discharger for preliminary treatment",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Aerated Lagoon"
       ]
     },
     {
@@ -270,9 +270,27 @@
       ]
     },
     {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "solids processing facility",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -298,10 +316,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
         "Aeration",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -310,16 +326,17 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase 4 improvements include ... aeration basin",
+      "Sentence": "construction of a new ... aeration basin",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -346,7 +363,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -356,7 +373,7 @@
       "Location": "on-site",
       "Sentence": "paving of additional sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     }
   ]

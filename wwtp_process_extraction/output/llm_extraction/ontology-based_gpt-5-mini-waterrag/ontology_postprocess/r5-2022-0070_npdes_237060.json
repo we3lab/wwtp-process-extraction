@@ -21,12 +21,14 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -74,21 +76,34 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a chlorine contact basin, and dechlorination using sulfur dioxide",
+      "Sentence": "a chlorine contact basin",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and dechlorination using sulfur dioxide",
+      "trigger_process": [
         "Dechlorination"
       ]
     },
@@ -96,8 +111,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Tertiary",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -132,15 +147,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling facilities include ... two anaerobic digesters",
+      "Sentence": "two anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -148,20 +162,20 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling facilities include ... eight sludge drying beds",
+      "Sentence": "eight sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -171,9 +185,7 @@
         "SolidsHandling",
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two facultative sludge lagoons",
@@ -187,7 +199,8 @@
       "Process": null,
       "Role": [
         "Equalization",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -208,9 +221,25 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger is also evaluating the need for additional grit removal to accommodate high influent grit loading during high-flow storm events",
+      "Sentence": "The Discharger is also evaluating the need for additional grit removal to accommodate high influent grit loading",
       "trigger_process": [
         "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "approximately 400 tons of dewatered solids are disposed of in a landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

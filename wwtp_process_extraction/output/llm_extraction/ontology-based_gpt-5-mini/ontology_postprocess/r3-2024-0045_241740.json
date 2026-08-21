@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment at the Regional WWTP includes screening, aerated grit removal...",
+      "Sentence": "Wastewater treatment at the Regional WWTP includes screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment at the Regional WWTP includes screening, aerated grit removal...",
+      "Sentence": "Wastewater treatment at the Regional WWTP includes ... aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater treatment at the Regional WWTP includes ... primary sedimentation...",
+      "Sentence": "Wastewater treatment at the Regional WWTP includes ... primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -51,8 +51,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -68,8 +67,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Flocculation",
-        "Biofiltration"
+        "Flocculation"
       ],
       "Role": [
         "Secondary"
@@ -95,7 +93,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "secondary treatment through trickling filters, solids contact ... and secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -107,7 +105,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
         "Anaerobic"
       ],
       "Substance": [
@@ -128,9 +125,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sent to two screw presses for dewatering",
@@ -141,7 +136,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -154,8 +149,8 @@
       "Location": "on-site",
       "Sentence": "Holding lagoons and drying beds located on site are utilized to dry sludge",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
@@ -165,17 +160,119 @@
         "Landfill"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried solids are hauled to the ReGen Monterey ... landfill in Marina",
       "trigger_process": [
         "Biosolids Landfill"
       ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "hauled saline wastes can be monitored and held in a 375,000-gallon (approximate) lined pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "OzonationUnit",
+      "Process": [
+        "Ozonation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "full advanced treatment at the AWPF, including ozone addition",
+      "trigger_process": [
+        "Oxidation",
+        "Ozonation"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "MembraneProcess"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "full advanced treatment at the AWPF, including ... membrane filtration",
+      "trigger_process": [
+        "Unspecified Membrane Process"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "full advanced treatment at the AWPF, including ... RO",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UVH2O2Reactor",
+      "Process": [
+        "AdvancedOxidation"
+      ],
+      "Role": null,
+      "Substance": [
+        "OxidizingAgent-HydrogenPeroxide"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "advanced oxidation using ultraviolet light and hydrogen peroxide",
+      "trigger_process": [
+        "Oxidation",
+        "UV-AOP"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "advanced treatment of secondary effluent ... and finished water stabilization",
+      "trigger_process": [
+        "Neutralization"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "RO concentrate from the AWPF is mixed with hauled saline waste ... and secondary effluent",
+      "trigger_process": []
     },
     {
       "Equipment": "CoagulationBasin",
@@ -188,7 +285,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "Sentence": "Tertiary treatment includes coagulation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -205,7 +302,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "Sentence": "Tertiary treatment includes ... flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -221,7 +318,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "Sentence": "Tertiary treatment includes ... filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -237,7 +334,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment includes coagulation, flocculation, filtration, and disinfection",
+      "Sentence": "Tertiary treatment includes ... disinfection",
       "trigger_process": [
         "Unspecified Disinfection"
       ]
@@ -257,43 +354,11 @@
       ]
     },
     {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A maximum of 1.78 MGD of RO concentrate from the AWPF will be discharged to the ocean",
-      "trigger_process": [
-        "Reverse Osmosis"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Backwashing"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Membrane filter backwash produced by the AWPF is sent to the Regional WWTP headworks for treatment",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -307,9 +372,7 @@
       "Process": [
         "Disinfection"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",

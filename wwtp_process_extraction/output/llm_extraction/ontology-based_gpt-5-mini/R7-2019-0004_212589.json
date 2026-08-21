@@ -14,17 +14,6 @@
       "Sentence": "Wastewater is received and screened at the headworks."
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Afterwards, the wastewater is sent to stations #1 and #2 and pumped to two circular clarifiers"
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -33,11 +22,11 @@
         "Primary"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge generated from the primary clarifiers is pumped to two anaerobic digesters for stabilization"
+      "Sentence": "pumped to two circular clarifiers, which are operated in parallel."
     },
     {
       "Equipment": "AerationBasin",
@@ -47,13 +36,13 @@
       ],
       "Role": [
         "Secondary",
-        "Extended",
-        "Aerobic"
+        "Aerobic",
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant #1 provides extended aeration activated sludge biological treatment through three concrete-lined aeration basins fitted with surface aerators"
+      "Sentence": "Plant #1 provides extended aeration activated sludge biological treatment through three concrete-lined aeration basins fitted with surface aerators operated in parallel."
     },
     {
       "Equipment": "SedimentationTank",
@@ -76,12 +65,14 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return sludge from the clarifiers is directed to the return activated sludge lift station and combines with raw wastewater"
+      "Sentence": "Return sludge from the clarifiers is directed to the return activated sludge lift station and combines with raw wastewater to maintain sufficient levels of biomass in the treatment system."
     },
     {
       "Equipment": "Pond",
@@ -95,28 +86,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant #2 consists of a set of four lagoons operated in series... and is equipped with high-speed floating aerators."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Secondary effluent from both treatment systems is combined for disinfection by an ultraviolet (UV) disinfection system prior to discharge to the New River."
+      "Sentence": "Plant #2 consists of a set of four lagoons operated in series. Each treatment lagoon ... is equipped with high-speed floating aerators."
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation",
-        "Thickening"
+        "Flotation"
       ],
       "Role": [
         "SolidsHandling"
@@ -148,7 +123,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -161,12 +136,28 @@
       "Sentence": "Digested sludge is dried in the sludge drying beds prior to removal and eventual land application in Yuma, Arizona."
     },
     {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary effluent from both treatment systems is combined for disinfection by an ultraviolet (UV) disinfection system prior to discharge to the New River."
+    },
+    {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the treatment system at the Facility currently consists of bar screens"
+      "Sentence": "bar screens,"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aerated grit removal"
+      "Sentence": "aerated grit removal,"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sedimentation"
+      "Sentence": "primary sedimentation,"
     },
     {
       "Equipment": "AerationBasin",
@@ -49,14 +49,16 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "Feed"
+        "Feed",
+        "MakeUp"
       ],
       "Substance": [
+        "HighPurityOxygen",
         "Constituent-Ammonia"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pure oxygen aeration ... Nutrients (aqueous ammonia and ammonia polyphosphate) are added at the inlet box to aeration basins"
+      "Sentence": "Nutrients (aqueous ammonia and ammonia polyphosphate) are added at the inlet box to aeration basins on an as-needed basis to ensure adequate food-to-microorganisms ratio in the activated sludge process"
     },
     {
       "Equipment": "SedimentationTank",
@@ -69,13 +71,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sedimentation"
+      "Sentence": "secondary sedimentation,"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
         "Dechlorination",
+        "Disinfection",
         "pHAdjustment"
       ],
       "Role": [
@@ -87,12 +90,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection, and dechlorination using sodium bisulfite. In addition, pH adjustment with sodium hydroxide solution is performed as needed in the chlorine contact basins"
+      "Sentence": "chlorine disinfection, and dechlorination using sodium bisulfite"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -102,7 +106,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are thickened using dissolved air flotation thickeners"
+      "Sentence": "Biosolids are thickened using dissolved air flotation thickeners,"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -111,19 +115,21 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and then anaerobically digested"
+      "Sentence": "and then anaerobically digested."
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -136,9 +142,10 @@
       "Sentence": "Digested biosolids are dewatered by belt press"
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -148,7 +155,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested biosolids are dewatered by ... drying beds"
+      "Sentence": "Digested biosolids are dewatered by ... drying beds,"
     },
     {
       "Equipment": "BiologicalAeratedFilter",
@@ -172,7 +179,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The water then percolates through the ponds with corresponding evaporation"
+      "Sentence": "The water then percolates through the ponds with corresponding evaporation."
     },
     {
       "Equipment": null,
@@ -182,10 +189,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "and disposed of off-site as landfill cover material"
+      "Sentence": "Digested biosolids ... disposed of off-site as landfill cover material."
     }
   ]
 }

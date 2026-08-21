@@ -1,8 +1,10 @@
 {
   "items": [
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -65,15 +67,16 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "Aeration",
         "ActivatedSludge",
+        "MLE",
         "Nitrification",
-        "Denitrification",
-        "MLE"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anaerobic",
+        "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -110,8 +113,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -121,22 +123,6 @@
       "Sentence": "a chlorine contact chamber",
       "trigger_process": [
         "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated",
-      "trigger_process": [
-        "Dechlorination"
       ]
     },
     {
@@ -181,20 +167,20 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sent to lagoons for storage and solar drying in drying beds",
       "trigger_process": [
-        "Drying",
-        "Evaporation Pond"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -226,6 +212,20 @@
       "Location": "on-site",
       "Sentence": "All supernatant is returned at controlled volumes to the West County Plant",
       "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated",
+      "trigger_process": [
+        "Dechlorination"
+      ]
     }
   ]
 }

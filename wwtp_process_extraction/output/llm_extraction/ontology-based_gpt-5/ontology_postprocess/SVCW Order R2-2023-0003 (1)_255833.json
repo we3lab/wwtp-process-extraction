@@ -17,22 +17,6 @@
       ]
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A new headworks planned for late 2023... including the existing mechanical bar screens.",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -49,7 +33,7 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Reactor",
       "Process": [
         "Biofiltration"
       ],
@@ -139,11 +123,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "Coagulation"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Coagulant"
@@ -154,38 +138,6 @@
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the influent will go through new bar screens",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "and a new grit removal system prior to flowing through to the existing treatment system",
-      "trigger_process": [
-        "Grit Removal"
       ]
     },
     {
@@ -219,7 +171,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary sludge is processed using a gravity thickener and rotating drum thickeners",
+      "Sentence": "and rotating drum thickeners",
       "trigger_process": [
         "Thickening"
       ]
@@ -237,7 +189,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sludge is processed using gravity belt thickeners",
+      "Sentence": "secondary sludge is processed using gravity belt thickeners.",
       "trigger_process": [
         "Thickening"
       ]
@@ -257,7 +209,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The thickened sludge is pumped to the anaerobic digestion process. Three primary anaerobic digesters are mechanically mixed",
+      "Sentence": "The thickened sludge is pumped to the anaerobic digestion process.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -303,7 +255,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -315,7 +267,7 @@
       "Location": "on-site",
       "Sentence": "The solids are transported to concrete lined air-drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -324,8 +276,7 @@
         "BiosolidsDisposal"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -336,7 +287,19 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Centrate from the rotary fan press units and decant from the biosolids drying beds are conveyed back to the treatment plant and combined with primary influent.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Equalization"
@@ -347,6 +310,38 @@
       "Sentence": "An earth and rip-rap equalization basin owned by the West Bay Sanitary District may be used to reduce force main flows.",
       "trigger_process": [
         "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the influent will go through new bar screens",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a new grit removal system prior to flowing through to the existing treatment system",
+      "trigger_process": [
+        "Grit Removal"
       ]
     }
   ]

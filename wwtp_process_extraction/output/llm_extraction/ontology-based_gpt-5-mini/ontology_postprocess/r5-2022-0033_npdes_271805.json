@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility consists of ... grit removal",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -61,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge treatment ... Aeration Basins No. 3-6",
+      "Sentence": "Aeration Basins No. 3-6: 11.4 MGD (ADAM)",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -77,7 +77,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification ... Secondary Clarifiers No. 3-5",
+      "Sentence": "Secondary Clarifiers No. 3-5: 9.1 MGD (ADAM)",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -86,8 +86,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -95,7 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination/dechlorination ... Chlorine Contact Basins No. 3-4",
+      "Sentence": "chlorination/dechlorination",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -107,9 +107,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Anaerobic",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -124,8 +123,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -135,16 +134,32 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered using a centrifuge and are hauled directly from the centrifuge building",
+      "Sentence": "dewatered using a centrifuge",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge digester supernatant (centrate) is routed back to the secondary treatment works",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -156,36 +171,8 @@
       "Location": "on-site",
       "Sentence": "Drying beds are still used as necessary during facility maintenance",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization",
-        "Detention"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The northeast pond, PND-004 can be utilized as an influent diversion, and emergency storage pond",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge digester supernatant (centrate) is routed back to the secondary treatment works",
-      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -200,9 +187,23 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled directly from the centrifuge building ... for land application in unincorporated Sacramento County, California (Silva Ranch)",
+      "Sentence": "hauled directly from the centrifuge building ... for land application in ... (Silva Ranch)",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The northeast pond, PND-004 can be utilized as an influent diversion, and emergency storage pond",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "fine screening"
+      "Sentence": "The treatment system at the Facility consists of fine screening..."
     },
     {
       "Equipment": "AerationBasin",
@@ -31,12 +31,16 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "Biofiltration"
+        "Biofiltration",
+        "MembraneProcess",
+        "Filtration"
       ],
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "membrane biological reactors (MBR) which separate the liquid from the solids"
@@ -44,7 +48,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -57,8 +62,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration",
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -73,7 +78,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -84,17 +89,14 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by drying in solar greenhouses"
+      "Sentence": "drying in solar greenhouses"
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
-        "Landfill",
         "LandApplication"
       ],
       "Role": [
-        "Posttreatment",
         "SolidsHandling"
       ],
       "Substance": [
@@ -102,22 +104,55 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "prior to disposal at a regulated Class III landfill or beneficial land application"
+      "Sentence": "prior to disposal at ... beneficial land application"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "prior to disposal at a regulated Class III landfill"
     },
     {
       "Equipment": "Reservoir",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
-        "Storage",
-        "Containment",
-        "Equalization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 2.0 million gallon emergency storage basin lined with high density polyethylene liner is also used to accommodate flows...used for storage of treated and untreated wastewater"
+      "Sentence": "A 2.0 million gallon emergency storage basin lined with high density polyethylene liner"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Drain"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent is pumped through approximately 2 miles of pipeline and discharged through a multi-port outfall diffuser"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the wastewater in the emergency storage basin is routed back through the treatment system"
     }
   ]
 }

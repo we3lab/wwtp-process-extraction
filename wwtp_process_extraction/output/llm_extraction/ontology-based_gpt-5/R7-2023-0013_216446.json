@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two automatic bar screens"
+      "Sentence": "The headworks system two automatic bar screens..."
     },
     {
       "Equipment": "Grinder",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two grinder-washer compactors"
+      "Sentence": "Screening solids removed from the headworks system are routed to a grinderwasher/compactor unit..."
     },
     {
       "Equipment": "GritChamber",
@@ -45,7 +45,8 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -58,7 +59,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -71,12 +72,13 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two activated sludge basins"
+      "Sentence": "The activated sludge treatment system consists of two activated sludge basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -107,39 +109,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine contact basin to be disinfected and de-chlorinated"
-    },
-    {
-      "Equipment": "StaticMixer",
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "ReducingAgent"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a chemical induction unit which employs a vacuum and gas system capable of dispersing the chlorine and sulfur dioxide gas"
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster."
+      "Sentence": "to be disinfected and de-chlorinated... dispersing the chlorine and sulfur dioxide gas... sodium bisulfite"
     },
     {
       "Equipment": "GravityBeltThickener",
@@ -161,19 +131,20 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "48,000-gallon sludge holding tank"
+      "Sentence": "flows to a 48,000-gallon sludge holding tank"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -184,53 +155,22 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a single 2-meter gravity belt filter press where it is dewatered"
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total)."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids."
+      "Sentence": "pumped to a single 2-meter gravity belt filter press where it is dewatered"
     },
     {
       "Equipment": null,
       "Process": [
-        "Composting"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hauled off site by a private hauler for composting."
+      "Location": "on-site",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total)... continued drying"
     },
     {
       "Equipment": null,
@@ -238,15 +178,45 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": [
         "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "screenings are hauled off site for disposal at a County of Riverside landfill."
+      "Sentence": "the screenings are hauled off site for disposal at a County of Riverside landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered sludge is... hauled off site by a private hauler for composting"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Disinfection",
+        "Chlorination"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -282,8 +252,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -291,18 +260,6 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "a chemical storage and feed system (sodium hypochlorite)"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "seasonal and operational storage"
     }
   ]
 }

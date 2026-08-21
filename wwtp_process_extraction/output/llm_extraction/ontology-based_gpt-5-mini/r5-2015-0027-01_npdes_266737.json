@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of screening"
+      "Sentence": "The treatment system at the Facility consists of screening, grit removal, primary flotation..."
     },
     {
       "Equipment": "GritChamber",
@@ -24,20 +24,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal"
+      "Sentence": "The treatment system at the Facility consists of screening, grit removal, primary flotation..."
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary flotation"
+      "Sentence": "The treatment system at the Facility consists of ... primary flotation..."
     },
     {
       "Equipment": "AerationBasin",
@@ -69,10 +73,10 @@
       "Sentence": "secondary clarification"
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "Sedimentation",
+        "Coagulation"
       ],
       "Role": [
         "Tertiary"
@@ -83,9 +87,9 @@
       "Sentence": "high rate clarification with chemical addition"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -99,11 +103,12 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -113,10 +118,11 @@
       "Sentence": "chlorine disinfection and sodium bisulfite dechlorination"
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -136,7 +142,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "gravity belt thickener"
+      "Sentence": "Solids handling consists of gravity belt thickener, anaerobic digestion, sludge drying beds and beneficial reuse of biosolids..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -153,12 +159,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "anaerobic digestion"
+      "Sentence": "Solids handling consists of gravity belt thickener, anaerobic digestion, sludge drying beds and beneficial reuse of biosolids..."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -168,33 +175,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds"
+      "Sentence": "Solids handling consists of ... sludge drying beds ..."
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "LandApplication"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "beneficial reuse of biosolids via land application to farmland"
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "LandApplication",
         "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "co-compost for public distribution"
+      "Sentence": "beneficial reuse of biosolids via land application and co-compost for public distribution"
     }
   ]
 }

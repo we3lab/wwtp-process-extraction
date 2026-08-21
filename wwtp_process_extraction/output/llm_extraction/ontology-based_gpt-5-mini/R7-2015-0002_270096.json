@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "influent enters the main influent pumping station"
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,20 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screened through mechanical bar screens"
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sent to a grinder, washed, and then compacted"
+      "Sentence": "is screened through mechanical bar screens"
     },
     {
       "Equipment": "GritChamber",
@@ -37,7 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "directed to the grit chamber"
+      "Sentence": "Screened influent flow can be directed to the grit chamber"
     },
     {
       "Equipment": "SedimentationTank",
@@ -53,21 +51,45 @@
       "Sentence": "directed to the primary clarifiers"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Grinder",
       "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
+        "Comminution"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "are sent to a grinder, washed, and then compacted"
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
         "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The activated sludge treatment system consists of anoxic selectors, aeration basins"
+      "Sentence": "The activated sludge treatment system consists of anoxic selectors"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The activated sludge treatment system consists of ... aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -80,7 +102,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarifiers"
+      "Sentence": "The activated sludge treatment system consists of ... secondary clarifiers"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -88,7 +110,9 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -97,16 +121,45 @@
       "Sentence": "Treated effluent from each treatment system ... is chlorinated in separate chlorine contact tanks"
     },
     {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the flow from the pond and the wetlands system is combined prior to entering its chlorine contact chamber"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The chlorinated effluent from each chlorine contact tank is then combined and dechlorinated with the addition of sodium bisulfite"
+    },
+    {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The oxidation pond system consists of two oxidation ponds and two cells"
+      "Sentence": "Excess solids from the activated sludge treatment system are pumped to either one of the two (oxidation system) cells or oxidation Pond No. 2 for stabilization"
     },
     {
       "Equipment": "Wetland",
@@ -115,65 +168,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wetlands treatment system consists of a circular clarifier and three wetland cells"
+      "Sentence": "the wetlands treatment system consists of a circular clarifier and three wetland cells"
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The wetlands treatment system consists of a circular clarifier"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorinated with the addition of sodium bisulfite prior to discharge"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dewatering",
-        "Drying"
-      ],
       "Role": [
-        "Pretreatment"
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit is removed ... dewatered, air-dried and placed in a transportable dumpster"
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Primary sludge from the primary clarifiers is pumped to the anaerobic digester"
+      "Sentence": "The wetlands treatment system is designed to treat primary effluent wastewater. The wetlands treatment system consists of a circular clarifier"
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -186,17 +199,45 @@
       "Sentence": "Solids from the digester and oxidation pond system are pumped to the belt presses for dewatering"
     },
     {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary sludge from the primary clarifiers is pumped to the anaerobic digester, which became operational in December 2013"
+    },
+    {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered solids are then placed in the onsite storage/drying beds for further moisture reduction"
+      "Sentence": "Dewatered solids are then placed in the onsite storage/drying beds for further moisture reduction prior to final disposal"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "transported to Arizona for land application by a contracted sludge disposal company"
     },
     {
       "Equipment": null,
@@ -212,13 +253,16 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Dewatering",
+        "AirDrying"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "transported to Arizona for land application by a contracted sludge disposal company"
+      "Location": "on-site",
+      "Sentence": "grit is removed from the influent wastewater, dewatered, air-dried and placed in a transportable dumpster"
     }
   ]
 }

@@ -1,17 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater is pumped into the headworks by constant-speed screw pumps."
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -23,19 +12,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "four climber-type mechanical bar screens."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Screenings are dropped to a continuous conveyor for transfer to a compactor for additional dewatering."
     },
     {
       "Equipment": "GritChamber",
@@ -51,8 +27,9 @@
       "Sentence": "wastewater flow from the screens passes to one of three grit chambers"
     },
     {
-      "Equipment": null,
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -74,7 +51,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then distributed to one of two primary clarifiers."
+      "Sentence": "distributed to one of two primary clarifiers."
     },
     {
       "Equipment": "Thickener",
@@ -82,7 +59,8 @@
         "Thickening"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -97,8 +75,9 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "SolidsHandling",
         "Stabilization",
-        "SolidsHandling"
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -108,9 +87,22 @@
       "Sentence": "processed and stabilized through anaerobic digesters."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Digested sludge is transferred to holding tanks"
+    },
+    {
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -123,10 +115,9 @@
       "Sentence": "periodically drawn to unlined drying beds"
     },
     {
-      "Equipment": "CentrifugalDewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Centrifugation",
-        "Dewatering"
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
@@ -135,26 +126,14 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "mechanical dewatering using centrifuges."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The Discharger applies the stabilized sludge as a soil amendment on the City’s 2,526 acre ranch"
+      "Sentence": "applies the stabilized sludge as a soil amendment on the City’s 2,526 acre ranch"
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -172,7 +151,8 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Aerobic",
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -182,8 +162,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess",
-        "Sedimentation"
+        "BiologicalProcess"
       ],
       "Role": [
         "Secondary"
@@ -191,7 +170,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "distributed to three parallel facultative ponds for further treatment"
+      "Sentence": "distributed to three parallel facultative ponds"
     },
     {
       "Equipment": "Pond",
@@ -202,14 +181,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then transferred to one of two storage ponds until it can be discharged"
+      "Sentence": "transferred to one of two storage ponds"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -220,7 +199,45 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the secondary-level treated effluent is disinfected with chlorine in a contact basin, and then dechlorinated with sulfur dioxide."
+      "Sentence": "Prior to discharge ... is disinfected with chlorine in a contact basin, and then dechlorinated with sulfur dioxide."
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Biofiltration",
+        "MembraneProcess",
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "constructing a two-step membrane bioreactor (MBR) process that includes an aerated activated sludge process and a membrane separation process."
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "includes an aerated activated sludge process"
     },
     {
       "Equipment": "OxidationDitch",
@@ -237,49 +254,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "An oxidation ditch provides activated sludge biological treatment...nitrification/denitrification."
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a two-step membrane bioreactor (MBR) process that includes an aerated activated sludge process"
-    },
-    {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "MembraneProcess",
-        "Biofiltration"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment",
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a two-step membrane bioreactor (MBR) process ... and a membrane separation process."
+      "Sentence": "An oxidation ditch provides activated sludge biological treatment, reducing biochemical oxygen demand and providing nitrogen removal (i.e., nitrification/denitrification)."
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary",

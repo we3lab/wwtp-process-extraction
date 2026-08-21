@@ -8,12 +8,32 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent grinding",
+      "Sentence": "Influent grinding: Solids such as paper and rags are ground prior to entering the treatment process",
       "trigger_process": [
         "Comminution"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "rags and plastics by screening",
+      "trigger_process": [
+        "Screening/Microstrainer"
       ]
     },
     {
@@ -32,22 +52,6 @@
       "Sentence": "Grit is removed by settling",
       "trigger_process": [
         "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "screening",
-      "trigger_process": [
-        "Screening/Microstrainer"
       ]
     },
     {
@@ -71,7 +75,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "oxidation ditch with an anaerobic-anoxic and aerobic zones for BOD, nitrogen, and phosphorus removal",
+      "Sentence": "activated sludge treatment with using an oxidation ditch with an anaerobic-anoxic and aerobic zones for BOD, nitrogen, and phosphorus removal",
       "trigger_process": [
         "Denitrification",
         "Nitrification",
@@ -88,7 +92,9 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Final clarification in secondary clarifiers: ... solids (sludge) are separated from the effluent and the sludge blankets is thickened",
@@ -124,7 +130,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary filtration: ... sand is the filtration media",
+      "Sentence": "Tertiary filtration: In the case of Ojai Valley WWTP, sand is the filtration media",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -140,7 +146,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ultraviolet disinfection",
+      "Sentence": "Ultraviolet disinfection: Irradiation with UV light is a promising method of disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -148,7 +154,9 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -158,48 +166,41 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorination: Sodium hypochlorite is used as a disinfectant ... as a backup to the UV system",
+      "Sentence": "Chlorination: Sodium hypochlorite is used as a disinfectant ... as a backup to the UV system ... Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine",
       "trigger_process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Dechlorination"
+        "Aeration"
       ],
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "ReducingAgent"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine",
-      "trigger_process": [
-        "Dechlorination",
-        "Reduction"
-      ]
+      "Sentence": "and reaeration",
+      "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pump",
       "Process": [
-        "Drying"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge drying beds: The sludge beds provide an area for storage and drying of sludge",
-      "trigger_process": [
-        "Drying"
-      ]
+      "Sentence": "secondary sludge is pumped either to the oxidation ditches (return activated sludge) or to the belt press for dewatering",
+      "trigger_process": []
     },
     {
       "Equipment": "BeltFilterPress",
@@ -215,36 +216,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sludge is pumped ... or to the belt press for dewatering",
+      "Sentence": "to the belt press for dewatering (waste activated sludge)",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "secondary sludge is pumped either to the oxidation ditches (return activated sludge) or to the belt press",
-      "trigger_process": []
-    },
-    {
       "Equipment": null,
       "Process": [
+        "AirDrying",
         "Composting"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -253,6 +238,7 @@
       "Location": "on-site",
       "Sentence": "during dry weather, composted in the sludge drying beds",
       "trigger_process": [
+        "Air Drying",
         "Composting"
       ]
     },
@@ -265,11 +251,11 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "During wet weather, sludge is stored in sludge drying beds until hauled off-site",
+      "Sentence": "Primary screenings are hauled off-site for disposal",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -283,7 +269,7 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "off-site",
@@ -293,18 +279,23 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
-        "Aeration"
+        "BiosolidsDisposal"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling",
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and reaeration",
-      "trigger_process": []
+      "Location": "off-site",
+      "Sentence": "During wet weather, sludge is stored in sludge drying beds until hauled off-site",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
     }
   ]
 }

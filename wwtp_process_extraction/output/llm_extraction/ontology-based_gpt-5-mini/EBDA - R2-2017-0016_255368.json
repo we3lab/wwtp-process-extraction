@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation..."
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation..."
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,11 +37,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation..."
+      "Sentence": "The treatment process consists of ... primary sedimentation ..."
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -53,7 +55,8 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -108,20 +111,10 @@
       "Sentence": "The treatment process consists of ... chlorine disinfection."
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The plant also has five acres of out-of-service oxidation ponds that can be used for emergency storage."
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -133,7 +126,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested..."
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested ..."
     },
     {
       "Equipment": "BeltFilterPress",
@@ -151,9 +144,9 @@
       "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... dewatered using a belt filter press ..."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -166,19 +159,6 @@
       "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... air dried."
     },
     {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The City hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids."
-    },
-    {
       "Equipment": "Cogenerator",
       "Process": [
         "Cogeneration"
@@ -188,19 +168,6 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The City of San Leandro plans to install ... a cogeneration power and heat system ..."
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The City of San Leandro plans to install high efficiency turbo blowers in its aeration basins ..."
     }
   ]
 }

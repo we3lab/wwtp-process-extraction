@@ -11,12 +11,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "comminution"
+      "Sentence": "Wastewater treatment processes include comminution, extended aeration activated sludge, secondary clarification, and tertiary filtration."
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -26,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "extended aeration activated sludge"
+      "Sentence": "Wastewater treatment processes include comminution, extended aeration activated sludge, secondary clarification, and tertiary filtration."
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,7 +40,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification"
+      "Sentence": "Wastewater treatment processes include comminution, extended aeration activated sludge, secondary clarification, and tertiary filtration."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -52,13 +53,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary filtration"
+      "Sentence": "Wastewater treatment processes include comminution, extended aeration activated sludge, secondary clarification, and tertiary filtration."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -66,29 +68,43 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent is chlorinated, dechlorinated"
+      "Sentence": "Effluent is chlorinated, dechlorinated, and flows by gravity to a flow equalization pond."
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flows by gravity to a flow equalization pond"
+      "Sentence": "flows by gravity to a flow equalization pond."
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "routed to a 300,000 gallon overflow pond for storage"
+      "Sentence": "routed to a 300,000 gallon overflow pond for storage until flows diminish, when the excess flow is routed back to the headworks for treatment."
+    },
+    {
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent from the equalization pond is controlled at flow control structure A by sliding stop gates"
     },
     {
       "Equipment": "AerobicDigester",
@@ -97,8 +113,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -110,7 +125,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -140,16 +156,17 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Biosolids are placed in a landfill for final disposal"
+      "Location": "on-site",
+      "Sentence": "Biosolids are placed in a landfill for final disposal."
     },
     {
       "Equipment": "Tank",
@@ -160,7 +177,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a 55,000 gallon storage tank"
+      "Sentence": "tertiary treated effluent is discharged to the water recycling system (Discharge Point 002), which consists of a 55,000 gallon storage tank"
     }
   ]
 }

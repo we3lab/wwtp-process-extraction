@@ -11,11 +11,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screened at influent pump stations #1 and #2"
+      "Sentence": "Wastewater received at the headworks is screened at influent pump stations #1 and #2"
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Feed"
+      ],
       "Role": [
         "Feed"
       ],
@@ -32,12 +34,10 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge generated from the primary clarifiers"
+      "Sentence": "pumped to two circular clarifiers which are operated in parallel"
     },
     {
       "Equipment": "AerationBasin",
@@ -53,7 +53,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "extended aeration activated sludge biological treatment through three concrete-lined aeration basins fitted with surface aerators"
+      "Sentence": "Plant #1 provides extended aeration activated sludge biological treatment through three concrete-lined aeration basins fitted with surface aerators operated in parallel"
     },
     {
       "Equipment": "SedimentationTank",
@@ -63,38 +63,38 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Three circular secondary clarifiers remove solids after aeration"
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Return sludge from the clarifiers is directed to influent pump station #1 and combines with raw wastewater"
-    },
-    {
       "Equipment": "Pond",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "BiologicalProcess"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant #2 consists of a set of four lagoons operated in series ... equipped with high-speed floating aerators"
+      "Sentence": "Plant #2 consists of a set of four lagoons operated in series. Each treatment lagoon ... is equipped with high-speed floating aerators"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary effluent from both treatment systems is combined for disinfection by an ultraviolet (UV) disinfection system prior to discharge to the New River"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -129,26 +129,13 @@
       "Sentence": "Sludge generated from the primary clarifiers is pumped to two anaerobic digesters for stabilization, normally operated in series"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pumped to two anaerobic digesters"
-    },
-    {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -158,27 +145,12 @@
       "Sentence": "Digested sludge is dried in the sludge drying beds prior to removal"
     },
     {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "secondary effluent from both treatment systems is combined for disinfection by an ultraviolet (UV) disinfection system prior to discharge to the New River"
-    },
-    {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -186,6 +158,21 @@
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "eventual land application in Yuma, Arizona"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return sludge from the clarifiers is directed to influent pump station #1 and combines with raw wastewater to maintain sufficient levels of biomass in the treatment system"
     }
   ]
 }

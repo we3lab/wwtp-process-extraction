@@ -69,8 +69,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -91,14 +90,27 @@
       "Sentence": "secondary clarification"
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "Flocculation",
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Coagulant"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "coagulant and polymer injections"
+    },
+    {
+      "Equipment": "StaticMixer",
+      "Process": [
         "Mixing"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -106,22 +118,19 @@
       "Sentence": "rapid mix flocculation"
     },
     {
-      "Equipment": null,
+      "Equipment": "FlocculationBasin",
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "Flocculation"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
-        "Coagulant",
         "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulant and polymer injections"
+      "Sentence": "rapid mix flocculation"
     },
     {
       "Equipment": "SedimentationTank",
@@ -129,8 +138,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -140,8 +148,7 @@
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration",
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -154,12 +161,10 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -167,43 +172,32 @@
       "Sentence": "ultraviolet disinfection"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination"
       ],
-      "Substance": null,
-      "Implementation": "present",
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "a 0.1-acre lined waste pond for wash down from the settling tanks and contact basins"
+      "Sentence": "upgraded its disinfection process from chlorination and dechlorination to ultraviolet disinfection"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
+        "Storage",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary treated wastewater from the WWTF is discharged to percolation ponds"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "ChemicalPrecipitation"
-      ],
-      "Role": [
-        "PhosphorusRemoval",
-        "Secondary"
-      ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger removes phosphorus by adding alum in the secondary treatment units"
+      "Sentence": "a 0.1-acre lined waste pond for wash down from the settling tanks and contact basins"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -212,8 +206,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -239,10 +232,9 @@
       "Sentence": "two centrifuges"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -265,36 +257,35 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are hauled off site by a contractor to a permitted facility"
+      "Sentence": "Biosolids are hauled off site by a contractor to a permitted facility."
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Coagulation"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary",
+        "PhosphorusRemoval"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Coagulant-Alum"
       ],
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "upgraded its disinfection process from chlorination and dechlorination to ultraviolet disinfection"
+      "Sentence": "The Discharger removes phosphorus by adding alum in the secondary treatment units."
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Tertiary"
+        "Posttreatment",
+        "Drain"
       ],
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "upgraded its disinfection process from chlorination and dechlorination to ultraviolet disinfection"
+      "Sentence": "Tertiary treated wastewater from the WWTF is discharged to percolation ponds adjacent to and hydraulically connected to the Merced River"
     }
   ]
 }

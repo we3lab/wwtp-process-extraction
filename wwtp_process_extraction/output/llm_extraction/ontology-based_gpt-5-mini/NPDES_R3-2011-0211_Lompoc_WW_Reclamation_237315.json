@@ -13,7 +13,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids are separated out through screens."
+      "Sentence": "raw influent entering the Facility is pumped into the headworks where solids are separated out through screens"
     },
     {
       "Equipment": "GritChamber",
@@ -24,10 +24,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to the aerated grit tank where heavy materials are settled out for removal."
+      "Sentence": "The screened influent is then pumped to the aerated grit tank where heavy materials are settled out for removal"
     },
     {
       "Equipment": "OxidationDitch",
@@ -38,14 +40,15 @@
       ],
       "Role": [
         "Secondary",
-        "NitrogenRemoval",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two parallel oxidation ditches for biological nitrification and denitrification."
+      "Sentence": "The water then enters the two parallel oxidation ditches for biological nitrification and denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -71,7 +74,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and then the tertiary filters."
+      "Sentence": "and then the tertiary filters"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -79,24 +82,27 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The filtered effluent then enters the UV disinfection chambers"
+      "Sentence": "The filtered effluent then enters the UV disinfection chambers before being discharged into San Miguelito Creek"
     },
     {
       "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Storage",
-        "Containment"
+        "Containment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility also maintains an emergency retention basin for use during events of disinfection maintenance, spills, and other emergency situations."
+      "Sentence": "The Facility also maintains an emergency retention basin for use during events of disinfection maintenance, spills, and other emergency situations"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -120,7 +126,21 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "before being fed to aerobic digesters"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
         "Stabilization"
       ],
       "Substance": [
@@ -128,23 +148,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "before being fed to aerobic digesters."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The digested material is transferred to a facultative lagoon before being dried in sludge drying beds."
+      "Sentence": "The digested material is transferred to a facultative lagoon"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -154,7 +164,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "before being dried in sludge drying beds."
+      "Sentence": "before being dried in sludge drying beds"
     },
     {
       "Equipment": null,
@@ -162,27 +172,14 @@
         "Composting"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The dried sludge is then shipped offsite for composting."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "design engineers are in the process of redesigning new blowers for improved performance and plan to have them online by mid-2011."
+      "Sentence": "The dried sludge is then shipped offsite for composting"
     }
   ]
 }

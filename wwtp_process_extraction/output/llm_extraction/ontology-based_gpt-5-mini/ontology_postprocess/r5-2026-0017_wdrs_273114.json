@@ -17,22 +17,6 @@
       ]
     },
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a second influent screen will be added to provide redundancy",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
@@ -44,7 +28,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the addition of two partially mixed aerated lagoons... two partially-mixed aeration ponds",
+      "Sentence": "two partially mixed aerated ponds",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -56,46 +40,30 @@
         "Sedimentation"
       ],
       "Role": [
-        "Tertiary",
+        "Secondary",
+        "Posttreatment",
         "Aerobic"
       ],
       "Substance": [
-        "Constituent-OrganicCarbon",
         "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The polishing pond... four 5-HP aerators are installed in two zones... remaining zones allow settling of suspended solids",
+      "Sentence": "Effluent from the aerated ponds is then directed to the polishing pond... four 5-HP aerators are installed in two zones... remaining zones allow settling of suspended solids",
       "trigger_process": [
         "Aerated Lagoon",
-        "Polishing Lagoon"
-      ]
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the increased solids loading can also reduce the performance of the filter percolation beds",
-      "trigger_process": [
-        "Media Filtration"
+        "Secondary Clarification"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "MediaFiltration",
+        "SlowSandFiltration",
         "Evaporation"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -107,27 +75,25 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "Aeration",
+        "Sedimentation"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The existing WWTF features... 1.8 acres of unlined sludge drying beds",
+      "Sentence": "decommissioned western treatment plant... consists of the partial-mix ponds and polishing pond",
       "trigger_process": [
-        "Drying"
+        "Aerated Lagoon"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -139,50 +105,26 @@
       "Location": "on-site",
       "Sentence": "Much of the sludge drying bed area was converted to a solar farm between 2018 and 2021",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Aeration",
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary",
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "the decommissioned western treatment plant consists of the partial-mix ponds and polishing pond",
-      "trigger_process": [
-        "Aerated Lagoon",
-        "Polishing Lagoon",
-        "Secondary Clarification"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "Extended",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the proposed extended aeration activated sludge basin... will be designed to provide biological nutrient removal",
+      "Sentence": "proposed upgrades... to modify the current treatment process to an extended aeration activated sludge system with biological nutrient removal",
       "trigger_process": [
-        "Denitrification",
-        "Nitrification"
+        "Extended Aeration",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -196,27 +138,58 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Two rectangular secondary clarifiers will be constructed",
+      "Sentence": "Upgrades include... the addition of two clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
       "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Upgrades include... a new sludge pumping station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
-        "SolidsHandling",
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "A RAS/WAS pumping station will receive effluent from each clarifier and will be equipped with four sludge pumps... The RAS/WAS flow will be returned to the influent end of the aeration basin",
-      "trigger_process": []
+      "Sentence": "Upgrades include... artificial media drying beds, and a sludge drying basin",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The sludge drying bed will be... equipped with drains that return leachate to the extended aeration activated sludge basin",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
     },
     {
       "Equipment": "Pond",
@@ -227,27 +200,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "lined effluent storage ponds... Effluent Storage Pond 1... Effluent Storage Pond 2",
+      "Sentence": "several existing percolation ponds will be consolidated, excavated, and lined to create storage ponds for treated effluent intended for irrigation use",
       "trigger_process": [
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "addition of... artificial media drying beds, and a sludge drying basin",
-      "trigger_process": [
-        "Drying"
       ]
     }
   ]

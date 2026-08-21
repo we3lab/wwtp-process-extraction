@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Influent undergoes preliminary treatment through aerated grit removal and mechanical bar screening."
+      "Sentence": "mechanical bar screening"
     },
     {
       "Equipment": "GritChamber",
@@ -22,12 +22,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Grit is removed by aeration."
+      "Sentence": "aerated grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -35,31 +33,16 @@
         "Sedimentation"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Primary clarification: In the primary clarifiers, solids are settled out and returned to the anaerobic digesters for additional treatment."
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
-      ],
-      "Substance": [
+        "Constituent-SuspendedSolids",
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids are settled out and returned to the anaerobic digesters for additional treatment."
+      "Sentence": "In the primary clarifiers, solids are settled out and returned to the anaerobic digesters for additional treatment."
     },
     {
       "Equipment": "AerationBasin",
@@ -76,12 +59,10 @@
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater that has received primary clarification enters the activated sludge basins to undergo nitrogen removal using the Modified Ludzak-Ettinger (MLE) process."
+      "Sentence": "activated sludge basins to undergo nitrogen removal using the Modified Ludzak-Ettinger (MLE) process"
     },
     {
       "Equipment": "SedimentationTank",
@@ -91,40 +72,36 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary Clarification: Wastewater that has received primary clarification enters the activated sludge basins ... Wastewater that has undergone the nitrification/denitrification process is sent to the flow equalization basins."
+      "Sentence": "Sludge from secondary clarifiers is pumped either to the MLE process (return activated sludge), or to the aerobic digester for further treatment."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage",
-        "Detention"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Equalization Basins: Equalization basins allow for adjustments of flow to the filters throughout the day and during storm events."
+      "Sentence": "Equalization basins allow for adjustments of flow to the filters"
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing",
+        "Recirculation"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary filtration: The filtration process ... by passing the water through AquaDisk tertiary cloth filters."
+      "Sentence": "the filtration process ... by passing the water through AquaDisk tertiary cloth filters"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -134,7 +111,8 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -144,41 +122,46 @@
       "Sentence": "Chlorination: Sodium hypochlorite is used as a disinfectant in the chlorine contact chamber. Dechlorination: Prior to discharge to Conejo Creek, sodium bisulfite is added to the treated effluent to remove residual chlorine."
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Recirculation"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers is pumped either to the MLE process (return activated sludge), or to the aerobic digester for further treatment."
+      "Sentence": "solids are ... returned to the anaerobic digesters for additional treatment"
     },
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion"
+        "AerobicDigestion",
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers is pumped ... to the aerobic digester for further treatment."
+      "Sentence": "or to the aerobic digester for further treatment"
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -188,7 +171,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the drying beds is hauled away to an off-site composting facility."
+      "Sentence": "Sludge from the drying beds is hauled away"
     },
     {
       "Equipment": null,
@@ -198,12 +181,10 @@
       "Role": [
         "BiosolidsDisposal"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Sludge from the drying beds is hauled away to an off-site composting facility."
+      "Sentence": "Sludge from the drying beds is hauled away to an off-site composting facility"
     },
     {
       "Equipment": null,
@@ -213,12 +194,10 @@
       "Role": [
         "BiosolidsDisposal"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Grit and bar screenings are hauled off-site for disposal in a landfill."
+      "Sentence": "This material is collected and disposed of at a landfill"
     }
   ]
 }

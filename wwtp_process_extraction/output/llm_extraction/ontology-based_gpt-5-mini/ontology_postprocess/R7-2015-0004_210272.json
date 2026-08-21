@@ -9,7 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The WWTP consists of three raw water lift stations",
+      "Sentence": "three raw water lift stations",
       "trigger_process": []
     },
     {
@@ -23,22 +23,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks... consists of a step screen",
+      "Sentence": "headworks, which consists of a step screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "vortex grit pump",
-      "trigger_process": []
     },
     {
       "Equipment": "GritChamber",
@@ -51,21 +39,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a grit separator",
+      "Sentence": "headworks, which consists of ... a grit separator",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks, which consists of ... a vortex grit pump",
+      "trigger_process": []
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Extended",
-        "Aerobic"
+        "Aerobic",
+        "Extended"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
@@ -96,7 +96,9 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -108,7 +110,9 @@
       "Process": [
         "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -139,7 +143,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -170,9 +175,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -184,7 +189,23 @@
       "Location": "on-site",
       "Sentence": "dried in two solar greenhouse sludge drying structures",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Biolac\u00ae process operates without primary treatment",
+      "trigger_process": [
+        "Primary Clarification"
       ]
     }
   ]

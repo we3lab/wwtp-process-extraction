@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of headworks screening...mechanical screening, and grit removal.",
+      "Sentence": "headworks screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,24 +27,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks includes...grit removal.",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "diverted to a 3 million gallon equalization basin and returned to the headworks as flows subside.",
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -66,7 +51,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment with three sequencing batch reactors (SBRs) that provide nitrification/denitrification...",
+      "Sentence": "biological treatment with three sequencing batch reactors (SBRs) that provide nitrification/denitrification",
       "trigger_process": [
         "Denitrification",
         "Nitrification",
@@ -84,7 +69,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a fourth being used as an intermediate storage basin, but can be converted to an SBR if necessary.",
+      "Sentence": "a fourth being used as an intermediate storage basin",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "diverted to a 3 million gallon equalization basin",
       "trigger_process": [
         "Equalization"
       ]
@@ -100,9 +99,28 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "recirculating sand filtration...provide continuous flow to the four recirculating Dynasand filters.",
+      "Sentence": "four recirculating Dynasand filters",
       "trigger_process": [
         "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Coagulation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "coagulation and flocculation",
+      "trigger_process": [
+        "Coagulation",
+        "Flocculation",
+        "Unspecified Chemical Addition"
       ]
     },
     {
@@ -111,12 +129,13 @@
         "UVDisinfection"
       ],
       "Role": [
+        "Disinfection",
         "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and ultraviolet light (UV) disinfection.",
+      "Sentence": "ultraviolet light (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -128,16 +147,40 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Storage"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Having previously used a chlorine disinfection system, the contact chamber is maintained for use as emergency storage.",
+      "Sentence": "Having previously used a chlorine disinfection system",
       "trigger_process": [
         "Chlorination"
       ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the contact chamber is maintained for use as emergency storage",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent is discharged to a 66 million gallon storage reservoir where it is used for spray irrigation",
+      "trigger_process": []
     },
     {
       "Equipment": "AerobicDigester",
@@ -154,7 +197,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is aerobically digested in two digesters...",
+      "Sentence": "Sludge is aerobically digested in two digesters",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -162,26 +205,6 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered by a belt filter press and sludge drying beds.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
         "Dewatering"
       ],
       "Role": [
@@ -192,9 +215,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered by a belt filter press and sludge drying beds.",
+      "Sentence": "dewatered by a belt filter press",
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sludge drying beds",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -208,7 +249,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtrate from the belt filter press is drained back to the headworks.",
+      "Sentence": "Filtrate from the belt filter press is drained back to the headworks",
       "trigger_process": []
     },
     {
@@ -222,7 +263,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Solids are transported offsite for disposal once per year.",
+      "Sentence": "Solids are transported offsite for disposal once per year",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -233,6 +274,7 @@
         "pHAdjustment"
       ],
       "Role": [
+        "MakeUp",
         "Pretreatment"
       ],
       "Substance": [
@@ -240,23 +282,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger adds a hydrated lime slurry (calcium hydroxide) to the influent to increase the alkalinity and pH...",
+      "Sentence": "The Discharger adds a hydrated lime slurry (calcium hydroxide) to the influent to increase the alkalinity and pH",
       "trigger_process": [
         "Lime Treatment",
         "Neutralization"
       ]
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is discharged to a 66 million gallon storage reservoir where it is used for spray irrigation of 61 acres of pastureland.",
-      "trigger_process": []
     }
   ]
 }

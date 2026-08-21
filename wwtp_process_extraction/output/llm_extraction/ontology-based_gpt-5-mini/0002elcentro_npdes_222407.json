@@ -1,17 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "wastewater from the community is pumped from seven lift stations to a final lift station"
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -19,9 +8,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "preliminary treatment, where solids are removed by an automatic bar screen"
@@ -31,15 +18,15 @@
       "Process": [
         "ChemicalAddition",
         "Coagulation",
-        "Flocculation"
+        "Flocculation",
+        "ChemicalPrecipitation"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": [
         "Coagulant-FerricChloride",
-        "Flocculant-Polymer",
-        "Constituent-Metals"
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -53,9 +40,7 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Wastewater is then directed through the plant’s primary clarifiers"
@@ -83,12 +68,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification through four final clarifiers"
+      "Sentence": "and secondary clarification through four final clarifiers"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -112,7 +95,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -124,8 +108,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Thickening",
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -154,9 +137,9 @@
       "Sentence": "Following anaerobic digestion, sludge is directed through a belt press"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -174,7 +157,8 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "LandApplication",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -184,17 +168,19 @@
       "Sentence": "then land-applied at locations in Arizona"
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Pond",
       "Process": [
+        "Storage",
         "Evaporation"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility maintains an emergency storage basin ... but is typically allowed to evaporate"
+      "Sentence": "The Facility maintains an emergency storage basin... but is typically allowed to evaporate"
     }
   ]
 }

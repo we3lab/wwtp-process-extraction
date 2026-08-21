@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment process at the Facility consists of a 300,000-gallon capacity oxidation ditch",
+      "Sentence": "The secondary treatment process at the Facility consists of a 300,000-gallon capacity oxidation ditch...",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -19,7 +19,8 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
         "Secondary"
@@ -27,7 +28,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment process at the Facility consists of a 300,000-gallon capacity oxidation ditch, secondary clarifier",
+      "Sentence": "The secondary treatment process ... secondary clarifier ... A small portion of solids may be returned from the clarifier to the inlet structure prior to the oxidation ditch.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -36,19 +37,59 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection and dechlorination facilities",
+      "Sentence": "The secondary treatment process ... chlorine disinfection and dechlorination facilities.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are removed from the secondary clarifier and pumped to a sludge thickener ... Supernatant from the thickener is also returned to the inlet structure prior to the oxidation ditch.",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids are removed from the secondary clarifier and pumped to a sludge thickener, sludge drying beds.",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -58,65 +99,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "From May 15 through September 30, treated wastewater is discharged from Discharge Point 002 to percolation ponds located in an upland area away from the river channel and floodplain",
+      "Sentence": "From May 15 through September 30, treated wastewater is discharged ... to percolation ponds located in an upland area away from the river channel and floodplain.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "Thickener",
-      "Process": [
-        "Thickening"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Solids are removed from the secondary clarifier and pumped to a sludge thickener",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Solids are removed from the secondary clarifier and pumped to a sludge thickener, sludge drying beds",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A small portion of solids may be returned from the clarifier to the inlet structure prior to the oxidation ditch. Supernatant from the thickener is also returned to the inlet structure prior to the oxidation ditch",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
@@ -126,9 +117,9 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried sludge is buried in trenches on the wooded property owned by the Discharger north of the Facility",
+      "Sentence": "Dried sludge is buried in trenches on the wooded property owned by the Discharger north of the Facility.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Biosolids Landfill"
       ]
     }
   ]

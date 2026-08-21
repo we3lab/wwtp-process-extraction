@@ -14,6 +14,19 @@
       "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation."
     },
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks consists of an influent pump station, comminutors, bar screen, aerated grit chambers, and primary sedimentation."
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation",
@@ -35,9 +48,7 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "There are six primary sedimentation tanks that are operated in parallel."
@@ -67,28 +78,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The secondary clarifiers consist of 14 tanks operating in parallel."
-    },
-    {
-      "Equipment": "DissolvedAirFlotationThickener",
-      "Process": [
-        "Flotation",
-        "Thickening"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Waste activated sludge is sent to the dissolved air flotation system prior to being sent to the anaerobic digestion system."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -98,7 +91,9 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Effluent is disinfected with chloramine (ammonia and sodium hypochlorite) prior to entering six dual media gravity filters for reduction of turbidity and suspended solids."
@@ -113,6 +108,7 @@
         "Tertiary"
       ],
       "Substance": [
+        "Constituent-Ammonia",
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
@@ -131,6 +127,22 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Prior to delivery to Piute Ponds, disinfected recycled water is dechlorinated to protect aquatic life."
+    },
+    {
+      "Equipment": "DissolvedAirFlotationThickener",
+      "Process": [
+        "Flotation",
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste activated sludge is sent to the dissolved air flotation system prior to being sent to the anaerobic digestion system."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -165,7 +177,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
+        "AirDrying",
         "Dewatering"
       ],
       "Role": [
@@ -191,31 +203,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...eventually hauled off-site for composting to an authorized facility."
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility liquid waste handling station consists of a septage interceptor connected to the trunk sewer."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Oxidation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "All of the unlined oxidation ponds and unlined storage reservoirs have not been in use since 2012 when use of the new lined Storage V Reservoirs was initiated."
+      "Sentence": "biosolids are hauled off-site for composting to an authorized facility."
     },
     {
       "Equipment": "Reservoir",
@@ -229,15 +217,30 @@
       "Sentence": "The facility has four existing lined storage reservoirs that are used for seasonal storage of tertiary treated recycled water."
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
-        "LandApplication"
+        "Oxidation"
       ],
-      "Role": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "All of the unlined oxidation ponds and unlined storage reservoirs have not been in use since 2012 when use of the new lined Storage V Reservoirs was initiated."
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Eastern Agricultural Site (EAS) Crop Irrigation, field preparation, and dust control"
+      "Location": "on-site",
+      "Sentence": "Grit removal from the interceptor is conducted on a biweekly basis."
     }
   ]
 }

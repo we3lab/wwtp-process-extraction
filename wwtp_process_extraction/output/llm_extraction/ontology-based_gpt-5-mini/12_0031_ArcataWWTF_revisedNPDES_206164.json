@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment is accomplished with...a grit removal chamber"
+      "Sentence": "Primary wastewater treatment is accomplished with ... a grit removal chamber"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment is accomplished with...two primary clarifiers."
+      "Sentence": "Primary wastewater treatment is accomplished with ... two primary clarifiers"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -46,6 +46,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -58,7 +59,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -68,7 +70,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary solids are sent to two anaerobic digesters, sludge drying beds"
+      "Sentence": "Primary solids are sent to ... sludge drying beds"
     },
     {
       "Equipment": null,
@@ -78,12 +80,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge composting operation"
+      "Sentence": "Primary solids are sent to ... a sludge composting operation"
     },
     {
       "Equipment": "Pond",
@@ -102,61 +102,39 @@
       "Equipment": "Wetland",
       "Process": [
         "Sedimentation",
-        "BiologicalProcess"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "4 treatment marshes are currently online"
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Sedimentation",
-        "BiologicalProcess"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "marshes 5 and 6 were constructed in 2011 and will be fully operational in 2013"
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Sedimentation",
-        "BiologicalProcess"
+        "Biofiltration"
       ],
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "Water-Brackish"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "brackish marsh, which was constructed in 2008"
+      "Sentence": "The AMWS consists of three freshwater wetlands: Allen, Gearheart, and Hauser Marshes"
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": [
+        "Sedimentation",
+        "Biofiltration"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Treated effluent will be discharged immediately after UV disinfection through Outfall No. 003 into Humboldt Bay via the brackish marsh, which was constructed in 2008"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -168,10 +146,12 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",

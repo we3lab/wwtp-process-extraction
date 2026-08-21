@@ -1,6 +1,19 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks pump station",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks pump station with fine screens and grit removal;",
+      "Sentence": "fine screens",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,22 +40,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks pump station with fine screens and grit removal;",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "headworks pump station with fine screens and grit removal;",
-      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -55,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarifiers;",
+      "Sentence": "primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -65,8 +66,7 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -78,7 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge basins with internal separate anoxic denitrification basins;",
+      "Sentence": "activated sludge basins with internal separate anoxic denitrification basins",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -95,7 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarifiers;",
+      "Sentence": "secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -111,7 +111,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flocculation basins;",
+      "Sentence": "flocculation basins",
       "trigger_process": [
         "Flocculation"
       ]
@@ -127,7 +127,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "filters;",
+      "Sentence": "filters",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -135,16 +135,16 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ultraviolet (UV) disinfection;",
+      "Sentence": "ultraviolet (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -160,7 +160,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and a re-aeration outfall.",
+      "Sentence": "a re-aeration outfall",
       "trigger_process": []
     },
     {
@@ -176,7 +176,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a dissolved air flotation thickener,",
+      "Sentence": "a dissolved air flotation thickener",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -196,7 +196,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary digesters,",
+      "Sentence": "primary digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -210,7 +210,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "digester gas holder,",
+      "Sentence": "digester gas holder",
       "trigger_process": []
     },
     {
@@ -226,14 +226,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "solids dewatering facility,",
+      "Sentence": "solids dewatering facility",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "Pump",
-      "Process": null,
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -253,7 +255,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "centate pump station and equalization tank,",
+      "Sentence": "equalization tank",
       "trigger_process": [
         "Equalization"
       ]
@@ -261,19 +263,20 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "lined active solar dryers.",
+      "Sentence": "lined active solar dryers",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -299,8 +302,7 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -312,7 +314,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The expansion to 16.0 mgd will consist of adding a fourth activated sludge basin",
+      "Sentence": "adding a fourth activated sludge basin",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -347,25 +349,26 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding ... a solids holding tank",
+      "Sentence": "a solids holding tank",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "and additional active solar dryers.",
+      "Sentence": "additional active solar dryers",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -379,7 +382,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The expansion to 20.0 mgd will consist of adding a fourth primary clarifier",
+      "Sentence": "adding a fourth primary clarifier",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -389,8 +392,7 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -402,7 +404,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding a fifth activated sludge basin",
+      "Sentence": "a fifth activated sludge basin",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -419,7 +421,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "and a fifth secondary clarifier.",
+      "Sentence": "a fifth secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]

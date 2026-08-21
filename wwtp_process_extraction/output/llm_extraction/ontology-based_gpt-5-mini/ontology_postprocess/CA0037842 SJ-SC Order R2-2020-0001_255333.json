@@ -33,7 +33,7 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "ChemicalAddition"
       ],
@@ -80,12 +80,10 @@
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A modified biological nutrient removal (BNR) process ... Each basin is divided into four sections referred to as \u201cquads.\u201d The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic conditions.",
+      "Sentence": "A modified biological nutrient removal (BNR) process is employed ... in the same aeration basins.",
       "trigger_process": [
         "Denitrification",
         "Nitrification"
@@ -118,7 +116,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following the secondary clarifiers, the wastewater undergoes filtration. There are 16 dual media filters...",
+      "Sentence": "There are 16 dual media filters...",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -127,16 +125,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Backwash",
-        "Equalization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage...",
-      "trigger_process": [
-        "Equalization"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "FlocculationBasin",
@@ -144,12 +139,12 @@
         "Flocculation"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage, followed by flocculation...",
+      "Sentence": "Filter backwash water ... followed by flocculation and sedimentation.",
       "trigger_process": [
         "Flocculation"
       ]
@@ -160,12 +155,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by flocculation and sedimentation.",
+      "Sentence": "Filter backwash water ... followed by flocculation and sedimentation.",
       "trigger_process": [
         "Unspecified Clarification"
       ]
@@ -176,11 +171,9 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The settled solids from the backwash water are pumped back to the primary treatment system.",
@@ -194,28 +187,31 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine",
-        "Constituent-Ammonia"
+        "Constituent-Ammonia",
+        "ReducingAgent"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels ... an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent ... sodium bisulfite is added to neutralize the hypochlorite.",
       "trigger_process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Reduction"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
       "Role": [
         "Posttreatment",
-        "Aerobic"
+        "Detention"
       ],
       "Substance": [
         "Constituent-DissolvedOxygen"
@@ -223,19 +219,9 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Reservoir",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "An 8-million-gallon emergency basin is available for temporary storage prior to the plant headworks, along with an additional 16 million gallons of storage after the primary clarifiers.",
-      "trigger_process": []
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -250,7 +236,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of dissolved air flotation (DAF) thickening...",
+      "Sentence": "The process consists of dissolved air flotation (DAF) thickening, anaerobic digestion, lagoon stabilization, and dewatering...",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -263,8 +249,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -282,12 +267,10 @@
       "Role": [
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The process consists of ... lagoon stabilization...",
+      "Sentence": "The process consists of ... lagoon stabilization ...",
       "trigger_process": [
         "Stabilization Pond"
       ]
@@ -295,7 +278,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -305,9 +288,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatering using sludge drying beds. Once dried, the biosolids are trucked to a landfill...",
+      "Sentence": "dewatering using sludge drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -318,9 +301,11 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Once dried, the biosolids are trucked to a landfill for use as alternative daily cover.",
       "trigger_process": [
         "Biosolids Landfill"
@@ -332,13 +317,12 @@
         "Microfiltration"
       ],
       "Role": [
-        "Posttreatment",
-        "Backwash"
+        "Permeate"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the Silicon Valley Advanced Water Purification Center ... capable of treating up to 10 MGD ... using microfiltration ... The backwash waste stream from the microfiltration process is routed back to the plant headworks.",
+      "Sentence": "the Center is capable of treating up to 10 MGD ... using microfiltration...",
       "trigger_process": [
         "Microfiltration"
       ]
@@ -349,12 +333,12 @@
         "ReverseOsmosis"
       ],
       "Role": [
-        "Posttreatment"
+        "Permeate"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the Center ... treating up to 10 MGD ... using ... reverse osmosis ... The reject waste stream from the reverse osmosis units is routed back to the plant's disinfection units...",
+      "Sentence": "the Center is capable of treating up to 10 MGD ... using ... reverse osmosis ...",
       "trigger_process": [
         "Reverse Osmosis"
       ]
@@ -365,15 +349,39 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Posttreatment"
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the Center ... using ... ultraviolet light to produce approximately 8 MGD of high-quality recycled water.",
+      "Sentence": "the Center is capable of treating up to 10 MGD ... using microfiltration, reverse osmosis, and ultraviolent light...",
       "trigger_process": [
         "UV Disinfection"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The backwash waste stream from the microfiltration process is routed back to the plant headworks.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The reject waste stream from the reverse osmosis units is routed back to the plant\u2019s disinfection units...",
+      "trigger_process": []
     }
   ]
 }

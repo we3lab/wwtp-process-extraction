@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "rag screening",
+      "Sentence": "The wastewater treatment plant consists of rag screening...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "...grit removal...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -49,6 +49,44 @@
       ]
     },
     {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from the primary clarifier is pumped to a gravity thickener",
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "...and then to two anaerobic digesters.",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
       "Equipment": "TricklingFilter",
       "Process": [
         "TricklingFiltration"
@@ -67,25 +105,40 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification",
+      "Sentence": "secondary clarification ... Sludge from the secondary clarifier is pumped back to the primary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from the secondary clarifier is pumped back to the primary clarifier",
+      "trigger_process": []
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -95,48 +148,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination using gaseous chlorine and sulfur dioxide dechlorination",
+      "Sentence": "chlorination using gaseous chlorine",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Thickening"
       ],
       "Role": [
-        "SolidsHandling"
+        "Posttreatment"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to a gravity thickener",
+      "Sentence": "sulfur dioxide dechlorination",
       "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "two anaerobic digesters",
-      "trigger_process": [
-        "Anaerobic Digestion"
+        "Dechlorination"
       ]
     },
     {
@@ -152,7 +182,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered to a minimum of 15 percent solids in a gravity belt press",
+      "Sentence": "digested primary and secondary settled sludge is dewatered to a minimum of 15 percent solids in a gravity belt press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -160,7 +190,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Storage"
       ],
       "Role": [
         "Storage"
@@ -170,28 +201,31 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "unlined grease lagoon for drying and storage",
+      "Sentence": "Skimmings from the primary clarifier are sent to an unlined grease lagoon for drying and storage",
       "trigger_process": [
-        "Drying",
+        "Air Drying",
         "Evaporation Pond"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds prior to landfill disposal",
+      "Sentence": "Additional sludge drying takes place in sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Stabilization Pond"
       ]
     },
     {
@@ -200,31 +234,15 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "taken to a municipal solid waste landfill for final disposal",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
+        "BiosolidsDisposal"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sludge from the secondary clarifier is pumped back to the primary clarifier",
-      "trigger_process": []
+      "Location": "off-site",
+      "Sentence": "then are taken to a municipal solid waste landfill for final disposal",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
     }
   ]
 }

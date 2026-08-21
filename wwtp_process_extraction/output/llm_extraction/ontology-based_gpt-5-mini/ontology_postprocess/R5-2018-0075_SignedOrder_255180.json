@@ -57,7 +57,6 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -77,9 +76,7 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a secondary clarifier",
@@ -107,26 +104,28 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection",
+      "Sentence": "chlorine disinfection ... ancillary systems for ... chemical feed for disinfection and de-chlorination",
       "trigger_process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
         "Pretreatment"
@@ -156,24 +155,6 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "ancillary systems for ... chemical feed for disinfection and de-chlorination",
-      "trigger_process": [
-        "Dechlorination",
-        "Unspecified Chemical Addition"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
@@ -188,7 +169,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary sludge by means of digestion in the heated unmixed anaerobic digester",
+      "Sentence": "digestion in the heated unmixed anaerobic digester",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -216,7 +197,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -234,10 +216,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -246,55 +229,7 @@
       "Location": "on-site",
       "Sentence": "dried in sludge drying beds",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility has two storm water storage ponds",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Water in Pond D can be returned to the treatment system for retreatment",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent is applied to the DLDA land via sprinklers",
-      "trigger_process": [
-        "Land Application"
+        "Air Drying"
       ]
     },
     {
@@ -305,14 +240,45 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "off-site",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "biosolids are applied to land by Synagro within six hours of removal",
+      "Sentence": "biosolids are applied to land by Synagro",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility has two storm water storage ponds",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation",
+        "Recirculation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond D can be returned to the treatment system for retreatment",
+      "trigger_process": [
+        "Evaporation Pond"
       ]
     },
     {
@@ -320,7 +286,9 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",

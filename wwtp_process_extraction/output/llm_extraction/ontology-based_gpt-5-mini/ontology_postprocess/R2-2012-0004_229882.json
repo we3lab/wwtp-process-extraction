@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of comminution...",
+      "Sentence": "Treatment consists of comminution, grit removal, primary sedimentation, flow equalization, high-rate trickling filtration, secondary clarification, and chlorination.",
       "trigger_process": [
         "Comminution"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... grit removal...",
+      "Sentence": "Treatment consists of comminution, grit removal, primary sedimentation, flow equalization, high-rate trickling filtration, secondary clarification, and chlorination.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,23 +43,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... primary sedimentation...",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Equalization"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... flow equalization...",
+      "Sentence": "flow equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -75,7 +73,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... high-rate trickling filtration...",
+      "Sentence": "high-rate trickling filtration",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -91,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... secondary clarification...",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -108,7 +106,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... chlorination.",
+      "Sentence": "Treatment consists of ... secondary clarification, and chlorination.",
       "trigger_process": [
         "Chlorination"
       ]
@@ -118,13 +116,11 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The treated wastewater is dechlorinated by sodium bisulfite before being discharged from the EBDA Common Outfall...",
+      "Sentence": "The treated wastewater is dechlorinated by sodium bisulfite before being discharged from the EBDA Common Outfall",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -158,7 +154,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is anaerobically digested...",
+      "Sentence": "Sludge is anaerobically digested, dewatered in sludge dewatering beds, and then air dried onsite for up to two years.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -167,7 +163,7 @@
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -177,48 +173,26 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is ... dewatered in sludge dewatering beds, and then air dried onsite...",
+      "Sentence": "Sludge is anaerobically digested, dewatered in sludge dewatering beds, and then air dried onsite for up to two years.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dried biosolids are hauled to an authorized disposal site and used as alternative daily cover.",
       "trigger_process": [
-        "Land Application"
+        "Biosolids Landfill"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The plant upgrades included a new trickling filter, trickling filter pumping station...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The plant upgrades included ... solids contact tanks...",
-      "trigger_process": []
     },
     {
       "Equipment": "Thickener",
@@ -228,12 +202,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The plant upgrades included ... solids thickening building...",
+      "Sentence": "plant upgrades included ... solids thickening building",
       "trigger_process": [
         "Thickening"
       ]
@@ -247,10 +219,37 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The plant upgrades included ... biofilter odor treatment facilities.",
+      "Sentence": "plant upgrades included ... biofilter odor treatment facilities.",
       "trigger_process": [
         "Biologically Active Filtration"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "new trickling filter, trickling filter pumping station, solids contact tanks, two new final clarifiers replacing the existing one, waste and secondary sludge pumping stations",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ContinuouslyStirredTankReactor",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "plant upgrades included ... solids contact tanks",
+      "trigger_process": []
     }
   ]
 }

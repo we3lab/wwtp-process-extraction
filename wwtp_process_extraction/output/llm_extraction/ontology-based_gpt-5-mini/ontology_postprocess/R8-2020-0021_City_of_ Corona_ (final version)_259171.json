@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consist of a rotating screen unit",
+      "Sentence": "the headworks consist of a rotating screen unit",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consist of a rotating screen unit and a grit removal system",
+      "Sentence": "the headworks consist of a rotating screen unit and a grit removal system",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -41,9 +41,7 @@
         "Primary",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two rectangular primary sedimentation units",
@@ -54,7 +52,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -79,9 +78,7 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "secondary clarification provided by six rectangular units",
@@ -102,7 +99,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two parallel oxidation ditches with separate oxic and anoxic zones",
+      "Sentence": "secondary treatment consists of two parallel oxidation ditches with separate oxic and anoxic zones",
       "trigger_process": [
         "Oxidation Ditch",
         "Unspecified Nutrient Removal"
@@ -117,9 +114,7 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two circular secondary clarifier units with sludge recovery",
@@ -136,7 +131,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "discharged to a flow equalization basin",
+      "Sentence": "Secondary treated wastewater from Plants 1A and 1B is discharged to a flow equalization basin",
       "trigger_process": [
         "Equalization"
       ]
@@ -161,7 +156,8 @@
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration"
+        "RapidSandFiltration",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary"
@@ -178,8 +174,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -189,7 +184,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination with sodium hypochlorite in two serpentine chlorine contact tanks followed by dechlorination with sodium bisulfate",
+      "Sentence": "chlorination with sodium hypochlorite in two serpentine chlorine contact tanks",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "followed by dechlorination with sodium bisulfate",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -210,7 +221,7 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage"
@@ -218,7 +229,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an on-site four million gallon recycled water storage tank",
+      "Sentence": "Disinfected tertiary water flows to an on-site four million gallon recycled water storage tank",
       "trigger_process": []
     },
     {
@@ -234,7 +245,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "is thickened with a gravity belt thickener",
+      "Sentence": "Primary sludge and waste activated sludge ... is thickened with a gravity belt thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -246,15 +257,14 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "prior to being sent to one of three anaerobic digesters",
+      "Sentence": "sent to one of three anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -262,7 +272,7 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -280,7 +290,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -297,23 +308,37 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "All belt press filtrate is reintroduced to the oxidation ditches",
+      "Sentence": "Water from the equalization basin is pumped directly to the tertiary filters",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste activated sludge from Plant 1B is pumped to the gravity belt thickeners",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -325,7 +350,7 @@
       "Location": "on-site",
       "Sentence": "sludge cake is diverted to a thermal dryer",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
       ]
     },
     {
@@ -344,6 +369,37 @@
       "Sentence": "sludge cake ... is transported to an approved composting facility",
       "trigger_process": [
         "Composting"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent from the tertiary treatment train can either be pumped to the three offsite percolation ponds or the city-wide recycled water distribution system",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All belt press filtrate is reintroduced to the oxidation ditches",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     }
   ]

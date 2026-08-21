@@ -6,14 +6,15 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a rotating screen for removal of large particles,"
+      "Sentence": "a rotating screen for removal of large particles"
     },
     {
       "Equipment": "TricklingFilter",
@@ -30,7 +31,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The trickling filter is only used during summer, when part of the influent is passed through it to increase the dissolved oxygen content"
+      "Sentence": "The trickling filter is only used during summer, when part of the influent is passed through it to increase the dissolved oxygen content of the wastewater"
     },
     {
       "Equipment": "AerationBasin",
@@ -42,13 +43,10 @@
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Constituent-OrganicCarbon",
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge reactors for removal of organics,"
+      "Sentence": "activated sludge reactors for removal of organics"
     },
     {
       "Equipment": "SedimentationTank",
@@ -58,12 +56,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarifiers for separation of solids,"
+      "Sentence": "clarifiers for separation of solids"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -72,7 +68,8 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -80,54 +77,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The effluent is partially chlorinated with the addition of sodium hypochlorite solution"
-    },
-    {
-      "Equipment": "AerobicDigester",
-      "Process": [
-        "AerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Waste sludge from the activated sludge reactors is aerobically digested,"
-    },
-    {
-      "Equipment": "CentrifugalDewateringUnit",
-      "Process": [
-        "Centrifugation",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered in a centrifuge,"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dried in sludge drying beds"
     },
     {
       "Equipment": "Thickener",
@@ -145,16 +94,61 @@
       "Sentence": "The sludge thickener was reconstructed"
     },
     {
-      "Equipment": null,
+      "Equipment": "AerobicDigester",
       "Process": [
-        "Landfill"
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste sludge from the activated sludge reactors is aerobically digested"
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Fluid-Sludge"
       ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered in a centrifuge"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dried in sludge drying beds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Solids separated at the rotating screen are sent to Pebbly Beach Landfill"

@@ -8,12 +8,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the wastewater passes through a mechanical fine screen, and screenings are then removed, collected and disposed."
+      "Sentence": "the wastewater passes through a mechanical fine screen"
     },
     {
       "Equipment": "Screen",
@@ -26,7 +24,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The current headworks configuration includes a single screen in the northern channel, a second channel for a future screen"
+      "Sentence": "a second channel for a future screen"
     },
     {
       "Equipment": "GritChamber",
@@ -39,25 +37,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After passing through the mechanical screen, raw wastewater flows into a packaged grit chamber (i.e., a cyclone grit removal type system)."
+      "Sentence": "raw wastewater flows into a packaged grit chamber (i.e., a cyclone grit removal type system)"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Reactor",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The activated sludge treatment system consists of two contact stabilization tanks (CSTs). The CSTs process is characterized as an activated sludge process ... Air from centrifugal blowers is delivered to the activated sludge by air diffusers installed on the floor of the contact tank, re-aeration tank..."
+      "Sentence": "The activated sludge treatment system consists of two contact stabilization tanks (CSTs)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -70,7 +64,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The circular tanks are compartmented by internal walls to create ... clarification (clarifier)..."
+      "Sentence": "clarification (clarifier)"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solids aeration (re-aeration tank)"
     },
     {
       "Equipment": "AerobicDigester",
@@ -78,23 +85,7 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Stabilization",
-        "Aerobic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The CSTs process is characterized as an activated sludge process with a moderately short sludge age followed by sludge digestion... air diffusers installed on the floor of the ... digester."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Feed"
-      ],
-      "Role": [
         "SolidsHandling"
       ],
       "Substance": [
@@ -102,73 +93,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge removed from the CSTs digester is conveyed via sludge wasting pumps which pump the sludge to the drying beds on the south end of the plant."
+      "Sentence": "sludge digestion (digester)... Air from centrifugal blowers is delivered to the activated sludge by air diffusers installed ... and digester"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Compressor",
       "Process": [
-        "Drying",
-        "Evaporation"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Solids are dried through a combination of evaporation and draw-off, or decant, of supernatant, which is returned to the Facility’s headworks."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "When enough biosolids have accumulated, staff schedules to have them removed from the site for disposal."
-    },
-    {
-      "Equipment": "OxidationDitch",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification",
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The OD process is characterized as a modified extended aeration activated sludge process with a relatively long sludge age. The tanks as constructed include a large aeration basin and a relatively smaller anoxic zone for denitrification."
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary",
-        "SolidsHandling"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the anoxic tank, the ML flows into the aeration basin... the most of the flow overtops a series of weirs to feed the secondary clarifiers. The two circular clarifiers settle and collect sludge."
+      "Sentence": "Air from centrifugal blowers is delivered to the activated sludge by air diffusers"
     },
     {
       "Equipment": "Pump",
@@ -176,14 +114,14 @@
         "Recirculation"
       ],
       "Role": [
-        "Feed"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The settled sludge is pulled from the bottom of the clarifier and continuously pumped back into the OD to maintain the mixed liquor concentration."
+      "Sentence": "Sludge removed from the CSTs digester is conveyed via sludge wasting pumps which pump the sludge to the drying beds"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -201,20 +139,116 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The clarified effluent from the CSTs and OD processes is disinfected using an automated chlorine delivery system consisting of bulk sodium hypochlorite storage tanks... The chlorinated effluent travels through the serpentine contact chamber and overtops a weir where sodium bisulfite is added to remove any remaining residual chlorine."
+      "Sentence": "clarified effluent from the CSTs and OD processes is disinfected using an automated chlorine delivery system ... to the chlorine contact basins (CCB) for disinfection... sodium bisulfite is added to remove any remaining residual chlorine"
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "bulk sodium hypochlorite storage tanks"
+    },
+    {
+      "Equipment": "OxidationDitch",
       "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification",
+        "Aeration",
         "Recirculation"
       ],
       "Role": [
-        "Feed"
+        "Secondary",
+        "Anoxic",
+        "Aerobic",
+        "Extended",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are dried through a combination of evaporation and draw-off, or decant, of supernatant, which is returned to the Facility’s headworks."
+      "Sentence": "The OD process is characterized as a modified extended aeration activated sludge process with a relatively long sludge age... include a large aeration basin and a relatively smaller anoxic zone for denitrification"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The two circular clarifiers settle and collect sludge"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The settled sludge is pulled from the bottom of the clarifier and continuously pumped back into the OD to maintain the mixed liquor concentration"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a portion of the settled sludge is removed from the bottom of the clarifier via sludge wasting pumps which pump the sludge to the drying beds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying",
+        "Evaporation",
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Drying beds... Solids are dried through a combination of evaporation and draw-off, or decant, of supernatant, which is returned to the Facility’s headworks"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "When enough biosolids have accumulated, staff schedules to have them removed from the site for disposal"
     }
   ]
 }

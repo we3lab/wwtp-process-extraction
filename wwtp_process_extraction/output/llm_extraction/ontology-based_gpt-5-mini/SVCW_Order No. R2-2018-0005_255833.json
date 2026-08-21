@@ -1,11 +1,21 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "it consists of approximately eight miles of force main and four pump stations"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -23,7 +33,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment process consists of preliminary mechanical bar screens"
+      "Sentence": "preliminary mechanical bar screens"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the new headworks structure that will include screening and grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -39,8 +62,9 @@
       "Sentence": "primary sedimentation"
     },
     {
-      "Equipment": "RotatingBiologicalContactor",
+      "Equipment": "TricklingFilter",
       "Process": [
+        "TricklingFiltration",
         "Biofiltration"
       ],
       "Role": [
@@ -54,6 +78,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
@@ -92,19 +117,6 @@
       "Sentence": "mono- or dual-media filtration"
     },
     {
-      "Equipment": "CoagulationBasin",
-      "Process": [
-        "Coagulation"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "An additional chemical coagulation treatment step may be included just prior to filtration to produce this recycled water."
-    },
-    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
@@ -112,8 +124,7 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -125,7 +136,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Thickening"
+        "Sedimentation"
       ],
       "Role": [
         "SolidsHandling"
@@ -148,14 +159,14 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Primary sludge is treated by ... rotating drum thickeners"
+      "Sentence": "The gravity thickener units used to treat primary sludge have exceeded their useful life and will be replaced with rotating drum thickeners."
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Thickening"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -203,7 +214,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -216,17 +227,17 @@
       "Sentence": "air-dried using sludge drying beds"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "Drying"
+        "Coagulation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "employ a new biosolids drying technology that uses pyrolysis to produce biochar"
+      "Sentence": "An additional chemical coagulation treatment step may be included just prior to filtration to produce this recycled water."
     },
     {
       "Equipment": "Screen",
@@ -239,7 +250,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The mechanical bar screens at the existing headworks structure will be modified to provide finer screening."
+      "Sentence": "The new headworks structure that will include screening and grit removal."
     },
     {
       "Equipment": "GritChamber",
@@ -252,7 +263,45 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the new headworks structure that will include screening and grit removal."
+      "Sentence": "The new headworks structure that will include screening and grit removal."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "will include a deep receiving lift station to lift raw wastewater to a new headworks structure"
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "TricklingFiltration",
+        "Biofiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "installation of a new motorized distributor arm at a fixed film reactor"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ThermalDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "employ a new biosolids drying technology that uses pyrolysis to produce biochar"
     }
   ]
 }

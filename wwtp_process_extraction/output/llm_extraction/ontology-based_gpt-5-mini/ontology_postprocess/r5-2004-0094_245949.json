@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of one primary clarifier...",
+      "Sentence": "one primary clarifier",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -19,17 +19,24 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of ... two aeration basins...",
+      "Sentence": "two aeration basins",
       "trigger_process": [
-        "Unspecified AS"
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
@@ -43,7 +50,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of ... two secondary clarifiers...",
+      "Sentence": "two secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -51,17 +58,18 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
         "Disinfection",
+        "Chlorination",
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of ... a chlorination/dechlorination system.",
+      "Sentence": "a chlorination/dechlorination system",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -77,46 +85,34 @@
         "Stabilization",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is treated by aerobic digestion...",
+      "Sentence": "Sludge is treated by aerobic digestion",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered by a pond and drying beds...",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered by a pond and drying beds...",
+      "Sentence": "dewatered by a pond and drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -127,10 +123,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...and disposed off-site.",
+      "Sentence": "and disposed off-site",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -144,7 +142,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "include a new pump station, the addition of the influent pumping and screening capacity",
+      "Sentence": "to include a new pump station, the addition of the influent pumping and screening capacity",
       "trigger_process": []
     },
     {
@@ -153,7 +151,8 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -174,7 +173,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the addition of ... a new grit removal system",
+      "Sentence": "a new grit removal system",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -182,16 +181,23 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the addition of ... two new oxidation ditches",
+      "Sentence": "two new oxidation ditches",
       "trigger_process": [
+        "Denitrification",
+        "Nitrification",
         "Oxidation Ditch"
       ]
     },
@@ -212,10 +218,8 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
@@ -235,10 +239,7 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-Ammonia",
-        "Constituent-Nitrate"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "tertiary filters",
@@ -265,14 +266,17 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Biofiltration"
+      ],
       "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "constructed wetlands ... will be added in Phase 1b",
+      "Sentence": "constructed wetlands or other treatment measures will be added in Phase 1b",
       "trigger_process": [
         "Wetland"
       ]
@@ -287,12 +291,63 @@
         "Stabilization",
         "Anaerobic"
       ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a new anaerobic digester",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase 2 ... the addition of ... a new anaerobic digester",
+      "Sentence": "a new solid handling building",
       "trigger_process": [
-        "Anaerobic Digestion"
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the addition of grit removal capacity",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the addition of the influent pumping and screening capacity (Phase 2)",
+      "trigger_process": [
+        "Screening/Microstrainer"
       ]
     }
   ]

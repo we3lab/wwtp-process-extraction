@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks includes... grit removal.",
+      "Sentence": "The headworks includes an ultrasonic flow meter, mechanical screening, and grit removal.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -44,7 +44,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "diverted to a 3 million gallon equalization basin and returned to the headworks as flows subside.",
+      "Sentence": "be diverted to a 3 million gallon equalization basin and returned to the headworks as flows subside.",
       "trigger_process": [
         "Equalization"
       ]
@@ -54,9 +54,7 @@
       "Process": [
         "ActivatedSludge",
         "Nitrification",
-        "Denitrification",
-        "Aeration",
-        "Sedimentation"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
@@ -72,26 +70,25 @@
       "trigger_process": [
         "Denitrification",
         "Nitrification",
-        "SBR",
-        "Secondary Clarification"
+        "SBR"
       ]
     },
     {
-      "Equipment": "SequencingBatchReactor",
+      "Equipment": "Tank",
       "Process": [
         "Recirculation"
       ],
       "Role": [
         "Equalization",
-        "Storage"
+        "Storage",
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a fourth being used as an intermediate storage basin, but can be converted to an SBR if necessary.",
       "trigger_process": [
-        "Equalization",
-        "SBR"
+        "Equalization"
       ]
     },
     {
@@ -114,8 +111,7 @@
     {
       "Equipment": "FlocculationBasin",
       "Process": [
-        "Flocculation",
-        "Mixing"
+        "Flocculation"
       ],
       "Role": [
         "Tertiary"
@@ -148,7 +144,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -157,7 +154,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "recirculating sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "and ultraviolet light (UV) disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -165,7 +162,8 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -175,46 +173,50 @@
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Having previously used a chlorine disinfection system, the contact chamber is now maintained for use as emergency storage.",
+      "Sentence": "Having previously used a chlorine disinfection system",
       "trigger_process": [
         "Chlorination"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Pretreatment",
-        "MakeUp"
-      ],
-      "Substance": [
-        "pHAdjuster-Lime"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Until August 2016 the Discharger was adding hydrated lime slurry (calcium hydroxide) to the influent to increase the alkalinity and pH",
-      "trigger_process": [
-        "Lime Treatment",
-        "Neutralization"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": [
-        "Pretreatment",
-        "MakeUp"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "At the end of August 2016 the Discharger stopped using calcium hydroxide and started adding a caustic solution.",
+      "Sentence": "the contact chamber is now maintained for use as emergency storage.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the effluent is discharged to a 66 million gallon storage reservoir (Holman Reservoir)",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "the effluent may also be recycled on 110 acres of the Greenhorn Creek Golf Course.",
       "trigger_process": [
-        "Neutralization"
+        "Land Application"
       ]
     },
     {
@@ -256,9 +258,9 @@
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -268,11 +270,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds",
+      "Sentence": "and sludge drying beds.",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
+        "Air Drying"
       ]
     },
     {
@@ -286,7 +286,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Solids are transported offsite for disposal as needed",
+      "Sentence": "Solids are transported offsite for disposal as needed and a minimum of once per year.",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -294,14 +294,39 @@
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
+        "pHAdjustment"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "pHAdjuster-Lime"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Until August 2016 the Discharger was adding hydrated lime slurry (calcium hydroxide) to the influent",
+      "trigger_process": [
+        "Lime Treatment",
+        "Neutralization"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "pHAdjuster"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtrate from the belt filter press is drained back to the headworks.",
-      "trigger_process": []
+      "Sentence": "At the end of August 2016 the Discharger stopped using calcium hydroxide and started adding a caustic solution.",
+      "trigger_process": [
+        "Neutralization"
+      ]
     }
   ]
 }

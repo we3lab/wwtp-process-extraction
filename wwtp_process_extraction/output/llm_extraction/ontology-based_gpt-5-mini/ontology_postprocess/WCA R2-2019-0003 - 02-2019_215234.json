@@ -41,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal chamber",
+      "Sentence": "a grit removal chamber",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -66,16 +66,13 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "MLE",
         "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -85,7 +82,6 @@
       "Sentence": "aeration basins with anaerobic chambers (for nutrient removal using a Modified Ludzack-Ettinger [MLE] biological nutrient removal [BNR] process)",
       "trigger_process": [
         "Denitrification",
-        "MLE",
         "Nitrification"
       ]
     },
@@ -112,12 +108,15 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine contact chamber",
+      "Sentence": "a chlorine contact chamber",
       "trigger_process": [
         "Chlorination"
       ]
@@ -148,8 +147,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -164,24 +162,27 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sent to lagoons for storage and solar drying in drying beds",
       "trigger_process": [
-        "Drying",
-        "Evaporation Pond"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
@@ -196,15 +197,45 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The digested sludge is pumped via force main to the West County Plant for drying and disposal",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "All supernatant is returned at controlled volumes to the West County Plant",
+      "trigger_process": []
+    },
+    {
       "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated, and then discharged",
+      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated, and then discharged through West County Agency\u0019s deep-water outfall",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -236,7 +267,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "construct a new headworks with ... grit removal",
+      "Sentence": "construct a new headworks with finer bar screens and grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -247,28 +278,15 @@
         "Aeration"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "replace the mechanical surface aerators with a diffused aeration system",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "replace the secondary clarifier mechanisms",
+      "Sentence": "replace the mechanical surface aerators with a more efficient diffused aeration system",
       "trigger_process": [
-        "Secondary Clarification"
+        "Unspecified AS"
       ]
     },
     {
@@ -288,19 +306,20 @@
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": null,
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "ChemicalAddition"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
       "Sentence": "upgrade to chemically enhanced primary treatment",
       "trigger_process": [
         "Coagulation",
-        "Flocculation",
         "Unspecified Chemical Addition"
       ]
     },
@@ -309,7 +328,9 @@
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",

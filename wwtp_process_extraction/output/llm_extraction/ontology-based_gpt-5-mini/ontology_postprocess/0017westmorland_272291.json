@@ -1,9 +1,23 @@
 {
   "items": [
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The collection system includes one wet well and two pumps (capacity: 600 gpm/ pump).",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -15,22 +29,40 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks system includes a sewage grinder...",
+      "Sentence": "The headworks system includes a sewage grinder,",
       "trigger_process": [
         "Comminution"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks system includes ... a sewage pump station,",
+      "trigger_process": []
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The headworks system includes ... a cyclone unit (for grit removal),",
@@ -44,7 +76,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -71,73 +104,74 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge (RAS) and waste activated sludge (WAS) are pumped from the two secondary clarifiers to one of four RAS/WAS pumps",
+      "trigger_process": []
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility disinfects wastewater using sodium hypochlorite for chlorination and sodium bisulfite for dechlorination.",
+      "Sentence": "Following treatment in the secondary clarifiers, flow is sent through one of two chlorine contact basins ... The Facility disinfects wastewater using sodium hypochlorite for chlorination and sodium bisulfite for dechlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Return activated sludge (RAS) and waste activated sludge (WAS) are pumped ... to one of four RAS/WAS pumps",
-      "trigger_process": []
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility includes six sludge drying beds... Sludge is dried on-site for one year",
+      "Sentence": "The Facility includes six sludge drying beds ... Sludge is dried on-site for one year and dried solids are transferred to a 40-cubic yard storage container for removal off-site.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dried solids are transferred to a 40-cubic yard storage container for removal off-site.",
-      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Final disposal of biosolids is at the Imperial County Landfill.",

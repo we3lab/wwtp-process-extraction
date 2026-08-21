@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks consist of two micro screens..."
+      "Sentence": "The headworks consist of two micro screens"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...a grit chamber..."
+      "Sentence": "The headworks consist of two micro screens, a Parshall flume, a grit chamber"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Influent raw sewage flow that exceeds the operational setpoint is diverted to equalization ponds (Ponds 1A and 1B)"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,13 +48,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two 95-foot diameter conventional primary clarifiers..."
+      "Sentence": "Screened influent flows from the grit chamber to one of two 95-foot diameter conventional primary clarifiers"
     },
     {
       "Equipment": null,
       "Process": [
         "Coagulation",
-        "Flocculation"
+        "Flocculation",
+        "ChemicalAddition"
       ],
       "Role": [
         "Primary"
@@ -54,7 +66,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility also has the option to utilize Chemically-Enhanced Primary Treatment (CEPT)..."
+      "Sentence": "The Facility also has the option to utilize Chemically-Enhanced Primary Treatment (CEPT)... The CEPT uses a coagulant (ferric chloride and an anionic emulsion polymer)"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -70,7 +82,43 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility has three primary anaerobic digesters."
+      "Sentence": "Sludge is anaerobically digested and dewatered using a centrifuge."
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification",
+        "Recirculation",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "been configured as the Modified Ludzack Ettinger (MLE) activated sludge process... an anoxic zone followed by an aerobic zone, with internal mixed liquor recycle"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The secondary treatment system consists of three aeration basins and four secondary clarifiers."
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -88,41 +136,17 @@
       "Sentence": "The Facility also has two DAFT units which may be utilized to thicken primary solids and WAS."
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification",
-        "Recirculation"
+        "MediaFiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Constituent-Ammonia",
-        "Constituent-Nitrate",
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "configured as the Modified Ludzack Ettinger (MLE) activated sludge process...with internal mixed liquor recycle for denitrification of ammonia oxidized to nitrate"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary treatment system consists of three aeration basins and four secondary clarifiers."
+      "Sentence": "Currently all flow is being filtered using the cloth media filtration system"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -135,20 +159,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Currently all flow is being filtered using the cloth media filtration system..."
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the conventional media filters held in standby for high flows or for backup of the cloth filters..."
+      "Sentence": "a conventional deep-bed, dual media filter system"
     },
     {
       "Equipment": "Tank",
@@ -160,7 +171,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Backwash from the filters is discharged to backwash equalization basins..."
+      "Sentence": "Backwash from the filters is discharged to backwash equalization basins"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -170,26 +181,15 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorine gas is used to disinfect the filtered secondary effluent... A sulfur dioxide/water solution is injected... for dechlorination."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Influent raw sewage flow that exceeds the operational setpoint is diverted to equalization ponds (Ponds 1A and 1B)..."
+      "Sentence": "Chlorine gas is stored in 1-ton containers... A sulfur dioxide/water solution is injected... for dechlorination"
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
@@ -216,47 +216,40 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Centrate from the dewatering process is currently routed to Pond 5A and 5B for equalization..."
+      "Sentence": "Ponds 5A and 5B are... being used for centrifuge centrate flow management."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond 3A and 3B for emergency storage."
+    },
+    {
+      "Equipment": "Boiler",
+      "Process": [
+        "Combustion"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biogas is used to fuel hot water boilers for digester heating"
     },
     {
       "Equipment": "Flare",
       "Process": [
         "Combustion"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Excess biogas is combusted at a single conventional flare..."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility has 13 ponds used for...solids drying (if necessary)."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Historically, Ponds 3A, 3B, 5A, and 5B were used as the Facility’s facultative sludge lagoons (FSLs)..."
+      "Sentence": "Excess biogas is combusted at a single conventional flare located east of the CEPT facility."
     },
     {
       "Equipment": null,
@@ -264,9 +257,12 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are hauled to a landfill."
@@ -285,6 +281,18 @@
       "Sentence": "Screenings and grit from the headworks are currently sent to West Central Landfill."
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Historically, Ponds 3A, 3B, 5A, and 5B were used as the Facility’s facultative sludge lagoons (FSLs)"
+    },
+    {
       "Equipment": null,
       "Process": [
         "Drying"
@@ -292,7 +300,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Biosolids will be dried to approximately 80 percent solids."

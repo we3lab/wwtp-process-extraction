@@ -1,17 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "wet well with submersible grinder pumps"
-    },
-    {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
@@ -20,7 +9,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent pump station"
+      "Sentence": "influent pump (influent pump station, two working and one on standby)"
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "wet well with submersible grinder pumps"
     },
     {
       "Equipment": "Screen",
@@ -30,12 +32,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment includes screening to remove large solids"
+      "Sentence": "two rotating drum screens (0.060-inch openings)"
     },
     {
       "Equipment": null,
@@ -45,19 +45,19 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Screenings from the rotating drum screens are ... dewatered, and compacted"
+      "Sentence": "Screenings from the rotating drum screens are washed to remove fecal material, dewatered, and compacted"
     },
     {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -66,8 +66,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -76,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater enters the aeration tanks where biological treatment takes place"
+      "Sentence": "oxidation via suspended growth aerobic process ... two aeration tanks"
     },
     {
       "Equipment": "SedimentationTank",
@@ -89,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solid-liquid separation takes place in the two clarifiers"
+      "Sentence": "secondary clarifiers"
     },
     {
       "Equipment": "AerobicDigester",
@@ -98,21 +98,32 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste sludge is aerobically digested"
+      "Sentence": "The 50,000-gallons aerobic digester tank"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "equipped with one NEMO model NE30A positive displacement sludge pump"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -122,7 +133,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "waste sludge ... dewatered in lined sludge drying beds at the plant"
+      "Sentence": "six lined sludge drying beds"
     },
     {
       "Equipment": "Pond",
@@ -130,12 +141,13 @@
         "Evaporation"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transferred via pipelines to three percolation/evaporation ponds for final disposal"
+      "Sentence": "treated wastewater is disposed of into three percolation/evaporation ponds"
     }
   ]
 }

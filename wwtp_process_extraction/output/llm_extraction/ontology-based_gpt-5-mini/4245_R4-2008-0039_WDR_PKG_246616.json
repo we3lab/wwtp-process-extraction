@@ -8,10 +8,27 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent grinding"
+      "Sentence": "Influent grinding: Solids such as paper and rags are ground prior to entering the treatment process"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "rags and plastics by screening"
     },
     {
       "Equipment": "GritChamber",
@@ -27,19 +44,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Grit is removed by settling"
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "screening"
     },
     {
       "Equipment": "OxidationDitch",
@@ -62,7 +66,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "oxidation ditch with an anaerobic-anoxic and aerobic zones for BOD, nitrogen, and phosphorus removal"
+      "Sentence": "activated sludge treatment with using an oxidation ditch with an anaerobic-anoxic and aerobic zones for BOD, nitrogen, and phosphorus removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -74,7 +78,9 @@
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Final clarification in secondary clarifiers: ... solids (sludge) are separated from the effluent and the sludge blankets is thickened"
@@ -103,7 +109,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary filtration: ... sand is the filtration media"
+      "Sentence": "Tertiary filtration: In the case of Ojai Valley WWTP, sand is the filtration media"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -116,12 +122,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ultraviolet disinfection"
+      "Sentence": "Ultraviolet disinfection: Irradiation with UV light is a promising method of disinfection"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -131,38 +139,35 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Chlorination: Sodium hypochlorite is used as a disinfectant ... as a backup to the UV system"
+      "Sentence": "Chlorination: Sodium hypochlorite is used as a disinfectant ... as a backup to the UV system ... Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine"
     },
     {
       "Equipment": null,
       "Process": [
-        "Dechlorination"
+        "Aeration"
       ],
       "Role": [
         "Posttreatment"
       ],
-      "Substance": [
-        "ReducingAgent"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine"
+      "Sentence": "and reaeration"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pump",
       "Process": [
-        "Drying"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge drying beds: The sludge beds provide an area for storage and drying of sludge"
+      "Sentence": "secondary sludge is pumped either to the oxidation ditches (return activated sludge) or to the belt press for dewatering"
     },
     {
       "Equipment": "BeltFilterPress",
@@ -178,32 +183,17 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sludge is pumped ... or to the belt press for dewatering"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "secondary sludge is pumped either to the oxidation ditches (return activated sludge) or to the belt press"
+      "Sentence": "to the belt press for dewatering (waste activated sludge)"
     },
     {
       "Equipment": null,
       "Process": [
+        "AirDrying",
         "Composting"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -221,11 +211,11 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "During wet weather, sludge is stored in sludge drying beds until hauled off-site"
+      "Sentence": "Primary screenings are hauled off-site for disposal"
     },
     {
       "Equipment": null,
@@ -236,24 +226,27 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Constituent-Particles"
       ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "This material is collected and disposed of to a landfill"
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
-        "Aeration"
+        "BiosolidsDisposal"
       ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling",
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and reaeration"
+      "Location": "off-site",
+      "Sentence": "During wet weather, sludge is stored in sludge drying beds until hauled off-site"
     }
   ]
 }

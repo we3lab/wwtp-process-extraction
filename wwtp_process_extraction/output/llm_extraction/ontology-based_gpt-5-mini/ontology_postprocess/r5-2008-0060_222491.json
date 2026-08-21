@@ -84,8 +84,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -112,42 +111,54 @@
       ]
     },
     {
-      "Equipment": "FlocculationBasin",
+      "Equipment": "CoagulationBasin",
       "Process": [
-        "Flocculation",
-        "Mixing"
+        "Coagulation"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "rapid mix flocculation",
-      "trigger_process": [
-        "Flocculation"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Coagulation",
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
-        "Coagulant",
-        "Flocculant-Polymer"
+        "Coagulant"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "coagulant and polymer injections",
       "trigger_process": [
         "Coagulation",
+        "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "StaticMixer",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "rapid mix flocculation",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "rapid mix flocculation",
+      "trigger_process": [
+        "Flocculation",
         "Polymer Addition"
       ]
     },
@@ -157,8 +168,7 @@
         "Sedimentation"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -171,8 +181,7 @@
     {
       "Equipment": "RapidSandFilter",
       "Process": [
-        "RapidSandFiltration",
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -188,12 +197,10 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -204,10 +211,31 @@
       ]
     },
     {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "upgraded its disinfection process from chlorination and dechlorination to ultraviolet disinfection",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -218,50 +246,13 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "tertiary treated wastewater from the WWTF is discharged to percolation ponds",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "ChemicalPrecipitation"
-      ],
-      "Role": [
-        "PhosphorusRemoval",
-        "Secondary"
-      ],
-      "Substance": [
-        "Coagulant-Alum"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger removes phosphorus by adding alum in the secondary treatment units",
-      "trigger_process": [
-        "Alum Addition",
-        "Chemical P Removal",
-        "Chemical Precipitation"
-      ]
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -294,10 +285,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -309,7 +299,7 @@
       "Location": "on-site",
       "Sentence": "ten concrete-lined sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -323,44 +313,46 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are hauled off site by a contractor to a permitted facility",
+      "Sentence": "Biosolids are hauled off site by a contractor to a permitted facility.",
       "trigger_process": [
         "Unspecified Disposal"
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Coagulation"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary",
+        "PhosphorusRemoval"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Coagulant-Alum"
       ],
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "upgraded its disinfection process from chlorination and dechlorination to ultraviolet disinfection",
+      "Sentence": "The Discharger removes phosphorus by adding alum in the secondary treatment units.",
       "trigger_process": [
-        "Chlorination"
+        "Alum Addition",
+        "Chemical P Removal",
+        "Coagulation",
+        "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Tertiary"
+        "Posttreatment",
+        "Drain"
       ],
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "upgraded its disinfection process from chlorination and dechlorination to ultraviolet disinfection",
+      "Sentence": "Tertiary treated wastewater from the WWTF is discharged to percolation ponds adjacent to and hydraulically connected to the Merced River",
       "trigger_process": [
-        "Dechlorination"
+        "Unspecified Lagoon"
       ]
     }
   ]

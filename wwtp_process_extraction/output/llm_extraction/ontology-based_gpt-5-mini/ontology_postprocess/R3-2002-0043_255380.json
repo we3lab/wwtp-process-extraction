@@ -9,7 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wet-weather flow equalization",
+      "Sentence": "facilities include wet-weather flow equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -19,7 +19,9 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -33,7 +35,9 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -47,7 +51,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -110,8 +116,9 @@
         "Nitrification"
       ],
       "Role": [
+        "Aerobic",
         "NitrogenRemoval",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -127,33 +134,25 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "final settling",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Evaporation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "cooling using evaporative cooling towers",
-      "trigger_process": []
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -166,12 +165,13 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
+      "Role": [
+        "Tertiary"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "chlorination/dechlorination",
@@ -185,13 +185,15 @@
       "Process": [
         "Flotation"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "thickened in a dissolved air floatation thickener",
+      "Sentence": "Solids are thickened in a dissolved air floatation thickener",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -203,6 +205,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "SolidsHandling",
         "Stabilization"
       ],
       "Substance": [
@@ -218,33 +221,37 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered ... by belt presses",
+      "Sentence": "dewatered either by belt presses",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered ... by drying beds",
+      "Sentence": "drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -252,8 +259,12 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Stabilized solids are applied to nonfood agricultural crops",

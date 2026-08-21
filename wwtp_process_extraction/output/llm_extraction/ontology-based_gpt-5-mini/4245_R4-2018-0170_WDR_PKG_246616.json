@@ -21,7 +21,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Grit is removed by settling"
@@ -37,56 +39,60 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Influent undergoes preliminary treatment through grinders, grit removal and screening."
+      "Sentence": "rags and plastics by screening"
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Anaerobic",
-        "Anoxic",
         "Aerobic",
+        "Anoxic",
+        "Anaerobic",
         "NutrientRemoval",
         "NitrogenRemoval",
         "PhosphorusRemoval"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Sludge-MixedLiquor",
+        "Constituent-Nitrate"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater then undergoes secondary treatment through extended aeration oxidation ditches with anaerobic, anoxic and aerobic zones for phosphorus, nitrogen and biochemical oxygen demand (BOD) removal"
+      "Sentence": "extended aeration oxidation ditches with anaerobic, anoxic and aerobic zones for phosphorus, nitrogen and biochemical oxygen demand (BOD) removal"
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
         "Secondary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by clarification in circular secondary clarifiers."
+      "Sentence": "Final clarification in secondary clarifiers: In this stage, solids (sludge) are separated from the effluent and the sludge blanket is thickened."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Equalization basins allow for evening out diurnal flows to the tertiary filters."
+      "Sentence": "Equalization Basins: These basins allow for adjustments of flow to the filters throughout the day and during storm events."
     },
     {
       "Equipment": "RapidSandFilter",
@@ -96,10 +102,12 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary filtration: ... In the case of Ojai Valley WWTP, sand is the filtration media."
+      "Sentence": "Tertiary filtration: ... sand is the filtration media."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -107,8 +115,7 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Disinfection"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -116,40 +123,10 @@
       "Sentence": "Secondary effluent then undergoes tertiary filtration, ultraviolet (UV) disinfection and re-aeration through static aerators prior to discharge."
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "StaticMixer",
       "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "UV disinfection and re-aeration through static aerators prior to discharge."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Disinfection"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sodium hypochlorite is used as a disinfectant in the Ojai Valley WWTP as a backup to the UV system"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
+        "Aeration",
+        "Mixing"
       ],
       "Role": [
         "Posttreatment"
@@ -157,7 +134,38 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine."
+      "Sentence": "re-aeration through static aerators prior to discharge."
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "As a backup, the Facility uses chlorination to disinfect the effluent water. Prior to discharge, sodium bisulfite is added to the treated effluent to remove residual chlorine."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from secondary clarifiers is pumped either to the oxidation ditches (return activated sludge)"
     },
     {
       "Equipment": "BeltFilterPress",
@@ -173,23 +181,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the belt press dewaters waste activated sludge typically to 14 percent solids"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers is pumped either to the oxidation ditches (return activated sludge)"
+      "Sentence": "belt press for dewatering (waste activated sludge)."
     },
     {
       "Equipment": null,
@@ -197,9 +189,12 @@
         "Composting"
       ],
       "Role": [
+        "BiosolidsDisposal",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The Permittee uses on-site windrow composting during dry weather"
@@ -210,12 +205,15 @@
         "Composting"
       ],
       "Role": [
+        "BiosolidsDisposal",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauls sludge to an off-site composting facility during wet weather."
+      "Sentence": "hauls sludge to an off-site composting facility during wet weather"
     },
     {
       "Equipment": null,
@@ -225,23 +223,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Solids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "This material is collected and disposed of to a landfill."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "which is then composted in the sludge drying beds."
     },
     {
       "Equipment": null,
@@ -250,13 +237,14 @@
         "Denitrification"
       ],
       "Role": [
+        "NutrientRemoval",
         "NitrogenRemoval",
-        "NutrientRemoval"
+        "PhosphorusRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Facility proposes to upgrade its nitrification/denitrification (NDN) process for improved nutrient removal"
+      "Sentence": "The Facility proposes to upgrade its nitrification/denitrification (NDN) process for improved nutrient removal to comply with the total nitrogen (TN) and total phosphorous (TP) final effluent limitations."
     }
   ]
 }

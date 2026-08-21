@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks including a manual bar screen and a lift pump station",
+      "Sentence": "headworks including a manual bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -19,13 +19,21 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks including a manual bar screen and a lift pump station",
+      "Sentence": "headworks including a ... lift pump station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A separate groundwater pump station ... was designed to lower the water level under and around the aeration basins",
       "trigger_process": []
     },
     {
@@ -34,8 +42,6 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
         "Stabilization"
       ],
       "Substance": null,
@@ -48,89 +54,28 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Stabilization"
+        "Containment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "each with two aeration units for aerated stabilization",
+      "Sentence": "emergency overflow basin, located parallel to the aeration pond",
       "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Accumulated biosolids are dredged from the lagoons",
-      "trigger_process": [
-        "Unspecified Clarification"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering",
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "disposed of on drying beds",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dried solids are analyzed prior to removal off-site for disposal at a landfill.",
-      "trigger_process": [
-        "Biosolids Landfill"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -140,6 +85,28 @@
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Cleaning",
+        "AirDrying",
+        "BiosolidsDisposal",
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Accumulated biosolids are dredged from the lagoons and from the chlorination chamber and disposed of on drying beds",
+      "trigger_process": [
+        "Air Drying",
+        "Biosolids Landfill"
       ]
     },
     {

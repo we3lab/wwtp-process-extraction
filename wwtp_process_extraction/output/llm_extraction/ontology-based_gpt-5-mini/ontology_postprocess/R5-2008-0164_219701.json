@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks (screening, grit removal, comminutors)",
+      "Sentence": "The treatment system at the Facility consists of headworks (screening, grit removal, comminutors)...",
       "trigger_process": [
         "Comminution"
       ]
@@ -43,28 +43,37 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the wastewater flows via gravity through a grit chamber for removal of smaller grit particles",
+      "Sentence": "Following screening, the wastewater flows via gravity through a grit chamber for removal of smaller grit particles",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After effluent leaves the preliminary treatment stage, it is pumped to the oxidation ditch.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Extended"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "extended aeration in an oxidation ditch",
+      "Sentence": "The treatment system at the Facility consists of ... extended aeration in an oxidation ditch",
       "trigger_process": [
         "Extended Aeration",
         "Oxidation Ditch"
@@ -91,8 +100,7 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
-        "Backwashing"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -100,7 +108,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the clarified effluent is pumped through a filtration process... multimedia filters",
+      "Sentence": "the clarified effluent is pumped through a filtration process to remove most of the remaining solids... multimedia filters",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -128,18 +136,18 @@
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Storage",
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an unlined aerated lagoon ... used to accept backwash water from the filters prior to recycling flow... provides treatment redundancy ... and flow equalization",
+      "Sentence": "The Discharger has an unlined aerated lagoon with a surface area of 2.24 acres, which is used to accept backwash water ... and the lagoon additionally provides treatment redundancy ... as well as flow equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -148,12 +156,13 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two unlined facultative ponds, which are currently used for retaining storm water on site",
+      "Sentence": "The site also has two unlined facultative ponds, which are currently used for retaining storm water on site",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -161,17 +170,20 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is dewatered in sand drying beds and transported for offsite disposal",
+      "Sentence": "Sludge is dewatered in sand drying beds and transported for offsite disposal.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -208,31 +220,6 @@
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "Biofiltration",
-        "ActivatedSludge",
-        "Nitrification",
-        "Recirculation"
-      ],
-      "Role": [
-        "Secondary",
-        "SolidsHandling",
-        "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the new wastewater treatment plant will include a Membrane Bioreactor (MBR) treatment system",
-      "trigger_process": [
-        "Membrane Bioreactor",
-        "Nitrification",
-        "Unspecified Nutrient Removal"
-      ]
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -243,7 +230,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Raw sewage will flow into the coarse screening facility, which consists of a mechanical bar screen",
+      "Sentence": "each containing a perforated plate drum screen for fine screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -257,7 +244,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The screened sewage will then be sent to an influent pump station, which will consist of three 750 gallon per minute (GPM) pumps",
+      "Sentence": "the influent pump station, which will consist of three 750 gallon per minute (GPM) pumps",
       "trigger_process": []
     },
     {
@@ -271,56 +258,45 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The wastewater will then be pumped to a grit removal facility for removal of smaller grit particles",
+      "Sentence": "The wastewater will then be pumped to a grit removal facility for removal of smaller grit particles.",
       "trigger_process": [
         "Grit Removal"
       ]
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "MembraneBioreactor",
       "Process": [
-        "Screening"
+        "Biofiltration",
+        "Recirculation"
       ],
       "Role": [
-        "Pretreatment"
+        "Secondary",
+        "Tertiary",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the influent flow will be split into two channels, each containing a perforated plate drum screen for fine screening",
+      "Sentence": "The new wastewater treatment plant will ... include a Membrane Bioreactor (MBR) treatment system.",
       "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "After passing through the fine screens, the wastewater will then receive pH adjustments",
-      "trigger_process": [
-        "Neutralization"
+        "Membrane Bioreactor"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification"
       ],
       "Role": [
         "Aerobic",
+        "NitrogenRemoval",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The aeration zone in each process train will operate as a conventional activated sludge process with nitrification occurring",
+      "Sentence": "The aeration zone in each process train will operate as a conventional activated sludge process with nitrification occurring.",
       "trigger_process": [
         "Nitrification",
         "Unspecified Nutrient Removal"
@@ -338,16 +314,33 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Each train will have an anoxic zone... allowing denitrification to occur",
+      "Sentence": "Influent wastewater in the anoxic zone will be mixed with nitrified mixed liquor ... thereby allowing denitrification to occur.",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "After passing through the fine screens, the wastewater will then receive pH adjustments and flow into an aeration tank.",
+      "trigger_process": [
+        "Neutralization"
+      ]
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -355,22 +348,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The proposed facility includes ... an ultraviolet (UV) disinfection facility",
+      "Sentence": "The proposed facility includes ... ultraviolet (UV) disinfection facility ... The MBR permeate pumps will lift the flow through a closed pipe UV system.",
       "trigger_process": [
         "UV Disinfection"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Permeate"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The MBR permeate pumps will lift the flow through a closed pipe UV system",
-      "trigger_process": []
     }
   ]
 }

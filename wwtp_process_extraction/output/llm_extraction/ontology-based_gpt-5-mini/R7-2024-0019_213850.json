@@ -38,9 +38,10 @@
       "Sentence": "Two submersible pumps equipped with variable frequency drives pump influent to the treatment system."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "BiologicalProcess"
       ],
       "Role": [
         "Secondary",
@@ -49,29 +50,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The current treatment system consists of an aerated lagoon system with four cells."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Accumulated inert solids and biosolids will be dredged from the bottom of each lagoon cell annually..."
+      "Sentence": "The current treatment system consists of an aerated lagoon system with four cells... High efficiency aerators provide aeration to the wastewater in the cells."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
         "Disinfection",
-        "Dechlorination"
+        "Dechlorination",
+        "pHAdjustment"
       ],
       "Role": [
         "Tertiary",
@@ -83,38 +70,39 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent ... undergoes disinfection by chlorination, followed by dechlorination. The disinfection system uses liquid sodium hypochlorite ... The Discharger may add sulfuric acid to the chlorine chamber..."
+      "Sentence": "Effluent treated through the four-cell aerated treatment system undergoes disinfection by chlorination, followed by dechlorination...The disinfection system uses liquid sodium hypochlorite for disinfection followed by liquid sodium bisulfite for dechlorination...The Discharger may add sulfuric acid to the chlorine chamber during summer months to control effluent pH..."
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Accumulated inert solids and biosolids will be ... solar dried on two drying beds prior to being hauled off-site..."
+      "Sentence": "Accumulated inert solids and biosolids will be dredged from the bottom of each lagoon cell annually and solar dried on two drying beds prior to being hauled off-site for disposal..."
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill",
         "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled off-site for disposal to either a landfill or by a contractor for composting."
+      "Sentence": "solar dried on two drying beds prior to being hauled off-site for disposal to either a landfill or by a contractor for composting."
     }
   ]
 }

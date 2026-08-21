@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of comminution..."
+      "Sentence": "Treatment consists of comminution, grit removal, primary sedimentation, flow equalization, high-rate trickling filtration, secondary clarification, and chlorination."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... grit removal..."
+      "Sentence": "Treatment consists of comminution, grit removal, primary sedimentation, flow equalization, high-rate trickling filtration, secondary clarification, and chlorination."
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,20 +37,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... primary sedimentation..."
+      "Sentence": "primary sedimentation"
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Equalization"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... flow equalization..."
+      "Sentence": "flow equalization"
     },
     {
       "Equipment": "TricklingFilter",
@@ -63,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... high-rate trickling filtration..."
+      "Sentence": "high-rate trickling filtration"
     },
     {
       "Equipment": "SedimentationTank",
@@ -76,7 +74,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... secondary clarification..."
+      "Sentence": "secondary clarification"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -90,20 +88,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of ... chlorination."
+      "Sentence": "Treatment consists of ... secondary clarification, and chlorination."
     },
     {
       "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The treated wastewater is dechlorinated by sodium bisulfite before being discharged from the EBDA Common Outfall..."
+      "Sentence": "The treated wastewater is dechlorinated by sodium bisulfite before being discharged from the EBDA Common Outfall"
     },
     {
       "Equipment": "Pond",
@@ -131,13 +127,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is anaerobically digested..."
+      "Sentence": "Sludge is anaerobically digested, dewatered in sludge dewatering beds, and then air dried onsite for up to two years."
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -147,40 +143,20 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is ... dewatered in sludge dewatering beds, and then air dried onsite..."
+      "Sentence": "Sludge is anaerobically digested, dewatered in sludge dewatering beds, and then air dried onsite for up to two years."
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "The dried biosolids are hauled to an authorized disposal site and used as alternative daily cover."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The plant upgrades included a new trickling filter, trickling filter pumping station..."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The plant upgrades included ... solids contact tanks..."
     },
     {
       "Equipment": "Thickener",
@@ -190,12 +166,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The plant upgrades included ... solids thickening building..."
+      "Sentence": "plant upgrades included ... solids thickening building"
     },
     {
       "Equipment": "BiologicalAeratedFilter",
@@ -206,7 +180,32 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The plant upgrades included ... biofilter odor treatment facilities."
+      "Sentence": "plant upgrades included ... biofilter odor treatment facilities."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "new trickling filter, trickling filter pumping station, solids contact tanks, two new final clarifiers replacing the existing one, waste and secondary sludge pumping stations"
+    },
+    {
+      "Equipment": "ContinuouslyStirredTankReactor",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "plant upgrades included ... solids contact tanks"
     }
   ]
 }

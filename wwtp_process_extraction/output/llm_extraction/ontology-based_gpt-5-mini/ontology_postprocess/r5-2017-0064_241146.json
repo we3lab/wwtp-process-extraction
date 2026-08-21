@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening, grit removal, and primary clarification",
+      "Sentence": "The primary treatment plant consists of screening, grit removal, and primary clarification.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "screening, grit removal, and primary clarification",
+      "Sentence": "The primary treatment plant consists of screening, grit removal, and primary clarification.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification",
+      "Sentence": "The primary treatment plant consists of screening, grit removal, and primary clarification.",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -61,7 +61,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the clarifiers is transferred to thickeners",
+      "Sentence": "Sludge from the clarifiers is transferred to thickeners, then processed and stabilized through anaerobic digesters.",
       "trigger_process": [
         "Thickening"
       ]
@@ -69,7 +69,8 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion"
+        "AnaerobicDigestion",
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -81,7 +82,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "processed and stabilized through anaerobic digesters",
+      "Sentence": "Sludge from the clarifiers is transferred to thickeners, then processed and stabilized through anaerobic digesters.",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -92,18 +93,16 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is transferred to holding tanks",
+      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds...",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -113,31 +112,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "periodically drawn to unlined drying beds",
+      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Discharger applies the stabilized sludge as a soil amendment on their 2,526-acre ranch",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": "Filter",
+      "Equipment": "RotatingBiologicalContactor",
       "Process": [
         "Biofiltration"
       ],
@@ -147,11 +128,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "approximately half of the primary effluent receives treatment with fixed film reactors",
+      "Sentence": "Approximately half of the primary effluent receives treatment with fixed film reactors and then is combined with primary effluent in an aerated recirculation channel.",
       "trigger_process": [
-        "Secondary Filtration",
-        "Unspecified FFR",
-        "Unspecified Filtration"
+        "Rotating Biological Contactor"
       ]
     },
     {
@@ -162,12 +141,13 @@
       ],
       "Role": [
         "Secondary",
+        "Recirculation",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "combined with primary effluent in an aerated recirculation channel",
+      "Sentence": "\u2026then is combined with primary effluent in an aerated recirculation channel.",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -183,7 +163,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "distributed to three parallel facultative ponds for further treatment",
+      "Sentence": "Flow in the recirculation channel is then distributed to three parallel facultative ponds for further treatment...",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -197,7 +177,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transferred to one of two storage ponds before being applied to the Discharger\u2019s 2,526-acre ranch",
+      "Sentence": "\u2026and then transferred to one of two storage ponds before being applied to the Discharger\u2019s 2,526-acre ranch...",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -211,15 +191,19 @@
       ],
       "Role": [
         "Secondary",
+        "Tertiary",
         "NutrientRemoval",
         "NitrogenRemoval",
         "Aerobic",
         "Anoxic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-OrganicCarbon",
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an oxidation ditch that provides activated sludge biological treatment... providing nitrogen removal (i.e., nitrification/denitrification)",
+      "Sentence": "The Phase 1A facility consists of an oxidation ditch that provides activated sludge biological treatment, reducing biochemical oxygen demand (BOD) and providing nitrogen removal (i.e., nitrification/denitrification).",
       "trigger_process": [
         "Denitrification",
         "Nitrification",
@@ -227,10 +211,36 @@
       ]
     },
     {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Tertiary",
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Constituent-OrganicCarbon",
+        "Constituent-Ammonia"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Phase 2 facility consists of aeration basins for activated sludge biological treatment followed by membrane filtration and UV disinfection.",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess",
-        "Biofiltration"
+        "Biofiltration",
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary"
@@ -238,7 +248,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "membrane filtration",
+      "Sentence": "The Facility\u2019s tertiary treatment facility consists of two parallel two-step membrane bioreactor (MBR) facilities... followed by membrane filtration...",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -246,8 +256,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -255,34 +264,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ultraviolet light (UV) radiation that disinfects the filtered wastewater",
+      "Sentence": "\u2026membrane filtration and ultraviolet light (UV) radiation that disinfects the filtered wastewater prior to storage or discharge.",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Phase 2 facility consists of aeration basins for activated sludge biological treatment",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
-    },
-    {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess",
-        "ActivatedSludge",
-        "Biofiltration"
+        "MembraneProcess"
       ],
       "Role": [
         "Tertiary"
@@ -290,9 +280,27 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger is in the process of upgrading and expanding the Facility\u2019s two-step MBR process... Phase 3 would increase the tertiary treatment capacity to 19.1 MGD",
+      "Sentence": "The Discharger is in the process of upgrading and expanding the Facility\u2019s two-step MBR process.",
       "trigger_process": [
         "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger applies the stabilized sludge as a soil amendment on their 2,526-acre ranch...",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

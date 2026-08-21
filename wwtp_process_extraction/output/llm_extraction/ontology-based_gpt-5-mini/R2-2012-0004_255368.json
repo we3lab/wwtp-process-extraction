@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment consists of grinding, primary sedimentation, trickling filter, activated sludge, secondary clarification, and disinfection by sodium hypochlorite."
+      "Sentence": "Treatment consists of grinding"
     },
     {
       "Equipment": "SedimentationTank",
@@ -45,7 +45,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -88,7 +89,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -100,7 +102,8 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -115,7 +118,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -128,6 +131,17 @@
       "Sentence": "dried in open drying beds"
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "10 acres of out-of-service oxidation ponds which can be used for emergency storage"
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -138,7 +152,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will be complete with ... a new grit removal facility"
+      "Sentence": "a new grit removal facility"
     },
     {
       "Equipment": "Pump",
@@ -175,7 +189,20 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "secondary treatment improvements (including replacement of the Fixed Film Reactor)"
+      "Sentence": "replacement of the Fixed Film Reactor"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "secondary clarifier improvements"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -183,8 +210,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -192,19 +218,6 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "digester improvements"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The treated wastewater is dechlorinated by sodium bisulfite before being discharged from the EBDA Common Outfall"
     }
   ]
 }

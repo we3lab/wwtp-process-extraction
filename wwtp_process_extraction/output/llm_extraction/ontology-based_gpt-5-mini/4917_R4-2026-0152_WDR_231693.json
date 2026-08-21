@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment at the Hill Canyon TP begins with preliminary screening. ... The North Influent and South Influent lines have screens to remove heavy debris, rags, and trash."
+      "Sentence": "Treatment at the Hill Canyon TP begins with preliminary screening."
     },
     {
       "Equipment": "GritChamber",
@@ -21,7 +21,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Grit is removed by funnel-shaped equipment and is collected in a hopper."
@@ -64,7 +66,8 @@
         "ChemicalAddition"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Feed"
       ],
       "Substance": [
         "Constituent-Metals"
@@ -84,15 +87,17 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Anoxic",
         "NutrientRemoval",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Aerobic",
+        "Anoxic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater ... enters the activated sludge basins to undergo nitrogen removal using the Modified Ludzak-Ettinger (MLE) process. Glycerin is added to enhance the denitrification process in the anoxic zone of the bioreactors."
+      "Sentence": "Wastewater ... enter the activated sludge basins to undergo nitrogen removal using the Modified Ludzak-Ettinger (MLE) process. Glycerin is added to enhance the denitrification process in the anoxic zone of the bioreactors."
     },
     {
       "Equipment": "SedimentationTank",
@@ -118,7 +123,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Secondary Clarifier No.1 has been decommissioned and is currently being used for onsite stormwater retention prior to redirecting the captured stormwater for treatment."
+      "Sentence": "Secondary Clarifier No.1 has been decommissioned and is currently being used for onsite stormwater retention..."
     },
     {
       "Equipment": "Tank",
@@ -135,23 +140,24 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Hill Canyon TP has ten multi-media tertiary filters (anthracite, sand and gravel)."
+      "Sentence": "The Hill Canyon TP has ten multi-media tertiary filters (anthracite, sand and gravel). Filter backwash water is sent to a holding tank..."
     },
     {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "Backwashing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Backwash"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -163,7 +169,7 @@
       "Process": [
         "Chlorination",
         "Disinfection",
-        "ChemicalAddition"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary",
@@ -174,20 +180,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary filtered effluent is dosed with Ammonium Sulfate and Sodium Hypochlorite to form a chloramine, for disinfection, in the chlorine contact chamber."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Prior to discharge to North Fork Arroyo Conejo, sodium bisulfite is added to the treated effluent to remove residual chlorine."
+      "Sentence": "The tertiary filtered effluent is dosed with Ammonium Sulfate and Sodium Hypochlorite to form a chloramine, for disinfection, in the chlorine contact chamber... Prior to discharge to North Fork Arroyo Conejo, sodium bisulfite is added to the treated effluent to remove residual chlorine."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -205,7 +198,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are reduced by three parallel mesophillic anaerobic digesters. ... The Hill Canyon TP has also been accepting FOG since 2007 ... and use the FOG in the anaerobic digesters to increase the production of methane ..."
+      "Sentence": "Solids are reduced by three parallel mesophillic anaerobic digesters... use the FOG in the anaerobic digesters to increase the production of methane..."
     },
     {
       "Equipment": "Cogenerator",
@@ -216,18 +209,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "use the FOG in the anaerobic digesters to increase the production of methane and produce renewable energy through the use of an internal combustion engine at the Hill Canyon TP."
+      "Sentence": "produce renewable energy through the use of an internal combustion engine at the Hill Canyon TP."
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Recirculation"
+        "Dewatering"
       ],
       "Role": [
-        "SolidsHandling",
-        "Feed"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge from secondary clarifiers is either pumped to the MLE process (return activated sludge) or to the screw press for dewatering."
@@ -235,39 +229,30 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from the belt press is either sun dried at the Hill Canyon TP and hauled away, or is hauled directly off the screw press to either of the following facilities..."
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from secondary clarifiers ... or to the screw press for dewatering."
+      "Sentence": "Sludge from the belt press is either sun dried at the Hill Canyon TP and hauled away..."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge from the belt press is either sun dried at the Hill Canyon TP and hauled away..."
@@ -280,23 +265,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Grit, rags, and screenings from the headworks are hauled off-site for disposal in a landfill."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hauled directly off the screw press to ... South Kern Industrial Center (SKIC) in Taft, California"
     },
     {
       "Equipment": null,
@@ -309,7 +283,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled directly off the screw press to ... Liberty Composting in Lost Hills, California."
+      "Sentence": "Sludge from the screw press ... hauled directly off the screw press to ... Liberty Composting in Lost Hills, California."
     }
   ]
 }

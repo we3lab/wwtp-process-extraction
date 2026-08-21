@@ -17,22 +17,6 @@
       ]
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The hydro gritters remove most of the influent grit and inorganic matter.",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -49,44 +33,36 @@
       ]
     },
     {
-      "Equipment": "GravityThickener",
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The hydro gritters remove most of the influent grit and inorganic matter.",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "the sludge continues to gravity thickeners for further concentration.",
       "trigger_process": [
         "Thickening"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent from the influent pump station enters one of two primary clarifiers.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "SluiceGate",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "influent and effluent gates for the two new barscreens.",
-      "trigger_process": []
     },
     {
       "Equipment": "TricklingFilter",
@@ -100,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment includes four trickling filters ... biological organisms growing on the trickling filter media.",
+      "Sentence": "Secondary treatment includes four trickling filters ... where most of the soluble organic matter is removed through absorption and utilization by the biological organisms growing on the trickling filter media.",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -128,8 +104,9 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Anaerobic",
-        "Stabilization"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -156,9 +133,10 @@
       "trigger_process": []
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -170,23 +148,22 @@
       "Location": "on-site",
       "Sentence": "The solids are then drawn off into one of 26 sludge drying beds where the solids are dried for several weeks.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A belt filter press was installed in 2002 to allow for increased solids dewatering capabilities.",
+      "Sentence": "A belt filter press was installed in 2002 to allow for increased solids dewatering capabilities...",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -196,33 +173,43 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Water that is removed from the sludge in the solids handling processes is collected and returned to the plant headworks for treatment.",
       "trigger_process": []
     },
     {
-      "Equipment": null,
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Composting",
-        "LandApplication"
+        "MediaFiltration"
       ],
       "Role": [
-        "SolidsHandling"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered solids are stored ... for eventual removal by a biosolids hauling contractor for legally permitted composting or land application.",
+      "Sentence": "A large portion of the Facility\u2019s effluent is conveyed offsite to the Desert Water Agency (DWA) Wastewater Reclamation Plant (WRP), where it is subjected to filtration and disinfection (i.e., tertiary treatment).",
       "trigger_process": [
-        "Composting",
-        "Land Application"
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "A large portion of the Facility\u2019s effluent is conveyed offsite ... where it is subjected to filtration and disinfection (i.e., tertiary treatment).",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     },
     {
@@ -237,24 +224,6 @@
       "Sentence": "The effluent that is not conveyed offsite for tertiary treatment ... is discharged to six unlined evaporation/percolation ponds.",
       "trigger_process": [
         "Evaporation Pond"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "MediaFiltration",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A large portion of the Facility\u2019s effluent is conveyed offsite to the Desert Water Agency ... where it is subjected to filtration and disinfection (i.e., tertiary treatment).",
-      "trigger_process": [
-        "Media Filtration",
-        "Unspecified Disinfection"
       ]
     }
   ]

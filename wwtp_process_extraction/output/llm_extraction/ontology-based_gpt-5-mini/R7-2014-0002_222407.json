@@ -1,17 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater from the community is pumped from seven lift stations to a final lift station"
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -19,9 +8,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "preliminary treatment where solids are removed by an automatic bar screen"
@@ -41,7 +28,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Manual injection of ferric chloride and polymer was added to the process at the main lift station"
+      "Sentence": "Manual injection of ferric chloride and polymer was added to the process at the main lift station in April 2004 in order to remove metals"
     },
     {
       "Equipment": "SedimentationTank",
@@ -52,17 +39,17 @@
         "Primary"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater is then directed through the plant’s primary clarifiers"
+      "Sentence": "Wastewater is then directed through the plant\u0019s primary clarifiers"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "BiologicalProcess"
       ],
       "Role": [
         "Secondary",
@@ -81,7 +68,9 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "secondary clarification through four final clarifiers"
@@ -89,28 +78,25 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light"
+      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged"
     },
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -122,7 +108,8 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Thickening"
+        "Thickening",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -132,7 +119,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary sludge ... is processed through a gravity belt thickener"
+      "Sentence": "Secondary sludge generated from the secondary clarifiers is processed through a gravity belt thickener, with the de-watered sludge sent to the anaerobic digesters"
     },
     {
       "Equipment": "BeltFilterPress",
@@ -151,9 +138,9 @@
       "Sentence": "Following anaerobic digestion, sludge is directed through a belt press"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -173,13 +160,15 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "then land-applied at locations in Arizona"
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pond",
       "Process": [
         "Evaporation"
       ],

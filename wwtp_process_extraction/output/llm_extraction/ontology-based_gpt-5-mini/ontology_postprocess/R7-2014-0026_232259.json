@@ -1,18 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "A lift station located approximately 0.25 miles north of the Facility ... pumps the raw sewage to the Facility.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -23,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater pumped to the treatment works passes through a manual rake bar screen",
+      "Sentence": "passes through a manual rake bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -42,7 +30,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility consists of two contact stabilization extended aeration activated sludge-type package plants ... Wastewater ... passes ... into an aeration basin",
+      "Sentence": "into an aeration basin",
       "trigger_process": [
         "Extended Aeration"
       ]
@@ -58,9 +46,41 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater ... then into a clarifier located in the center of the package plant",
+      "Sentence": "then into a clarifier located in the center of the package plant",
       "trigger_process": [
         "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Clarified wastewater is disinfected with both chlorination",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "disinfected ... by ultraviolet (UV) disinfection prior to discharge",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     },
     {
@@ -70,26 +90,27 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each plant also is equipped with an aerobic sludge digester; sludge from the aerobic digester is pumped to a drying area",
+      "Sentence": "Each plant also is equipped with an aerobic sludge digester",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -98,43 +119,7 @@
       "Location": "on-site",
       "Sentence": "sludge from the aerobic digester is pumped to a drying area and placed into a dry sludge holding pile",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Clarified wastewater is disinfected with both chlorination and by ultraviolet (UV) disinfection",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Clarified wastewater is disinfected with both chlorination and by ultraviolet (UV) disinfection prior to discharge",
-      "trigger_process": [
-        "UV Disinfection"
+        "Air Drying"
       ]
     },
     {
@@ -143,13 +128,12 @@
         "Evaporation"
       ],
       "Role": [
-        "Posttreatment",
-        "Containment"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Permittee proposes to construct three new evaporation/percolation ponds located at the northeast corner of the Facility to dispose of treated domestic wastewater",
+      "Sentence": "proposes to construct three new evaporation/percolation ponds located at the northeast corner of the Facility to dispose of treated domestic wastewater",
       "trigger_process": [
         "Evaporation Pond"
       ]

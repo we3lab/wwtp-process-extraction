@@ -11,20 +11,26 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of one primary clarifier..."
+      "Sentence": "one primary clarifier"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval",
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of ... two aeration basins..."
+      "Sentence": "two aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,22 +43,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of ... two secondary clarifiers..."
+      "Sentence": "two secondary clarifiers"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
         "Disinfection",
+        "Chlorination",
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of ... a chlorination/dechlorination system."
+      "Sentence": "a chlorination/dechlorination system"
     },
     {
       "Equipment": "AerobicDigester",
@@ -64,36 +71,29 @@
         "Stabilization",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is treated by aerobic digestion..."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered by a pond and drying beds..."
+      "Sentence": "Sludge is treated by aerobic digestion"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered by a pond and drying beds..."
+      "Sentence": "dewatered by a pond and drying beds"
     },
     {
       "Equipment": null,
@@ -103,10 +103,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...and disposed off-site."
+      "Sentence": "and disposed off-site"
     },
     {
       "Equipment": "Pump",
@@ -117,7 +119,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "include a new pump station, the addition of the influent pumping and screening capacity"
+      "Sentence": "to include a new pump station, the addition of the influent pumping and screening capacity"
     },
     {
       "Equipment": "Screen",
@@ -125,7 +127,8 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -143,20 +146,25 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the addition of ... a new grit removal system"
+      "Sentence": "a new grit removal system"
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the addition of ... two new oxidation ditches"
+      "Sentence": "two new oxidation ditches"
     },
     {
       "Equipment": "SedimentationTank",
@@ -172,10 +180,8 @@
       "Sentence": "a new secondary clarifier"
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
@@ -192,10 +198,7 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Constituent-Ammonia",
-        "Constituent-Nitrate"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "tertiary filters"
@@ -216,14 +219,17 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Biofiltration"
+      ],
       "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "constructed wetlands ... will be added in Phase 1b"
+      "Sentence": "constructed wetlands or other treatment measures will be added in Phase 1b"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -235,10 +241,52 @@
         "Stabilization",
         "Anaerobic"
       ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "a new anaerobic digester"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase 2 ... the addition of ... a new anaerobic digester"
+      "Sentence": "a new solid handling building"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the addition of grit removal capacity"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the addition of the influent pumping and screening capacity (Phase 2)"
     }
   ]
 }

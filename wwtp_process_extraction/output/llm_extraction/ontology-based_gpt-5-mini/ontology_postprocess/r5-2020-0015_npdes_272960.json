@@ -15,7 +15,9 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -29,7 +31,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -39,34 +43,20 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "pHAdjustment"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Magnesium hydroxide alkalinity control system",
-      "trigger_process": [
-        "Neutralization"
-      ]
-    },
-    {
       "Equipment": "OxidationDitch",
       "Process": [
-        "MLE",
         "ActivatedSludge",
-        "Aeration",
+        "MLE",
         "Nitrification",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -87,26 +77,13 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids",
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two 92-foot secondary clarifiers",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Two 130-foot secondary clarifiers",
+      "Sentence": "Two 92-foot secondary clarifiers; Two 130-foot secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -122,7 +99,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Four cloth media filters \u000b\t6 nanometer",
+      "Sentence": "Four cloth media filters \t6 nanometer",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -130,7 +107,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -145,49 +123,51 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "BiologicalProcess"
-      ],
+      "Process": null,
       "Role": [
         "Equalization",
         "Containment",
-        "Stabilization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "One emergency flow equalization pond (Erskine Pond also known as Pond 13)",
       "trigger_process": [
-        "Equalization",
-        "Stabilization Pond"
+        "Equalization"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Aeration",
+        "Evaporation",
+        "Sedimentation"
       ],
       "Role": [
+        "SolidsHandling",
         "Equalization",
-        "Containment",
-        "Stabilization"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ponds 1 through 8 are used as algae production ponds",
+      "Sentence": "Ponds 1 through 8 are used as algae production ponds ... Water in the ponds is lost by evaporation and/or percolation",
       "trigger_process": [
+        "Biosolids Lagoon",
         "Equalization",
-        "Stabilization Pond"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "Sedimentation",
         "AnaerobicDigestion",
         "AerobicDigestion",
-        "Digestion",
-        "Drying"
+        "AirDrying",
+        "BiosolidsDisposal",
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling",
@@ -198,12 +178,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ponds 9, 10, and 11 are used for sludge stabilization",
+      "Sentence": "Ponds 9, 10, and 11 are used for sludge stabilization...allowing that pond to rest (digest) for two years...allowing the biosolids to dry in place. Dried biosolids are hauled to a landfill for disposal.",
       "trigger_process": [
         "Aerobic Digestion",
+        "Air Drying",
         "Anaerobic Digestion",
         "Biosolids Lagoon",
-        "Drying",
+        "Biosolids Landfill",
         "Stabilization Pond"
       ]
     },
@@ -213,7 +194,6 @@
         "Recirculation"
       ],
       "Role": [
-        "Feed",
         "SolidsHandling"
       ],
       "Substance": [
@@ -221,29 +201,40 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge that has settled in the secondary clarifiers is siphoned to the return sludge pump station (RSPS). At the RSPS, the sludge is either recycled within the system as return activated sludge (RAS) or wasted from the system as waste activated sludge (WAS).",
+      "Sentence": "Sludge that has settled in the secondary clarifiers is siphoned to the return sludge pump station (RSPS)...recycled within the system as return activated sludge (RAS) or wasted ... as waste activated sludge (WAS). WAS is pumped to the sludge stabilization ponds.",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
+        "pHAdjustment",
         "ChemicalAddition"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "tertiary level treatment (chemical addition, cloth media filtration, and UV disinfection)",
+      "Sentence": "Magnesium hydroxide alkalinity control system",
       "trigger_process": [
-        "Unspecified Chemical Addition"
+        "Neutralization"
       ]
+    },
+    {
+      "Equipment": "Compressor",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Upgraded aeration process equipment from brush rotors to diffused air and turbo blowers.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"
@@ -251,11 +242,11 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dried biosolids are hauled to a landfill for disposal",
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Removed 30 years of accumulated biosolids and cleaned 3 ponds",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Unspecified Disposal"
       ]
     }
   ]

@@ -52,7 +52,7 @@
     {
       "Equipment": "BiologicalAeratedFilter",
       "Process": [
-        "Biofiltration",
+        "BiologicallyActiveFiltration",
         "Nitrification"
       ],
       "Role": [
@@ -138,7 +138,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -162,12 +163,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling consists of gravity belt thickener",
+      "Sentence": "gravity belt thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -182,9 +181,7 @@
         "Stabilization",
         "Anaerobic"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "anaerobic digestion",
@@ -195,20 +192,18 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sludge drying beds",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
@@ -226,6 +221,22 @@
       "Sentence": "beneficial reuse of biosolids via land application to farmland",
       "trigger_process": [
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "co-compost for public distribution",
+      "trigger_process": [
+        "Composting"
       ]
     },
     {
@@ -284,12 +295,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "thickeners",
+      "Sentence": "transferred to thickeners",
       "trigger_process": [
         "Thickening"
       ]
@@ -304,9 +313,7 @@
         "Stabilization",
         "Anaerobic"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "processed and stabilized through anaerobic digesters",
@@ -331,41 +338,51 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "unlined drying beds",
+      "Sentence": "periodically drawn to unlined drying beds",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "applies the stabilized sludge as a soil amendment on their 2,526 acre ranch",
+      "trigger_process": [
+        "Land Application"
       ]
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Nitrification"
+        "TricklingFiltration"
       ],
       "Role": [
-        "Secondary",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary effluent receives treatment with fixed film reactors",
+      "Sentence": "receives treatment with fixed film reactors",
       "trigger_process": [
-        "Nitrification",
-        "Trickling Filter",
-        "Unspecified Nutrient Removal"
+        "Trickling Filter"
       ]
     },
     {
@@ -375,9 +392,7 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary",
-        "Recirculation",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -398,7 +413,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "distributed to three parallel facultative ponds for further treatment",
+      "Sentence": "three parallel facultative ponds for further treatment",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -414,7 +429,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transferred to one of two storage ponds",
+      "Sentence": "transferred to one of two storage ponds before being discharged",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -444,8 +459,8 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "ActivatedSludge",
-        "MembraneProcess"
+        "MembraneProcess",
+        "Biofiltration"
       ],
       "Role": [
         "Tertiary"
@@ -453,7 +468,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "constructing a two-step membrane bioreactor (MBR) process that includes an aerated activated sludge process and a membrane separation process",
+      "Sentence": "two-step membrane bioreactor (MBR) process that includes an aerated activated sludge process and a membrane separation process",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -461,7 +476,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -472,22 +488,6 @@
       "Sentence": "Ultraviolet light (UV) radiation disinfects the filtered wastewater",
       "trigger_process": [
         "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The City of Modesto applies the stabilized sludge as a soil amendment on their 2,526 acre ranch",
-      "trigger_process": [
-        "Land Application"
       ]
     }
   ]

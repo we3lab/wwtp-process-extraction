@@ -79,7 +79,8 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -95,7 +96,10 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Storage"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -107,7 +111,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -145,8 +149,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -158,58 +162,75 @@
       "Location": "on-site",
       "Sentence": "four sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Digestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a facultative sludge lagoon",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Lagoon"
+        "Stabilization Pond",
+        "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "off-site",
+      "Sentence": "pumping screened raw wastewater from the City of Marysville\u2019s existing influent pump station approximately 3.4 miles through a force main to the primary influent structure of the Facility",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
       "Process": [
-        "Landfill"
+        "Screening"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "the dewatered solids are disposed of in a landfill",
+      "Sentence": "pumping screened raw wastewater from the City of Marysville\u2019s existing influent pump station",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "the addition of a flow equalization tank for temporarily holding peak wet weather flows",
+      "Sentence": "addition of a flow equalization tank for temporarily holding peak wet weather flows",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
         "ChemicalAddition"
       ],
@@ -222,22 +243,6 @@
       "Sentence": "the addition of an odor and corrosion control chemical dosing system to inhibit the formation of sulfides in the force main",
       "trigger_process": [
         "Unspecified Chemical Addition"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "pumping screened raw wastewater from the City of Marysville\u2019s existing influent pump station",
-      "trigger_process": [
-        "Screening/Microstrainer"
       ]
     }
   ]

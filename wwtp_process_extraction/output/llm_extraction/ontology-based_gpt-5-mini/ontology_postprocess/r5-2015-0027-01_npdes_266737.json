@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of screening",
+      "Sentence": "The treatment system at the Facility consists of screening, grit removal, primary flotation...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit removal",
+      "Sentence": "The treatment system at the Facility consists of screening, grit removal, primary flotation...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -35,15 +35,19 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary flotation",
+      "Sentence": "The treatment system at the Facility consists of ... primary flotation...",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -86,10 +90,10 @@
       ]
     },
     {
-      "Equipment": "CoagulationBasin",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "Sedimentation",
+        "Coagulation"
       ],
       "Role": [
         "Tertiary"
@@ -104,9 +108,9 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -116,18 +120,19 @@
       "Location": "on-site",
       "Sentence": "tertiary treatment via cloth disk filters",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -141,17 +146,18 @@
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a 37.2 million gallon earthen emergency storage basin",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Equalization"
       ]
     },
     {
@@ -167,7 +173,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "gravity belt thickener",
+      "Sentence": "Solids handling consists of gravity belt thickener, anaerobic digestion, sludge drying beds and beneficial reuse of biosolids...",
       "trigger_process": [
         "Thickening"
       ]
@@ -187,15 +193,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "anaerobic digestion",
+      "Sentence": "Solids handling consists of gravity belt thickener, anaerobic digestion, sludge drying beds and beneficial reuse of biosolids...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -205,43 +212,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds",
+      "Sentence": "Solids handling consists of ... sludge drying beds ...",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "LandApplication"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "beneficial reuse of biosolids via land application to farmland",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "LandApplication",
         "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "co-compost for public distribution",
+      "Sentence": "beneficial reuse of biosolids via land application and co-compost for public distribution",
       "trigger_process": [
-        "Composting"
+        "Composting",
+        "Land Application"
       ]
     }
   ]

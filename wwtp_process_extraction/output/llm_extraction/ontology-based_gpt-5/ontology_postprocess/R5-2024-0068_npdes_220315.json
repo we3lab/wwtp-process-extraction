@@ -11,23 +11,50 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
+      "Sentence": "Plant 1 is equipped with ... a mechanical screen ...",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
       "Sentence": "Plant 2 contains additional mechanical screens.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage",
-        "Retention"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Emergency Storage Lagoon can be used, if needed, to capture peak flows in excess of the Facility\u2019s peak design capacity of 2.35 mgd.",
+      "Sentence": "Plant 1 is equipped with influent pumps",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Emergency Storage Lagoon can be used, if needed, to capture peak flows ... routed back to the Facility headworks for treatment",
       "trigger_process": [
         "Equalization"
       ]
@@ -35,17 +62,23 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Anoxic"
+        "Aerobic",
+        "Anoxic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility\u2019s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins",
+      "Sentence": "three parallel trains of oxidation ditches with anoxic basins",
       "trigger_process": [
+        "Denitrification",
+        "Nitrification",
         "Oxidation Ditch"
       ]
     },
@@ -70,7 +103,9 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -85,7 +120,9 @@
         "UVDisinfection",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -101,6 +138,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Aerobic"
       ],
       "Substance": [
@@ -117,7 +155,9 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage",
+        "Containment"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -131,9 +171,10 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -151,7 +192,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -163,7 +204,7 @@
       "Location": "on-site",
       "Sentence": "four greenhouse solar drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -172,12 +213,13 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are ... hauled to a local landfill once per year.",
+      "Sentence": "Biosolids ... are hauled to a local landfill once per year.",
       "trigger_process": [
         "Biosolids Landfill"
       ]

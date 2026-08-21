@@ -1,6 +1,18 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The collection system includes two lift stations with dual pump systems and generators at each.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -11,7 +23,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "raw sewage flows through a \u00bc-inch opening automatic bar screen ... A manual bar screen is also available as a backup.",
+      "Sentence": "The raw sewage flows through a \u00bc-inch opening automatic bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,22 +39,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "raw sewage flows through a \u00bc-inch opening automatic bar screen and grit removal system",
+      "Sentence": "The raw sewage flows through a \u00bc-inch opening automatic bar screen and grit removal system",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The collection system includes two lift stations with dual pump systems and generators at each.",
-      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -58,9 +58,31 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a headworks, Aero-Mod secondary treatment ... ensure that the aeration basins always have the optimal amount of oxygen for biological treatment and nutrient removal.",
+      "Sentence": "The treatment system consists of a headworks, Aero-Mod secondary treatment and solids stabilization system",
       "trigger_process": [
         "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "chlorine disinfection in two chlorine contact tanks, and dechlorination using sodium bisulfite",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
@@ -105,10 +127,9 @@
       ]
     },
     {
-      "Equipment": "Evaporator",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Evaporation"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -121,29 +142,7 @@
       "Location": "on-site",
       "Sentence": "The dewatered biosolids process through an indirect sludge dryer, which produces Class A biosolids",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "chlorine disinfection in two chlorine contact tanks, and dechlorination using sodium bisulfite",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Heat Drying"
       ]
     },
     {
@@ -154,9 +153,7 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "produces Class A biosolids that the Permittee gives away to residents as a soil amendment",

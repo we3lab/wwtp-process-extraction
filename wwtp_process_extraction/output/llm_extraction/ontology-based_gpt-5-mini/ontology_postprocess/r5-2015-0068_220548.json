@@ -15,11 +15,30 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "preliminary treatment",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -52,12 +71,12 @@
         "MembraneProcess"
       ],
       "Role": [
-        "Tertiary"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment with membrane bioreactors plus filtration",
+      "Sentence": "biological treatment with membrane bioreactors",
       "trigger_process": [
         "Membrane Bioreactor"
       ]
@@ -73,7 +92,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological treatment with membrane bioreactors plus filtration",
+      "Sentence": "membrane bioreactors plus filtration",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -84,7 +103,8 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -101,7 +121,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -116,7 +137,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -128,7 +149,7 @@
       "Location": "on-site",
       "Sentence": "sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -136,13 +157,15 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge disposal is to a landfill.",
+      "Sentence": "Sludge disposal is to a landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]

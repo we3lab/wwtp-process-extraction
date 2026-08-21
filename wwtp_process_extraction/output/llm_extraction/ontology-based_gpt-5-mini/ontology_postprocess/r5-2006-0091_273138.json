@@ -5,9 +5,7 @@
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -49,6 +47,26 @@
       ]
     },
     {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four aeration basins",
+      "trigger_process": [
+        "Nitrification",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
       "Equipment": "TricklingFilter",
       "Process": [
         "TricklingFiltration"
@@ -65,35 +83,11 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Nitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "four aeration basins",
-      "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
-      ]
-    },
-    {
       "Equipment": "StaticMixer",
       "Process": [
         "Mixing"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -107,7 +101,8 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -120,15 +115,12 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Thickening",
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two sludge gravity belt thickeners",
@@ -142,6 +134,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
+        "Anaerobic",
         "SolidsHandling",
         "Stabilization"
       ],
@@ -156,12 +149,13 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "Tank",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -176,7 +170,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -188,8 +182,32 @@
       "Location": "on-site",
       "Sentence": "thirty unlined sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pumps extract supernatant from near the surface of the unlined sludge pits and return it to the headworks for treatment.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two septage receiving stations",
+      "trigger_process": []
     },
     {
       "Equipment": "Pond",
@@ -204,53 +222,15 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "expanded the headworks to contain five pumps for a total inflow capacity",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Pumps extract supernatant ... and return it to the headworks for treatment",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "space to add another pump to bring the ultimate long-term capacity to 55 mgd",
-      "trigger_process": []
-    },
-    {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
       "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
       "Location": "off-site",
-      "Sentence": "dry stockpiled sludge was applied as a soil amendment at the City\u2019s Municipal Airport Farmland",
+      "Sentence": "the dry stockpiled sludge was applied as a soil amendment at the City\u2019s Municipal Airport Farmland",
       "trigger_process": [
         "Land Application"
       ]

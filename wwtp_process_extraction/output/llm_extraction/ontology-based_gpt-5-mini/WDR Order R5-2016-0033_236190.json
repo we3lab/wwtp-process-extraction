@@ -42,17 +42,6 @@
       "Sentence": "the wastewater flowed to an oxidation ditch equipped with two brush aerators."
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A new return activated sludge (RAS) pump station ... provides continuous RAS return to just below the headworks."
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -63,29 +52,33 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the effluent from the oxidation ditch flowed to a secondary clarifier"
+      "Sentence": "The effluent from the oxidation ditch flowed to a secondary clarifier"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Detention",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility currently consists of ... secondary effluent holding pond."
+      "Sentence": "the effluent holding pond which is 5.5 to 33 hours."
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Prior to compliance upgrades, the Facility consisted of ... three pressure filters."
+      "Sentence": "The secondary effluent could be filtered as needed to meet effluent limits through multimedia pressure filters"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -93,24 +86,84 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "the Facility consisted of ... a chlorine contact basin"
+      "Sentence": "The chlorine contact chamber has been taken out of service."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Chlorination occurs in the 10-inch diameter, 12,500-foot long force main that routes effluent from the treatment plant to the percolation/evaporation ponds."
     },
     {
       "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "the wastewater was ... dechlorinated with sodium bisulfite."
+      "Sentence": "the wastewater was disinfected with sodium hypochlorite and dechlorinated with sodium bisulfite."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A new return activated sludge (RAS) pump station was constructed... provides continuous RAS return to just below the headworks."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The effluent pumps were upsized to each have a capacity of 750 gpm"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "ChemicalAddition",
+        "Chlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Three chemical dosing pumps have the ability to inject 12.5% sodium hypochlorite solution at the RAS pipeline, the secondary clarifiers, and the effluent pump station."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -118,35 +171,15 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
+      "Role": [
+        "Tertiary"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Chlorination occurs in the 10-inch diameter, 12,500-foot long force main ... Currently, sodium hypochlorite is the only chemical used in the treatment process."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "An emergency chlorine dosing station is located at the pond site to allow for additional chlorine dosing as needed."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The effluent pumps were upsized to each have a capacity of 750 gpm"
     },
     {
       "Equipment": "Pond",
@@ -164,17 +197,19 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids produced during the activated sludge process are applied to the sludge drying beds and dried in the summer."
+      "Sentence": "The Facility processed sludge using four concrete lined drying beds and one asphalt-lined drying bed."
     },
     {
       "Equipment": null,

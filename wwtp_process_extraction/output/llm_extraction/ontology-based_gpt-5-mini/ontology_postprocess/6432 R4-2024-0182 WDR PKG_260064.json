@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The influent flows through a comminutor",
+      "Sentence": "The influent flows through a comminutor...",
       "trigger_process": [
         "Comminution"
       ]
@@ -20,7 +20,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Primary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -33,17 +34,18 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "Extended"
+        "Extended",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "activated sludge extended aeration",
+      "Sentence": "The secondary-23 treatment process ... consists of ... activated sludge extended aeration...",
       "trigger_process": [
         "Extended Aeration"
       ]
@@ -59,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarification",
+      "Sentence": "The secondary-23 treatment process ... consists of ... clarification...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -68,15 +70,17 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
+        "Tertiary",
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination, and dechlorination.",
+      "Sentence": "The secondary-23 treatment process ... consists of ... chlorination, and dechlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -88,138 +92,52 @@
         "Screening"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes fine screening",
+      "Sentence": "The Smith and Loveless Titan Membrane Bio Reactor Package, which includes fine screening...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "flow equalization",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sludge storage",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": null,
-      "Role": [
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "anoxic zones",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "AerationBasin",
+      "Equipment": "MembraneBioreactor",
       "Process": [
+        "Biofiltration",
+        "Filtration",
         "Aeration"
       ],
       "Role": [
-        "Aerobic",
-        "Secondary",
-        "Tertiary"
+        "Tertiary",
+        "Anoxic",
+        "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an aeration zone including an immersion-type membrane module",
+      "Sentence": "the Smith and Loveless Titan Membrane Bio Reactor Package, which includes ... anoxic zones, an aeration zone including an immersion-type membrane module ...",
       "trigger_process": [
-        "Unspecified AS"
+        "Membrane Bioreactor",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "Biofiltration"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a filtration zone",
-      "trigger_process": [
-        "Membrane Bioreactor"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "chlorine contact, and dechlorination.",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The sludge is either dried in drying beds or bagged for dewatering over plastic pallets.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Treated wastewater, prior to dechlorination, is pumped to either a tertiary or a secondary-23 recycled water storage tank",
+      "Sentence": "The Smith and Loveless Titan Membrane Bio Reactor Package, which includes ... sludge storage...",
       "trigger_process": []
     },
     {
@@ -231,8 +149,46 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a tertiary or a secondary-23 recycled water storage tank",
+      "Sentence": "Treated wastewater, prior to dechlorination, is pumped to either a tertiary or a secondary-23 recycled water storage tank...",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The sludge is either dried in drying beds...",
+      "trigger_process": [
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The sludge is ... bagged for dewatering over plastic pallets.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
     }
   ]
 }

@@ -8,9 +8,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "screening for removal of large solids",
@@ -26,9 +24,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Particles"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "grit removal",
@@ -44,9 +40,7 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "primary clarification",
@@ -62,9 +56,7 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "activated sludge treatment with secondary clarification",
@@ -108,7 +100,8 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -140,7 +133,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -208,7 +202,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Digestion"
+        "Digestion",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -219,31 +214,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge is stabilized in facultative sludge lagoons",
+      "Sentence": "Waste activated sludge is stabilized in facultative sludge lagoons and air dried",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
         "Stabilization Pond",
         "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "air dried to generate Class B biosolids",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
       ]
     },
     {
@@ -254,11 +230,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Biosolids from the secondary treatment process are land applied on property owned by the Discharger",
       "trigger_process": [
         "Land Application"
@@ -267,7 +241,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -279,14 +254,44 @@
       "Location": "on-site",
       "Sentence": "The sludge drying beds are a sludge treatment process that dewaters the sludge prior to final disposal",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Planned changes for 2013: wet weather storage only",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Temporary Wet Weather Storage Pond 6, 7, 8, 9, 10",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -298,22 +303,8 @@
       "Location": "on-site",
       "Sentence": "Solids from the City of Redding\u2019s Stillwater Wastewater Treatment Facility are currently dried in Pond 8",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Planned changes for 2013: wet weather storage only",
-      "trigger_process": [
         "Unspecified Lagoon"
       ]
     }

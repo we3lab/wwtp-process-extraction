@@ -24,7 +24,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks pump station with fine screens and grit removal"
+      "Sentence": "grit removal"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks pump station"
     },
     {
       "Equipment": "SedimentationTank",
@@ -43,6 +54,7 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -50,6 +62,7 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -99,7 +112,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -115,13 +129,12 @@
         "Aeration"
       ],
       "Role": [
-        "Tertiary",
-        "Aerobic"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a re-aeration outfall"
+      "Sentence": "re-aeration outfall"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -158,10 +171,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "solids holding tank"
@@ -195,8 +210,12 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "centrate pump station"
@@ -205,16 +224,20 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "equalization tank"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
@@ -225,7 +248,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a lined active solar dryer"
+      "Sentence": "lined active solar dryer"
     },
     {
       "Equipment": null,
@@ -233,27 +256,23 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "LandApplication",
+        "BiosolidsDisposal",
+        "Posttreatment"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "All dried biosolids are applied to the Land Application Area (LAA)"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -266,13 +285,14 @@
         "Digestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding ... a third sludge digester"
+      "Sentence": "a third sludge digester"
     },
     {
       "Equipment": "Tank",
@@ -284,11 +304,12 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding ... a solids holding tank"
+      "Sentence": "a solids holding tank"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
@@ -310,20 +331,16 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "adding a fourth primary clarifier"
+      "Sentence": "a fourth primary clarifier"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
+        "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",

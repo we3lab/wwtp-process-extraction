@@ -8,10 +8,12 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment train consists of screening;",
+      "Sentence": "screening;",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,7 +26,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "aerated grit removal;",
@@ -40,7 +44,9 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "primary sedimentation;",
@@ -53,8 +59,12 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "aerated ponds (used in winter operation);",
@@ -64,45 +74,76 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Biofiltration"
-      ],
+      "Process": null,
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a lemna pond;",
       "trigger_process": [
-        "Unspecified FFR",
-        "Unspecified Filtration",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Aeration"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Aerobic"
+      ],
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "oxidation ponds;",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Aerated Lagoon"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Disinfection",
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "over which wastewater is distributed and allowed to sheet flow",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "disinfection;",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Dechlorination"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection; and dechlorination for both Discharge 001 and Discharge 002.",
+      "Sentence": "dechlorination for both Discharge 001 and Discharge 002.",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -110,13 +151,13 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "Biofiltration"
+        "Recirculation"
       ],
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Discharge 002 additionally passes through treatment wetlands after disinfection and dechlorination.",
+      "Sentence": "The wetlands has the ability to recirculate the treated flow from the latter two tracts to the first tract.",
       "trigger_process": [
         "Wetland"
       ]
@@ -142,7 +183,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": null,
       "Substance": [
@@ -150,11 +191,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transferred to one of three unlined on-site lagoons to dry.",
+      "Sentence": "then is transferred to one of three unlined on-site lagoons to dry.",
       "trigger_process": [
-        "Drying",
+        "Air Drying",
         "Evaporation Pond"
       ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Supernatant is directed to the headworks.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -167,7 +222,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Class B biosolids ... are land applied in September or October to a fifth (thirty-three acres) of the overland flow fields",
+      "Sentence": "Class B biosolids ... are land applied in September or October to a fifth ... of the overland flow fields",
       "trigger_process": [
         "Land Application"
       ]

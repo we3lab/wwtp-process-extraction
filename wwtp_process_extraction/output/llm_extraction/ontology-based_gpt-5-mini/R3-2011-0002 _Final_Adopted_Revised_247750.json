@@ -1,21 +1,6 @@
 {
   "items": [
     {
-      "Equipment": null,
-      "Process": [
-        "Coagulation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Coagulant-FerricChloride"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Preliminary treatment with ferric chloride addition, screening, and an aerated grit chamber;"
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -31,13 +16,27 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Preliminary treatment with ferric chloride addition, screening, and an aerated grit chamber;"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Preliminary treatment with ferric chloride addition, screening, and an aerated grit chamber;"
@@ -100,17 +99,20 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection with sodium hypochlorite; Chlorine contact chamber;"
+      "Sentence": "Disinfection with sodium hypochlorite;"
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "Sedimentation",
         "Aeration"
       ],
       "Role": [
@@ -135,13 +137,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge (biosolids) is processed in anaerobic digesters followed by a belt press thickener."
+      "Sentence": "Sludge (biosolids) is processed in anaerobic digesters"
     },
     {
-      "Equipment": "BeltFilterPress",
+      "Equipment": "BeltThickener",
       "Process": [
-        "Thickening",
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -156,7 +157,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -173,7 +174,9 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -190,12 +193,13 @@
       ],
       "Role": [
         "NutrientRemoval",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger...is therefore considering an activated sludge process to replace the current trickling filters. Biological nutrient removal basins will be used to remove nitrogen from wastewater."
+      "Sentence": "considering an activated sludge process to replace the current trickling filters. Biological nutrient removal basins will be used to remove nitrogen from wastewater."
     },
     {
       "Equipment": "Cogenerator",

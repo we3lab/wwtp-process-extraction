@@ -4,12 +4,12 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Feed"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent screw pumps",
+      "Sentence": "The treatment system at the Facility consists of influent screw pumps",
       "trigger_process": []
     },
     {
@@ -17,7 +17,9 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -29,10 +31,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -68,17 +71,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment consisting of ... four secondary clarifiers",
+      "Sentence": "and four secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "FlocculationBasin",
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -88,40 +93,45 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "four cloth filters",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the 10 micron media will eventually be changed out to the 5 micron media on all filters",
+      "Sentence": "The 10 micron media will eventually be changed out to the 5 micron media on all filters",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -134,12 +144,13 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Erskine Pond, which is used for emergency flow equalization",
+      "Sentence": "The Facility also includes the Erskine Pond, which is used for emergency flow equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -147,20 +158,19 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Stabilization",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the three sludge ponds will be actively loaded with solids ... After the stabilization is complete, the pond is drained and the solids are allowed to dry",
+      "Sentence": "Currently, only three of the South Ponds (ponds 9, 10, and 11) will be used for sludge management... After the stabilization is complete, the pond is drained and the solids are allowed to dry",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Stabilization Pond"
       ]
     },
@@ -168,7 +178,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Containment"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "pHAdjuster-Lime"
@@ -177,36 +188,73 @@
       "Location": "on-site",
       "Sentence": "The three sludge ponds will have a lime and cement treated bottom to reduce permeability ... by December 2015",
       "trigger_process": [
-        "Lime Treatment",
-        "Neutralization"
+        "Biosolids Lagoon",
+        "Lime Stabilization",
+        "Neutralization",
+        "Stabilization Pond"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Containment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The Discharger has previously cement-treated Pond 11 to reduce permeability ... The bottom of Pond 11 was completed in 2012",
+      "Sentence": "The Discharger has previously cement-treated Pond 11 ... The bottom of Pond 11 was completed in 2012",
       "trigger_process": [
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Dewatering",
-        "Cleaning"
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The bottoms of Pond 9 and Pond 10 will be cement treated by December 1, 2015",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Stabilization Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Improvements to the sludge pond system will include piping and valve modifications to allow ponds to be isolated for sludge stabilization, drying, and removal",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Stabilization Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "the Discharger dewatered and cleaned the North Ponds to construct a pad for a new regional water treatment plant",
+      "Sentence": "The Discharger previously used nine North Ponds for biosolids treatment... these ponds are no longer in use",
       "trigger_process": [
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
     },
@@ -215,35 +263,15 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Once dry, the solids are removed and sent to disposal at the Yolo County Central Landfill",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "OxidationDitch",
-      "Process": [
-        "Nitrification",
-        "Denitrification",
-        "Mixing",
-        "Aeration"
-      ],
-      "Role": [
-        "Anoxic",
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "converting the existing oxidation ditches to nitrifying and denitrifying bioreactors ... separate the oxidation ditches into anoxic and aerated zones and installing submersible mixers and fine bubble diffusers",
-      "trigger_process": [
-        "Denitrification",
-        "Nitrification",
-        "Oxidation Ditch"
       ]
     },
     {
@@ -258,6 +286,28 @@
       "Sentence": "constructing a magnesium hydroxide feed system to buffer the wastewater",
       "trigger_process": [
         "Neutralization"
+      ]
+    },
+    {
+      "Equipment": "OxidationDitch",
+      "Process": [
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NitrogenRemoval",
+        "Anoxic",
+        "Aerobic",
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "converting the existing oxidation ditches to nitrifying and denitrifying bioreactors ... construction of partitions to separate the oxidation ditches into anoxic and aerated zones",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification",
+        "Oxidation Ditch"
       ]
     }
   ]

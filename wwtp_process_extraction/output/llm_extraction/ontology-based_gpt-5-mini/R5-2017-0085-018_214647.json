@@ -9,20 +9,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment system at the Facility consists of headworks with odor control, secondary feed pump station, selector basin..."
+      "Sentence": "secondary feed pump station"
     },
     {
       "Equipment": "MixingBasin",
       "Process": [
         "Mixing"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment system at the Facility consists of ... selector basin..."
+      "Sentence": "selector basin"
     },
     {
       "Equipment": "OxidationDitch",
@@ -32,12 +30,12 @@
       ],
       "Role": [
         "Secondary",
-        "Tertiary"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment system at the Facility consists of ... two oxidation ditches..."
+      "Sentence": "two oxidation ditches"
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,7 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment system at the Facility consists of ... two secondary clarifiers..."
+      "Sentence": "two secondary clarifiers"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -63,13 +61,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment system at the Facility consists of ... two cloth media filters..."
+      "Sentence": "two cloth media filters"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -77,18 +74,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary treatment system at the Facility consists of ... a single ultraviolet light (UV) disinfection channel with five banks of lights."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Nitrification"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility provides nitrification"
+      "Sentence": "a single ultraviolet light (UV) disinfection channel with five banks of lights"
     },
     {
       "Equipment": "Tank",
@@ -99,7 +85,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility provides nitrification and includes a lined equalization basin..."
+      "Sentence": "a lined equalization basin"
     },
     {
       "Equipment": "Pond",
@@ -110,7 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility ... includes three unlined emergency storage basins..."
+      "Sentence": "three unlined emergency storage basins"
     },
     {
       "Equipment": "Pond",
@@ -121,7 +107,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "a partially concrete lined storage pond for Vactor truck offloading that is no longer utilized."
+      "Sentence": "a partially concrete lined storage pond for Vactor truck offloading that is no longer utilized"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -129,19 +115,21 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The old chlorine contact basin was abandoned in 2011 when the Facility upgraded to UV disinfection."
+      "Sentence": "The old chlorine contact basin was abandoned in 2011 when the Facility upgraded to UV disinfection"
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
         "Filtration",
-        "Dewatering"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -151,13 +139,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger also installed a rotary drum thickener to supplement the existing solids drying beds."
+      "Sentence": "installed a rotary drum thickener to supplement the existing solids drying beds"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -167,31 +154,33 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger also installed a rotary drum thickener to supplement the existing solids drying beds."
+      "Sentence": "existing solids drying beds"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge is pumped from the existing solids holding pond to the rotary drum thickener."
-    },
-    {
-      "Equipment": null,
+      "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Drain"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Supernatant is pumped out of the basin and returned to the headworks on an as needed basis."
+      "Sentence": "A portable pump can also be used if necessary"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Supernatant is pumped out of the basin and returned to the headworks on an as needed basis"
     },
     {
       "Equipment": null,
@@ -201,12 +190,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered biosolids ... are hauled to Recology Ostrom Road Landfill for disposal."
+      "Sentence": "are hauled to Recology Ostrom Road Landfill for disposal"
     }
   ]
 }

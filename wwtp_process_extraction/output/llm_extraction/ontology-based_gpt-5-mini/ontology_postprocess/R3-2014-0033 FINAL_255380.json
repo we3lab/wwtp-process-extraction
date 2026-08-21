@@ -87,7 +87,9 @@
       "Process": [
         "Nitrification"
       ],
-      "Role": null,
+      "Role": [
+        "NitrogenRemoval"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -102,7 +104,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -128,7 +132,9 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -141,9 +147,12 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -178,9 +187,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
         "Stabilization",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -193,28 +201,28 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge is placed in drying beds, dried and stockpiled",
+      "Sentence": "the sludge is placed in drying beds, dried and stockpiled",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Filtration"
+        "Filtration",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -234,12 +242,8 @@
       "Process": [
         "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Biosolids are hauled off-site by a contractor for composting",

@@ -8,12 +8,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed by the bar screens and materials collected from the grit chamber are disposed of at a sanitary landfill.",
+      "Sentence": "Solids removed by the bar screens ...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -26,12 +24,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed by the bar screens and materials collected from the grit chamber are disposed of at a sanitary landfill.",
+      "Sentence": "materials collected from the grit chamber are disposed of at a sanitary landfill.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -47,25 +43,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of: a headworks, three primary clarifiers,",
+      "Sentence": "adding one additional primary clarifier ... The existing treatment system consists of: ... three primary clarifiers",
       "trigger_process": [
         "Primary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The existing treatment system consists of: ... three secondary clarifiers,",
-      "trigger_process": [
-        "Secondary Clarification"
       ]
     },
     {
@@ -79,9 +59,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of: a headworks, three primary clarifiers, three trickling filters, three secondary clarifiers,",
+      "Sentence": "adding ... three trickling filters ... The existing treatment system consists of: ... three trickling filters",
       "trigger_process": [
         "Trickling Filter"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "adding ... three secondary clarifiers ... The existing treatment system consists of: ... three secondary clarifiers",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
@@ -93,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "In wet periods when the disposal areas cannot accept the wastewater, effluent is stored in the nine effluent storage ponds at WWTP No. 2.",
+      "Sentence": "the four aerated lagoons to one storage pond ... for a total of nine storage ponds",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -105,15 +101,15 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of: ... four sludge digesters with methane recovery and a cogeneration system (currently only three are in use),",
+      "Sentence": "four sludge digesters with methane recovery ... (currently only three are in use)",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -123,32 +119,21 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of: ... four sludge digesters with methane recovery and a cogeneration system (currently only three are in use),",
+      "Sentence": "sludge digesters with methane recovery and cogeneration systems",
       "trigger_process": [
         "Cogeneration",
         "Heat Recovery"
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The expansion consisted of adding one additional primary clarifier, three trickling filters, three secondary clarifiers, two sludge digesters with methane recovery and cogeneration systems, and associated pumping equipment.",
-      "trigger_process": []
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -158,10 +143,23 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing treatment system consists of: ... and eighteen sludge drying beds.",
+      "Sentence": "the Discharger currently dries sludge ... in the 18 onsite unlined sludge drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge and scum is pumped from the primary clarifiers to three digesters.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -171,14 +169,45 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Solids removed by the bar screens and materials collected from the grit chamber are disposed of at a sanitary landfill.",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Secondary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary Disinfected Recycled Water is also used at the City of Bakersfield Green Waste Facility.",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Discharger land applies biosolids generated from WWTP No. 2 at its disposal area adjacent to the south and east of WWTP No. 2.",
+      "trigger_process": [
+        "Land Application"
       ]
     }
   ]

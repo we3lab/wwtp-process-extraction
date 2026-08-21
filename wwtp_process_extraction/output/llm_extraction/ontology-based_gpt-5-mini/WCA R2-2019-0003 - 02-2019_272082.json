@@ -1,8 +1,10 @@
 {
   "items": [
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -53,15 +55,16 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "Aeration",
         "ActivatedSludge",
+        "MLE",
         "Nitrification",
-        "Denitrification",
-        "MLE"
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anaerobic",
+        "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -90,8 +93,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -99,19 +101,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a chlorine contact chamber"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -148,14 +137,13 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sent to lagoons for storage and solar drying in drying beds"
@@ -185,6 +173,17 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "All supernatant is returned at controlled volumes to the West County Plant"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "pumped to the Richmond Plant where it is combined with Richmond Plant effluent, dechlorinated"
     }
   ]
 }

@@ -14,6 +14,19 @@
       "Sentence": "preliminary screening with mechanical bar screens"
     },
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "A new headworks planned for late 2023 ... the influent will go through new bar screens"
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -22,35 +35,9 @@
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "preliminary screening with mechanical bar screens, primary sedimentation, secondary biological treatment ... grit removal"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the plant\u0002s booster station and influent lift station may be used to handle elevated force main flows"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Equalization"
-      ],
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "An earth and rip-rap equalization basin owned by the West Bay Sanitary District may be used to reduce force main flows"
+      "Sentence": "A new headworks planned for late 2023 ... a new grit removal system"
     },
     {
       "Equipment": "SedimentationTank",
@@ -66,9 +53,9 @@
       "Sentence": "primary sedimentation"
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": null,
       "Process": [
-        "TricklingFiltration"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -76,11 +63,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary biological treatment with fixed film reactors and aeration basins"
+      "Sentence": "secondary biological treatment with fixed film reactors"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
+        "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
@@ -90,7 +78,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary biological treatment with fixed film reactors and aeration basins"
+      "Sentence": "secondary biological treatment with ... aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -129,8 +117,7 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -142,7 +129,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -157,7 +144,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -172,8 +159,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Sedimentation",
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -186,31 +172,18 @@
       "Sentence": "secondary sludge is processed using gravity belt thickeners"
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The thickened sludge is pumped to the anaerobic digestion process"
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
-        "Coagulant-FerricChloride",
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Coagulant-FerricChloride"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -225,24 +198,36 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Flocculant-Polymer",
-        "Fluid-Sludge"
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Biosolids are de-watered using polymer conditioning and rotary fan press units"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The solids are transported to concrete lined air-drying beds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal",
+        "ThermalDrying"
       ],
+      "Role": [
+        "SolidsHandling",
+        "BiosolidsDisposal"
+      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Up to about 40 percent of the solids ... is sent to an onsite biosolids drying process involving pyrolysis to create biochar"
@@ -250,9 +235,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "BiosolidsDisposal",
+        "ThermalDrying"
       ],
       "Role": [
+        "BiosolidsDisposal",
         "SolidsHandling"
       ],
       "Substance": null,
@@ -263,47 +250,46 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Biofiltration"
       ],
       "Role": [
-        "SolidsHandling"
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Fixed film reactor refurbishment and media replacement"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Anaerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Anaerobic digester refurbishing and replacement of all digester sludge and gas piping"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Equalization"
+      ],
+      "Role": [
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "During the wet weather season, solids are conveyed to trucks for disposal"
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "New headworks ... when placed into operation, the influent will go through new bar screens"
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "New headworks ... new grit removal"
+      "Location": "off-site",
+      "Sentence": "An earth and rip-rap equalization basin owned by the West Bay Sanitary District may be used to reduce force main flows"
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "Feed"
       ],

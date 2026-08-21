@@ -19,7 +19,7 @@
     {
       "Equipment": "BiologicalAeratedFilter",
       "Process": [
-        "BiologicallyActiveFiltration"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -35,7 +35,7 @@
     {
       "Equipment": "BiologicalAeratedFilter",
       "Process": [
-        "BiologicallyActiveFiltration"
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -49,39 +49,7 @@
       ]
     },
     {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Approximately 4.38 MGD flows through secondary treatment facilities, including... secondary clarification.",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "proposed upgraded facility ... will include ... two new secondary clarifiers.",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": null,
+      "Equipment": "Reactor",
       "Process": [
         "ActivatedSludge"
       ],
@@ -91,16 +59,31 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Approximately 4.38 MGD flows through secondary treatment facilities, including biofiltration, solids-contact...",
+      "Sentence": "Approximately 4.38 MGD flows through secondary treatment facilities, including biofiltration, solids-contact, and secondary clarification.",
       "trigger_process": [
         "Unspecified AS"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Approximately 4.38 MGD flows through secondary treatment facilities, including biofiltration, solids-contact, and secondary clarification.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
       ],
       "Role": [
         "Secondary"
@@ -108,45 +91,43 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "proposed upgraded facility will include ... an activated sludge aeration basin.",
+      "Sentence": "proposed upgraded facility will ... include ... two new secondary clarifiers.",
       "trigger_process": [
-        "Unspecified AS"
+        "Secondary Clarification"
       ]
+    },
+    {
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Mixing"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Flows above 4.38 MGD receive primary treatment and are blended with secondary-treated wastewater prior to disinfection...",
+      "trigger_process": []
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "blended with secondary-treated wastewater prior to disinfection by chlorination...",
+      "Sentence": "blended with secondary-treated wastewater prior to disinfection by chlorination, and then dechlorinated before discharge to the Pacific Ocean.",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and then dechlorinated before discharge to the Pacific Ocean.",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -176,11 +157,10 @@
         "Sedimentation"
       ],
       "Role": [
-        "Stabilization"
+        "Stabilization",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Biosolids from the digesters are discharged into stabilization basins for settling.",
@@ -189,37 +169,34 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Once stabilized the biosolids are either sent to drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Once stabilized the biosolids are ... dewatered through a belt filter press.",
+      "Sentence": "Once stabilized the biosolids are either sent to drying beds or dewatered through a belt filter press.",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -233,29 +210,14 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "As part of facility upgrades the Discharger will construct a new solids handling building to house mechanical thickeners...",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
         "Flocculant-Polymer"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "to house ... polymer storage...",
+      "Sentence": "As part of facility upgrades the Discharger will construct a new solids handling building to house mechanical thickeners, polymer storage, and a screw press...",
       "trigger_process": [
-        "Polymer Addition"
+        "Polymer Addition",
+        "Thickening"
       ]
     },
     {
@@ -267,13 +229,32 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Flocculant-Polymer"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "As part of facility upgrades the Discharger will construct ... a screw press to process waste activated sludge.",
+      "Sentence": "As part of facility upgrades the Discharger will construct a new solids handling building to house mechanical thickeners, polymer storage, and a screw press to process waste activated sludge.",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Mechanical Dewatering",
+        "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "proposed upgraded facility will ... include a new ... activated sludge aeration basin",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     }
   ]

@@ -1,48 +1,55 @@
 {
   "items": [
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the headworks include four screw pumps"
-    },
-    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two 6mm punched plate screens"
+      "Sentence": "the headworks include ... two 6mm punched plate screens"
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two aerated grit chambers"
+      "Sentence": "the headworks include ... two aerated grit chambers"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment",
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The headworks include four screw pumps"
     },
     {
       "Equipment": null,
       "Process": [
         "pHAdjustment"
       ],
-      "Role": null,
-      "Substance": [
-        "pHAdjuster"
+      "Role": [
+        "Pretreatment"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "magnesium hydroxide alkalinity control system"
+      "Sentence": "a magnesium hydroxide alkalinity control system"
     },
     {
       "Equipment": "OxidationDitch",
@@ -53,12 +60,15 @@
       ],
       "Role": [
         "Secondary",
-        "Anoxic"
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biological/secondary treatment consists of four 2 MG oxidation ditches using fine bubble diffusers, each with an anoxic zone for denitrification"
+      "Sentence": "biological/secondary treatment consists of four 2 MG oxidation ditches ... each with an anoxic zone for denitrification"
     },
     {
       "Equipment": "SedimentationTank",
@@ -71,7 +81,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are two 92-foot and two 130-foot secondary clarifiers"
+      "Sentence": "There are two 92-foot and two 130-foot secondary clarifiers."
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -84,12 +94,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary filtration is performed by four cloth media filters with 5 nanometer precision"
+      "Sentence": "Tertiary filtration is performed by four cloth media filters with 5 nanometer precision."
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -97,31 +108,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved through two ultraviolet light channels"
+      "Sentence": "Disinfection is achieved through two ultraviolet light channels."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Aerobic",
+        "Stabilization",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Algae Production Ponds ... are primarily used for algae production to assist with onsite sludge stabilization."
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
+        "Containment",
         "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Erskine Pond ... functions as an algae production pond to assist with onsite sludge stabilization"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Stabilization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The system allows wastewater to circulate among the ponds to maintain the water cap"
+      "Sentence": "The Erskine Pond ... provides peak and emergency overflow protection, onsite discharge containment ... and functions as an algae production pond"
     },
     {
       "Equipment": "Pond",
@@ -129,35 +143,92 @@
         "Sedimentation",
         "AnaerobicDigestion",
         "AerobicDigestion",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
+        "SolidsHandling",
         "Stabilization"
       ],
       "Substance": [
+        "Sludge-MixedLiquor",
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons ... anaerobic digestion occurring in the sludge layer and aerobic activity near the surface"
+      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons ... anaerobic digestion occurring in the sludge layer and aerobic activity near the surface ... algae produced in Ponds 1-8 (and WAS) is discharged into the three lined Sludge Stabilization Ponds to convert the WAS to biosolids."
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
       "Role": [
-        "Detention"
+        "Feed"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "convert it or portions of it into an emergency detention basin and pump station ... expected to be in operation by 2036"
+      "Sentence": "Wastewater is distributed to these ponds via the pond pump station"
+    },
+    {
+      "Equipment": "SluiceGate",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Individual ponds can be taken out of service using valves and gates to enable bypassing specific ponds when needed."
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation",
+        "Recirculation"
+      ],
+      "Role": [
+        "Detention",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The emergency detention basin is expected to be in operation by 2036 ... The wastewater would be pumped back to the headworks after the event concludes."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hire a contractor the following summer to dry the material in place, test for compliance ... and landfill disposal, land application, or other disposal off site."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hire a contractor the following summer to dry the material in place, test for compliance ... and landfill disposal, land application, or other disposal off site."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
         "AnaerobicDigestion",
-        "AerobicDigestion"
+        "AirDrying",
+        "Sedimentation"
       ],
       "Role": [
         "Stabilization"
@@ -165,33 +236,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The former City of Woodland North Ponds contained nine ponds that were used for sludge stabilization ... the North Ponds were properly closed"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal",
-        "Landfill",
-        "LandApplication"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hire a contractor ... to dry the material in place, test for compliance ... and landfill disposal, land application, or other disposal off site"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater is distributed to these ponds via the pond pump station ... After reaching Pond 12, water is redirected to the pump station for recirculation"
+      "Sentence": "The former City of Woodland North Ponds ... were used for sludge stabilization ... were properly closed in a 12 April 2012 Approval of Closure Letter."
     }
   ]
 }

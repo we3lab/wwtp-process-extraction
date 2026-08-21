@@ -1,6 +1,18 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "new influent pumping station",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
@@ -27,22 +39,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "bar screen facility and grit removal",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "new influent pumping station",
-      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
@@ -63,8 +63,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -78,32 +77,6 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "new trickling filter pumping station",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Reactor",
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Primary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "conversion of the former primary clarifiers to solids contact tanks",
-      "trigger_process": []
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -114,13 +87,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "new secondary clarifiers",
+      "Sentence": "secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "CoagulationBasin",
       "Process": [
         "Coagulation"
       ],
@@ -137,7 +110,7 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Filter",
       "Process": [
         "Filtration"
       ],
@@ -156,35 +129,21 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The AWT chlorination facility consists of two concrete-lined aboveground baffled basins",
+      "Sentence": "All treated wastewater is chlorinated prior to disposal...Contact time to ensure adequate chlorination of secondary effluent occurs in a 600-foot long 8-foot diameter underground pipeline. The AWT chlorination facility consists of two concrete-lined aboveground baffled basins. The Facility has the ability to dechlorinate disinfected effluent",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment",
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Facility has the ability to dechlorinate disinfected effluent prior to discharging to the Russian River",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -201,7 +160,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "new dissolved air flotation thickeners",
+      "Sentence": "dissolved air flotation thickeners",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -210,13 +169,11 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -231,8 +188,7 @@
     {
       "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -242,7 +198,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered using a belt-press",
+      "Sentence": "a belt press for dewatering",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -251,36 +207,13 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three percolation ponds",
+      "Sentence": "three percolation ponds with a combined storage capacity of 115 million gallons",
       "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "old sludge drying bed",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
@@ -302,16 +235,50 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
+        "SolidsHandling",
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "Prior to installation of the belt press for sludge dewatering, sludge ponds were used at the Facility for sludge storage",
       "trigger_process": [
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Biosolids that remain in the sludge ponds are being removed ... and spread in the old sludge drying bed. After drying, the biosolids are disposed of in an authorized landfill.",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "sent to an authorized landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {

@@ -8,7 +8,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "raw influent bar screening",
@@ -19,14 +21,15 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": [
-        "Pretreatment",
-        "Aerobic"
+        "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "grit removal in pre-aeration tanks",
@@ -54,7 +57,7 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
         "ActivatedSludge",
         "Nitrification",
@@ -79,13 +82,11 @@
       "Process": [
         "Coagulation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "with coagulation",
+      "Sentence": "coagulation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -96,9 +97,7 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -115,7 +114,9 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sedimentation, and clarification",
@@ -124,30 +125,35 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "followed by filtration",
       "trigger_process": [
-        "Media Filtration"
+        "Unspecified Filtration"
       ]
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Bacteria"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "ultraviolet light disinfection",
@@ -180,8 +186,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -194,9 +200,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -208,7 +214,7 @@
       "Location": "on-site",
       "Sentence": "dewatered in unlined sand drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -217,7 +223,7 @@
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -235,7 +241,7 @@
         "Composting"
       ],
       "Role": [
-        "Composting"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"

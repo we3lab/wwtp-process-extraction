@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening...",
+      "Sentence": "The treatment system consists of screening, oxidation, secondary clarification, cloth media filtration, and UV disinfection.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -21,11 +21,13 @@
       "Process": [
         "Oxidation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, oxidation, secondary clarification...",
+      "Sentence": "The treatment system consists of screening, oxidation, secondary clarification, cloth media filtration, and UV disinfection.",
       "trigger_process": [
         "Oxidation"
       ]
@@ -41,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of... secondary clarification...",
+      "Sentence": "The treatment system consists of ... secondary clarification ...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -57,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of... cloth media filtration...",
+      "Sentence": "The treatment system consists of screening, oxidation, secondary clarification, cloth media filtration, and UV disinfection.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -73,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of... UV disinfection.",
+      "Sentence": "The treatment system consists of screening, oxidation, secondary clarification, cloth media filtration, and UV disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -83,13 +85,15 @@
       "Process": null,
       "Role": [
         "Storage",
-        "Retention"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A 4 million gallon emergency retention basin is available for storage of excess influent flow or partially treated wastewater.",
-      "trigger_process": []
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
       "Equipment": "Reservoir",
@@ -97,29 +101,11 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The reclaimed water reservoir can store up to 420 acre-feet of reclaimed water.",
       "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "All effluent is disposed of as reclaimed water on land by spray irrigation...",
-      "trigger_process": [
-        "Land Application"
-      ]
     },
     {
       "Equipment": "AerobicDigester",
@@ -131,10 +117,12 @@
         "Stabilization",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing consists of an aerobic digestion...",
+      "Sentence": "Sludge processing consists of an aerobic digestion and sludge storage basins.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -142,18 +130,21 @@
     {
       "Equipment": "Tank",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
+        "Storage",
         "SolidsHandling",
-        "Storage"
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The sludge storage basins provide storage for stabilized solids during the wet weather periods and serve as drying beds during the warm summer months.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -164,7 +155,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried sludge is hauled to a landfill for disposal.",

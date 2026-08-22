@@ -480,6 +480,59 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
     return cwns_by_facility, merged
 
 
+def normalize_order_no(value):
+    # "R5-2007-0090", "r5 2007 0090" and "WQ 2007-0090" are one order written three ways
+    text = re.sub(r"[^0-9A-Za-z]", "", str(value)).upper()
+    return re.sub(r"^(R\d{1,2}[A-Z]?)?WQ", "", text) or text
+
+
+def same_order_no(a, b):
+    """Whether two order numbers name the same order. None if either is missing.
+
+    Containment, not equality, because the two sides are written at different levels of
+    detail: a document's title block prints "2007-0090" where CIWQS carries the region
+    ("R5-2007-0090"), and a general order enrollee's CIWQS order appends the enrollee number
+    ("2014-0153-DWQ-R5348") to the order the document itself prints ("WQ-2014-0153-DWQ").
+    Requiring equality called 28 such pairs superseded and left 13 facilities with no
+    document at all.
+    """
+    if not a or not b:
+        return None
+    a, b = normalize_order_no(a), normalize_order_no(b)
+    return a in b or b in a
+
+
+def current_permit_mask(df, order_col="Order_No", doc_order_col="document_order_no"):
+    """Per facility, keep only the documents that represent its current permit.
+
+    A facility accumulates documents across permit cycles -- CIWQS attaches superseded
+    orders to the current order's page, and earlier snapshots contribute their own. Ranked
+    preference rather than a hard filter, so a facility is never left with nothing:
+
+      0. the document's own order number matches the facility's current Order_No
+      1. no order number could be read from the document
+      2. the order number contradicts Order_No (superseded)
+
+    Each facility keeps only its best available tier. Tier 0 resolves 594 of 695 facilities;
+    tier 1 is reached only where nothing readable exists, and tier 2 only where every
+    document is superseded and dropping them all would lose the facility entirely.
+
+    Snapshot history (the order a facility held when a document first appeared) was measured
+    as an additional signal and changed zero facility outcomes -- it never contradicts the
+    printed order and only ever restates it, so it is deliberately not consulted.
+    """
+    tiers = []
+    for _, row in df.iterrows():
+        doc = str(row.get(doc_order_col, "")).strip()
+        if not doc:
+            tiers.append(1)
+        else:
+            tiers.append(0 if same_order_no(doc, str(row.get(order_col, "")).strip()) else 2)
+    tiers = pd.Series(tiers, index=df.index)
+    best = tiers.groupby(df["Place ID"]).transform("min")
+    return tiers == best
+
+
 def normalize_id(value):
     # Place IDs / CWNS_IDs show up as both "219530" and "219530.0" across files
     text = str(value).strip()

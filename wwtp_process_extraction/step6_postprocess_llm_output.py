@@ -16,7 +16,7 @@ ontology = Graph()
 ONTOLOGY_DIR = Path("wwtp_process_extraction/data/ontology")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id, current_permit_mask
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 # Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
@@ -119,7 +119,8 @@ def _norm_pdf(s):
     return s.lower().replace(" ", "_")
 
 
-ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File"]
+ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
+           "document_order_no"]
 
 
 def normalize_records(json_data):
@@ -466,14 +467,19 @@ def main():
     print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
 
     raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
+    # Collapse only the current permit. Unioning across cycles reads a process out of a
+    # superseded order as if the facility still ran it.
+    current = current_permit_mask(raw_df)
+    print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
+          f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
     collapsed = collapse_facility_processes(
-        raw_df,
+        raw_df[current],
         key_cols=["Place ID"],
         meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
     )
     collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(output_fac_csv, index=False)
-    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
+    print(f"Collapsed {int(current.sum())} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
     add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(output_csv, index=False)
     if unmatched_files:
         print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")

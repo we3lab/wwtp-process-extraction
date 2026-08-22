@@ -20,6 +20,7 @@ import json
 import os
 import sys
 import urllib.request
+import urllib.error
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -31,7 +32,7 @@ SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
 from helpers.plotting import COLORS, save_and_close
-from helpers.utils import build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV
+from helpers.utils import build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV, PRESENT_STATUSES
 # Only consulted if GitHub is unreachable. Defaults to a US_WWTP_GHG clone sitting beside this
 # repo; set GHG_ROOT to point elsewhere.
 GHG_ROOT = Path(os.environ.get('GHG_ROOT') or REPO_ROOT.parent / 'US_WWTP_GHG')
@@ -46,16 +47,27 @@ GHG_GITHUB = 'https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/main'
 
 
 def _fetch(rel_path: str) -> io.BytesIO:
-    """Fetch a file as BytesIO: GitHub first, local GHG_ROOT fallback."""
+    """Fetch a file as BytesIO: GitHub first, local GHG_ROOT fallback.
+
+    Raises FileNotFoundError when the file does not exist (404)
+    """
     url = f'{GHG_GITHUB}/{rel_path}'
+    missing = False
     try:
         with urllib.request.urlopen(url, timeout=15) as r:
             return io.BytesIO(r.read())
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+        missing = True
     except Exception:
-        local = GHG_ROOT / rel_path
-        if local.exists():
-            return io.BytesIO(local.read_bytes())
-        raise FileNotFoundError(f'Could not fetch {rel_path} from GitHub or {local}')
+        pass
+    local = GHG_ROOT / rel_path
+    if local.exists():
+        return io.BytesIO(local.read_bytes())
+    if missing:
+        raise FileNotFoundError(f'{rel_path} does not exist upstream (404) or at {local}')
+    raise ConnectionError(f'Could not reach {url} and no local copy at {local}')
 
 MG_2_m3 = 3785.412  # m³/MG
 kWh_2_MJ = 3.6
@@ -77,6 +89,13 @@ crosswalk = {
     'O3':'*B4', 'O5':'*B5', 'O6':'*B6',
 }
 ALL_TT = list(crosswalk.keys())
+
+# Trains with no Monte Carlo workbook upstream, verified 404 rather than assumed: N1 is the
+# only one of the 50, because El Abbadi's national assignment never produces it (0 of 15,863
+# facilities; they find 11 MBR-BNR plants nationally and none with anaerobic digestion). We
+# re-derive trains from permit text and can reach it, so N1 facilities emit nothing -- hence
+# the runtime warning in calc_ghg rather than a silent zero.
+EXPECTED_ABSENT_TT = frozenset({'N1'})
 
 # E-train → non-E equivalent (for Source 2: strip biogas-derived E assignments)
 E_TO_BASE = {
@@ -159,10 +178,14 @@ def load_mc_ef():
         return pd.read_csv(MC_EF_CSV, index_col=0)
 
     records = {}
+    absent = []
     for tt in ALL_TT:
         try:
             mc = pd.read_excel(_fetch(f'{MC_DIR}/{tt}_MC.xlsx'))
         except FileNotFoundError:
+            # Genuinely not published upstream
+            # Might be N1 (MBR-BNR + AnDig, no gas recovery) since El Abbadi never assign it
+            absent.append(tt)
             continue
         records[tt] = {
             'CH4_50':     mc['CH4'].quantile(0.5),
@@ -179,6 +202,10 @@ def load_mc_ef():
             f'{GHG_ROOT / MC_DIR}. Set GHG_ROOT to a US_WWTP_GHG clone, or restore network '
             f'access. (Without this, ef comes back empty and the failure surfaces much later '
             f'as KeyError: CH4_50.)')
+    unexpected = [tt for tt in absent if tt not in EXPECTED_ABSENT_TT]
+    if unexpected:
+        raise FileNotFoundError(
+            f'Emission factors missing for {unexpected}.')
     ef = pd.DataFrame(records).T
     MC_EF_CSV.parent.mkdir(parents=True, exist_ok=True)
     ef.to_csv(MC_EF_CSV)
@@ -521,7 +548,8 @@ def load_biogas_cwns_set():
 def build_werf_pivot(facility_rows, present_statuses, col_to_werf=None):
     """
     Build a binary WERF-code pivot (one row per Place ID) from facility status columns.
-    present_statuses selects which status strings count as present (CWNS and LLM differ).
+    present_statuses selects which status strings count as present; all sources now pass
+    PRESENT_STATUSES so the comparison is like-for-like.
     col_to_werf overrides the default curated CWNS_COL_TO_WERF mapping (e.g. for the
     automatic-derivation experiment on the CWNS-based source).
     Adds derived NIT and BIO-P indicators, then clears lagoon codes for any facility that
@@ -666,7 +694,13 @@ def load_llm_source(common_pids, add_wef_biogas=False):
     """
     llm = pd.read_csv(LLM_CSV, dtype=str)
     llm = llm[llm['Place ID'].isin(common_pids)].copy()
-    llm_pivot, n_cleared = build_werf_pivot(llm, {'PRESENT', 'FUTURE'})
+    # PRESENT_STATUSES, matching the CWNS sources. Treatment trains describe the plant as it
+    # runs today, so a planned process must not reassign it -- Hyperion's 2035 recycled-water
+    # MBR was putting a 215 MGD high-purity-oxygen plant into the N (membrane) series, and N1
+    # is the one train of 50 with no emission factors, so its emissions silently went to zero.
+    # The old {'PRESENT', 'FUTURE'} set also omitted PRESENT_AND_FUTURE, dropping processes
+    # that are both in service and being expanded.
+    llm_pivot, n_cleared = build_werf_pivot(llm, PRESENT_STATUSES)
     if n_cleared:
         print(f'  Cleared lagoon WERF codes for {n_cleared} facilities with secondary treatment')
 

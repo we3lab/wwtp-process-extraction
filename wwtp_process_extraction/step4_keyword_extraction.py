@@ -13,6 +13,7 @@ from helpers.utils import (
     build_secondary_category_lookup,
     apply_secondary_category_backfill,
     add_county_and_sort,
+    current_permit_mask,
 )
 
 
@@ -106,7 +107,8 @@ def main():
                 search_processes_in_text(txt_changes, proc_dict, future_results, None, txt_changes_cs)
         txt_cache[stem] = (present_results, future_results)
 
-    headers = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"]
+    headers = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF",
+               "document_order_no"]
     headers.extend(all_keys)
 
     with open(out_file, "w", newline="") as csv_file:
@@ -129,6 +131,7 @@ def main():
                 row.get("NPDES No.", ""),
                 row.get("PDF_File", ""),
                 row.get("Shared_PDF", ""),
+                row.get("document_order_no", ""),
             ]
             row_status = {}
             for key in all_keys:
@@ -160,15 +163,21 @@ def main():
 
     kw_by_fac_path = f"wwtp_process_extraction/output/unit_processes_by_facility_kw.csv"
     raw_df = pd.read_csv(out_file, dtype=str).fillna("")
+    # Same current-permit restriction step6 applies, so the keyword and LLM facility tables
+    # are built from the same documents.
+    current = current_permit_mask(raw_df)
+    print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
+          f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
     collapsed = collapse_facility_processes(
-        raw_df,
+        raw_df[current],
         key_cols=["Place ID"],
-        meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF"],
+        meta_cols=["WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF",
+                   "document_order_no"],
     )
     collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(kw_by_fac_path, index=False)
     add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(out_file, index=False)
-    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
+    print(f"Collapsed {int(current.sum())} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
 
 
 if __name__ == "__main__":

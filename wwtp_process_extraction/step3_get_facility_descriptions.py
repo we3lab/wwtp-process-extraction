@@ -7,7 +7,7 @@ from collections import Counter, defaultdict
 from PyPDF2 import PdfReader
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers, normalize_text, is_general_order
+from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers, normalize_text, is_general_order, same_order_no
 
 
 def clean_excerpt(text):
@@ -539,9 +539,11 @@ def main():
     # Each document's own order number, to distinguish superseded order PDFs 
     site_data["document_order_no"] = site_data["PDF_File"].map(doc_orders).fillna("")
     site_data.to_csv(relevant_sites_csv, index=False)
-    key = lambda c: c.str.replace(r"[^0-9A-Za-z]", "", regex=True).str.upper()
     read = site_data["document_order_no"].ne("")
-    superseded = int((read & (key(site_data["document_order_no"]) != key(site_data["Order_No"]))).sum())
+    superseded = int(sum(
+        same_order_no(d, o) is False
+        for d, o in zip(site_data["document_order_no"], site_data["Order_No"])
+    ))
 
     print(f"Non-machine-readable PDFs: {flag_counts['unreadable']}")
     print(f"Statewide general orders skipped: {flag_counts['general_order']}")

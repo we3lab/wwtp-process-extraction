@@ -1,24 +1,6 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of the headworks...",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -47,6 +29,7 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
@@ -56,7 +39,6 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -124,7 +106,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Detention",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -139,6 +122,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -149,7 +133,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling facilities include a rotary drum thickener...",
+      "Sentence": "Solids handling facilities include a rotary drum thickener",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -170,7 +154,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling facilities include a rotary drum thickener, two anaerobic digesters...",
+      "Sentence": "two anaerobic digesters",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -178,29 +162,9 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "two facultative sludge lagoons",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Stabilization Pond"
-      ]
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -214,7 +178,27 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two facultative sludge lagoons... The sludge lagoons each have a decant structure that allows liquid to flow to the headworks.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -230,7 +214,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "approximately 400 tons of dewatered solids are disposed of in a landfill",
+      "Sentence": "Annually, the sludge drying beds are manually cleaned and approximately 400 tons of dewatered solids are disposed of in a landfill.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -240,10 +224,11 @@
     {
       "Equipment": "Tank",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Equalization",
+        "Storage",
         "SolidsHandling"
       ],
       "Substance": [
@@ -255,7 +240,7 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying",
+        "Air Drying",
         "Equalization"
       ]
     },

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes a bar screen",
+      "Sentence": "includes a bar screen,",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -28,7 +28,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two aeration basins",
+      "Sentence": "two aeration basins,",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -44,7 +44,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four clarifiers",
+      "Sentence": "four clarifiers,",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -52,8 +52,7 @@
     {
       "Equipment": "Filter",
       "Process": [
-        "MediaFiltration",
-        "Flocculation"
+        "Filtration"
       ],
       "Role": [
         "Tertiary"
@@ -63,10 +62,8 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three filters...where polymer is added to improve solids removal",
+      "Sentence": "filters, where polymer is added to improve solids removal",
       "trigger_process": [
-        "Flocculation",
-        "Media Filtration",
         "Polymer Addition"
       ]
     },
@@ -77,50 +74,14 @@
         "Disinfection"
       ],
       "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "After secondary clarification, the Discharger adds sodium hypochlorite and ammonium sulfate to the wastewater (chloramination)",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "secondary chlorine contact basin...the Discharger adds sodium hypochlorite for disinfection",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
         "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the tertiary chlorine contact basin",
+      "Sentence": "a tertiary chlorine contact basin,",
       "trigger_process": [
         "Chlorination"
       ]
@@ -131,13 +92,14 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Storage",
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger adds sodium bisulfite in the tertiary effluent clearwell prior to routing tertiary-treated wastewater",
+      "Sentence": "a tertiary effluent clearwell, ... The Discharger adds sodium bisulfite in the tertiary effluent clearwell",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -146,12 +108,28 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
+        "Storage",
+        "Posttreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four Riverside Ponds that operate in series.",
+      "trigger_process": [
+        "Polishing Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four Riverside Ponds that operate in series",
+      "Sentence": "One 20-million-gallon Effluent Storage Pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -165,21 +143,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "20-million-gallon Effluent Storage Pond",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Two Irrigation Storage Ponds...that receive effluent from the tertiary effluent clearwell for recycled water storage",
+      "Sentence": "Two Irrigation Storage Ponds (with capacities of 10 and 16.4 million gallons)",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -206,26 +170,31 @@
         "Storage",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "72,000-gallon-capacity sludge holding tank",
+      "Sentence": "a 72,000-gallon-capacity sludge holding tank",
       "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -235,46 +204,16 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic"
+        "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility",
       "trigger_process": [
         "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "remove the sludge for further treatment or land application (e.g., ... agricultural sites in the Central Valley)",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill)",
-      "trigger_process": [
-        "Biosolids Landfill"
       ]
     },
     {
@@ -291,6 +230,63 @@
       "Sentence": "installing a new screw press for increased sludge dewatering",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection.",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "remove the sludge for further treatment or land application (e.g., ... agricultural sites in the Central Valley).",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill ...).",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

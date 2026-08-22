@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of bar screening;",
+      "Sentence": "bar screening;",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -56,15 +56,13 @@
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "biological treatment by activated sludge, including nitrification and denitrification;",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -104,8 +102,7 @@
     {
       "Equipment": "DisinfectionUnit",
       "Process": [
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -113,7 +110,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection; and dechlorination.",
+      "Sentence": "disinfection;",
+      "trigger_process": [
+        "Unspecified Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dechlorination.",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -127,9 +138,7 @@
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge is aerobically digested",
@@ -138,16 +147,14 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "dewatered using a belt filter press.",
@@ -160,13 +167,11 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "Storage"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dried biosolids are stored onsite ... and are hauled to a landfill for disposal.",
+      "Location": "off-site",
+      "Sentence": "hauled to a landfill for disposal.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -176,24 +181,19 @@
       "Process": [
         "Digestion"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "add facultative sludge lagoons",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Digestion",
-        "Unspecified Lagoon"
+        "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -201,9 +201,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "sludge drying beds",
+      "Sentence": "sludge drying beds would be used as the Facility\u2019s primary method of dewatering solids",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     }
   ]

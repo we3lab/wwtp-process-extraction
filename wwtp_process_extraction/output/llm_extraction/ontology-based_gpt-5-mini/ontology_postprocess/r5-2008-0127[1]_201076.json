@@ -5,9 +5,7 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -17,24 +15,9 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "septic tank effluent pumping (STEP) system",
-      "trigger_process": []
-    },
-    {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
-        "Recirculation"
+        "MediaFiltration"
       ],
       "Role": [
         "Secondary"
@@ -42,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "consists of a septic tank effluent pumping (STEP) system, recirculating sand filter",
+      "Sentence": "consists of ... recirculating sand filter",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -58,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "recirculating sand filter, and two evaporation ponds with 40 mil plastic lining",
+      "Sentence": "two evaporation ponds with 40 mil plastic lining",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -80,13 +63,12 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -99,12 +81,10 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -117,22 +97,32 @@
     {
       "Equipment": "CoagulationBasin",
       "Process": [
-        "Coagulation",
-        "Flocculation"
+        "Coagulation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": [
         "Coagulant-PolyaluminumChloride"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "a coagulant (polyaluminum hydroxychloride or aluminum chlorohydrate) will be added to the effluent",
+      "Sentence": "a coagulant (polyaluminum hydroxychloride or aluminum chlorohydrate) will be added",
       "trigger_process": [
         "Coagulation",
-        "Flocculation",
         "Unspecified Chemical Addition"
+      ]
+    },
+    {
+      "Equipment": "FlocculationBasin",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "coagulation/flocculation, filtration, disinfection",
+      "trigger_process": [
+        "Flocculation"
       ]
     },
     {
@@ -146,7 +136,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Prior to final clarification",
+      "Sentence": "Prior to final clarification, a coagulant ... will be added",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -158,12 +148,15 @@
         "Backwashing"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Backwash"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The clarified effluent will be filtered using duplex sand filters... The filters will be backwashed",
+      "Sentence": "The clarified effluent will be filtered using duplex sand filters ... The filters will be backwashed",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -182,7 +175,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "will be disinfected using a duplex feed system to pump a 12.5% solution of liquid sodium hypochlorite",
+      "Sentence": "treated effluent will be disinfected using a duplex feed system to pump a 12.5% solution of liquid sodium hypochlorite",
       "trigger_process": [
         "Chlorination"
       ]
@@ -196,7 +189,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "the tertiary treated effluent will be discharged into lined effluent storage ponds",
+      "Sentence": "will be discharged into lined effluent storage ponds with a permeability less than 10-7 cm/sec",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -210,21 +203,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a lined emergency storage pond (Pond 1)",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Pond 2 was recently enlarged and reconditioned with a new high-density polyethylene liner",
+      "Sentence": "WWTF currently has three ponds for effluent storage; a lined emergency storage pond (Pond 1)",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -264,7 +243,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "a sludge dewatering unit, such as a centrifuge, screw, or belt press, will be added",
+      "Sentence": "a sludge dewatering unit, such as a centrifuge ... will be added",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
@@ -284,7 +263,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "a sludge dewatering unit, such as a centrifuge, screw, or belt press, will be added",
+      "Sentence": "a sludge dewatering unit, such as ... a belt press, will be added",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -306,21 +285,6 @@
       "trigger_process": [
         "Biosolids Landfill"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "MakeUp",
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The ponds will serve as source water for the irrigation pumping station that pressurizes the recycled water distribution system",
-      "trigger_process": []
     }
   ]
 }

@@ -44,16 +44,42 @@
       ]
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a liquid chlorine contact chamber, dechlorination with liquid sodium bisulfite",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a six-acre percolation/polishing pond",
       "trigger_process": [
+        "Evaporation Pond",
         "Polishing Lagoon"
       ]
     },
@@ -72,64 +98,39 @@
       ]
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": null,
       "Process": [
-        "Chlorination",
-        "Disinfection"
+        "Evaporation"
       ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "a liquid chlorine contact chamber",
-      "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "WastewaterTreatmentChemical"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorination with liquid sodium bisulfite",
-      "trigger_process": [
-        "Dechlorination"
-      ]
+      "Sentence": "The six-acre pond and two of the stabilization ponds have spray irrigators ... The Discharger has stated that they no longer use these irrigators.",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "allowed to dry on site during the summer and fall months at the sludge storage area",
+      "Sentence": "Solids are collected from all ponds ... allowed to dry on site during the summer and fall months at the sludge storage area",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [

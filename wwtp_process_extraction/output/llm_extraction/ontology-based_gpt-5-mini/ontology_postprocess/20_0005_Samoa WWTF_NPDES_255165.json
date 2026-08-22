@@ -6,14 +6,35 @@
         "Sedimentation"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "five 50,000-gallon fiberglass settling tanks are to be installed and operated in series.",
       "trigger_process": [
         "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Orenco Bio-tube filters will be attached to the outlets of the settling tanks to further remove solids prior to wastewater entering the pre-anoxic tanks.",
+      "trigger_process": [
+        "Unspecified Filtration"
       ]
     },
     {
@@ -24,13 +45,12 @@
       ],
       "Role": [
         "Anoxic",
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "primary treated effluent will be blended with recirculated filtered effluent from the AX-Max filtration units to provide denitrification.",
+      "Sentence": "two 50,000-gallon pre-anoxic tanks, where primary treated effluent will be blended with recirculated filtered effluent from the AX-Max filtration units to provide denitrification.",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
@@ -42,26 +62,12 @@
         "Filtration"
       ],
       "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Orenco Bio-tube filters will be attached to the outlets of the settling tanks to further remove solids prior to wastewater entering the pre-anoxic tanks.",
-      "trigger_process": [
-        "Unspecified Filtration"
-      ]
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
         "Secondary"
       ],
-      "Substance": null,
-      "Implementation": "present",
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Secondary treatment is performed using Orenco AX-Max textile filtration units as proposed in the original design.",
       "trigger_process": [
@@ -72,15 +78,13 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The UV disinfection system has been upgraded from the UV Pure Hallett 30 to the UV Pure Hallett 1000 for longer lamp life and larger system capacity.",
       "trigger_process": [
@@ -88,11 +92,23 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Sludge generated during the treatment process will be pumped and hauled to a dewatering facility",
+      "trigger_process": []
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying",
-        "BiosolidsDisposal"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -102,9 +118,9 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "Sludge generated during the treatment process will be pumped and hauled to a dewatering facility to be combined with biosolids from other municipal facilities and dewatered.",
+      "Sentence": "pumped and hauled to a dewatering facility to be combined with biosolids from other municipal facilities and dewatered.",
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -123,34 +139,6 @@
       "Sentence": "Dried biosolids will be hauled from the dewatering facility to a Class B landfill for disposal.",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "no longer includes the equalization pond and the pre-anoxic pond.",
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Anoxic"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "no longer includes the equalization pond and the pre-anoxic pond.",
-      "trigger_process": [
-        "Unspecified Lagoon"
       ]
     }
   ]

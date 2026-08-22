@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment consists of mechanical bar screens"
+      "Sentence": "Primary wastewater treatment consists of mechanical bar screens..."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment consists of ... grit removal"
+      "Sentence": "Primary wastewater treatment consists of mechanical bar screens, grit removal, and two primary clarifiers."
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,12 +37,30 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary wastewater treatment consists of ... two primary clarifiers"
+      "Sentence": "Primary wastewater treatment consists of mechanical bar screens, grit removal, and two primary clarifiers."
     },
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Primary solids are sent to two anaerobic digesters..."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -53,22 +71,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary solids are sent to two anaerobic digesters"
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Primary solids are sent to ... sludge drying beds"
+      "Sentence": "Primary solids are sent to two anaerobic digesters, sludge drying beds..."
     },
     {
       "Equipment": null,
@@ -76,25 +79,29 @@
         "Composting"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary solids are sent to ... a sludge composting operation"
+      "Sentence": "Primary solids are sent to two anaerobic digesters, sludge drying beds, and a sludge composting operation."
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "Aeration",
         "BiologicalProcess"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment is accomplished using two oxidation ponds"
+      "Sentence": "Secondary treatment is accomplished using two oxidation ponds 22.4 acres and 17.3 acres in size, respectively..."
     },
     {
       "Equipment": "Wetland",
@@ -108,14 +115,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "As constructed, the AMWS consists of three freshwater wetlands ... provide enhanced treatment"
+      "Sentence": "As constructed, the AMWS consists of three freshwater wetlands: Allen, Gearheart, and Hauser Mar shes. These marshes currently receive equivalent to secondary treated wastewater, provide enhanced treatment..."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -126,18 +132,21 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent is disinfected with chlorine and dechlorinated with sulfur dioxide prior to discharged"
+      "Sentence": "Effluent is disinfected with chlorine and dechlorinated with sulfur dioxide prior to discharged."
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated effluent is continuously commingled with effluent from the AMWS, disinfected, and split, flowing by gravity either to Humboldt Bay or again through the AMWS"
+      "Sentence": "Effluent is disinfected with chlorine and dechlorinated with sulfur dioxide prior to discharged."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -146,26 +155,12 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "construction of the UV disinfection system"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "new aerators in oxidation pond one ... aerators in oxidation pond two"
+      "Sentence": "The Permittee is planning to replace the chlorine disinfection system with an ultraviolet light (UV) disinfection system..."
     },
     {
       "Equipment": "OxidationDitch",
@@ -175,13 +170,13 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "construction of the oxidation ditch ... will provide BOD removal and year-round full nitrification treatment capacity"
+      "Sentence": "Phase Two of the project will include construction of the oxidation ditch... The parallel oxidation ditch treatment train will provide BOD removal and year-round full nitrification treatment capacity..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -194,7 +189,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase Two ... construction of the ... secondary clarifiers"
+      "Sentence": "Phase Two of the project will include construction of the oxidation ditch, secondary clarifiers..."
     },
     {
       "Equipment": "Pump",
@@ -202,70 +197,57 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Phase Two ... return activated sludge pump station"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "pHAdjustment",
-        "ChemicalAddition"
-      ],
-      "Role": [
+        "Recirculation",
         "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase Two ... an alkalinity feed station"
-    },
-    {
-      "Equipment": "Thickener",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "rehabilitation of the anaerobic digester ... adding a sludge thickening system"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Phase One ... improvements to multiple pump stations"
-    },
-    {
-      "Equipment": "Boiler",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "rehabilitation of the anaerobic digester will include ... replacing the boiler/heat exchanger"
+      "Sentence": "Phase Two of the project will include ... return activated sludge pump station..."
     },
     {
       "Equipment": null,
       "Process": [
-        "Composting"
+        "ChemicalAddition",
+        "pHAdjustment"
       ],
       "Role": [
-        "SolidsHandling"
+        "MakeUp",
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Phase Two ... relocating composting facilities to a new area on site"
+      "Sentence": "Phase Two of the project will include ... an alkalinity feed station..."
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Phase Two of the project will include ... adding a sludge thickening system..."
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Aerobic",
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Phase One of the Proposed Upgrade Project will consist of ... new aerators in oxidation pond one ... and aerators in oxidation pond two..."
     }
   ]
 }

@@ -29,8 +29,21 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Nitrification"
+        "TricklingFiltration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system consists of...trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)..."
+    },
+    {
+      "Equipment": "TricklingFilter",
+      "Process": [
+        "Nitrification",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary",
@@ -42,7 +55,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of... trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)..."
+      "Sentence": "...ammonia removal nitrification (accomplished in a bio-tower)..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -68,12 +81,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection."
+      "Sentence": "...sand filtration, and ultraviolet light (UV) disinfection."
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -81,7 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...sand filtration, and ultraviolet light (UV) disinfection."
+      "Sentence": "...and ultraviolet light (UV) disinfection."
     },
     {
       "Equipment": "Wetland",
@@ -113,7 +127,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill."
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -148,21 +162,6 @@
       "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge..."
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill."
-    },
-    {
       "Equipment": null,
       "Process": [
         "Landfill"
@@ -175,7 +174,22 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "...placed as alternative daily cover at a landfill."
+      "Sentence": "...and placed as alternative daily cover at a landfill."
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill."
     },
     {
       "Equipment": "Pump",
@@ -193,10 +207,11 @@
     {
       "Equipment": null,
       "Process": [
-        "pHAdjustment"
+        "pHAdjustment",
+        "ChemicalAddition"
       ],
       "Role": [
-        "Secondary"
+        "Stabilization"
       ],
       "Substance": [
         "pHAdjuster"
@@ -208,7 +223,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -253,7 +269,6 @@
         "Biofiltration"
       ],
       "Role": [
-        "Posttreatment",
         "NutrientRemoval"
       ],
       "Substance": null,

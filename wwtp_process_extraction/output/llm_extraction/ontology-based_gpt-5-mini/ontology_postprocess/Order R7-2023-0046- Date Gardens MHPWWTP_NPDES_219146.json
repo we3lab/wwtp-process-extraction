@@ -8,9 +8,7 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sewage is conveyed from the Facility by gravity through bar screens to a wet well",
@@ -19,41 +17,52 @@
       ]
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "preliminary treatment (i.e., screening and grit removal)",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
-      "Equipment": "Pump",
+      "Equipment": "Tank",
       "Process": null,
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sewage is pumped up to the package plants using two submersible sewage pumps.",
+      "Sentence": "wet well with two openings located adjacent to the package plants",
       "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sewage is pumped up to the package plants using two submersible sewage pumps",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two pumps convey wastewater through a rotary drum screen, then to an aeration basin",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -71,12 +80,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater is then pumped to a clarifier for settling.",
+      "Sentence": "wastewater is then pumped to a clarifier for settling",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -86,21 +93,103 @@
       "Process": [
         "Recirculation"
       ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge is pumped from the clarifier to the aeration basin",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return activated sludge is pumped from the clarifier to the aeration basin.",
+      "Sentence": "Waste activated sludge is pumped to the activated sludge unit (Unit 1)",
       "trigger_process": []
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "Digester",
       "Process": [
-        "RapidSandFiltration"
+        "Digestion"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "one of the package plants (Unit 1) as a solids digester unit as a means to reduce the amount of sludge generated",
+      "trigger_process": [
+        "Unspecified Digestion"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Digested sludge from the solids digester (Unit 1) is pumped to one of two (2) drying beds",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Dried sludge is then removed from the beds and disposed of at a landfill",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "solids removed during preliminary treatment (i.e., screening and grit removal) are dried and removed daily for pick-up ... hauled off-site",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -115,81 +204,16 @@
         "UVDisinfection",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and then through an ultraviolet (UV) disinfection system",
+      "Sentence": "then through an ultraviolet (UV) disinfection system prior to being directed through a final effluent channel and weir box",
       "trigger_process": [
         "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "one of the package plants (Unit 1) as a solids digester unit as a means to reduce the amount of sludge generated at the treatment plant.",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge from the solids digester (Unit 1) is pumped to one of two (2) drying beds",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dried sludge is then removed from the beds and disposed of at a landfill.",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": null,
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "solids removed during preliminary treatment (i.e., screening and grit removal) are dried and removed daily for pick-up by the trash removal service, which hauls solid waste off-site.",
-      "trigger_process": [
-        "Drying"
       ]
     }
   ]

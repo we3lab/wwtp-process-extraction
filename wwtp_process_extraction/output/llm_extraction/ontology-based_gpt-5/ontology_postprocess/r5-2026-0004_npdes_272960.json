@@ -40,7 +40,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "pHAdjuster"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "magnesium hydroxide alkalinity control system",
@@ -65,7 +67,6 @@
       "Location": "on-site",
       "Sentence": "four 2 MG oxidation ditches using fine bubble diffusers, each with an anoxic zone for denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Oxidation Ditch"
       ]
@@ -81,7 +82,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are two 92-foot and two 130-foot secondary clarifiers.",
+      "Sentence": "two 92-foot and two 130-foot secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -97,7 +98,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary filtration is performed by four cloth media filters with 5 nanometer precision.",
+      "Sentence": "Tertiary filtration is performed by four cloth media filters",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -114,7 +115,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection is achieved through two ultraviolet light channels.",
+      "Sentence": "Disinfection is achieved through two ultraviolet light channels",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -124,12 +125,13 @@
       "Process": null,
       "Role": [
         "Detention",
-        "Containment"
+        "Containment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Erskine Pond provides peak and emergency overflow protection, onsite discharge containment during plant shutdowns",
+      "Sentence": "The Erskine Pond provides peak and emergency overflow protection, onsite discharge containment during plant shutdowns, and functions as an algae production pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -137,38 +139,25 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "BiologicalProcess"
+        "Recirculation",
+        "Evaporation"
       ],
       "Role": [
-        "SolidsHandling",
+        "Storage",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Ponds 1 through 8 and Pond 12 are... primarily used for algae production to assist with onsite sludge stabilization.",
+      "Sentence": "The system allows wastewater to circulate among the ponds... Water is lost through evaporation and percolation and replaced with wastewater",
       "trigger_process": [
-        "Aerated Lagoon",
-        "Biosolids Lagoon"
+        "Evaporation Pond"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "After reaching Pond 12, water is redirected to the pump station for recirculation",
-      "trigger_process": []
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "Sedimentation",
         "AnaerobicDigestion",
         "AerobicDigestion"
       ],
@@ -183,10 +172,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Facultative lagoons allow solids to separate by density, with anaerobic digestion occurring in the sludge layer and aerobic activity near the surface.",
+      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons... anaerobic digestion occurring in the sludge layer and aerobic activity near the surface",
       "trigger_process": [
         "Aerobic Digestion",
         "Anaerobic Digestion",
+        "Anaerobic Lagoon",
         "Biosolids Lagoon",
         "Facultative Lagoon",
         "Stabilization Pond"
@@ -195,46 +185,27 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds",
+      "Sentence": "the other two ponds are in various stages of drying and sludge removal",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
-        "Stabilization Pond"
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "landfill disposal, land application, or other disposal off site.",
-      "trigger_process": [
-        "Land Application"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "LandApplication",
         "Landfill"
       ],
       "Role": [
@@ -246,42 +217,41 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "landfill disposal, land application, or other disposal off site.",
+      "Sentence": "landfill disposal, land application, or other disposal off site",
       "trigger_process": [
-        "Biosolids Landfill"
+        "Biosolids Landfill",
+        "Land Application"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Detention"
+        "Detention",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "convert it or portions of it into an emergency detention basin and pump station located adjacent to the plant headworks.",
+      "Sentence": "convert it or portions of it into an emergency detention basin... expected to be in operation by 2036",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Dewatering"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "the North Ponds were further dewatered, and pond bottoms were scrapped",
+      "Sentence": "North Ponds... were used for sludge stabilization... determined that the North Ponds were properly closed",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Lagoon"
+        "Stabilization Pond"
       ]
     }
   ]

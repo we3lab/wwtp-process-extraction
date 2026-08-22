@@ -1,18 +1,31 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The WWTF consists of the wastewater collection system, an influent pump station, and two evaporation and percolation ponds (Ponds 1 and 2).",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Pond",
       "Process": [
         "Evaporation"
       ],
       "Role": [
         "Primary",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Originally the WWTF was designed to discharge to a 2.67-acre primary unlined stabilization pond (Pond 1), followed by a 1.33-acre unlined polishing pond (Pond 2).",
+      "Sentence": "two evaporation and percolation ponds (Ponds 1 and 2) ... a 2.67-acre primary unlined stabilization pond (Pond 1)",
       "trigger_process": [
         "Evaporation Pond",
         "Stabilization Pond"
@@ -25,15 +38,57 @@
       ],
       "Role": [
         "Tertiary",
-        "Posttreatment"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a 1.33-acre unlined polishing pond (Pond 2)",
+      "Sentence": "two evaporation and percolation ponds (Ponds 1 and 2) ... a 1.33-acre unlined polishing pond (Pond 2)",
       "trigger_process": [
         "Evaporation Pond",
-        "Polishing Lagoon"
+        "Polishing Lagoon",
+        "Stabilization Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "If sludge is not removed, Pond 1.a. through 1.d. are dried and the sludge disced into the bottoms.",
+      "trigger_process": [
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Stabilization Pond"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge, if removed from Pond 1.a. through 1.d., is typically stockpiled onsite.",
+      "trigger_process": [
+        "Unspecified Disposal"
       ]
     },
     {
@@ -50,57 +105,6 @@
       "Sentence": "Currently, the Discharger does not have a method for removing headworks waste, but intends to install a grinder pump.",
       "trigger_process": [
         "Comminution"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The WWTF consists of the wastewater collection system, an influent pump station, and two evaporation and percolation ponds (Ponds 1 and 2).",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "If sludge is not removed, Pond 1.a. through 1.d. are dried and the sludge disced into the bottoms.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Stabilization Pond"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge, if removed from Pond 1.a. through 1.d., is typically stockpiled onsite.",
-      "trigger_process": [
-        "Unspecified Disposal"
       ]
     }
   ]

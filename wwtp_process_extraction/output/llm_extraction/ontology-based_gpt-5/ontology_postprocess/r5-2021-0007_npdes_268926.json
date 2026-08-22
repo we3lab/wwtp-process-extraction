@@ -25,6 +25,8 @@
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
+        "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
@@ -33,7 +35,6 @@
       "Location": "on-site",
       "Sentence": "an oxidation ditch activated sludge process with nitrification and denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification",
         "Oxidation Ditch"
@@ -121,7 +122,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -131,9 +132,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each summer, stabilized sludge is pumped into the drying beds for dewatering.",
+      "Sentence": "sludge drying beds... pumped into the drying beds for dewatering",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -144,10 +145,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered biosolids are transported and disposed at the Yolo County Central Landfill, a Class III non-hazardous municipal landfill as daily cover.",
+      "Sentence": "Dewatered biosolids are transported and disposed at the Yolo County Central Landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]

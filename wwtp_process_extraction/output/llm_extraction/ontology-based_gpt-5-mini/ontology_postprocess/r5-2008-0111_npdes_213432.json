@@ -1,0 +1,237 @@
+{
+  "items": [
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The pump also serves to grind large materials prior to secondary treatment.",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The WWTP is equipped with a surge tank, which provides flow equalization and pretreatment for the influent... Aeration is provided in the surge tank to minimize odors.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater enters the tank by gravity and is lifted into the aeration tank by one of two influent pumps.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval"
+      ],
+      "Substance": [
+        "Constituent-DissolvedOxygen"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater is pumped from the surge tank into an aerated basin where it is mixed with return activated sludge... A dissolved oxygen concentration of at least 2 mg/L is maintained in the basin.",
+      "trigger_process": [
+        "Nitrification",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Recirculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater then flows to the clarifier for final settling... settled sludge is returned to the aerated basin.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Excess sludge from the activated sludge system is wasted to the aerobic digester where sludge is aerated and further stabilized.",
+      "trigger_process": [
+        "Aerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After clarification, the wastewater is conveyed through a dual-media filter, which removes additional suspended solids and reduces turbidity.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Backwashing",
+        "Recirculation"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A portion of the filtered water is collected in a backwash tank... The backwash water is discharged into the backwash holding tank and then returns to the beginning of the treatment process for retreatment.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After filtration, the wastewater enters the chlorine contact chamber for disinfection. Chlorine gas is dosed... Sulfur dioxide gas is added in the dechlorination zone to remove the chlorine residual...",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The sludge is then removed from the digester and transported to the Lake Wildwood WWTP where it is eventually dewatered.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered sludge is then taken off site and landfilled.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Denitrification",
+        "Nitrification",
+        "MembraneProcess",
+        "Biofiltration"
+      ],
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The proposed treatment would be a pre-packaged membrane bioreactor system (MBR) with an anoxic zone (combined denitrification, nitrification, and membrane process)",
+      "trigger_process": [
+        "Denitrification",
+        "Membrane Bioreactor",
+        "Nitrification"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The proposed treatment would be a pre-packaged membrane bioreactor system ... and UV disinfection",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    }
+  ]
+}

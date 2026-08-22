@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks screens"
+      "Sentence": "The Domestic WWTF consists of a headworks ... (headworks implies screens)"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit chamber"
+      "Sentence": "The Domestic WWTF consists of a headworks, grit chamber,"
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two primary clarifiers"
+      "Sentence": "The Domestic WWTF consists of ... two primary clarifiers,"
     },
     {
       "Equipment": "AerationBasin",
@@ -51,7 +51,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an activated sludge unit"
+      "Sentence": "The Domestic WWTF consists of ... an activated sludge unit,"
     },
     {
       "Equipment": "SedimentationTank",
@@ -64,18 +64,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarifiers"
+      "Sentence": "The Domestic WWTF consists of ... secondary clarifiers,"
     },
     {
       "Equipment": "DisinfectionUnit",
       "Process": [
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": null,
-      "Implementation": "past",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The disinfection system is currently not in use."
+      "Sentence": "The Domestic WWTF consists of ... disinfection system, ... The disinfection system is currently not in use."
     },
     {
       "Equipment": "Thickener",
@@ -85,10 +88,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge thickener"
+      "Sentence": "The Domestic WWTF consists of ... sludge thickener,"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -97,15 +102,15 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "anaerobic sludge digester"
+      "Sentence": "The Domestic WWTF consists of ... anaerobic sludge digester,"
     },
     {
       "Equipment": "Tank",
@@ -113,14 +118,17 @@
       "Role": [
         "Storage"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge holding tank"
+      "Sentence": "The Domestic WWTF consists of ... a sludge holding tank."
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -131,12 +139,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mechanically dewatered using a centrifuge"
+      "Sentence": "Sludge is mechanically dewatered using a centrifuge,"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -146,7 +154,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dried onsite in lined, paved, drying beds equipped with underdrains"
+      "Sentence": "and dried onsite in lined, paved, drying beds equipped with underdrains."
     },
     {
       "Equipment": null,
@@ -160,16 +168,21 @@
       "Sentence": "Decant is returned to either of the WWTFs for further treatment."
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "A 20-inch PVC pipeline conveys the effluent from the WWTF to the Lincoln Ponds."
+    },
+    {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Particles"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Screenings and grit from the headworks screens are hauled to the local landfill for disposal."
@@ -179,24 +192,11 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Sludge dried in the 14 paved drying beds is hauled offsite for land application at a permitted facility."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Three of the ponds are used for effluent disposal"
+      "Sentence": "Sludge dried in the 14 paved drying beds is hauled offsite for land application at a permitted facility."
     }
   ]
 }

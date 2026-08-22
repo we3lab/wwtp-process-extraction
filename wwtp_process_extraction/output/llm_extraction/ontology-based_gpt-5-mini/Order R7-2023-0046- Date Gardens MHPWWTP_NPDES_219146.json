@@ -8,45 +8,53 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sewage is conveyed from the Facility by gravity through bar screens to a wet well"
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "preliminary treatment (i.e., screening and grit removal)"
-    },
-    {
-      "Equipment": "Pump",
+      "Equipment": "Tank",
       "Process": null,
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sewage is pumped up to the package plants using two submersible sewage pumps."
+      "Sentence": "wet well with two openings located adjacent to the package plants"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sewage is pumped up to the package plants using two submersible sewage pumps"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two pumps convey wastewater through a rotary drum screen, then to an aeration basin"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -61,48 +69,32 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater is then pumped to a clarifier for settling."
+      "Sentence": "wastewater is then pumped to a clarifier for settling"
     },
     {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Return activated sludge is pumped from the clarifier to the aeration basin"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return activated sludge is pumped from the clarifier to the aeration basin."
-    },
-    {
-      "Equipment": "RapidSandFilter",
-      "Process": [
-        "RapidSandFiltration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Clarifier effluent (i.e., overflow) is then directed through two sand filters in parallel"
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection",
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and then through an ultraviolet (UV) disinfection system"
+      "Sentence": "Waste activated sludge is pumped to the activated sludge unit (Unit 1)"
     },
     {
       "Equipment": "Digester",
@@ -112,17 +104,15 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one of the package plants (Unit 1) as a solids digester unit as a means to reduce the amount of sludge generated at the treatment plant."
+      "Sentence": "one of the package plants (Unit 1) as a solids digester unit as a means to reduce the amount of sludge generated"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -137,28 +127,60 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
+        "BiosolidsDisposal"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried sludge is then removed from the beds and disposed of at a landfill."
+      "Sentence": "Dried sludge is then removed from the beds and disposed of at a landfill"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "BiosolidsDisposal"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "solids removed during preliminary treatment (i.e., screening and grit removal) are dried and removed daily for pick-up by the trash removal service, which hauls solid waste off-site."
+      "Sentence": "solids removed during preliminary treatment (i.e., screening and grit removal) are dried and removed daily for pick-up ... hauled off-site"
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Clarifier effluent (i.e., overflow) is then directed through two sand filters in parallel"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "then through an ultraviolet (UV) disinfection system prior to being directed through a final effluent channel and weir box"
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks where it is screened and degritted",
+      "Sentence": "Raw wastewater is pumped from the collection system to the headworks where it is screened and degritted.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks where it is screened and degritted",
+      "Sentence": "Raw wastewater is pumped from the collection system to the headworks where it is screened and degritted.",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -48,14 +48,12 @@
         "NitrogenRemoval"
       ],
       "Substance": [
-        "Constituent-Nitrate",
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Screened wastewater is aerobically treated in the West Aeration Basin and East Aeration Basin... designed to provide aerobic and anoxic zones to achieve nitrification and denitrification",
+      "Sentence": "Screened wastewater is aerobically treated in the West Aeration Basin and East Aeration Basin...designed to provide aerobic and anoxic zones to achieve nitrification and denitrification.",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -71,7 +69,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 120-foot diameter secondary clarifier was constructed in addition to the existing clarifier",
+      "Sentence": "A 120-foot diameter secondary clarifier was constructed...Effluent from the aeration ponds is conveyed to the newly constructed 120-foot diameter secondary clarifier.",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The existing 90-foot secondary clarifier will be used in parallel or serve as a backup when the 120-foot clarifier is out of service for maintenance.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -89,7 +103,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent from the secondary clarifier is pumped through cloth media filters...to remove suspended solids",
+      "Sentence": "The filter system consists of four pile cloth-media type filters with a nominal pore size of ten microns to remove suspended solids that would inhibit the efficiency of UV disinfection.",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -105,7 +119,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The pumps used for filtration are housed in a low-lift pump station",
+      "Sentence": "The pumps used for filtration are housed in a low-lift pump station.",
       "trigger_process": []
     },
     {
@@ -120,7 +134,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the UV disinfection system...designed for a minimum UV dose of 100 millijoules per square centimeter (mJ/cm2)",
+      "Sentence": "Cloth media filters and a ultraviolet light (UV) disinfection system were installed...The UV disinfection system consists of two open channels...",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -134,7 +148,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfected effluent is discharged to eleven rapid infiltration ponds",
+      "Sentence": "Disinfected effluent is discharged to eleven rapid infiltration ponds (Ponds 1, 2, 4, 5, and 8 through 14).",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -148,7 +162,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "rapid infiltration Ponds 3, 6, and 7 are no longer used due to their close proximity to the Stanislaus River",
+      "Sentence": "The Discharger states that rapid infiltration Ponds 3, 6, and 7 are no longer used due to their close proximity to the Stanislaus River.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -157,35 +171,15 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The sludge storage tank is used for emergency storage of wasted sludge in-case of dewatering system failure",
+      "Sentence": "Sludge from the secondary clarifier was sent to an aerated above ground storage tank and stored for at least six weeks.",
       "trigger_process": []
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The sludge drying beds are uncovered and may be used in the summer for additional drying or for backup dewatering",
-      "trigger_process": [
-        "Drying"
-      ]
     },
     {
       "Equipment": "DewateringUnit",
@@ -201,10 +195,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "In 2008, a screw press was added for year-round mechanical sludge dewatering...both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed",
+      "Sentence": "Both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed under a permanent canopy structure.",
       "trigger_process": [
         "Mechanical Dewatering",
         "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The sludge drying beds are uncovered and may be used in the summer for additional drying or for backup dewatering.",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -220,7 +233,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed",
+      "Sentence": "Both screw presses with auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed under a permanent canopy structure.",
       "trigger_process": [
         "Flocculation",
         "Polymer Addition"
@@ -232,13 +245,14 @@
         "Recirculation"
       ],
       "Role": [
-        "Feed",
-        "SolidsHandling"
+        "Recirculation"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "auxiliary equipment (flocculation tanks, polymer system and sludge feed pump) were installed",
+      "Sentence": "Decant from the sludge drying beds and screw press is pumped back to the headworks.",
       "trigger_process": []
     }
   ]

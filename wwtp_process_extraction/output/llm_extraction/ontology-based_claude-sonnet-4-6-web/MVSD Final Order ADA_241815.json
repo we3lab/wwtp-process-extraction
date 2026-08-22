@@ -11,7 +11,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism.",
       "Source": "permit_text",
       "Website": null
     },
@@ -26,7 +41,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
+      "Sentence": "screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation...",
       "Source": "permit_text",
       "Website": null
     },
@@ -41,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)...",
+      "Sentence": "screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation...",
       "Source": "permit_text",
       "Website": null
     },
@@ -55,9 +70,7 @@
         "Secondary",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "ammonia removal nitrification (accomplished in a bio-tower)",
@@ -75,14 +88,14 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration...",
       "Source": "permit_text",
       "Website": null
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -90,7 +103,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection",
       "Source": "permit_text",
       "Website": null
     },
@@ -105,31 +118,63 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "sand filtration, and ultraviolet light (UV) disinfection",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment and controls.",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Nitrification",
+        "Denitrification"
+      ],
       "Role": [
         "Posttreatment",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for \"polishing\" treatment to remove ammonia and other pollutants before being discharged to Peyton Slough.",
+      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for 'polishing' treatment to remove ammonia and other pollutants before being discharged to Peyton Slough.",
       "Source": "permit_text",
       "Website": null
     },
     {
-      "Equipment": "GravityThickener",
+      "Equipment": "Wetland",
       "Process": [
-        "Sedimentation"
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NutrientRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -139,9 +184,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
-      "Source": "both",
-      "Website": "https://www.mvsd.org/process"
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Source": "permit_text",
+      "Website": null
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -157,14 +202,43 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Source": "both",
+      "Website": "https://www.mvsd.org/wastewater-treatment"
+    },
+    {
+      "Equipment": "Boiler",
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "methane gas is recovered to heat the digester",
+      "Source": "web_search",
+      "Website": "https://www.mvsd.org/wastewater-treatment"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day",
       "Source": "permit_text",
       "Website": null
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -174,14 +248,32 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
+      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -208,68 +300,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment and controls.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism.",
-      "Source": "permit_text",
-      "Website": null
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "NutrientRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Nutrient Removal in Moorhen Marsh: The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
+      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill",
       "Source": "permit_text",
       "Website": null
     }

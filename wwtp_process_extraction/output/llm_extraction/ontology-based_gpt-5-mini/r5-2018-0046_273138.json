@@ -1,19 +1,95 @@
 {
   "items": [
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": "Screen",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "Screening"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The City is only authorized to produce and discharge Type 2 Discharge in the event of a malfunction or planned maintenance of the UV disinfection system."
+      "Sentence": "two bar screens, four fine screens"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four grit tanks"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "five rectangular primary clarifiers"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four rectangular aeration basins"
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Biofiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "ten membrane tanks (each housing eight membrane cassettes)"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two recirculation lines"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two parallel channels housing six ultraviolet light (UV) banks"
     },
     {
       "Equipment": "Digester",
@@ -21,20 +97,20 @@
         "Digestion"
       ],
       "Role": [
-        "Primary",
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary sludge is fed to seven primary digesters."
+      "Sentence": "Primary sludge is fed to seven primary digesters"
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Sedimentation",
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -44,7 +120,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste Activated Sludge (WAS) is processed through two 2-meter gravity belt thickeners;"
+      "Sentence": "WAS is processed through two 2-meter gravity belt thickeners"
     },
     {
       "Equipment": null,
@@ -62,22 +138,6 @@
       "Sentence": "thickened WAS is then partially processed by a sludge disintegrator"
     },
     {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge from the seven primary digesters is then fed into the eighth digester for secondary digestion."
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering"
@@ -90,12 +150,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is pumped from the secondary digester and dewatered by 2 screw presses."
+      "Sentence": "dewatered by 2 screw presses"
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Storage",
@@ -106,7 +166,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered sludge is applied to a 9-acre asphaltic-lined drying and stockpiling area for further drying and storage."
+      "Sentence": "applied to a 9-acre asphaltic-lined drying and stockpiling area for further drying and storage"
     },
     {
       "Equipment": null,
@@ -116,10 +176,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are removed by a permitted contractor and disposed of by either land application at an approved facility"
+      "Sentence": "disposed of by either land application at an approved facility"
     },
     {
       "Equipment": null,
@@ -129,10 +191,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are removed by a permitted contractor and disposed of by either ... landfill cover at an approved landfill."
+      "Sentence": "disposed of by ... landfill cover at an approved landfill"
     }
   ]
 }

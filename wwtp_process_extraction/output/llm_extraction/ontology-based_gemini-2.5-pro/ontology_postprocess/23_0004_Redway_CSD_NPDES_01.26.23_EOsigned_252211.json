@@ -19,7 +19,8 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary"
@@ -55,15 +56,13 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier, chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
+      "Sentence": "The treatment system consists of a... chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -71,7 +70,9 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Filtration"
+      ],
       "Role": [
         "Posttreatment"
       ],
@@ -80,13 +81,14 @@
       "Location": "on-site",
       "Sentence": "The Facility discharges treated wastewater to three percolation ponds at Discharge Point 002.",
       "trigger_process": [
+        "Unspecified Filtration",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
+        "AirDrying",
         "Dewatering"
       ],
       "Role": [
@@ -97,16 +99,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds or an Aeromod Draimad bagger before being transported to an approved landfill for final disposal.",
+      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Filtration"
+        "Filtration",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -116,7 +118,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds or an Aeromod Draimad bagger before being transported to an approved landfill for final disposal.",
+      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds or an Aeromod Draimad bagger...",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -132,9 +134,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered... before being transported to an approved landfill for final disposal.",
+      "Sentence": "...before being transported to an approved landfill for final disposal.",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "SepticTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Facility has historically received septage at a septage receiving station located at the Facility; however, the Permittee no longer accepts septage and does not anticipate accepting septage in the future.",
+      "trigger_process": [
+        "Septic Tank"
       ]
     },
     {
@@ -170,38 +188,6 @@
       ]
     },
     {
-      "Equipment": "OxidationDitch",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Improvements identified as part of this project include... aerator upgrades...",
-      "trigger_process": [
-        "Oxidation Ditch"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Improvements identified as part of this project include... clarifier rehabilitation...",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
       "Equipment": "Digester",
       "Process": [
         "Digestion"
@@ -223,33 +209,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Improvements identified as part of this project include... new chlorine contact basin...",
       "trigger_process": [
         "Chlorination"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Improvements identified as part of this project include... sludge drying cover...",
-      "trigger_process": [
-        "Drying"
       ]
     }
   ]

@@ -86,7 +86,9 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -99,30 +101,20 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine (gas) disinfection",
+      "Sentence": "chlorine (gas) disinfection, and dechlorination with sodium bisulfite",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorination with sodium bisulfite",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -133,7 +125,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -167,21 +160,23 @@
         "Mixing"
       ],
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The biosolids equalization basin (PND-004) is a 64,070 ft2 lagoon with mechanical mixing",
+      "Sentence": "the biosolids equalization basin (PND-004) is a 64,070 ft2 lagoon with mechanical mixing",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
@@ -194,7 +189,7 @@
       "Location": "on-site",
       "Sentence": "the solids are moved to four sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -219,9 +214,7 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Grit from the clarifier is sent to the grit pond (PND-001)",

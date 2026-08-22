@@ -3,21 +3,63 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "BiologicalProcess"
       ],
       "Role": [
         "Primary",
         "Equalization"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Constituent-SuspendedSolids",
+        "Constituent-OrganicCarbon"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one of the original 2.4-acre lagoons was retrofitted to a primary oxidation pond and used as an equalization basin prior to entry into the Clemson system",
+      "Sentence": "one of the original 2.4-acre lagoons was retrofitted to a primary oxidation pond and used as an equalization basin",
       "trigger_process": [
         "Equalization",
         "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "BiologicalProcess",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Removal and stabilization of organic matter takes place in the reaction basins, Clemson Ponds #1 and #2, through biological oxidation and reduction reactions that generate biomass.",
+      "trigger_process": [
+        "Aerated Lagoon",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The biomass is then separated by gravity sedimentation in the last 3 ponds, Ponds #3, #4, and #5.",
+      "trigger_process": [
+        "Secondary Clarification"
       ]
     },
     {
@@ -25,48 +67,15 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The current treatment system consists of flow equalization, grinding, oxidation pond treatments,",
+      "Sentence": "The current treatment system consists of flow equalization, grinding, oxidation pond treatments",
       "trigger_process": [
         "Comminution"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Aeration",
-        "BiologicalProcess"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The oxidation pond treatment utilizes a Clemson aerated pond system consisting of five ponds with surface aerators",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The biomass is then separated by gravity sedimentation in the last 3 ponds, Ponds #3, #4, and #5.",
-      "trigger_process": [
-        "Secondary Clarification"
       ]
     },
     {
@@ -96,15 +105,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility maintains two UV disinfection units, reserving one unit as a back-up unit.",
+      "Sentence": "and disinfected via UV light. The Facility maintains two UV disinfection units",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater collection system contains one lift station at the headworks of the wastewater treatment plant.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -116,17 +137,19 @@
       "Location": "on-site",
       "Sentence": "The sludge is placed into an empty oxidation pond for solar drying.",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess"
+        "Biofiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -140,12 +163,45 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The septic receiving station waste will be discharged into 2 of 5 Clemson ponds where it will receive treatment via floating mechanical aerators",
       "trigger_process": [
+        "Aerated Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The effluent from the oxidation pond will fill a new lift station where it is pumped to the MBR treatment system.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The remaining 3 of 5 Clemson ponds will be used for sludge dewatering.",
+      "trigger_process": [
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
       ]
     }

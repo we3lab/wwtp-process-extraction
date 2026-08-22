@@ -17,12 +17,11 @@
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -67,7 +66,6 @@
       "Location": "on-site",
       "Sentence": "Activated sludge (including nitrification and denitrification)",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -91,7 +89,6 @@
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration",
         "MediaFiltration"
       ],
       "Role": [
@@ -108,11 +105,11 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -123,12 +120,12 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Aeration"
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -143,6 +140,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -156,9 +154,28 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Dewatering"
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "solar dried before further dewatering",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -171,25 +188,6 @@
       "Sentence": "further dewatering using a belt filter press",
       "trigger_process": [
         "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "solar dried before further dewatering",
-      "trigger_process": [
-        "Drying"
       ]
     },
     {

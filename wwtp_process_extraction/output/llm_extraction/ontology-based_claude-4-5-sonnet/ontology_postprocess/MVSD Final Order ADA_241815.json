@@ -86,9 +86,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -124,7 +124,7 @@
       ],
       "Role": [
         "Posttreatment",
-        "NutrientRemoval"
+        "NutrogenRemoval"
       ],
       "Substance": [
         "Constituent-Ammonia"
@@ -198,7 +198,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -210,7 +210,7 @@
       "Location": "on-site",
       "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -232,39 +232,6 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition",
-        "pHAdjustment"
-      ],
-      "Role": null,
-      "Substance": [
-        "pHAdjuster"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger has since modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day.",
-      "trigger_process": [
-        "Neutralization"
-      ]
-    },
-    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
         "UVDisinfection"
@@ -283,6 +250,7 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -318,7 +286,8 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "Nitrification"
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Posttreatment",
@@ -329,8 +298,8 @@
       "Location": "on-site",
       "Sentence": "Nutrient Removal in Moorhen Marsh: The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
       "trigger_process": [
+        "Denitrification",
         "Nitrification",
-        "Unspecified Nutrient Removal",
         "Wetland"
       ]
     }

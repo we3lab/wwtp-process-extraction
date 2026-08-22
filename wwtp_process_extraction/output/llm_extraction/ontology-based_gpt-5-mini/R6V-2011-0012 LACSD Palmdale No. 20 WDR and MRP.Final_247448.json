@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary waste water treatment is provided by primary sedimentation tanks, anaerobic digesters, and unlined oxidation ponds."
+      "Sentence": "Secondary waste water treatment is provided by primary sedimentation tanks"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -20,6 +20,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Anaerobic"
       ],
       "Substance": [
@@ -27,12 +28,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the anaerobic digesters is dried in the concrete-lined drying beds, stockpiled, and hauled off site for disposal."
+      "Sentence": "Secondary waste water treatment is provided by primary sedimentation tanks, anaerobic digesters, and unlined oxidation ponds."
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "BiologicalProcess"
       ],
       "Role": [
         "Secondary",
@@ -41,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment is provided by ... unlined oxidation ponds."
+      "Sentence": "The Secondary Treatment Reclamation Plant provides primary and secondary treatment (aerated oxidation ponds)"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -50,20 +52,33 @@
         "Disinfection"
       ],
       "Role": [
-        "Secondary"
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Additional treatment is provided by the oxidation pond aeration system and disinfection facilities (chlorination)"
+    },
+    {
+      "Equipment": "Reservoir",
+      "Process": null,
+      "Role": [
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Additional treatment is provided by the oxidation pond aeration system and disinfection facilities (chlorination)."
+      "Location": "off-site",
+      "Sentence": "Two storage reservoirs (Reservoirs Nos. 1 and 2) have been completed and are in use at the Storage Reservoir Site."
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
-        "Tertiary",
         "SolidsHandling"
       ],
       "Substance": [
@@ -100,9 +115,9 @@
       "Sentence": "Filter backwash will be routed to the sedimentation tanks."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Drying"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling"
@@ -110,9 +125,9 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Sludge from the anaerobic digesters is dried in the concrete-lined drying beds, stockpiled, and hauled off site for disposal."
+      "Sentence": "Existing and new digesters will process both primary sludge and thickened waste activated sludge."
     },
     {
       "Equipment": "DewateringUnit",
@@ -120,7 +135,6 @@
         "Dewatering"
       ],
       "Role": [
-        "Tertiary",
         "SolidsHandling"
       ],
       "Substance": [
@@ -131,21 +145,19 @@
       "Sentence": "Digested sludge will be mechanically dewatered and/or solar dried in existing sludge drying beds before offsite disposal or reuse."
     },
     {
-      "Equipment": "AnaerobicDigester",
+      "Equipment": null,
       "Process": [
-        "AnaerobicDigestion"
+        "AirDrying"
       ],
       "Role": [
-        "Tertiary",
-        "SolidsHandling",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Existing and new digesters will process both primary sludge and thickened waste activated sludge."
+      "Sentence": "Sludge from the anaerobic digesters is dried in the concrete-lined drying beds"
     }
   ]
 }

@@ -1,15 +1,39 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "manual bar screen",
+      "Sentence": "All wastewater is pumped to a wet/dry well equipped with two 7.5-horsepower pumps",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pumped to a wet/dry well",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Waste is routed through a manual bar screen as primary treatment",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -23,8 +47,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aeration tank",
+      "Sentence": "Wastewater then flows to an aeration basin package plant",
       "trigger_process": []
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "settleable solids/matter are allowed to collect in a settling tank within the aeration basin",
+      "trigger_process": [
+        "Unspecified Clarification"
+      ]
     },
     {
       "Equipment": "SedimentationTank",
@@ -35,7 +75,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarifier",
+      "Sentence": "then into a clarifier",
       "trigger_process": [
         "Unspecified Clarification"
       ]
@@ -43,8 +83,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": null,
       "Substance": [
@@ -52,9 +91,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds",
+      "Sentence": "Sludge ... is removed and placed into the unlined waste/sludge pit for drying",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -66,9 +105,53 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "unlined percolation/evaporation ponds",
+      "Sentence": "Pond 1 400 125 6 2,244,000",
       "trigger_process": [
         "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond 2 400 125 6 2,244,000",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Pond 3 540 80 6 1,938,952",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings and grit are collected and placed in a 55-gallon drum for offsite disposal at a landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     }
   ]

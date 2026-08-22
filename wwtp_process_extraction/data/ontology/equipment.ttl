@@ -1,0 +1,1413 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix s223: <http://data.ashrae.org/standard223#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix watr: <urn:nawi-water-ontology#> .
+
+<urn:nawi-water-ontology/equip>
+    a owl:Ontology ;
+    rdfs:label "NAWI Water Equipment Ontology" ;
+    rdfs:comment "An ontology for water equipment used in the NAWI project" ;
+    owl:imports <http://data.ashrae.org/standard223/1.0/model/all> ;
+    owl:imports <urn:nawi-water-ontology/processtypes> ;
+.
+watr:Tank a sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Tank" ;
+    rdfs:comment "A tank with at least one inlet and one outlet" ;
+    rdfs:subClassOf s223:Equipment ;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A tank has an inlet fluid connection point" ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class s223:InletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+        ] ;
+    ] ;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A tank has an outlet fluid connection point" ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+            sh:not [
+                # this is NOT a drain connection point! Tanks with a drain connection point must have a separate outlet connection point for the drain.
+                sh:property [
+                    sh:path s223:hasRole ;
+                    sh:hasValue watr:Role-Drain ;
+                    sh:minCount 1 ;
+                ] ;
+            ] ;
+        ] ;
+    ] ;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A tank may have a drain connection point" ;
+        sh:qualifiedMinCount 0 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+            sh:property [
+                sh:path s223:hasRole ;
+                sh:hasValue watr:Role-Drain ;
+            ] ;
+        ] ;
+    ] ;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A tank may have an overflow connection point" ;
+        sh:qualifiedMinCount 0 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+            sh:property [
+                sh:path s223:hasRole ;
+                sh:hasValue s223:Role-Overflow ;
+            ] ;
+        ] ;
+    ] ;
+.
+
+watr:Reactor a sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Reactor" ;
+    rdfs:comment "A tank used for reaction or biological/chemical treatment processes" ;
+    rdfs:subClassOf watr:Tank, watr:UnitProcess;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A reactor may have recirculation or return connection points" ;
+        sh:qualifiedMinCount 0 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+            sh:property [
+                sh:path s223:hasRole ;
+                sh:in ( s223:Role-Recirculating s223:Role-Return ) ;
+            ] ;
+        ] ;
+    ] ;
+.
+
+watr:SeparationTank a sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Separation Tank" ;
+    rdfs:comment "A tank that has at least two outlets (e.g. overflow and underflow)" ;
+    rdfs:subClassOf watr:Tank, watr:UnitProcess;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A separation tank has at least two outlet connection points" ;
+        sh:qualifiedMinCount 2 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+        ] ;
+    ] ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Separation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of SeparationTank must have the Separation process." ;
+    ] ;
+.
+
+watr:SequencingBatchReactor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "SequencingBatchReactor" ;
+    rdfs:comment "A type of activated sludge process for wastewater treatment" ;
+    rdfs:subClassOf watr:Reactor, watr:SeparationTank ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-ActivatedSludge ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of SequencingBatchReactor must have the ActivatedSludge process." ;
+    ] ;
+    # has 1 in, 1out (both water),  OR 1 bidirectional (water)
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A SBR has at least 1 sludge return point" ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class watr:Fluid-Sludge ;
+            ] ;
+        ] ;
+    ] ;
+    sh:xone (
+        # 1 in (water) and 1 out (water)
+        [ sh:property [
+            sh:path s223:hasConnectionPoint ;
+            rdfs:comment "A SBR has at least 1 inlet fluid connection point" ;
+            sh:qualifiedMinCount 1 ;
+            sh:qualifiedValueShape [
+                sh:class s223:InletConnectionPoint ;
+                sh:property [
+                    sh:path s223:hasMedium ;
+                    sh:class s223:Mix-Fluid ;
+                ] ;
+            ] ;
+        ] ;
+        sh:property [
+            sh:path s223:hasConnectionPoint ;
+            rdfs:comment "A SBR has at least 1 outlet fluid connection point" ;
+            sh:qualifiedMinCount 1 ;
+            sh:qualifiedValueShape [
+                sh:class s223:OutletConnectionPoint ;
+                sh:property [
+                    sh:path s223:hasMedium ;
+                    sh:class s223:Mix-Fluid ;
+                ] ;
+            ] ;
+            
+        ] ]
+        # OR 1 bidirectional (water)
+        [ sh:property [
+            sh:path s223:hasConnectionPoint ;
+            rdfs:comment "A SBR has at least 1 bidirectional fluid connection point" ;
+            sh:qualifiedMinCount 1 ;
+            sh:qualifiedValueShape [
+                sh:class s223:BidirectionalConnectionPoint ;
+                sh:property [
+                    sh:path s223:hasMedium ;
+                    sh:class s223:Mix-Fluid ;
+                ] ;
+            ] ;
+        ] ]
+    ) .
+
+watr:PlugFlowReactor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "PlugFlowReactor" ;
+    rdfs:comment "A type of reactor where the fluid flows in one direction through the tube" ;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A plug flow reactor has at least one inlet fluid connection point" ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class s223:InletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+        ] ;
+    ] ;
+    sh:property [
+        sh:path s223:hasConnectionPoint ;
+        rdfs:comment "A plug flow reactor has at least one outlet fluid connection point" ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Mix-Fluid ;
+            ] ;
+        ] ;
+    ] ;
+    rdfs:subClassOf watr:Reactor .
+
+watr:ContinuouslyStirredTankReactor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "ContinuouslyStirredTankReactor" ;
+    rdfs:comment "A reactor in which contents are well mixed and reactants are added continuously" ;
+    rdfs:subClassOf watr:Reactor .
+
+watr:StaticMixer
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "StaticMixer" ;
+    rdfs:comment "A device for mixing liquids without moving components" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Mixing ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of StaticMixer must have the Mixing process." ;
+    ] .
+
+watr:AerationBasin
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Aeration Basin" ;
+    rdfs:comment "A tank where water is aerated to remove gases and volatile organic compounds" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Aeration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of AerationBasin must have the Aeration process." ;
+    ] ;
+    sh:property [
+        sh:path s223:hasRole ;
+        sh:in ( watr:Role-Aerobic watr:Role-Anoxic ) ;
+        sh:minCount 1 ;
+        sh:message "Instances of AerationBasin must have the aerobic role." ;
+    ] .
+
+watr:MixingBasin
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Mixing Basin" ;
+    rdfs:comment "A tank where mixed liquor is stirred without aeration" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Mixing ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of MixingBasin must have the Mixing process." ;
+    ] ;
+    sh:property [
+        sh:path s223:hasRole ;
+        sh:minCount 1 ;
+        sh:in ( watr:Role-Anoxic watr:Role-Anaerobic ) ;
+        sh:message "Instances of MixingBasin must have the anoxic or anaerobic role." ;
+    ] .
+
+watr:MembraneAeratedBiofilmReaactor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Membrane Aerated Biofilm Reactor" ;
+    rdfs:comment "A reactor that grows biofilm on membranes supplied with air" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Aeration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of MembraneAeratedBiofilmReactor must have the Aeration process." ;
+    ] .
+    
+watr:CoagulationBasin
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Coagulation Basin" ;
+    rdfs:comment "A basin where coagulation occurs to destabilize particles in water" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Coagulation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of CoagulationBasin must have the Coagulation process." ;
+    ] .
+
+watr:FlocculationBasin
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Flocculation Basin" ;
+    rdfs:comment "A tank where flocculation occurs to aggregate particles in water" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Flocculation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of FlocculationBasin must have the Flocculation process." ;
+    ] .
+
+watr:Digester
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Digester" ;
+    rdfs:comment "A container to promote decomposition of organic waste" ;
+    rdfs:subClassOf watr:Reactor, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Digestion ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Digester must have the Digestion process." ;
+    ] .
+
+watr:AnaerobicDigester
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Anaerobic Digester" ;
+    rdfs:comment "A container to promote decomposition of organic waste in anaerobic conditions" ;
+    rdfs:subClassOf watr:Digester ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-AnaerobicDigestion ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of AnaerobicDigester must have the AnaerobicDigestion process." ;
+    ] .
+
+watr:AerobicDigester
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Aerobic Digester" ;
+    rdfs:comment "A container to promote decomposition of organic waste in aerobic conditions" ;
+    rdfs:subClassOf watr:Digester ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-AerobicDigestion ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of AerobicDigester must have the AerobicDigestion process." ;
+    ] .
+
+watr:DisinfectionUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Disinfection Unit" ;
+    rdfs:comment "A unit used to eliminate or reduce harmful microorganisms" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Disinfection ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of DisinfectionUnit must have the Disinfection process." ;
+    ] .
+
+watr:ChlorinationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Chlorination Unit" ;
+    rdfs:comment "A unit that uses chlorine or chlorine compounds for disinfection." ;
+    rdfs:subClassOf watr:DisinfectionUnit ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Chlorination ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of ChlorinationUnit must have the Chlorination process." ;
+    ] .
+
+watr:UltravioletLightUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Ultravioletlight Unit" ;
+    rdfs:comment "A unit using ultraviolet light for disinfection" ;
+    rdfs:subClassOf watr:DisinfectionUnit ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-UVDisinfection ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of UltravioletLightUnit must have the UVDisinfection process." ;
+    ] .
+
+watr:SedimentationTank
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Sedimentation Tank" ;
+    rdfs:comment "A tank used to remove solids from liquids through sedimentation" ;
+    rdfs:subClassOf watr:SeparationTank ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Sedimentation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of SedimentationTank must have the Sedimentation process." ;
+    ] .
+
+watr:SepticTank
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Septic Tank" ;
+    rdfs:comment "A septic tank for on-site wastewater treatment" ;
+    rdfs:subClassOf watr:SedimentationTank .
+
+watr:ImhoffTank
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Imhoff Tank" ;
+    rdfs:comment "A sedimentation tank specifically designed for septic treatment" ;
+    rdfs:subClassOf watr:SepticTank .
+
+watr:Screen
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Screen" ;
+    rdfs:comment "An equipment used for separation" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Screening ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Screen must have the Screening process." ;
+    ] .
+
+watr:GritChamber
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Grit Chamber" ;
+    rdfs:comment "A chamber used to remove grit from wastewater" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Sedimentation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of GritChamber must have the Sedimentation process." ;
+    ] .
+
+watr:Reservoir
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Reservoir" ;
+    rdfs:comment "A large natural or artificial body of water used for water supply" ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:Pond
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Pond" ;
+    rdfs:comment "A body of still water smaller than a lake, used for treatment or storage." ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:Wetland
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Wetland" ;
+    rdfs:comment "A marsh or bog-like area that is permanently or seasonally saturated with water, used for pre- or post-treatment." ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:Battery
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Battery" ;
+    rdfs:comment "A device that stores energy for later use" ;
+    rdfs:subClassOf s223:Battery .
+
+watr:Cogenerator
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Cogenerator" ;
+    rdfs:comment "An equipment that produces both electricity and heat from the same energy source" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Cogeneration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Cogenerator must have the Cogeneration process." ;
+    ] .
+
+watr:Boiler
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Boiler" ;
+    rdfs:comment "A device for heating water" ;
+    rdfs:subClassOf s223:Boiler, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Combustion ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Boiler must have the Combustion process." ;
+    ] .
+
+watr:Conditioner
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Conditioner" ;
+    rdfs:comment "An equipment used to prepare raw biogas from a digester by removing impurities" ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:Flare
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Flare" ;
+    rdfs:comment "A device used to burn off unwanted gas" ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:Pump
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Pump" ;
+    rdfs:comment "A device used to move fluids by mechanical action" ;
+    rdfs:subClassOf s223:Pump .
+
+watr:PressureExchanger
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "PressureExchanger" ;
+    rdfs:comment "A device used to transfer pressure energy from one fluid to another" ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:DewateringUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Dewatering Unit" ;
+    rdfs:comment "A unit used to remove water from solid material" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Dewatering ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of DewateringUnit must have the Dewatering process." ;
+    ] .
+
+watr:Thickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Thickener" ;
+    rdfs:comment "A device used to increase the solids concentration of a slurry" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:hasValue watr:Process-Thickening ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Instances of Thickener must have the Thickening process." ;
+    ] .
+
+watr:DissolvedAirFlotationThickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Dissolved Air Flotation Thickener" ;
+    rdfs:comment "A thickener that uses dissolved air to separate solids from liquids" ;
+    rdfs:subClassOf watr:Thickener;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Flotation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of DissolvedAirFlotationThickener must have the Flotation process." ;
+    ] .
+
+watr:CentrifugalThickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Centrifugal Thickener" ;
+    rdfs:comment "A thickener that uses centrifugal force to separate solids from liquids" ;
+    rdfs:subClassOf watr:Thickener ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Centrifugation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of CentrifugalThickener must have the Centrifugation process." ;
+    ] .
+
+watr:GravityThickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Gravity Thickener" ;
+    rdfs:comment "A thickener that uses gravity to separate solids from liquids" ;
+    rdfs:subClassOf watr:Thickener ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Sedimentation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of GravityThickener must have the Sedimentation process." ;
+    ] .
+
+watr:BeltThickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Belt Thickener" ;
+    rdfs:comment "A thickener that uses a belt system to separate solids from liquids" ;
+    rdfs:subClassOf watr:Thickener ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Filtration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of BeltThickener must have the Filtration process." ;
+    ] .
+
+watr:GravityBeltThickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Gravity Belt Thickener" ;
+    rdfs:comment "A thickener that combines gravity separation with a belt system" ;
+    rdfs:subClassOf watr:BeltThickener, watr:GravityThickener .
+
+watr:RotaryDrumThickener
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Rotary Drum Thickener" ;
+    rdfs:comment "A thickener that uses a rotating drum to separate solids from liquids" ;
+    rdfs:subClassOf watr:Thickener ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Filtration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of RotaryDrumThickener must have the Filtration process." ;
+    ] .
+
+watr:BeltFilterPress
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Belt Filter Press" ;
+    rdfs:comment "A dewatering unit that uses a belt system to separate solids from liquids" ;
+    rdfs:subClassOf watr:DewateringUnit ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:hasValue watr:Process-Filtration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Instances of BeltFilterPress must have the Filtration process." ;
+    ] .
+
+watr:CentrifugalDewateringUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Centrifugal Dewatering Unit" ;
+    rdfs:comment "A dewatering unit that uses centrifugal force to separate solids from liquids" ;
+    rdfs:subClassOf watr:DewateringUnit ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:hasValue watr:Process-Centrifugation ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Instances of CentrifugalDewateringUnit must have the Centrifugation process." ;
+    ] .
+
+watr:Filter
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Filter" ;
+    rdfs:comment "An equipment used to remove impurities from liquids or gases" ;
+    rdfs:subClassOf s223:Filter, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Filtration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Filter must have the Filtration process." ;
+    ] .
+
+watr:ReverseOsmosisMembrane
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Reverse Osmosis Membrane" ;
+    rdfs:comment "A membrane used for reverse osmosis" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-ReverseOsmosis ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of ReverseOsmosisMembrane must have the ReverseOsmosis process." ;
+    ] .
+
+watr:RotatingBiologicalContactor 
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Rotating Biological Contactor (RBC)" ;
+    rdfs:comment "Fixed-film process using a slowly rotating discs partially submerged in a tank" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Biofiltration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of RotatingBiologicalContactor must have the Biofiltration process." ;
+    ] .
+
+watr:MovingBedBioreactor 
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Moving Bed Bioreactor (MBBR)" ;
+    rdfs:comment "MBBR process using suspended growth media a tank" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:hasValue watr:Process-Biofiltration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Instances of MovingBedBioreactor must have the Biofiltration process." ;
+    ] .
+
+watr:TricklingFilter
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Trickling Filter" ;
+    rdfs:comment "A filter system that treats wastewater by trickling it over a bed of rocks or plastic" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-TricklingFiltration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of TricklingFilter must have the TricklingFiltration process." ;
+    ] .
+
+watr:OxidationDitch
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Oxidation Ditch" ;
+    rdfs:comment "Modified activated sludge process that uses a ring-shaped channel to biologically remove pollutants" ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-ActivatedSludge ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of OxidationDitch must have the ActivatedSludge process." ;
+    ] .
+
+watr:MembraneBioreactor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Membrane Bioreactor" ;
+    rdfs:comment "A filter system that combines a membrane process like microfiltration with a biological reactor" ;
+    rdfs:subClassOf watr:Filter, watr:Reactor, watr:SeparationTank ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:in ( watr:Process-Microfiltration watr:Process-Ultrafiltration ) ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of MembraneBioreactor must have either the Microfiltration or Ultrafiltration process." ;
+    ] ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:hasValue watr:Process-Biofiltration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Instances of MembraneBioreactor must have the Biofiltration process." ;
+    ] .
+    
+watr:MicrofiltrationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Microfiltration Unit" ;
+    rdfs:comment "A filter system which removes contaminants from a liquid by passing it through a microporous membrane" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Microfiltration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of MicrofiltrationUnit must have the Microfiltration process." ;
+    ] .
+
+watr:UltrafiltrationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Ultrafiltration Unit" ;
+    rdfs:comment "A filter system that uses a pressure-driven barrier to separate particles and solutes in a fluid" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Ultrafiltration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of UltrafiltrationUnit must have the Ultrafiltration process." ;
+    ] .
+
+watr:NanofiltrationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Nanofiltration Unit" ;
+    rdfs:comment "A filter system that uses a membrane to soften water and remove organic contaminants" ;
+    rdfs:subClassOf watr:Filter .
+
+watr:MediaFiltrationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "MediaFiltration Unit" ;
+    rdfs:comment "A filter system that uses a bed of material to filter out contaminants" ;
+    rdfs:subClassOf watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:hasValue watr:Process-MediaFiltration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Instances of MediaFiltrationUnit must have the MediaFiltration process." ;
+    ] .
+
+watr:RapidSandFilter
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Rapid Sand Filter" ;
+    rdfs:comment "A type of media filter that uses sand as the filter medium and operates at high filtration rates." ;
+    rdfs:subClassOf watr:MediaFiltrationUnit ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-RapidSandFiltration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of RapidSandFilter must have the RapidSandFiltration process." ;
+    ] .
+
+watr:CartridgeFiltrationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Cartridge Filtration Unit" ;
+    rdfs:comment "A filter system using a cartridge to remove contaminants from fluids" ;
+    rdfs:subClassOf watr:Filter .
+    
+watr:IonExchangeMembrane
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Ion Exchange Membrane" ;
+    rdfs:comment "A membrane that selectively allows ions to pass through while blocking other substances" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-IonExchange ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of IonExchangeMembrane must have the IonExchange process." ;
+    ] .
+
+watr:ElectrodialysisUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electrodialysis" ;
+    rdfs:comment "A unit that uses electricity to drive ion movement through a membrane" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Electrodialysis ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of ElectrodialysisUnit must have the Electrodialysis process." ;
+    ] .
+
+watr:Electrolyzer
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electrolyzer" ;
+    rdfs:comment "An equipment that uses electricity to split liquids into constituent elements" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Electrolysis ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Electrolyzer must have the Electrolysis process." ;
+    ] .
+
+watr:Crystallizer
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Crystallizer" ;
+    rdfs:comment "An equipment used to produce solid crystals from a solution" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Crystallization ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Crystallizer must have the Crystallization process." ;
+    ] .
+
+watr:Compressor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Compressor" ;
+    rdfs:comment "An equipment that increases the pressure of a gas" ;
+    rdfs:subClassOf s223:Compressor .
+
+watr:Evaporator
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Evaporator" ;
+    rdfs:comment "A device used to turn the liquid form of a substance into its gaseous form" ;
+    rdfs:subClassOf s223:HeatExchanger, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Evaporation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Evaporator must have the Evaporation process." ;
+    ] .
+
+watr:Condenser
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Condenser" ;
+    rdfs:comment "A device used to condense a gaseous substance back into a liquid" ;
+    rdfs:subClassOf s223:HeatExchanger, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Condensation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Condenser must have the Condensation process." ;
+    ] .
+
+watr:FlowSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Flow Sensor" ;
+    rdfs:comment "A sensor used to measure the flow rate of liquids or gases" ;
+    rdfs:subClassOf s223:FlowSensor .
+
+watr:VolumeSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Volume Sensor" ;
+    rdfs:comment "A sensor used to measure the volume of a substance" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:LevelSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Level Sensor" ;
+    rdfs:comment "A sensor used to detect the level of liquids or solids in a tank" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:PressureSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Pressure Sensor" ;
+    rdfs:comment "A sensor used to measure pressure" ;
+    rdfs:subClassOf s223:PressureSensor .
+
+watr:TemperatureSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Temperature Sensor" ;
+    rdfs:comment "A sensor used to measure temperature" ;
+    rdfs:subClassOf s223:TemperatureSensor .
+
+watr:ConcentrationSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Concentration Sensor" ;
+    rdfs:comment "A sensor used to measure the concentration of specific substances (e.g., Total Dissolved Solids)" ;
+    rdfs:subClassOf s223:ConcentrationSensor .
+
+watr:OxygenMeter
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Oxygen Meter" ;
+    rdfs:comment "A sensor used to measure the concentration of oxygen" ;
+    rdfs:subClassOf s223:ConcentrationSensor .
+
+watr:OxygenDemandSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "OxygenDemand Sensor" ;
+    rdfs:comment "A sensor used to measure Chemical Oxygen Demand (COD) and Biological Oxygen Demand (BOD)" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:pHSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "pH Sensor" ;
+    rdfs:comment "A sensor used to measure the pH of a solution" ;
+    rdfs:subClassOf watr:ConcentrationSensor .
+
+watr:ConductivitySensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Conductivity Sensor" ;
+    rdfs:comment "A sensor used to measure the electrical conductivity of a solution" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:TurbidityMeter
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Turbidity Meter" ;
+    rdfs:comment "A sensor used to measure the turbidity (clarity) of a fluid" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:RotationSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Rotation Sensor" ;
+    rdfs:comment "A sensor used to measure the rotational speed or position of an object" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:EfficiencySensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Efficiency Sensor" ;
+    rdfs:comment "A sensor used to measure the efficiency of a system or equipment" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:StateOfChargeSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "State of Charge Sensor" ;
+    rdfs:comment "A sensor used to measure the remaining charge in a battery or energy storage system" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:SpeedSensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Speed Sensor" ;
+    rdfs:comment "A sensor used to measure the speed of an object or fluid" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:FrequencySensor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Frequency Sensor" ;
+    rdfs:comment "A sensor used to measure the frequency of a signal or mechanical vibration" ;
+    rdfs:subClassOf s223:Sensor .
+
+# Do we want something like this? Is modeling a TOC sensor without explicitly naming it too vague (Concentration sensor, measuring organics)
+watr:TotalOrganicCompoundConcentrationSensor
+    a watr:Class, sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "TOC Sensor" ;
+    rdfs:comment "A sensor used to measure the total organic compound concentration" ;
+    rdfs:subClassOf watr:ConcentrationSensor .
+
+watr:Valve 
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A device that regulates, directs or controls the flow of a fluid (gases or liquids) by opening, closing, or partially obstructing various passageways." ;
+    rdfs:label "Valve" ;
+    rdfs:subClassOf s223:Valve 
+.
+
+watr:VariableFrequencyDrive
+    a s223:Class, sh:NodeShape ;
+    a watr:Class ;
+    rdfs:comment "A type of AC motor drive that controls speed and torque by varying the frequency of the input electricity." ;
+    rdfs:subClassOf s223:VariableFrequencyDrive ;
+    rdfs:label "Variable Frequency Drive" 
+.
+
+watr:ThreeWayValve 
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A valve that features three ports (connections)" ;
+    rdfs:label "Three Way Valve" ;
+    rdfs:subClassOf s223:Valve 
+.
+
+watr:CheckValve
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A valve that normally allows fluid (liquid or gas) to flow through it in only one direction" ;
+    rdfs:label "Check Valve" ;
+    rdfs:subClassOf s223:Valve
+.
+
+watr:BallValve
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A valve which operates using a spherical ball with a hole (also known as a bore) through the middle." ;
+    rdfs:label "Ball Valve" ;
+    rdfs:subClassOf s223:Valve
+.
+
+watr:ButterflyValve
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A quarter-turn rotary valve used to isolate, start, stop, or regulate the flow of fluids" ;
+    rdfs:label "Butterfly Valve" ;
+    rdfs:subClassOf s223:Valve
+.
+
+watr:GlobeValve
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A linear-motion valve primarily used for stopping, starting, and regulating (throttling) fluid flow" ;
+    rdfs:label "Globe Valve" ;
+    rdfs:subClassOf s223:Valve
+.
+
+watr:PlugValve
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:comment "A valve with cylindrical or conically tapered plugs which can be rotated inside the valve body to control flow through the valve" ;
+    rdfs:label "Plug Valve" ;
+    rdfs:subClassOf s223:Valve
+.
+
+watr:AirReleaseValve
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:label "Air Release Valve" ;
+    rdfs:comment "Valve for vent trapped air pockets" ;
+    rdfs:subClassOf s223:Valve
+.
+
+watr:Controller 
+    a s223:Class, sh:NodeShape ;
+    a watr:Class ;
+    rdfs:comment "A piece of equipment for regulation of a system or component in normal operation, which executes one or more `Function`s." ;
+    rdfs:label "Controller" ;
+    rdfs:subClassOf s223:Controller .
+
+watr:ManualMeasurementPort 
+    a watr:Class, sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Manual Measurement Port" ;
+    rdfs:comment "A location where manual measurements are taken" ;
+    rdfs:subClassOf s223:Sensor .
+
+watr:MultifunctionalMembrane
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Multifunctional Membrane" ;
+    rdfs:comment "A membrane integrating multiple processes (e.g., reduction, adsorption, filtration) for selective removal and recovery of contaminants." ;
+    rdfs:subClassOf watr:Filter .
+
+watr:MolybdenumSulfideBasedMembrane
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Molybdenum Sulfide (MoS2)-based Membrane" ;
+    rdfs:comment "A specific material demonstrating effectiveness in removing heavy metals and oxyanions with high selectivity." ;
+    rdfs:subClassOf watr:Filter .
+
+watr:ElectricallyConductingMembrane
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electrically Conducting Membrane" ;
+    rdfs:comment "A membrane capable of conducting electricity, used for in-situ cleaning or electro-oxidation processes." ;
+    rdfs:subClassOf watr:Filter .
+
+watr:ElectroDialyticCrystallizer
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electro-Dialytic Crystallizer (EDC)" ;
+    rdfs:comment "A modular system designed for brine concentration and crystallization, integrating electrodialysis and crystallization." ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess  ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Electrodialysis ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of ElectroDialyticCrystallizer must have the Electrodialysis process." ;
+    ] ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Crystallization ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of ElectroDialyticCrystallizer must have the Crystallization process." ;
+    ] .
+
+watr:Electrode
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electrode" ;
+    rdfs:comment "A component where electrochemical reactions occur in electrified processes." ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:Anode
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Anode" ;
+    rdfs:comment "An electrode where oxidation occurs, often a sacrificial component in electrocoagulation." ;
+    rdfs:subClassOf watr:Electrode .
+
+watr:Cathode
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Cathode" ;
+    rdfs:comment "An electrode where reduction occurs." ;
+    rdfs:subClassOf watr:Electrode .
+
+watr:ElectromagneticFieldDevice
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electromagnetic Field (EMF) Device" ;
+    rdfs:comment "A device that generates an electromagnetic field, used as a pretreatment method for membrane scaling and fouling control." ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:SolventExtractionSystem
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Solvent Extraction System" ;
+    rdfs:comment "A system that uses a solvent to selectively extract water from highly saline brines." ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-SolventExtraction ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of SolventExtractionSystem must have the SolventExtraction process." ;
+    ] .
+
+watr:DMERecoverySystem
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Dimethyl Ether (DME) Recovery System" ;
+    rdfs:comment "A system designed to recover a high percentage of Dimethyl Ether solvent in solvent-driven processes." ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:StandardizedFlowCell
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Standardized Flow Cell" ;
+    rdfs:comment "An experimental apparatus developed for research experiments, for example in Electrocoagulation (EC), in continuous flow mode." ;
+    rdfs:subClassOf s223:Equipment .
+
+watr:UVH2O2Reactor
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "UV/H2O2 Reactor" ;
+    rdfs:comment "A specific reactor used in Advanced Oxidation Processes (AOPs) combining UV light with hydrogen peroxide." ;
+    rdfs:subClassOf watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-AdvancedOxidation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of UVH2O2Reactor must have the AdvancedOxidation process." ;
+    ] .
+
+watr:BiologicalAeratedFilter
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Biological Aerated Filter (BAF)" ;
+    rdfs:comment "A filter that uses biological processes to remove contaminants." ;
+    rdfs:subClassOf watr:Reactor, watr:Filter ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-BiologicallyActiveFiltration ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of BiologicalAeratedFilter must have the BiologicallyActiveFiltration process." ;
+    ] .
+
+watr:ElectrocoagulationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Electrocoagulation Unit" ;
+    rdfs:comment "A unit that uses electrocoagulation for contaminant removal." ;
+    rdfs:subClassOf s223:Equipment, watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Electrocoagulation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of ElectrocoagulationUnit must have the Electrocoagulation process." ;
+    ] .
+
+watr:OzonationUnit
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Ozonation Unit" ;
+    rdfs:comment "A unit that uses ozone for water treatment." ;
+    rdfs:subClassOf s223:Equipment, watr:Reactor ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Ozonation ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of OzonationUnit must have the Ozonation process." ;
+    ] .
+
+watr:GranularActivatedCarbonAdsorber
+    a  sh:NodeShape ;
+    a watr:Class ;
+    rdfs:label "Granular Activated Carbon (GAC) Adsorber" ;
+    rdfs:comment "A unit that uses granulated activated carbon to adsorb impurities from water." ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-GranularActivatedCarbon ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of GranulatedActivatedCarbonAdsorber must have the GranularActivatedCarbon process." ;
+    ] .
+
+watr:Grinder
+    a  sh:NodeShape ;
+    a watr:Class ; 
+    rdfs:label "Grinder" ;
+    rdfs:comment "Machine that shreds solid waste into tiny particles" ;
+    rdfs:subClassOf s223:Equipment, watr:UnitProcess ;
+    sh:property [
+        sh:path watr:hasProcess ;
+        sh:qualifiedValueShape [ sh:class watr:Process-Comminution ];
+        sh:qualifiedValueShapesDisjoint true ;
+        sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;
+        sh:message "Instances of Grinder must have the Comminution process." ;
+    ] 
+.
+
+watr:Gate 
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:label "Gate" ;
+    rdfs:comment "Tool to control water flow and isolate sections" ;
+    rdfs:subClassOf s223:Valve 
+.
+
+watr:SluiceGate
+    a s223:Class, sh:NodeShape; 
+    a watr:Class ;
+    rdfs:label "Sluice Gate" ;
+    rdfs:comment "Large gate that slide vertically to control flow in channels, reservoirs, or treatment basins" ;
+    rdfs:subClassOf watr:Gate 
+.

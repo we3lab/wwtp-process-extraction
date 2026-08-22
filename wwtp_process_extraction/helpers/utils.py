@@ -18,17 +18,49 @@ UNSCORED_STATUSES = frozenset({"PAST", "OFFSITE"})
 PLACE_ID_RE = re.compile(r"_(\d+)\.json$")
 
 
+_document_recency_cache = None
+
+
+def document_recency():
+    """(place_id, pdf_stem) -> newest snapshot date that document appears in, '' if none.
+
+    step2 writes a dated site_data_relevant.csv per AS_OF run and step2c unions them into
+    as_of_dates. The document a facility holds in the newest snapshot is its current permit;
+    one absent from every snapshot is a leftover from a superseded order.
+    """
+    global _document_recency_cache
+    if _document_recency_cache is None:
+        recency = {}
+        rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False).fillna("")
+        dates_col = "as_of_dates" if "as_of_dates" in rel.columns else None
+        for _, row in rel.iterrows():
+            pdf = row["PDF_File"].strip()
+            if not pdf:
+                continue
+            key = (row["Place ID"].strip(), Path(pdf).stem)
+            newest = max(row[dates_col].split(";")) if dates_col and row[dates_col] else ""
+            recency[key] = max(recency.get(key, ""), newest)
+        _document_recency_cache = recency
+    return _document_recency_cache
+
+
 def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_id=None):
     """Map place_id -> json Path for one model directory, one file per facility.
 
-    step5 encodes each output's Place ID and source PDF as a {pdf_stem}_{id}.json
-    filename. A facility with multiple permit documents (e.g. an original and a
-    later modification) gets one json per document; when pdf_stem_by_place_id (the
-    manual CSV's PDF_File column) is given, only the json matching that exact PDF
-    is kept, so every caller scores the same source document for a facility.
+    step5 encodes each output's Place ID and source PDF as a {pdf_stem}_{id}.json filename. A
+    facility with several permit documents (an original plus later modifications) gets one json
+    per document, so a single one has to be chosen:
+
+      1. pdf_stem_by_place_id (the manual CSV's PDF_File) pins the exact document ground truth
+         was read from, so every caller scores the same source.
+      2. otherwise keep the most current document, by newest snapshot it appears in.
+
+    Never resolve ties by filename order -- sorted() picked "12-9-25_IndianSprings..." over the
+    current "2026-06-01_WDR_NOA_Revised_IndianSpringsWWTP...", silently scoring a superseded NOA.
+    A tie that recency cannot break raises rather than guessing.
     """
-    selected = {}
-    for json_file in sorted(Path(json_dir).glob("*.json")):
+    candidates = {}
+    for json_file in Path(json_dir).glob("*.json"):
         m = PLACE_ID_RE.search(json_file.name)
         place_id = m.group(1) if m else ""
         if not place_id:
@@ -39,10 +71,65 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
             stem = Path(pdf_stem_by_place_id[place_id]).stem
             if json_file.name != f"{stem}_{place_id}.json":
                 continue
-        selected.setdefault(place_id, json_file)
+        candidates.setdefault(place_id, []).append(json_file)
+
+    recency = document_recency()
+    selected = {}
+    for place_id, files in candidates.items():
+        if len(files) == 1:
+            selected[place_id] = files[0]
+            continue
+        ranked = sorted(
+            files,
+            key=lambda f: recency.get((place_id, f.name[: -(len(place_id) + 6)]), ""),
+            reverse=True,
+        )
+        best = recency.get((place_id, ranked[0].name[: -(len(place_id) + 6)]), "")
+        tied = [f for f in ranked if recency.get((place_id, f.name[: -(len(place_id) + 6)]), "") == best]
+        if len(tied) > 1:
+            raise ValueError(
+                f"Place {place_id} in {Path(json_dir).name}: {len(tied)} documents are equally "
+                f"current (snapshot {best or 'none'}), cannot pick one: "
+                f"{sorted(f.name for f in tied)}. Pass pdf_stem_by_place_id to disambiguate."
+            )
+        selected[place_id] = ranked[0]
     return selected
 
 SEP = "\n\n===PLANNED CHANGES===\n\n"
+
+# A statewide general order (2014-0153-DWQ, 97-010-DWQ) describes no single plant — its generic
+# process list ("septic tank, Imhoff tank, package treatment tank...") would otherwise be
+# attributed to every enrolled facility. Detection has to be content-based: the order number
+# can't discriminate, because an enrollee's order_no IS the general order number.
+_GENERAL_ORDER_RE = re.compile(r"general\s+waste\s+discharge\s+requirements", re.IGNORECASE)
+_NOA_HEADER_RE = re.compile(r"notice\s+of\s+applicability", re.IGNORECASE)
+_STATE_BOARD_RE = re.compile(r"state\s+water\s+resources\s+control\s+board", re.IGNORECASE)
+_ANY_PAGE_MARKER_RE = re.compile(r"===PAGE \d+===\n?|\[Page \d+\]\n?")
+GENERAL_ORDER_TITLE_CHARS = 300
+NOA_HEADER_CHARS = 900
+
+
+# Drop watershed permit "agency"
+COLLECTIVE_AGENCY_RE = re.compile(r"\borganizations?\s+under\b", re.IGNORECASE)
+
+
+def is_general_order(text):
+    """True if text opens as a statewide general order rather than a facility-specific permit.
+
+    Three conditions, each ruling out a distinct look-alike:
+      - title phrase in the opening block, because a general order announces itself there
+      - issued by the State Water Resources Control Board, because a REGIONAL board titles
+        individual permits the same way ("General WDRs for the Top O'Topanga Community
+        Association WWTS at 3360 N Topanga Canyon Blvd"), as do enrollment cover letters
+      - no "Notice of Applicability" heading, because an enrollee's own NOA cites the general
+        order in its header and would otherwise match
+    """
+    head = _ANY_PAGE_MARKER_RE.sub("", text[:NOA_HEADER_CHARS * 2])
+    if not _GENERAL_ORDER_RE.search(head[:GENERAL_ORDER_TITLE_CHARS]):
+        return False
+    if not _STATE_BOARD_RE.search(head[:NOA_HEADER_CHARS]):
+        return False
+    return not _NOA_HEADER_RE.search(head[:NOA_HEADER_CHARS])
 
 # Canonical project paths, resolved from this file so they survive any os.chdir.
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
@@ -125,14 +212,17 @@ def hasprocess_fragments(graph, cls, watr_ns, sh_ns):
     return fragments
 
 
-def normalize_text(text):
-    """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase."""
+def normalize_text(text, lower=True):
+    """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase.
+
+    lower=False keeps original case, for acronym keywords that must match case-sensitively.
+    """
     if not text:
         return ""
     text = unicodedata.normalize("NFKC", text)
     text = re.sub(r"[­​‌‍﻿]", "", text)  # zero-width chars
     text = re.sub(r"\s+", " ", text).strip()
-    return text.lower()
+    return text.lower() if lower else text
 
 def parse_status(val) -> str:
     """Normalize any status cell to a canonical token.
@@ -388,6 +478,138 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
         merged, ["Place ID"], ["WDID", "Facility Name", "CWNS_ID", "FACILITY_ID", "_cwns_merge"]
     ).drop(columns=["CWNS_ID", "FACILITY_ID", "_cwns_merge"], errors="ignore").fillna("")
     return cwns_by_facility, merged
+
+
+def normalize_order_no(value):
+    # "R5-2007-0090", "r5 2007 0090" and "WQ 2007-0090" are one order written three ways
+    text = re.sub(r"[^0-9A-Za-z]", "", str(value)).upper()
+    return re.sub(r"^(R\d{1,2}[A-Z]?)?WQ", "", text) or text
+
+
+def same_order_no(a, b):
+    """Whether two order numbers name the same order. None if either is missing.
+
+    Containment, not equality, because the two sides are written at different levels of
+    detail: a document's title block prints "2007-0090" where CIWQS carries the region
+    ("R5-2007-0090"), and a general order enrollee's CIWQS order appends the enrollee number
+    ("2014-0153-DWQ-R5348") to the order the document itself prints ("WQ-2014-0153-DWQ").
+    Requiring equality called 28 such pairs superseded and left 13 facilities with no
+    document at all.
+    """
+    if not a or not b:
+        return None
+    a, b = normalize_order_no(a), normalize_order_no(b)
+    return a in b or b in a
+
+
+_orders_in_force_cache = {}
+
+
+def orders_in_force(as_of=None):
+    """place_id -> set of Order_No values CIWQS listed for it as of a snapshot date.
+
+    step2c unions each dated scrape into site_data_relevant.csv's as_of_dates, so the orders
+    a facility held on a given date are the Order_No values on rows carrying that date. Read
+    from the union rather than output/site_data/<date>/ because as_of_dates carries dates that
+    have no snapshot directory.
+
+    as_of=None uses the newest date present. Pass an explicit date to reconstruct the fleet as
+    it stood then -- comparisons against CWNS 2022 want the 2022 permits, not today's.
+    """
+    key = as_of or ""
+    if key not in _orders_in_force_cache:
+        rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False).fillna("")
+        dates = set()
+        for v in rel["as_of_dates"]:
+            dates |= {d for d in str(v).split(";") if d}
+        target = as_of or (max(dates) if dates else "")
+        held = {}
+        for _, row in rel.iterrows():
+            if target and target not in str(row["as_of_dates"]).split(";"):
+                continue
+            order = str(row["Order_No"]).strip()
+            if order:
+                held.setdefault(normalize_id(row["Place ID"]), set()).add(order)
+        _orders_in_force_cache[key] = held
+    return _orders_in_force_cache[key]
+
+
+def order_year(order):
+    """Adoption year of an order number, 0 if unreadable.
+
+    Handles "R5-2017-0085", "2014-0153-DWQ", "97-10-DWQ" (two-digit year), "05-025" and the
+    old region-prefixed "5-00-080" form. Match the four-digit year first: a naive scan finds
+    "92" inside "R9-2020-0191" and reads it as 1992.
+    """
+    t = re.sub(r"\s+", "", str(order).strip().upper())
+    t = re.sub(r"^R\d{1,2}[A-Z]?[-\s]?", "", t)
+    m = re.search(r"(?:19|20)\d{2}", t)
+    if m:
+        return int(m.group(0))
+    t = re.sub(r"^\d[-\s]", "", t)          # bare region prefix, e.g. "5-00-080"
+    m = re.match(r"(\d{2})\D", t + "-")
+    if m:
+        y = int(m.group(1))
+        return 1900 + y if y >= 90 else 2000 + y
+    return 0
+
+
+def current_permit_mask(df, order_col="Order_No", doc_order_col="document_order_no", as_of=None,
+                        content=None):
+    """Per facility, keep only the documents belonging to the permits then in force.
+
+    A facility accumulates documents across permit cycles -- CIWQS attaches superseded orders
+    to the current order's page, and earlier snapshots contribute their own. Ranked preference
+    rather than a hard filter, so a facility is never left with nothing:
+
+      0. the document's own order number is one the facility held as of `as_of`
+      1. no order number could be read from the document
+      2. the order number is not one it held (superseded)
+
+    Each facility keeps only its best available tier.
+
+    The order set comes from orders_in_force(), NOT from each row's own `order_col`. Comparing
+    a document to the Order_No sitting on its own row let 186 of 618 facilities keep documents
+    from more than one order cycle (223 superseded documents): site_data_relevant carries a row
+    per (facility, order), so a 2018 permit paired with its own 2018 Order_No scored tier 0
+    against a facility whose current order is from 2024. Ukiah's 2018 "solar drying bed" was
+    reaching a facility whose permit no longer mentions it. `order_col` is now only the
+    fallback for facilities absent from the snapshot.
+
+    Comparing to a set also preserves genuinely concurrent permits -- a plant covered by both
+    its own order and a joint-authority order keeps both, because the snapshot lists both.
+
+    `content`, when given, is a boolean Series marking rows that actually yielded processes.
+    A document that extracted nothing carries no information, so it must not outrank an
+    informative superseded one: JWPCP (260 MGD) and EchoWater (115 MGD) were being represented
+    by a current permit with zero extracted processes while their superseded documents held
+    14-25 each, leaving both facilities empty and pushed onto the regional fallback. Contentless
+    rows are demoted below every informative tier and used only if nothing else exists.
+    """
+    held = orders_in_force(as_of)
+    tiers = []
+    for _, row in df.iterrows():
+        doc = str(row.get(doc_order_col, "")).strip()
+        if not doc:
+            tiers.append(1)
+            continue
+        current = held.get(normalize_id(row["Place ID"])) or {str(row.get(order_col, "")).strip()}
+        tiers.append(0 if any(same_order_no(doc, o) for o in current if o) else 2)
+    tiers = pd.Series(tiers, index=df.index)
+    if content is not None:
+        tiers = tiers + (~content.reindex(df.index).fillna(False)).astype(int) * 3
+    best = tiers.groupby(df["Place ID"]).transform("min")
+    keep = tiers == best
+    # Where every document is superseded (tier 2), the fallback would otherwise keep the whole
+    # history. Facilities enrolled under a general order hit this routinely: CIWQS lists the
+    # current general order, which no individual permit document prints. Keep only the newest
+    # order's documents -- the best available proxy when nothing matches.
+    fallback = keep & (tiers % 3 == 2)
+    if fallback.any():
+        years = df.loc[fallback, doc_order_col].map(order_year)
+        newest = years.groupby(df.loc[fallback, "Place ID"]).transform("max")
+        keep.loc[fallback] = years == newest
+    return keep
 
 
 def normalize_id(value):

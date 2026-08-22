@@ -22,19 +22,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary treatment consists of ... a pump station"
+      "Sentence": "a pump station"
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Primary"
+        "Primary",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary treatment consists of ... two equalization basins"
+      "Sentence": "two equalization basins"
     },
     {
       "Equipment": "AerationBasin",
@@ -43,8 +43,7 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -62,7 +61,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treatment consists of ... four secondary clarifiers"
+      "Sentence": "four secondary clarifiers"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -88,7 +87,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary filter plant consists of ... a Dynex sand filter"
+      "Sentence": "a Dynex sand filter"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -104,7 +103,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary filter plant consists of ... chlorine disinfection"
+      "Sentence": "and chlorine disinfection"
     },
     {
       "Equipment": "AerobicDigester",
@@ -112,10 +111,11 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Aerobic"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Associated solids handling processes consist of an aerobic digester"
@@ -123,26 +123,31 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Associated solids handling processes consist of ... a centrifuge"
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Associated solids handling processes consist of ... drying beds"

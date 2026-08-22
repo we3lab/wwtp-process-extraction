@@ -1,0 +1,285 @@
+{
+  "items": [
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Four enclosed screw pumps lift the wastewater to a height sufficient for gravity flow.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "SluiceGate",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Automatic control gates regulate the direction and quantity of flow to the grit chambers, while peak flows and overflows are directed to the treatment ponds.",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screenings are washed and compacted before being sent to a landfill.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation",
+        "Aeration"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Two aerated grit chambers remove smaller inorganic materials (such as sand and rocks).",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Separation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Splitter box \u201cA\u201d splits the wastewater flow between up to four oxidation ditches.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "OxidationDitch",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The oxidation ditches provide mechanical aeration and grow bacteria that assimilate the organic material within the wastewater...the bacteria convert ammonia in the water to nitrate (a process termed \u201cnitrification\u201d).",
+      "trigger_process": [
+        "Nitrification",
+        "Oxidation Ditch",
+        "Unspecified Nutrient Removal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Separation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Splitter box \u201cB\u201d collects effluent from one or more of the oxidation ditches and splits that effluent to flow to any combination of two 92-foot and two 130-foot ... At splitter box \u201cB\u201d polymer is added to enhance floc formation in the secondary clarifiers.",
+      "trigger_process": [
+        "Flocculation",
+        "Polymer Addition",
+        "Primary Clarification",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Flocculation"
+      ],
+      "Role": [
+        "Secondary",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Splitter box \u201cB\u201d ... splits that effluent to flow to any combination of two 92-foot and two 130-foot (center feed) secondary clarifiers.",
+      "trigger_process": [
+        "Flocculation",
+        "Polymer Addition",
+        "Primary Clarification",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Settled sludge is siphoned to the return sludge pump station, and there, is either pumped upstream of splitter box \u201cA\u201d, or pumped to the treatment ponds as waste sludge.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Effluent from the clarifiers is combined and directed to a tertiary pump station to lift secondary effluent up to the cloth media filters.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The system consists of cloth media filters in stainless steel tanks mounted on concrete slabs with backwash pumps and appurtenant pipes and valves.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Backwashing"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The system consists of cloth media filters ... with backwash pumps and appurtenant pipes and valves.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The WPCF also replaced its chlorination disinfection system with an ultraviolet (UV) light disinfection system.",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The WPCF also replaced its chlorination disinfection system with an ultraviolet (UV) light disinfection system.",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "SolidsHandling",
+        "Storage",
+        "Detention",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Onsite treatment ponds are of sufficient capacity to retain waste sludge for long-term treatment.",
+      "trigger_process": [
+        "Biosolids Lagoon",
+        "Stabilization Pond"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings are washed and compacted before being sent to a landfill.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Grit is land filled.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    }
+  ]
+}

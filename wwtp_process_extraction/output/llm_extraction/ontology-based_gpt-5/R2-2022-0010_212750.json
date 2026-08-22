@@ -5,11 +5,13 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes a bar screen,"
+      "Sentence": "includes a bar screen"
     },
     {
       "Equipment": "AerationBasin",
@@ -22,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary wastewater treatment process prior to discharge from Discharge Point 002 includes the same bar screen, aeration basins, and clarifiers"
+      "Sentence": "two aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -35,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four clarifiers,"
+      "Sentence": "four clarifiers"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -66,10 +68,26 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three filters, where polymer is added to improve solids removal"
+      "Sentence": "wastewater is routed to filters, where polymer is added to improve solids removal"
     },
     {
       "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection"
+    },
+    {
+      "Equipment": "DisinfectionUnit",
       "Process": [
         "Disinfection"
       ],
@@ -79,7 +97,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After filtration, wastewater is routed to the tertiary chlorine contact basin."
+      "Sentence": "After filtration, wastewater is routed to the tertiary chlorine contact basin"
     },
     {
       "Equipment": "Tank",
@@ -87,8 +105,7 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Storage"
+        "Tertiary"
       ],
       "Substance": [
         "ReducingAgent"
@@ -106,37 +123,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four Riverside Ponds that operate in series."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "ReducingAgent"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection. The Discharger adds sodium bisulfite to dechlorinate"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "One 5.6-million-gallon Flow Equalization Basin"
+      "Sentence": "four Riverside Ponds that operate in series"
     },
     {
       "Equipment": "Pond",
@@ -158,7 +145,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two Irrigation Storage Ponds (with capacities of 10 and 16.4 million gallons) that receive effluent from the tertiary effluent clearwell for recycled water storage."
+      "Sentence": "Two Irrigation Storage Ponds (with capacities of 10 and 16.4 million gallons) that receive effluent from the tertiary effluent clearwell for recycled water storage"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "One 5.6-million-gallon Flow Equalization Basin that enables it to collect and store wastewater of any condition"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "ReducingAgent"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger adds sodium bisulfite to dechlorinate the wastewater prior to discharge to the Napa River via Discharge Point 002"
     },
     {
       "Equipment": "Tank",
@@ -172,7 +186,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "to a 72,000-gallon-capacity sludge holding tank"
+      "Sentence": "to a 72,000-gallon-capacity sludge holding tank and then to the sludge drying beds"
     },
     {
       "Equipment": "DewateringUnit",
@@ -187,22 +201,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then to the sludge drying beds."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Potrero Hills Landfill"
+      "Sentence": "then to the sludge drying beds"
     },
     {
       "Equipment": null,
@@ -217,7 +216,22 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "agricultural sites in the Central Valley"
+      "Sentence": "remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley)"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "(e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley)"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -232,7 +246,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility"
+      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility (Central Valley Composting)"
     },
     {
       "Equipment": "DewateringUnit",
@@ -242,7 +256,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "installing a new screw press for increased sludge dewatering"

@@ -1,33 +1,15 @@
 {
   "items": [
     {
-      "Equipment": null,
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Grit is periodically removed from the lift station wet well.",
-      "trigger_process": [
-        "Unspecified Clarification"
-      ]
-    },
-    {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch",
+      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch...",
       "trigger_process": [
         "Oxidation Ditch"
       ]
@@ -43,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "..., secondary clarifier, ...",
+      "Sentence": "...secondary clarifier...",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -55,15 +37,13 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
+      "Sentence": "...chlorine disinfection using calcium hypochlorite tablets, and dechlorination using sodium bisulfite.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -72,13 +52,11 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "Posttreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Facility discharges treated wastewater to three percolation ponds at Discharge Point 002.",
+      "Location": "on-site",
+      "Sentence": "The Facility discharges treated wastewater to three percolation ponds...",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -86,7 +64,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -96,9 +75,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dewatered in the Facility\u2019s sludge drying beds",
+      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -114,7 +93,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "or an Aeromod Draimad bagger",
+      "Sentence": "...or an Aeromod Draimad bagger...",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -122,27 +101,9 @@
     {
       "Equipment": null,
       "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "before being transported to an approved landfill for final disposal.",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -152,15 +113,35 @@
     {
       "Equipment": null,
       "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "...before being transported to an approved landfill for final disposal.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "past",
       "Location": "off-site",
-      "Sentence": "Solids were previously disposed of though land application...; this practice was discontinued in 2018.",
+      "Sentence": "Solids were previously disposed of though land application... discontinued in 2018.",
       "trigger_process": [
         "Land Application"
       ]
@@ -173,10 +154,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "increased digestor volume",
+      "Sentence": "...increased digestor volume...",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -187,13 +170,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new chlorine contact basin",
+      "Sentence": "new chlorine contact basin and effluent pump station",
       "trigger_process": [
         "Chlorination"
       ]

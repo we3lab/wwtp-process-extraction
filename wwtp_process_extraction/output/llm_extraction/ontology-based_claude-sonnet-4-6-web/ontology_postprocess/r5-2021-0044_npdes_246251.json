@@ -66,7 +66,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by activated sludge, secondary clarification...",
+      "Sentence": "...biological treatment by activated sludge...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -84,7 +84,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...biological treatment by activated sludge, secondary clarification, disinfection, filtration...",
+      "Sentence": "...secondary clarification, disinfection, filtration, and dechlorination.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -92,9 +92,9 @@
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -102,11 +102,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary clarification, disinfection, filtration, and dechlorination.",
+      "Sentence": "...disinfection, filtration, and dechlorination.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -136,8 +136,8 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage",
-        "Equalization"
+        "Equalization",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -173,7 +173,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -183,12 +183,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins.",
+      "Sentence": "Primary and secondary solids are aerobically digested and then dewatered using storage basins. Dried biosolids are hauled to a landfill.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
@@ -219,8 +219,8 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -229,7 +229,6 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]

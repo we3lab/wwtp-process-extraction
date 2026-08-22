@@ -14,26 +14,17 @@
       "Sentence": "preliminary screening with mechanical bar screens"
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "GritChamber",
       "Process": [
-        "Screening"
+        "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the influent will go through new bar screens"
-    },
-    {
-      "Equipment": "GritChamber",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a new grit removal system prior to flowing through to the existing treatment system"
+      "Sentence": "grit removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -49,14 +40,12 @@
       "Sentence": "primary sedimentation"
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": null,
       "Process": [
-        "TricklingFiltration",
-        "BiologicalProcess"
+        "Biofiltration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -66,8 +55,7 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "BiologicalProcess"
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -99,12 +87,10 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Coagulant"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "mono- or dual-media filtration ... Coagulant may be added to the dual media filter flow"
+      "Sentence": "mono- or dual-media filtration"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -124,14 +110,70 @@
       "Sentence": "chlorine disinfection with sodium hypochlorite, and dechlorination using sodium bisulfite"
     },
     {
-      "Equipment": "GravityThickener",
+      "Equipment": null,
+      "Process": [
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Coagulant"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Coagulant may be added to the dual media filter flow for recycled water production"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks ... screening"
+    },
+    {
+      "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Pretreatment"
       ],
       "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks ... grit removal"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "New headworks, including new influent pump station"
+    },
+    {
+      "Equipment": "GravityThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Primary sludge is processed using a gravity thickener"
@@ -139,12 +181,14 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Primary sludge is processed using ... rotating drum thickeners"
@@ -152,13 +196,14 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration",
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "secondary sludge is processed using gravity belt thickeners"
@@ -166,8 +211,7 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "ChemicalAddition"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -175,12 +219,26 @@
         "Stabilization"
       ],
       "Substance": [
-        "Coagulant-FerricChloride",
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Three primary anaerobic digesters ... Ferric chloride is added to the anaerobic digester feed"
+      "Sentence": "The thickened sludge is pumped to the anaerobic digestion process"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Coagulant-FerricChloride"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Ferric chloride is added to the anaerobic digester feed"
     },
     {
       "Equipment": "DewateringUnit",
@@ -199,9 +257,9 @@
       "Sentence": "Biosolids are de-watered using polymer conditioning and rotary fan press units"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -232,8 +290,7 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation",
-        "Feed"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -243,7 +300,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -258,32 +315,21 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Biochar system start-up to allow the Discharger to convert over 40 percent of its biosolids into biochar"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the plant’s booster station and influent lift station may be used to handle elevated force main flows"
-    },
-    {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
@@ -293,32 +339,17 @@
       "Sentence": "An earth and rip-rap equalization basin owned by the West Bay Sanitary District may be used to reduce force main flows"
     },
     {
-      "Equipment": "TricklingFilter",
+      "Equipment": "Pump",
       "Process": [
-        "TricklingFiltration",
-        "BiologicalProcess"
+        "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Feed"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Fixed film reactor refurbishment and media replacement"
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Anaerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Anaerobic digester refurbishing and replacement of all digester sludge and gas piping"
+      "Sentence": "it consists of ... four pump stations"
     }
   ]
 }

@@ -40,18 +40,18 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Extended"
+        "Extended",
+        "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "extended aeration activated sludge treatment process (aerations tanks, clarifiers, and return and waste activated sludge pumping)"
+      "Sentence": "extended aeration activated sludge treatment process (aerations tanks"
     },
     {
       "Equipment": "SedimentationTank",
@@ -64,7 +64,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aerations tanks, clarifiers"
+      "Sentence": "extended aeration activated sludge treatment process (aerations tanks, clarifiers"
     },
     {
       "Equipment": "Pump",
@@ -72,11 +72,9 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "return and waste activated sludge pumping"
@@ -84,9 +82,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Coagulation"
+        "Coagulation",
+        "Flocculation"
       ],
       "Role": [
+        "Pretreatment",
         "Tertiary"
       ],
       "Substance": [
@@ -111,9 +111,9 @@
       "Sentence": "tertiary clarification"
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -124,13 +124,27 @@
       "Sentence": "sand filtration"
     },
     {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dual Media Filtration"
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -168,14 +182,16 @@
       "Sentence": "aerobic digesters"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "digested sludge is hauled to the El Portal wastewater treatment facility for processing rather than drying in the Wawona sludge drying beds"
@@ -183,7 +199,23 @@
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "digested sludge is hauled to the El Portal wastewater treatment facility for processing"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication",
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"

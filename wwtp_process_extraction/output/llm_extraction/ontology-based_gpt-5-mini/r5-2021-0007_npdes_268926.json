@@ -46,9 +46,9 @@
       "Sentence": "secondary clarifiers"
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "RapidSandFiltration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -74,7 +74,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -85,13 +86,11 @@
       "Sentence": "ultraviolet light (UV) disinfection system"
     },
     {
-      "Equipment": "Pond",
-      "Process": [
-        "Digestion"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "Stabilization",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -101,28 +100,14 @@
       "Sentence": "Biosolids treatment consists of solids stabilization basins"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sludge drying beds"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -134,10 +119,11 @@
     {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -150,14 +136,15 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dried biosolids are stored onsite at the location(s) identified in Attachment C"
+      "Sentence": "Dried biosolids are stored onsite"
     }
   ]
 }

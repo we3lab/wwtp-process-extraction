@@ -75,22 +75,6 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Equalization"
-      ]
-    },
-    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -108,7 +92,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A modified biological nutrient removal (BNR) process is employed... The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions. This configuration achieves effective filament control and partial denitrification.",
+      "Sentence": "A modified biological nutrient removal (BNR) process is employed that is designed to remove BOD and ammonia (NH3) in the same aeration basins. The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions. This configuration achieves effective filament control and partial denitrification.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -146,7 +130,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are 16 separate mono media filters... The Discharger backwashes the filters to clean the media. Each filter is backwashed approximately once every 24 hours.",
+      "Sentence": "There are 16 separate mono media filters...The Discharger backwashes the filters to clean the media. Each filter is backwashed approximately once every 24 hours.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -158,7 +142,9 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -174,7 +160,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -183,22 +171,6 @@
       "Website": null,
       "trigger_process": [
         "Unspecified Clarification"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Chlorination"
       ]
     },
     {
@@ -215,7 +187,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection... an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection...an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -224,13 +196,14 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
         "Dechlorination"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -265,8 +238,7 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation",
-        "Thickening"
+        "Flotation"
       ],
       "Role": [
         "SolidsHandling"
@@ -291,7 +263,30 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge from primary and secondary clarification operations is processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic...anaerobic digesters that are operated in series.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -317,7 +312,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds",
+      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds or mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete).",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -328,7 +323,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -342,18 +337,22 @@
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Landfill",
         "LandApplication",
+        "Landfill",
         "Composting"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer.",
@@ -363,81 +362,6 @@
         "Biosolids Landfill",
         "Composting",
         "Land Application"
-      ]
-    },
-    {
-      "Equipment": "MicrofiltrationUnit",
-      "Process": [
-        "Microfiltration"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection",
-      "Source": "both",
-      "Website": "https://purewater4u.org/about-svawpc",
-      "trigger_process": [
-        "Microfiltration"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection",
-      "Source": "both",
-      "Website": "https://purewater4u.org/about-svawpc",
-      "trigger_process": [
-        "Reverse Osmosis"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolent light disinfection",
-      "Source": "both",
-      "Website": "https://purewater4u.org/about-svawpc",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "This project will renew the mesophilic digester tanks and the mechanical, electrical, and instrumentation and control equipment associated with them, as well as replacing the existing floating covers with fixed covers.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Anaerobic Digestion"
       ]
     },
     {
@@ -462,6 +386,60 @@
         "Centrifuge",
         "Mechanical Dewatering",
         "Polymer Addition"
+      ]
+    },
+    {
+      "Equipment": "MicrofiltrationUnit",
+      "Process": [
+        "Microfiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
+      "Source": "both",
+      "Website": "https://purewater4u.org/about-svawpc",
+      "trigger_process": [
+        "Microfiltration"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
+      "Source": "both",
+      "Website": "https://purewater4u.org/about-svawpc",
+      "trigger_process": [
+        "Reverse Osmosis"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration, reverse osmosis, and ultraviolet light disinfection",
+      "Source": "both",
+      "Website": "https://purewater4u.org/about-svawpc",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     }
   ]

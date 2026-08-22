@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary treatment plant consists of screening, grit removal, and primary clarification."
+      "Sentence": "screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,12 +24,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary treatment plant consists of screening, grit removal, and primary clarification."
+      "Sentence": "grit removal"
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Sedimentation"
+        "Flotation"
       ],
       "Role": [
         "Primary"
@@ -37,40 +37,87 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The primary treatment plant consists of screening, grit removal, and primary clarification."
+      "Sentence": "primary flotation"
     },
     {
-      "Equipment": "Thickener",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Dewatering"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
-        "SolidsHandling"
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the clarifiers is transferred to thickeners, then processed and stabilized through anaerobic digesters."
+      "Sentence": "secondary treatment (activated sludge) for biochemical oxygen demand reduction and nitrification/denitrification"
     },
     {
-      "Equipment": "AnaerobicDigester",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "AnaerobicDigestion"
+        "Sedimentation"
       ],
       "Role": [
-        "Stabilization",
-        "SolidsHandling",
-        "Anaerobic"
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "secondary clarification"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation",
+        "Coagulation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "high-rate clarification with chemical addition"
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "tertiary treatment via cloth disk filters"
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the clarifiers is transferred to thickeners, then processed and stabilized through anaerobic digesters."
+      "Sentence": "chlorine disinfection and sodium bisulfite dechlorination"
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Reservoir",
       "Process": null,
       "Role": [
         "Storage"
@@ -78,11 +125,41 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds..."
+      "Sentence": "37.2 million-gallon clay-lined emergency storage basin"
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "gravity belt thickener"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "anaerobic digestion"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
+        "AirDrying",
         "Drying"
       ],
       "Role": [
@@ -93,7 +170,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is transferred to holding tanks where it is periodically drawn to unlined drying beds..."
+      "Sentence": "sludge drying beds"
     },
     {
       "Equipment": null,
@@ -107,11 +184,110 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The City of Modesto applies the stabilized sludge as a soil amendment on their 2,526-acre ranch..."
+      "Location": "on-site",
+      "Sentence": "beneficial reuse of biosolids via land application to farmland"
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "screening"
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "grit removal"
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "primary clarification"
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sludge from the clarifiers is transferred to thickeners"
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "processed and stabilized through anaerobic digesters"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying",
+        "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "drawn to unlined drying beds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "applies the stabilized sludge as a soil amendment on their 2,526-acre ranch"
+    },
+    {
+      "Equipment": "RotatingBiologicalContactor",
       "Process": [
         "Biofiltration"
       ],
@@ -121,22 +297,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "approximately half of the primary effluent receives treatment with fixed film reactors..."
+      "Sentence": "approximately half of the primary effluent receives treatment with fixed film reactors"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "Recirculation"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "combined with primary effluent in an aerated recirculation channel."
+      "Sentence": "combined with primary effluent in an aerated recirculation channel"
     },
     {
       "Equipment": "Pond",
@@ -149,7 +328,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Flow in the recirculation channel is then distributed to three parallel facultative ponds for further treatment..."
+      "Sentence": "distributed to three parallel facultative ponds for further treatment"
     },
     {
       "Equipment": "Pond",
@@ -160,7 +339,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and then transferred to one of two storage ponds before being applied to the City of Modesto’s 2,526-acre ranch..."
+      "Sentence": "transferred to one of two storage ponds"
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Biofiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "membrane filtration"
     },
     {
       "Equipment": "OxidationDitch",
@@ -172,33 +364,17 @@
       "Role": [
         "Secondary",
         "NutrientRemoval",
-        "NitrogenRemoval",
-        "Aerobic",
-        "Anoxic"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Phase 1A facility consists of an oxidation ditch that provides activated sludge biological treatment, ... providing nitrogen removal (i.e., nitrification/denitrification)."
-    },
-    {
-      "Equipment": "MembraneBioreactor",
-      "Process": [
-        "MembraneProcess"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The City of Modesto WQCF’s tertiary treatment facility consists of two parallel two-step membrane bioreactor (MBR) facilities."
+      "Sentence": "an oxidation ditch that provides activated sludge biological treatment, reducing biochemical oxygen demand and providing nitrogen removal"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -206,20 +382,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "membrane filtration and ultraviolet light (UV) radiation that disinfects the filtered wastewater prior to storage or discharge."
+      "Sentence": "ultraviolet light disinfection"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Phase 2 facility consists of aeration basins for activated sludge biological treatment followed by membrane filtration and UV disinfection."
+      "Sentence": "Phase 2 facility consists of aeration basins for activated sludge biological treatment followed by membrane filtration and UV disinfection"
     }
   ]
 }

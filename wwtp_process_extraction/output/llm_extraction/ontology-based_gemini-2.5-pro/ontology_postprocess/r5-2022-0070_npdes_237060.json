@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of the headworks, two rectangular primary clarifiers, four air activated sludge basins (that provide nitrification and denitrification), two secondary clarifiers, compressible media filters, a chlorine contact basin, and dechlorination using sulfur dioxide.",
+      "Sentence": "The treatment system at the Facility consists of the headworks, two rectangular primary clarifiers, four air activated sludge basins...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of the headworks, two rectangular primary clarifiers, four air activated sludge basins (that provide nitrification and denitrification), two secondary clarifiers, compressible media filters, a chlorine contact basin, and dechlorination using sulfur dioxide.",
+      "Sentence": "The treatment system at the Facility consists of the headworks...",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -40,12 +40,10 @@
       "Role": [
         "Primary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system at the Facility consists of the headworks, two rectangular primary clarifiers...",
+      "Sentence": "The treatment system at the Facility consists of...two rectangular primary clarifiers...",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -59,16 +57,16 @@
       ],
       "Role": [
         "Secondary",
-        "NitrogenRemoval",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "...four air activated sludge basins (that provide nitrification and denitrification)...",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -81,9 +79,7 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "...two secondary clarifiers, compressible media filters...",
@@ -117,9 +113,7 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "...a chlorine contact basin, and dechlorination using sulfur dioxide.",
@@ -132,7 +126,7 @@
       "Equipment": "Pond",
       "Process": [
         "Sedimentation",
-        "Filtration"
+        "Evaporation"
       ],
       "Role": [
         "Posttreatment"
@@ -142,16 +136,14 @@
       "Location": "on-site",
       "Sentence": "The Facility discharges to land using a series of five percolation ponds that lie within the Feather River floodplain.",
       "trigger_process": [
-        "Unspecified Clarification",
-        "Unspecified Filtration",
-        "Unspecified Lagoon"
+        "Evaporation Pond"
       ]
     },
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration",
-        "Dewatering"
+        "Thickening",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -163,7 +155,6 @@
       "Location": "on-site",
       "Sentence": "Solids handling facilities include a rotary drum thickener, two anaerobic digesters, eight sludge drying beds and two facultative sludge lagoons.",
       "trigger_process": [
-        "Mechanical Dewatering",
         "Thickening"
       ]
     },
@@ -174,7 +165,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -189,8 +181,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -200,16 +191,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling facilities include... eight sludge drying beds...",
+      "Sentence": "Solids handling facilities include...eight sludge drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Digestion",
-        "Sedimentation"
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling",
@@ -220,7 +210,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids handling facilities include... two facultative sludge lagoons.",
+      "Sentence": "Solids handling facilities include...two facultative sludge lagoons.",
       "trigger_process": [
         "Biosolids Lagoon",
         "Unspecified Digestion",
@@ -236,7 +226,7 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
@@ -262,7 +252,6 @@
       "Location": "on-site",
       "Sentence": "The Discharger plans to construct an 8-million-gallon concrete-lined flow equalization and sludge storage basin to allow for temporarily holding peak wet weather flows and sludge storage.",
       "trigger_process": [
-        "Drying",
         "Equalization"
       ]
     },

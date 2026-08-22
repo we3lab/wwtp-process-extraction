@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment plant headworks is equipped with fine screens and a grit chamber."
+      "Sentence": "the treatment plant headworks is equipped with fine screens"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment plant headworks is equipped with fine screens and a grit chamber."
+      "Sentence": "the treatment plant headworks is equipped with fine screens and a grit chamber"
     },
     {
       "Equipment": "SedimentationTank",
@@ -43,7 +43,6 @@
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge",
         "Nitrification",
         "Denitrification"
       ],
@@ -51,13 +50,14 @@
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Nitrate"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After primary clarifiers, wastewater is treated in two parallel biological aeration basins with anoxic zones, and four secondary clarifiers."
+      "Sentence": "wastewater is treated in two parallel biological aeration basins with anoxic zones"
     },
     {
       "Equipment": "SedimentationTank",
@@ -70,12 +70,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After primary clarifiers, wastewater is treated in two parallel biological aeration basins with anoxic zones, and four secondary clarifiers."
+      "Sentence": "and four secondary clarifiers."
     },
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -117,12 +117,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste biosolids are dewatered in two screw presses and 10 small lined and 6 large lined drying beds."
+      "Sentence": "Waste biosolids are dewatered in two screw presses"
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -132,7 +132,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste biosolids are dewatered in two screw presses and 10 small lined and 6 large lined drying beds."
+      "Sentence": "10 small lined and 6 large lined drying beds"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary treated wastewater is discharged into eight percolation ponds"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary, denitrified effluent is applied to a 65-acre field (South Irrigation Field) as recycled water to irrigate crops"
     },
     {
       "Equipment": null,
@@ -140,9 +160,11 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "Feed"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The screw press filtrate is returned to the inlet of the secondary aeration basins."
@@ -152,9 +174,7 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -163,42 +183,15 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried sludge solids are hauled to offsite authorized disposal location, currently a compositing facility located at 14479 Cougar Road, Helendale."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Secondary treated wastewater is discharged into eight percolation ponds on the south side of the Mojave River."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Secondary, denitrified effluent is applied to a 65-acre field (South Irrigation Field) as recycled water to irrigate crops, predominately alfalfa."
     }
   ]
 }

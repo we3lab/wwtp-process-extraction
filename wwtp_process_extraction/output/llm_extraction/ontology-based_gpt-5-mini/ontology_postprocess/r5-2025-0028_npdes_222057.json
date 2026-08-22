@@ -34,7 +34,6 @@
       "Location": "on-site",
       "Sentence": "aeration basins (nitrification and denitrification)",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -56,11 +55,9 @@
       ]
     },
     {
-      "Equipment": "RapidSandFilter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "RapidSandFiltration",
-        "MediaFiltration",
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -80,8 +77,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -97,6 +93,7 @@
         "Dechlorination"
       ],
       "Role": [
+        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
@@ -116,7 +113,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a concrete-lined emergency storage basin",
+      "Sentence": "concrete-lined emergency storage basin",
       "trigger_process": []
     },
     {
@@ -136,12 +133,12 @@
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
+        "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -154,9 +151,10 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -172,9 +170,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -186,23 +184,25 @@
       "Location": "on-site",
       "Sentence": "then air-dried to produce biosolids",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Landfill"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "which are subsequently hauled to the Recology Landfill",
+      "Sentence": "hauled to the Recology Landfill",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Biosolids Landfill"
       ]
     }
   ]

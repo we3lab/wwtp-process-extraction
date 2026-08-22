@@ -11,10 +11,12 @@
         "Aerobic",
         "Extended"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Facility which is an extended aeration package treatment plant.",
+      "Sentence": "two above ground aeration units equipped with fine bubble diffusers",
       "trigger_process": [
         "Extended Aeration"
       ]
@@ -27,10 +29,12 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of two above ground aeration units equipped with fine bubble diffusers, two air-blowers, and one secondary clarifier.",
+      "Sentence": "one secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -43,7 +47,9 @@
       "Role": [
         "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Secondary treated wastewater is discharged into evaporation/percolation ponds.",
@@ -52,41 +58,9 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater is collected at four separate lift stations and then directed to the Facility",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Waste sludge from the clarifier is currently discharged to an unlined basin where it is dried and then hauled offsite for proper disposal.",
-      "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Stabilization Pond"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "AirDrying",
         "BiosolidsDisposal"
       ],
       "Role": [
@@ -96,10 +70,12 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Waste sludge from the clarifier is currently discharged to an unlined basin where it is dried and then hauled offsite for proper disposal.",
+      "Location": "on-site",
+      "Sentence": "Waste sludge from the clarifier is currently discharged to an unlined basin where it is dried and then hauled away.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     }
   ]

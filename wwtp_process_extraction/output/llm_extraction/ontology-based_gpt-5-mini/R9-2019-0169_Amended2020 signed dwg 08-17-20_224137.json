@@ -16,11 +16,11 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -46,7 +46,8 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -96,8 +97,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -107,7 +107,21 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection. Dechlorination of chlorinated effluent is accomplished with sodium bisulfite"
+      "Sentence": "and chlorine disinfection"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dechlorination of chlorinated effluent is accomplished with sodium bisulfite"
     },
     {
       "Equipment": null,
@@ -120,7 +134,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled to a local landfill for disposal"
+      "Sentence": "screenings from the headworks and solids from grit removal are ... hauled to a local landfill for disposal"
     },
     {
       "Equipment": "AerobicDigester",
@@ -129,12 +143,9 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge from the secondary treatment processes at the Fallbrook WRP is aerobically digested"
@@ -142,15 +153,13 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "then dewatered by a centrifuge"
@@ -158,7 +167,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -170,9 +179,22 @@
       "Sentence": "Dewatered sludge is fed to a thermal dryer to meet Class A biosolids requirements"
     },
     {
-      "Equipment": "Pond",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Class A biosolids are utilized as fertilizer by local farmers"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -180,21 +202,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sent to one of twelve drying beds for a minimum of three months"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "Posttreatment",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Class A biosolids are utilized as fertilizer by local farmers"
+      "Sentence": "dewatered sludge (Class B biosolids) is ... sent to one of twelve drying beds for a minimum of three months"
     },
     {
       "Equipment": null,
@@ -211,10 +219,7 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization",
-        "Storage"
-      ],
+      "Process": null,
       "Role": [
         "Equalization",
         "Storage"
@@ -225,10 +230,8 @@
       "Sentence": "a 1.2-million-gallon (MG) secondary effluent equalization basin is available for temporary storage"
     },
     {
-      "Equipment": "Reservoir",
-      "Process": [
-        "Storage"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Storage"
       ],

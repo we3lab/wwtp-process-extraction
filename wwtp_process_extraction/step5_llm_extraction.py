@@ -16,15 +16,17 @@ from helpers.api_llm_search import (
     init_unit_process_list_from_json,
     build_example_schema,
     get_method_paths,
+    require_api_key,
 )
 
 TXT_DIR = f"wwtp_process_extraction/output/permits/text"
-MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro, gemini-2.0-flash-001
+MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
 ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
 # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
 FACILITIES_INFO_PATH = "wwtp_process_extraction/data/unit_processes_by_facility_manual.csv"
 FULL_CA_PATH = "wwtp_process_extraction/output/site_data_relevant.csv"
 UNITPROCESS_KEYWORDS_JSON = "wwtp_process_extraction/data/unitprocess_keywords.json"
+WATERRAG_CONTEXT_DIR = "wwtp_process_extraction/output/waterrag_retrieval"
 NUM_ICL_EXAMPLES = 1
 
 
@@ -41,7 +43,7 @@ def parse_args():
     parser.add_argument(
         "--model",
         default=MODEL,
-        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro, gemini-2.0-flash-001 (default: {MODEL}).",
+        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
     )
     parser.add_argument(
         "--txt_folder",
@@ -67,6 +69,14 @@ def parse_args():
         help=(
             "Use Claude Code CLI (claude -p) with WebSearch/WebFetch tools instead of the "
             "Stanford proxy. Tracks cost_usd instead of token counts."
+        ),
+    )
+    parser.add_argument(
+        "--waterrag_context",
+        action="store_true",
+        help=(
+            "Append wastewater-literature context retrieved by the WaterRAG index to the user "
+            "message. Requires step5b_waterrag_retrieval.py to have cached the context first."
         ),
     )
     parser.add_argument(
@@ -106,11 +116,11 @@ def parse_args():
     return parser.parse_args()
 
 
-def resolve_output_dir(method, model, web_search):
+def resolve_output_dir(method, model, web_search, waterrag_context=False):
     # Every run (full CA or model comparison) writes to output/llm_extraction/<method>_<model>.
     # The default ontology-based_gpt-5-mini folder accumulates the full CA set; the benchmark
     # facilities are a subset of it, so model-comparison runs for that config are reused.
-    suffix = f"{method}_{model}" + ("-web" if web_search else "")
+    suffix = f"{method}_{model}" + ("-web" if web_search else "") + ("-waterrag" if waterrag_context else "")
     return Path("wwtp_process_extraction/output/llm_extraction") / suffix
 
 
@@ -222,7 +232,7 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
-ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro", "gemini-2.0-flash-001"]
+ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
 DEFAULT_MAX_TOKENS = 10000
 DEFAULT_MAX_COMPLETION_TOKENS = 20000
 # Per-model completion-token limit. Reasoning models (gpt-5, etc.) spend most of
@@ -239,18 +249,19 @@ def run_extraction(args, output_dir_override=None):
     examples_dir = Path(method_paths["examples_dir"])
     facilities_info = FULL_CA_PATH if args.all_facilities else FACILITIES_INFO_PATH
     output_dir = output_dir_override or resolve_output_dir(
-        args.method, args.model, args.web_search
+        args.method, args.model, args.web_search, args.waterrag_context
     )
 
-    if args.method == "ontology-based":
-        print("Initializing ontology from source repository...")
-        ontology_to_txt()
-        generated_path = Path(ontology_txt_file)
-        ontology_target = Path(ONTOLOGY_PATH)
-        if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
-            ontology_target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(generated_path, ontology_target)
-            print(f"Copied generated ontology file to {ontology_target}")
+    # ontology.txt is pinned to June 2026 from the DataDrivenCPS/water-ontology PR #30 branch.
+    # if args.method == "ontology-based":
+    #     print("Initializing ontology from source repository...")
+    #     ontology_to_txt()
+    #     generated_path = Path(ontology_txt_file)
+    #     ontology_target = Path(ONTOLOGY_PATH)
+    #     if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
+    #         ontology_target.parent.mkdir(parents=True, exist_ok=True)
+    #         shutil.copyfile(generated_path, ontology_target)
+    #         print(f"Copied generated ontology file to {ontology_target}")
 
     if args.method == "list-based":
         generated_list_path = init_unit_process_list_from_json(
@@ -353,6 +364,28 @@ def run_extraction(args, output_dir_override=None):
         user_msg = f"""Find all the treatment processes explicitely used in the {facility_name} facility. Here is the permit extract:
         {permit_extract}
         """
+        if args.waterrag_context:
+            # Appended to the user message, never the system message, so the prompt template,
+            # ontology dump and ICL example stay byte-identical to the no-retrieval control.
+            context_path = Path(WATERRAG_CONTEXT_DIR) / extraction_file_name
+            if not context_path.exists():
+                print(f"No cached WaterRAG context ({context_path.name}), skipping. Run step5b first.")
+                continue
+            chunks = json.loads(context_path.read_text(encoding="utf-8")).get("chunks", [])
+            if not chunks:
+                print(f"Cached WaterRAG context is empty ({context_path.name}), skipping.")
+                continue
+            rendered = "\n\n".join(
+                f"[{i}] {chunk.get('citation') or 'No citation'}\n{chunk['text']}"
+                for i, chunk in enumerate(chunks, 1)
+            )
+            user_msg += (
+                "\n\nReference literature on wastewater unit processes, retrieved for background "
+                "only. Use it to interpret terminology; extract ONLY what the permit extract above "
+                f"states about the {facility_name} facility, and keep every Sentence field quoted "
+                f"from the permit, never from this literature.\n\n{rendered}\n"
+            )
+
         if args.web_search:
             user_msg = (
                 f"Search the web for information about {facility_name} wastewater treatment "
@@ -440,13 +473,15 @@ def run_extraction(args, output_dir_override=None):
 
 if __name__ == "__main__":
     args = parse_args()
+    if not args.web_search:
+        require_api_key()
     if args.repeat_runs:
         # Repeated runs of the benchmark facilities with the default model/method (same config as
         # the full-CA run) to measure F1 run-to-run variance. Each run gets its own folder so all
         # facilities run every time (no cross-run skipping).
         args.method, args.model = "ontology-based", MODEL
         args.all_facilities = args.web_search = False
-        base = Path("wwtp_process_extraction/output/llm_extraction/ontology-based_gpt-5-mini/additional_runs")
+        base = resolve_output_dir(args.method, args.model, False, args.waterrag_context) / "additional_runs"
         for k in range(1, args.repeat_runs + 1):
             print(f"\n{'='*80}\nRepeat run {k}/{args.repeat_runs}\n{'='*80}\n")
             run_extraction(args, output_dir_override=base / f"run_{k}")

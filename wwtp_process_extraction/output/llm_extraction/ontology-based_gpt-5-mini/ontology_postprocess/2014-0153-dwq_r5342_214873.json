@@ -4,10 +4,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Feed",
-        "Storage"
+        "Storage",
+        "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a 5,000-gallon concrete storage tank septage receiving station",
@@ -24,7 +26,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks (including a manual bar screen and grinder)",
+      "Sentence": "a headworks (including a manual bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -40,7 +42,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks (including a manual bar screen and grinder)",
+      "Sentence": "a headworks (including ... grinder)",
       "trigger_process": [
         "Comminution"
       ]
@@ -57,7 +59,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Soda ash is added at the aerated equalization basins for pH adjustment.",
+      "Sentence": "two aerated equalization basins ... Soda ash is added at the aerated equalization basins for pH adjustment",
       "trigger_process": [
         "Equalization",
         "Neutralization"
@@ -70,6 +72,7 @@
         "Flocculation"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": [
@@ -77,10 +80,28 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A polymer is added at the aeration basins.",
+      "Sentence": "Currently, only two aeration basins are operational ... A polymer is added at the aeration basins",
       "trigger_process": [
         "Flocculation",
-        "Polymer Addition"
+        "Polymer Addition",
+        "Primary Clarification",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the other two aeration basins function as overflow for the equalization basins",
+      "trigger_process": [
+        "Equalization"
       ]
     },
     {
@@ -94,7 +115,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four rectangular secondary clarifiers",
+      "Sentence": "four rectangular secondary clarifiers ... Two of the four clarifiers are currently operational",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -106,8 +127,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -138,15 +158,15 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "only aerobic digesters 4 and 5 are currently operational",
+      "Sentence": "the Facility has five aerobic digesters ... only aerobic digesters 4 and 5 are currently operational",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -158,8 +178,8 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -174,7 +194,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
+        "AirDrying",
         "Dewatering"
       ],
       "Role": [
@@ -187,14 +207,14 @@
       "Location": "on-site",
       "Sentence": "four outdoor concrete lined sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Dewatering",
+        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -205,9 +225,7 @@
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "two indoor vacuum-assisted sludge drying beds are also currently not in use",
-      "trigger_process": [
-        "Drying"
-      ]
+      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -220,24 +238,8 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The rehabilitation project will include converting the current coarse bubble aeration to fine bubble aeration",
+      "Sentence": "rehabilitation project will include converting the current coarse bubble aeration to fine bubble aeration",
       "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The rehabilitation project will include...rehabilitation of the sludge handling practices.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
     }
   ]
 }

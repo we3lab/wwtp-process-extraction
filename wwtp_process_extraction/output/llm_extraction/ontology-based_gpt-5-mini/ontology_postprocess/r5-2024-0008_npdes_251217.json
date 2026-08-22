@@ -58,32 +58,31 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The new Emergency Equalization Basin ... can be used to capture peak flows",
+      "Sentence": "The new Emergency Equalization Basin...can be used to capture peak flows...This flow can be routed back to the head of the plant for treatment",
       "trigger_process": [
         "Equalization"
       ]
     },
     {
-      "Equipment": "PlugFlowReactor",
+      "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Feed",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary treatment system uses an activated sludge process that is plug flow",
-      "trigger_process": [
-        "Unspecified AS"
-      ]
+      "Sentence": "The selector tank is aerated by coarse bubble diffusers. It receives primary effluent from the headworks and recycled activated sludge (RAS) from the clarifier.",
+      "trigger_process": []
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "PlugFlowReactor",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -93,24 +92,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The selector tank is aerated by coarse bubble diffusers...first stage and second stage aeration tanks are alternately aerated and unaerated",
+      "Sentence": "secondary treatment system uses an activated sludge process that is plug flow with sequential aeration followed by secondary clarifiers",
       "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Unspecified AS"
+        "Unspecified Nutrient Removal"
       ]
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids/liquid separation occurs in the clarifier tank",
+      "Sentence": "Solids/liquid separation occurs in the clarifier tank over concrete wedges. RAS is collected and returned to the selector.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -122,13 +122,12 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one aerobic digester...WAS is transferred to the aerobic digesters",
+      "Sentence": "one aerobic digester...Waste activated sludge (WAS) is transferred to the aerobic digesters",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -137,39 +136,72 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection occurs within the Chlorine Contact Basin...chlorine mixer upstream for sodium hypochlorite addition",
+      "Sentence": "Disinfection occurs within the Chlorine Contact Basin...chlorine mixer upstream for sodium hypochlorite addition. Disinfected flow is dechlorinated through addition of sodium bisulfite in the sodium bisulfite (SBIS) Mixing Box",
       "trigger_process": [
-        "Chlorination"
+        "Chlorination",
+        "Dechlorination"
       ]
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Dechlorination",
-        "ChemicalAddition"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dechlorinated through addition of sodium bisulfite in the sodium bisulfite (SBIS) Mixing Box",
+      "Sentence": "The Irrigation Pond is used to store recycled water before it is discharged to the pasture irrigation site",
       "trigger_process": [
-        "Dechlorination",
-        "Unspecified Chemical Addition"
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "effluent is discharged to the Irrigation Pond land applied to neighboring Leonhardt Ranch, a non-dairy cattle pasture",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Polymer is added to the incoming sludge prior to dewatering via screw press.",
+      "trigger_process": [
+        "Mechanical Dewatering",
+        "Polymer Addition"
       ]
     },
     {
@@ -188,28 +220,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Flocculant-Polymer"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Polymer is added to the incoming sludge prior to dewatering via screw press",
-      "trigger_process": [
-        "Mechanical Dewatering",
-        "Polymer Addition"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -217,24 +230,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered solids are conveyed to a common sludge drying bed for final solar drying",
+      "Sentence": "Dewatered solids are conveyed to a common sludge drying bed for final solar drying prior to off-haul",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Irrigation Pond is used to store recycled water before it is discharged to the pasture irrigation site",
-      "trigger_process": [
-        "Equalization"
+        "Air Drying"
       ]
     },
     {

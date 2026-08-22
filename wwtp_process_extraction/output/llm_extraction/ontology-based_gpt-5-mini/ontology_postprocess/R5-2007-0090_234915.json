@@ -17,6 +17,39 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screenings from the fine bar screen are washed to remove fecal material; dewatered, and compacted.",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings are deposited in a trash bin and hauled to a permitted landfill disposal site.",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
@@ -31,19 +64,20 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Aerobic",
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The WWTF provides disinfected secondary treatment of the wastewater stream. Treatment includes screening to remove large solids, extended aeration, and disinfection.",
+      "Sentence": "Treatment includes screening to remove large solids, extended aeration, and disinfection.",
       "trigger_process": [
-        "Unspecified AS"
+        "Extended Aeration"
       ]
     },
     {
@@ -69,7 +103,6 @@
         "Disinfection"
       ],
       "Role": [
-        "Posttreatment",
         "Tertiary"
       ],
       "Substance": [
@@ -83,56 +116,45 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Three waste activated sludge pumps deliver sludge from the secondary clarifiers to the six lined sludge drying beds.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying",
+        "Dewatering"
       ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Waste activated sludge is pumped to lined drying beds pending offsite disposal.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Screenings from the fine bar screen are washed to remove fecal material; dewatered, and compacted.",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Pump",
+      "Equipment": null,
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each sludge bed ... contains two filtering under drain channels to return sludge percolate to the WWTF influent pump station.",
+      "Sentence": "Each sludge bed... contains two filtering under drain channels to return sludge percolate to the WWTF influent pump station.",
       "trigger_process": []
     }
   ]

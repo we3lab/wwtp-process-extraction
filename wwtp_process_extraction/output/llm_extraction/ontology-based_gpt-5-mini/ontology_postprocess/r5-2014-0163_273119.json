@@ -1,58 +1,107 @@
 {
   "items": [
     {
-      "Equipment": "Pond",
+      "Equipment": "Screen",
       "Process": [
-        "Aeration",
-        "Nitrification"
+        "Screening"
       ],
-      "Role": null,
-      "Substance": [
-        "Constituent-DissolvedOxygen"
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "insufficient dissolved oxygen concentrations in the treatment ponds for biological nitrification to occur.",
+      "Sentence": "the existing facilities ... consist of ... an auger screen",
       "trigger_process": [
-        "Nitrification",
-        "Unspecified Nutrient Removal"
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "consist of a lift station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration",
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Extended"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "concrete-lined extended aeration treatment ponds",
+      "trigger_process": [
+        "Extended Aeration"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": [
+        "BiologicalProcess",
+        "Aeration",
         "Sedimentation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Secondary",
+        "Detention"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The existing WWTF incorporates settled sludge collection ports at the bottom of the second and third treatment ponds, which directs sludge to a clay-lined sludge drying bed.",
+      "Sentence": "The last three treatment ponds, partial suspension ponds, are minimally mixed and aerated by design",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Unspecified Lagoon"
+        "Aerated Lagoon",
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Posttreatment",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "eleven evaporation/percolation disposal ponds",
+      "trigger_process": [
+        "Evaporation Pond"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "which directs sludge to a clay-lined sludge drying bed.",
+      "Sentence": "clay-lined sludge drying bed and dry sludge storage area",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -60,19 +109,37 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
+      "Role": [
+        "Feed"
       ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Liquids drained off the sludge flow to a sump where they are pumped to the WWTF headworks.",
+      "Sentence": "Liquids drained off the sludge flow to a sump where they are pumped to the WWTF headworks",
       "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screenings removed at the headworks are conveyed by an auger to a waste bin and are hauled to a landfill",
+      "trigger_process": [
+        "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
@@ -82,27 +149,49 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "The plan was to haul the sludge to the Synagro West, Inc., facility in Merced County.",
+      "Sentence": "The RWD describes offsite land application of dry sludge at the Synagro West, Inc., facility in Merced County",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The facilities consisted of ... a ... barminutor",
+      "trigger_process": [
+        "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
+      "Process": [
+        "BiologicalProcess",
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "construction of an additional sludge drying bed and four additional treatment ponds, adjacent and similar in design to the existing ponds.",
+      "Sentence": "four unlined facultative (non-aerated) treatment ponds",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Secondary Clarification"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -112,9 +201,26 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "construction of an additional sludge drying bed",
+      "Sentence": "construct an additional sludge drying bed",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "BiologicalProcess",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "four additional treatment ponds, adjacent and similar in design to the existing ponds",
+      "trigger_process": [
+        "Aerated Lagoon"
       ]
     }
   ]

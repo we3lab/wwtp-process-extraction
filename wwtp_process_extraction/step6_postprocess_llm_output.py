@@ -122,6 +122,9 @@ def _norm_pdf(s):
 ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
            "document_order_no"]
 
+# Any status that means the extractor found the process; a row with none of them is empty.
+PRESENT_LIKE = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
+
 
 def normalize_records(json_data):
     if not isinstance(json_data, dict):
@@ -469,7 +472,9 @@ def main():
     raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
     # Collapse only the current permit. Unioning across cycles reads a process out of a
     # superseded order as if the facility still ran it.
-    current = current_permit_mask(raw_df)
+    proc_cols = [c for c in raw_df.columns if c not in ID_COLS and c != "County"]
+    has_content = raw_df[proc_cols].isin(PRESENT_LIKE).any(axis=1)
+    current = current_permit_mask(raw_df, content=has_content)
     print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
           f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
     collapsed = collapse_facility_processes(

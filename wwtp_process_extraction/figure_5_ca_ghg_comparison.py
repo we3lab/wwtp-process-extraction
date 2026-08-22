@@ -32,7 +32,8 @@ SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
 from helpers.plotting import COLORS, save_and_close
-from helpers.utils import build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV, PRESENT_STATUSES
+from helpers.utils import (build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
+                          PRESENT_STATUSES, current_permit_mask, collapse_facility_processes)
 # Only consulted if GitHub is unreachable. Defaults to a US_WWTP_GHG clone sitting beside this
 # repo; set GHG_ROOT to point elsewhere.
 GHG_ROOT = Path(os.environ.get('GHG_ROOT') or REPO_ROOT.parent / 'US_WWTP_GHG')
@@ -103,7 +104,37 @@ E_TO_BASE = {
     'G1E': 'G1', 'H1E': 'H1', 'I1E': 'I1', 'N1E': 'N1', 'O1E': 'O1',
 }
 
-LLM_CSV = REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_facility_llm.csv'
+LLM_PERDOC_CSV = REPO_ROOT / 'wwtp_process_extraction/output/unit_processes_by_pdf_llm.csv'
+
+# Every CWNS-based source here describes the 2022 fleet: CWNS 2022 is a 2022 snapshot and
+# El Abbadi's assignments are built from it. So the permit source is collapsed to the permits
+# in force in 2022 rather than today's, and figure_5 does its own collapse instead of reading
+# step6's table, which is deliberately "current" for other consumers. Era matters: on a 2026
+# basis the same pipeline reads +22.0% N2O against their published total, on a 2022 basis
+# +10.1%, and the total moves from +1.0% to -1.6%.
+GHG_AS_OF = '2022-06-01'
+
+_llm_facility_cache = None
+
+
+def load_llm_facility_table():
+    """Permit-derived processes collapsed per facility, as of GHG_AS_OF."""
+    global _llm_facility_cache
+    if _llm_facility_cache is None:
+        raw = pd.read_csv(LLM_PERDOC_CSV, dtype=str).fillna('').drop(columns=['County'],
+                                                                     errors='ignore')
+        meta = {'Place ID', 'WDID', 'Order_No', 'NPDES No.', 'Agency', 'Facility Name',
+                'PDF_File', 'document_order_no', 'Shared_PDF'}
+        proc = [c for c in raw.columns if c not in meta]
+        content = raw[proc].isin(
+            {'PRESENT', 'PRESENT_AND_FUTURE', 'FUTURE', 'PAST', 'OFFSITE'}).any(axis=1)
+        keep = current_permit_mask(raw, as_of=GHG_AS_OF, content=content)
+        _llm_facility_cache = collapse_facility_processes(
+            raw[keep], key_cols=['Place ID'],
+            meta_cols=['WDID', 'Order_No', 'NPDES No.', 'Agency', 'Facility Name'])
+        print(f'  Permit basis {GHG_AS_OF}: {int(keep.sum())} of {len(raw)} documents '
+              f'-> {len(_llm_facility_cache)} facilities')
+    return _llm_facility_cache.copy()
 
 # Column names from unitprocess_keywords.json → WERF codes (used by Sources 2 and 3).
 def load_cwns_col_to_werf():
@@ -463,7 +494,7 @@ def load_common_place_ids():
     """
     cwns_out = pd.read_csv(CWNS_TABLE_CSV, dtype=str)
     ciwqs = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str)
-    llm = pd.read_csv(LLM_CSV, dtype=str)
+    llm = load_llm_facility_table()
 
     cwns_pids = set(ciwqs[ciwqs['CWNS_ID'].isin(cwns_out['CWNS_ID'])]['Place ID'].dropna())
     llm_pids = set(llm['Place ID'].dropna())
@@ -493,8 +524,69 @@ def pid_to_cwns_flow(common_pids):
 
 # ── regional fallback ─────────────────────────────────────────────────────────
 
+# What each Tarallo train requires, transcribed from the assign() calls in
+# assign_treatment_trains. Used by the fallback to pick a train compatible with whatever
+# unit processes a facility *did* report, rather than the bin's most common train outright.
+TT_REQUIRES = {
+    'N1E': {'MBR-BNR', 'AND'},          'N1':  {'MBR-BNR', 'AND'},        'N2':  {'MBR-BNR', 'AED'},
+    'H1E': {'AS_BNR_P', 'AND', 'CHEM-P'}, 'H1': {'AS_BNR_P', 'AND', 'CHEM-P'},
+    'G6':  {'AS_BNR_P', 'FBI'},         'G5':  {'AS_BNR_P', 'MHI'},       'G3':  {'AS_BNR_P', 'LIME'},
+    'G2':  {'AS_BNR_P', 'AED'},         'G1E': {'AS_BNR_P', 'AND'},       'G1':  {'AS_BNR_P', 'AND'},
+    'I6':  {'AS_BNR_N', 'FBI'},         'I5':  {'AS_BNR_N', 'MHI'},       'I3':  {'AS_BNR_N', 'LIME'},
+    'I2':  {'AS_BNR_N', 'AED'},         'I1E': {'AS_BNR_N', 'AND'},       'I1':  {'AS_BNR_N', 'AND'},
+    'F1E': {'BASIC_AS', 'AND', 'NIT'},  'F1':  {'BASIC_AS', 'AND', 'NIT'},
+    'E2P': {'BASIC_AS', 'AED', 'NIT', 'PRIMARY'}, 'E2': {'BASIC_AS', 'AED', 'NIT'},
+    'O5':  {'AS-PUREO', 'MHI'},         'O6':  {'AS-PUREO', 'FBI'},       'O3':  {'AS-PUREO', 'LIME'},
+    'O2':  {'AS-PUREO', 'AED'},         'O1E': {'AS-PUREO', 'AND'},       'O1':  {'AS-PUREO', 'AND'},
+    'D5':  {'TF_ALL', 'MHI'},           'D6':  {'TF_ALL', 'FBI'},         'D3':  {'TF_ALL', 'LIME'},
+    'D2':  {'TF_ALL', 'AED'},           'D1E': {'TF_ALL', 'AND'},         'D1':  {'TF_ALL', 'AND'},
+    'B6':  {'BASIC_AS', 'FBI', 'PRIMARY'},  'B5': {'BASIC_AS', 'MHI', 'PRIMARY'},
+    'B4':  {'BASIC_AS', 'AND', 'BIODRY', 'PRIMARY'}, 'B3': {'BASIC_AS', 'LIME', 'PRIMARY'},
+    'B2':  {'BASIC_AS', 'AED', 'PRIMARY'},  'B1E': {'BASIC_AS', 'AND', 'PRIMARY'},
+    'B1':  {'BASIC_AS', 'AND', 'PRIMARY'},
+    'C5':  {'BASIC_AS', 'MHI'},         'C6':  {'BASIC_AS', 'FBI'},       'C3':  {'BASIC_AS', 'LIME'},
+    'C2':  {'BASIC_AS', 'AED'},         'C1E': {'BASIC_AS', 'AND'},       'C1':  {'BASIC_AS', 'AND'},
+    'LAGOON_AER': set(), 'LAGOON_ANAER': set(), 'LAGOON_FAC': set(), 'LAGOON_UNCATEGORIZED': set(),
+}
+
+# Nitrification is the N2O lever: trains needing one of these carry N2O factors around
+# 0.24-0.27, the rest around 0.044 -- a ~6x cliff. Assigning across it by accident is the
+# single largest error a fallback can make.
+NITRIFYING_UPS = frozenset({'NIT', 'AS_BNR_N', 'AS_BNR_P'})
+NITRIFYING_TT = frozenset(tt for tt, req in TT_REQUIRES.items() if req & NITRIFYING_UPS)
+LAGOON_TT = frozenset(tt for tt in TT_REQUIRES if tt.startswith('LAGOON'))
+
+# The unit processes El Abbadi key their partial-information fallback on, most specific first.
+KEY_UPS = ['AS_BNR_P', 'AS_BNR_N', 'AS-PUREO', 'MBR-BNR', 'TF_ALL', 'MHI', 'FBI', 'LIME',
+           'NIT', 'BASIC_AS', 'AND', 'AED', 'PRIMARY']
+
+
 def apply_regional_fallback(df):
-    """Assign TT to unmatched facilities using flow-size bin pool from the same source df."""
+    """Assign a train to facilities whose reported processes identified none.
+
+    Mirrors the fallback in El Abbadi's tt_assignment_2022.ipynb so both the CWNS-derived and
+    the permit-derived sources are built the same way -- they published theirs as
+    TT_ASSIGN_NOTE, and 31% of their facilities (17.6% of flow) rely on it, so dropping the
+    fallback would not make the comparison cleaner, only inconsistent.
+
+    Three rules taken from their notebook, all missing from the earlier version, which simply
+    took the bin's most common train and so ignored what the facility itself reported:
+
+      1. Partial information. They compute a most common train *per key unit process*
+         ("Most Common TT (AND)", "(NIT)", ...) and use the one matching a process the
+         facility reported. Point Loma (240 MGD, only AND + PRIMARY known) is a fallback case
+         in their data too, so this is the rule that decides it -- they land on O1E, while
+         picking the bin mode outright landed it on G1E, six times the N2O.
+      2. No E-trains. They collapse B1/B1E and friends before taking the mode, so biogas
+         electricity is never imputed to a facility with no evidence of it.
+      3. Nitrification guard. Their note: "if most common treatment train is a conventional
+         activated sludge train, but the nitrification flag is on, override tt_common to nan".
+         Applied symmetrically here -- a facility with no nitrification evidence does not get a
+         nitrifying train either, which is the direction that actually misfired.
+
+    Region is not a grouping key: every California facility is EPA Region 9, so their
+    (size, region) grouping reduces to size alone.
+    """
     tt_cols = [tt for tt in ALL_TT if tt in df.columns]
     flow_bins = [0, 2, 4, 7, 16, 46, 100, float('inf')]
     flow_labels = ['<2', '2-4', '4-7', '7-16', '16-46', '46-100', '≥100']
@@ -502,19 +594,45 @@ def apply_regional_fallback(df):
     df['_size_bin'] = pd.cut(
         pd.to_numeric(df['FLOW_2022_MGD_FINAL'], errors='coerce').fillna(0),
         bins=flow_bins, labels=flow_labels, right=False)
-    assigned = df[df['TT_IDENTIFIED'] >= 1].copy()
+    assigned = df[df['TT_IDENTIFIED'] >= 1]
+    base_cols = [tt for tt in tt_cols if tt not in E_TO_BASE]   # rule 2
+    lag_present = assigned[[c for c in LAGOON_TT if c in assigned.columns]].sum(axis=1) > 0
+    max_lagoon_flow = (assigned.loc[lag_present, 'FLOW_2022_MGD_FINAL'].max()
+                       if lag_present.any() else float('inf'))
+
+    def ranked(pool):
+        """Candidate trains for a pool, most common first, E-trains folded into their base."""
+        counts = {}
+        for tt in tt_cols:
+            n = int(pool[tt].sum())
+            if n:
+                counts[E_TO_BASE.get(tt, tt)] = counts.get(E_TO_BASE.get(tt, tt), 0) + n
+        return [tt for tt, _ in sorted(counts.items(), key=lambda kv: -kv[1]) if tt in base_cols]
+
     n_fallback = 0
     for idx in df[df['TT_IDENTIFIED'] < 1].index:
-        size = df.at[idx, '_size_bin']
-        # narrow → wide: same size bin first, then all assigned (all CA = EPA Region 9)
-        for pool_mask in [assigned['_size_bin'] == size, pd.Series(True, index=assigned.index)]:
+        row = df.loc[idx]
+        present = {up for up in KEY_UPS if up in df.columns and row.get(up, 0) == 1}
+        nitrifies = bool(present & NITRIFYING_UPS)
+        for pool_mask in [assigned['_size_bin'] == row['_size_bin'],
+                          pd.Series(True, index=assigned.index)]:
             pool = assigned[pool_mask]
             if pool.empty:
                 continue
-            tt_sums = pool[tt_cols].sum()
-            best_tt = tt_sums.idxmax()
-            if tt_sums[best_tt] > 0:
-                df.at[idx, best_tt] = 1
+            cands = ranked(pool)
+            # rule 3 first: never cross the nitrification cliff
+            cands = [tt for tt in cands if (tt in NITRIFYING_TT) == nitrifies]
+            # Lagoons carry the highest N2O factor of any train (0.332) and are small-plant
+            # technology. With only a handful of identified facilities in the largest size
+            # bins, the bin mode is noise, and it put lagoons on 100-260 MGD plants. Cap
+            # lagoon candidacy at the largest flow actually observed on an identified lagoon.
+            if row['FLOW_2022_MGD_FINAL'] > max_lagoon_flow:
+                cands = [tt for tt in cands if tt not in LAGOON_TT]
+            # rule 1: prefer a train built on something the facility actually reported
+            compatible = [tt for tt in cands if TT_REQUIRES.get(tt, set()) & present]
+            choice = next(iter(compatible or cands), None)
+            if choice:
+                df.at[idx, choice] = 1
                 df.at[idx, 'TT_IDENTIFIED'] = 1
                 n_fallback += 1
                 break
@@ -541,6 +659,28 @@ def load_biogas_cwns_set():
     combined = werf_cwns | doe_cwns
     print(f'  Biogas set: {len(werf_cwns)} WEF + {len(doe_cwns)} DOE = {len(combined)} unique CWNS facilities')
     return combined
+
+
+def load_epa_nitrification_set():
+    """CWNS_NUMs whose nitrification comes from the EPA PRES_AMMONIA_REMOVAL (2024) field.
+
+    A third external database alongside WEF and DOE, not a manual correction. El Abbadi merge
+    it in their assignment notebook and record it in UP_ID_NOTE; the raw EPA field is not in
+    the CWNS 2022 release, so the flag is read back from their published assignments.
+
+    It matters far more than its 25 California facilities suggest: CWNS's own unit-process
+    data reports nitrification for *none* of the 318 common facilities, and these 25 carry
+    220.8 of the 556.7 MT/yr N2O in El Abbadi's published California total -- 40%. Without it
+    the CWNS baseline has no nitrogen treatment at all, which is not a fair comparison for a
+    permit-derived source that finds it at 114 facilities.
+    """
+    tt = pd.read_csv(_fetch('treatment_train_assignment/output_data/tt_assignments_2022.csv'),
+                     low_memory=False)
+    key = tt['CWNS_NUM'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(11)
+    from_epa = tt['UP_ID_NOTE'].fillna('').str.contains('AMMONIA', case=False)
+    out = set(key[from_epa])
+    print(f'  EPA nitrification set: {len(out)} CWNS facilities (PRES_AMMONIA_REMOVAL 2024)')
+    return out
 
 
 # ── WERF pivot (shared by CWNS and LLM sources) ──────────────────────────────
@@ -573,7 +713,14 @@ def build_werf_pivot(facility_rows, present_statuses, col_to_werf=None):
     nit_indicator = ['BNIT', 'BNR', 'AS-BDENIT', 'AS-A2O']
     pivot['NIT'] = (pivot[[c for c in nit_indicator if c in pivot.columns]]
                     .sum(axis=1) > 0).astype(int)
-    bio_p_indicator = ['AS-A2O', 'BNR']
+    # A2O is an anaerobic-anoxic-oxic configuration, i.e. biological P removal by design.
+    # BNR is not: our "Unspecified Nutrient Removal" leaf maps to it and is PRESENT at 140
+    # facilities, so including it credited 103 of 318 CA plants with biological phosphorus
+    # removal where El Abbadi's CWNS data has 1 -- most of California has no P limit. Those
+    # spurious BIO-P flags became AS_BNR_P and pushed plants into the G-series, whose N2O
+    # factors are ~6x the non-nitrifying trains. BNR still derives NIT below, which it does
+    # imply.
+    bio_p_indicator = ['AS-A2O']
     pivot['BIO-P'] = (pivot[[c for c in bio_p_indicator if c in pivot.columns]]
                       .sum(axis=1) > 0).astype(int)
 
@@ -623,6 +770,12 @@ def load_cwns_source(common_pids, include_manual=True, use_automatic_werf=False)
     merged = link.merge(cwns_pivot, on='Place ID', how='inner')
 
     if include_manual:
+        # EPA PRES_AMMONIA_REMOVAL is the third external database, on the same footing as WEF
+        # and DOE. CWNS unit-process data reports nitrification for none of these facilities,
+        # so without it this source has no nitrogen treatment at all.
+        epa_nit = merged['CWNS_NUM'].isin(load_epa_nitrification_set())
+        merged.loc[epa_nit, 'NIT'] = 1
+        print(f'  EPA nitrification applied to {int(epa_nit.sum())} of {len(merged)} facilities')
         wef_doe_mask = merged['CWNS_NUM'].isin(biogas_cwns)
         and_col = merged['AND'] if 'AND' in merged.columns else pd.Series(0, index=merged.index)
         merged['BIOGAS_EL'] = wef_doe_mask.astype(int)
@@ -635,7 +788,7 @@ def load_cwns_source(common_pids, include_manual=True, use_automatic_werf=False)
 
     df, n_fallback = apply_regional_fallback(df)
     if include_manual:
-        print(f'Source 1 (CWNS + WEF + DOE biogas): {len(df)} CWNS rows, '
+        print(f'Source 1 (CWNS + WEF + DOE + EPA): {len(df)} CWNS rows, '
               f'{int((df["TT_IDENTIFIED"] >= 1).sum())} with TT assignment '
               f'({n_fallback} via regional fallback)')
     else:
@@ -692,7 +845,7 @@ def load_llm_source(common_pids, add_wef_biogas=False):
     add_wef_biogas=True  (Source 4): additionally flags biogas electricity for any facility
         the WEF/DOE databases confirm, testing whether that resolves the FNG discrepancy.
     """
-    llm = pd.read_csv(LLM_CSV, dtype=str)
+    llm = load_llm_facility_table()
     llm = llm[llm['Place ID'].isin(common_pids)].copy()
     # PRESENT_STATUSES, matching the CWNS sources. Treatment trains describe the plant as it
     # runs today, so a planned process must not reassign it -- Hyperion's 2035 recycled-water
@@ -718,6 +871,8 @@ def load_llm_source(common_pids, add_wef_biogas=False):
         # LLM data takes priority; WEF only adds where LLM was silent.
         # OR logic: keep all LLM-detected AND/BIOGAS_EL, additionally set both for any
         # facility the WEF database confirms biogas utilization (implying a digester exists).
+        epa_nit = merged['CWNS_NUM'].isin(load_epa_nitrification_set())
+        merged.loc[epa_nit, 'NIT'] = 1
         wef_mask = merged['CWNS_NUM'].isin(load_biogas_cwns_set())
         merged['BIOGAS_EL'] = (llm_biogas | wef_mask).astype(int)
         merged['AND'] = ((and_col > 0) | wef_mask).astype(int)
@@ -731,7 +886,7 @@ def load_llm_source(common_pids, add_wef_biogas=False):
     df['LAGOON_UNCATEGORIZED'] = df[['LAGOON_OTHER', 'STBL_POND']].max(axis=1) \
         if 'STBL_POND' in df.columns else df['LAGOON_OTHER']
     df, n_fallback = apply_regional_fallback(df)
-    label = 'Source 4 (LLM + WEF biogas)' if add_wef_biogas else 'Source 3 (WE3Lab LLM)'
+    label = 'Source 4 (LLM + WEF/DOE biogas + EPA nitrification)' if add_wef_biogas else 'Source 3 (WE3Lab LLM)'
     print(f'{label}: {len(df)} CWNS rows, '
           f'{int((df["TT_IDENTIFIED"] >= 1).sum())} with TT assignment '
           f'({n_fallback} via regional fallback)')
@@ -740,11 +895,11 @@ def load_llm_source(common_pids, add_wef_biogas=False):
 
 # ── comparison plot ───────────────────────────────────────────────────────────
 src_labels = {
-    'source2': '\nCWNS +\nWEF + DOE',
-    'source1': '\nCWNS',
-    'source_manual': '\nCWNS +\nWEF + DOE\n+ El Abbadi\ncorrections',
+    'source2': '\nCWNS +\nWEF + DOE\n+ EPA',
+    'source1': '\nCWNS only',
+    'source_manual': '\nCWNS +\nWEF + DOE\n+ EPA\n+ corrections',
     'source3': '\nFacility\nPermits',
-    'source4': '\nFacility\nPermits +\nWEF + DOE',
+    'source4': '\nFacility\nPermits +\nWEF + DOE\n+ EPA',
 }
 
 
@@ -978,11 +1133,11 @@ if __name__ == '__main__':
     results = {'source2': totals1, 'source1': totals2, 'source_manual': totalsm,
                'source3': totals3, 'source4': totals4}
     source_names = {
-        'source2': 'CWNS + WEF + DOE Biogas',
-        'source1': 'CWNS-only',
-        'source_manual': 'CWNS + WEF + DOE Biogas + Manual Corrections',
+        'source2': 'CWNS + WEF + DOE Biogas + EPA Nitrification',
+        'source1': 'CWNS-only (no nitrification in CWNS)',
+        'source_manual': 'CWNS + WEF + DOE + EPA (published)',
         'source3': 'WE3Lab LLM',
-        'source4': 'WE3Lab LLM + WEF + DOE Biogas',
+        'source4': 'WE3Lab LLM + WEF + DOE + EPA',
     }
 
     print('GHG Emissions Source Comparison (for matched facilities)')

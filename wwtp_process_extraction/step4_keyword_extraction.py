@@ -165,7 +165,12 @@ def main():
     raw_df = pd.read_csv(out_file, dtype=str).fillna("")
     # Same current-permit restriction step6 applies, so the keyword and LLM facility tables
     # are built from the same documents.
-    current = current_permit_mask(raw_df)
+    meta = {"Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File",
+            "Shared_PDF", "document_order_no", "County"}
+    proc_cols = [c for c in raw_df.columns if c not in meta]
+    has_content = raw_df[proc_cols].isin(
+        {"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"}).any(axis=1)
+    current = current_permit_mask(raw_df, content=has_content)
     print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
           f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
     collapsed = collapse_facility_processes(

@@ -35,11 +35,11 @@ DISINFECTION = {"Chlorination", "UV Disinfection"}
 TIERS = ["lagoon", "aerated_lagoon", "secondary_mechanical", "advanced"]
 
 CATEGORY_LABELS = {
-    "new": "New",
-    "system_expansion": "Expansion",
-    "treatment_upgrade": "Upgrade",
-    "rehabilitation": "Rehabilitation",
-    "add_disinfection": "New (Disinfection)",
+    "new": "New facility",
+    "system_expansion": "Existing facility expansion",
+    "treatment_upgrade": "Existing facility upgrade",
+    "rehabilitation": "Existing facility rehabilitation",
+    "add_disinfection": "New facility (disinfection)",
 }
 
 # add_disinfection is costed off its own EPA curve (UV via CAFCom, chlorine via Capdet) but is

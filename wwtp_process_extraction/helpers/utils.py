@@ -502,35 +502,114 @@ def same_order_no(a, b):
     return a in b or b in a
 
 
-def current_permit_mask(df, order_col="Order_No", doc_order_col="document_order_no"):
-    """Per facility, keep only the documents that represent its current permit.
+_orders_in_force_cache = {}
 
-    A facility accumulates documents across permit cycles -- CIWQS attaches superseded
-    orders to the current order's page, and earlier snapshots contribute their own. Ranked
-    preference rather than a hard filter, so a facility is never left with nothing:
 
-      0. the document's own order number matches the facility's current Order_No
-      1. no order number could be read from the document
-      2. the order number contradicts Order_No (superseded)
+def orders_in_force(as_of=None):
+    """place_id -> set of Order_No values CIWQS listed for it as of a snapshot date.
 
-    Each facility keeps only its best available tier. Tier 0 resolves 594 of 695 facilities;
-    tier 1 is reached only where nothing readable exists, and tier 2 only where every
-    document is superseded and dropping them all would lose the facility entirely.
+    step2c unions each dated scrape into site_data_relevant.csv's as_of_dates, so the orders
+    a facility held on a given date are the Order_No values on rows carrying that date. Read
+    from the union rather than output/site_data/<date>/ because as_of_dates carries dates that
+    have no snapshot directory.
 
-    Snapshot history (the order a facility held when a document first appeared) was measured
-    as an additional signal and changed zero facility outcomes -- it never contradicts the
-    printed order and only ever restates it, so it is deliberately not consulted.
+    as_of=None uses the newest date present. Pass an explicit date to reconstruct the fleet as
+    it stood then -- comparisons against CWNS 2022 want the 2022 permits, not today's.
     """
+    key = as_of or ""
+    if key not in _orders_in_force_cache:
+        rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False).fillna("")
+        dates = set()
+        for v in rel["as_of_dates"]:
+            dates |= {d for d in str(v).split(";") if d}
+        target = as_of or (max(dates) if dates else "")
+        held = {}
+        for _, row in rel.iterrows():
+            if target and target not in str(row["as_of_dates"]).split(";"):
+                continue
+            order = str(row["Order_No"]).strip()
+            if order:
+                held.setdefault(normalize_id(row["Place ID"]), set()).add(order)
+        _orders_in_force_cache[key] = held
+    return _orders_in_force_cache[key]
+
+
+def order_year(order):
+    """Adoption year of an order number, 0 if unreadable.
+
+    Handles "R5-2017-0085", "2014-0153-DWQ", "97-10-DWQ" (two-digit year), "05-025" and the
+    old region-prefixed "5-00-080" form. Match the four-digit year first: a naive scan finds
+    "92" inside "R9-2020-0191" and reads it as 1992.
+    """
+    t = re.sub(r"\s+", "", str(order).strip().upper())
+    t = re.sub(r"^R\d{1,2}[A-Z]?[-\s]?", "", t)
+    m = re.search(r"(?:19|20)\d{2}", t)
+    if m:
+        return int(m.group(0))
+    t = re.sub(r"^\d[-\s]", "", t)          # bare region prefix, e.g. "5-00-080"
+    m = re.match(r"(\d{2})\D", t + "-")
+    if m:
+        y = int(m.group(1))
+        return 1900 + y if y >= 90 else 2000 + y
+    return 0
+
+
+def current_permit_mask(df, order_col="Order_No", doc_order_col="document_order_no", as_of=None,
+                        content=None):
+    """Per facility, keep only the documents belonging to the permits then in force.
+
+    A facility accumulates documents across permit cycles -- CIWQS attaches superseded orders
+    to the current order's page, and earlier snapshots contribute their own. Ranked preference
+    rather than a hard filter, so a facility is never left with nothing:
+
+      0. the document's own order number is one the facility held as of `as_of`
+      1. no order number could be read from the document
+      2. the order number is not one it held (superseded)
+
+    Each facility keeps only its best available tier.
+
+    The order set comes from orders_in_force(), NOT from each row's own `order_col`. Comparing
+    a document to the Order_No sitting on its own row let 186 of 618 facilities keep documents
+    from more than one order cycle (223 superseded documents): site_data_relevant carries a row
+    per (facility, order), so a 2018 permit paired with its own 2018 Order_No scored tier 0
+    against a facility whose current order is from 2024. Ukiah's 2018 "solar drying bed" was
+    reaching a facility whose permit no longer mentions it. `order_col` is now only the
+    fallback for facilities absent from the snapshot.
+
+    Comparing to a set also preserves genuinely concurrent permits -- a plant covered by both
+    its own order and a joint-authority order keeps both, because the snapshot lists both.
+
+    `content`, when given, is a boolean Series marking rows that actually yielded processes.
+    A document that extracted nothing carries no information, so it must not outrank an
+    informative superseded one: JWPCP (260 MGD) and EchoWater (115 MGD) were being represented
+    by a current permit with zero extracted processes while their superseded documents held
+    14-25 each, leaving both facilities empty and pushed onto the regional fallback. Contentless
+    rows are demoted below every informative tier and used only if nothing else exists.
+    """
+    held = orders_in_force(as_of)
     tiers = []
     for _, row in df.iterrows():
         doc = str(row.get(doc_order_col, "")).strip()
         if not doc:
             tiers.append(1)
-        else:
-            tiers.append(0 if same_order_no(doc, str(row.get(order_col, "")).strip()) else 2)
+            continue
+        current = held.get(normalize_id(row["Place ID"])) or {str(row.get(order_col, "")).strip()}
+        tiers.append(0 if any(same_order_no(doc, o) for o in current if o) else 2)
     tiers = pd.Series(tiers, index=df.index)
+    if content is not None:
+        tiers = tiers + (~content.reindex(df.index).fillna(False)).astype(int) * 3
     best = tiers.groupby(df["Place ID"]).transform("min")
-    return tiers == best
+    keep = tiers == best
+    # Where every document is superseded (tier 2), the fallback would otherwise keep the whole
+    # history. Facilities enrolled under a general order hit this routinely: CIWQS lists the
+    # current general order, which no individual permit document prints. Keep only the newest
+    # order's documents -- the best available proxy when nothing matches.
+    fallback = keep & (tiers % 3 == 2)
+    if fallback.any():
+        years = df.loc[fallback, doc_order_col].map(order_year)
+        newest = years.groupby(df.loc[fallback, "Place ID"]).transform("max")
+        keep.loc[fallback] = years == newest
+    return keep
 
 
 def normalize_id(value):

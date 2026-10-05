@@ -1,14 +1,13 @@
 import argparse
 import json
 import os
-import shutil
 import re
 import subprocess
 from pathlib import Path
 
 import pandas as pd
 
-from helpers.ontology_to_txt import ontology_to_txt, ontology_txt_file
+from helpers.ontology_to_txt import ontology_to_txt
 from helpers.utils import build_txt_jobs, SEP
 from helpers.api_llm_search import (
     chat_completion_json,
@@ -21,7 +20,6 @@ from helpers.api_llm_search import (
 
 TXT_DIR = f"wwtp_process_extraction/output/permits/text"
 MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
-ONTOLOGY_PATH = "wwtp_process_extraction/data/llm_extraction/input/ontology.txt"
 # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
 FACILITIES_INFO_PATH = "wwtp_process_extraction/data/unit_processes_by_facility_manual.csv"
 FULL_CA_PATH = "wwtp_process_extraction/output/site_data_relevant.csv"
@@ -252,17 +250,6 @@ def run_extraction(args, output_dir_override=None):
         args.method, args.model, args.web_search, args.waterrag_context
     )
 
-    # ontology.txt is pinned to June 2026 from the DataDrivenCPS/water-ontology PR #30 branch.
-    # if args.method == "ontology-based":
-    #     print("Initializing ontology from source repository...")
-    #     ontology_to_txt()
-    #     generated_path = Path(ontology_txt_file)
-    #     ontology_target = Path(ONTOLOGY_PATH)
-    #     if generated_path.exists() and generated_path.resolve() != ontology_target.resolve():
-    #         ontology_target.parent.mkdir(parents=True, exist_ok=True)
-    #         shutil.copyfile(generated_path, ontology_target)
-    #         print(f"Copied generated ontology file to {ontology_target}")
-
     if args.method == "list-based":
         generated_list_path = init_unit_process_list_from_json(
             keywords_json_path=UNITPROCESS_KEYWORDS_JSON,
@@ -475,6 +462,7 @@ if __name__ == "__main__":
     args = parse_args()
     if not args.web_search:
         require_api_key()
+    ontology_to_txt()  # once per invocation, from the pinned Zenodo release
     if args.repeat_runs:
         # Repeated runs of the benchmark facilities with the default model/method (same config as
         # the full-CA run) to measure F1 run-to-run variance. Each run gets its own folder so all

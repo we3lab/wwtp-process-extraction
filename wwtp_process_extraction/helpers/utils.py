@@ -191,27 +191,6 @@ def package_sub_readers(reader):
         return
     
 
-def hasprocess_fragments(graph, cls, watr_ns, sh_ns):
-    """Process fragments declared by a class's own SHACL hasProcess shape(s).
-
-    The ontology declares "this equipment implies this process" two equivalent ways:
-    `sh:hasValue watr:Process-X` or `sh:qualifiedValueShape [ sh:class watr:Process-X ]`.
-    """
-    fragments = set()
-    for prop in graph.objects(cls, sh_ns.property):
-        for path in graph.objects(prop, sh_ns.path):
-            if path != watr_ns.hasProcess:
-                continue
-            for val in graph.objects(prop, sh_ns.hasValue):
-                if val.fragment:
-                    fragments.add(val.fragment)
-            for qualified_shape in graph.objects(prop, sh_ns.qualifiedValueShape):
-                for val in graph.objects(qualified_shape, sh_ns["class"]):
-                    if val.fragment:
-                        fragments.add(val.fragment)
-    return fragments
-
-
 def normalize_text(text, lower=True):
     """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase.
 

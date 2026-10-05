@@ -4,19 +4,11 @@ import os
 import sys
 from pathlib import Path
 from collections import Counter
-from rdflib import Graph, Namespace, RDF, RDFS
-
-WATR = Namespace("urn:nawi-water-ontology#")
-SH = Namespace("http://www.w3.org/ns/shacl#")
-ontology = Graph()
-
-# Pinned local copy of DataDrivenCPS/water-ontology PR #30 (constance/ontology_to_txt),
-# commit 760a6709094845ace3233f34acee00c5e83ef392. Local edit: Boiler hasProcess changed
-# from Process-Incineration (a class the ontology never defines) to Process-Combustion.
-ONTOLOGY_DIR = Path("wwtp_process_extraction/data/ontology")
+from rdflib import RDF, RDFS
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id, current_permit_mask
+from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 # Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
@@ -82,24 +74,14 @@ for name, details, _, _ in leaves:
             facility_multi_rules.append((name, rule))
 facility_multi_rules.sort(key=lambda r: r[1].get("priority", 1))
 
-# Load ontology from the pinned local copy
-for filename in [
-    "ontology.ttl",
-    "equipment.ttl",
-    "processtypes.ttl",
-    "enumerationkinds.ttl",
-    "substances.ttl",
-]:
-    try:
-        ontology.parse(ONTOLOGY_DIR / filename, format="turtle")
-    except Exception as e:
-        print(f"Could not load {ONTOLOGY_DIR / filename}: {e}")
+# Load ontology from Zenodo
+ontology = load_ontology()
 
 # Direct (own-class only) hasProcess fragments, keyed by equipment class fragment.
 equipment_own_processes = {
     cls.fragment: fragments
     for cls in ontology.subjects(RDF.type, WATR.Class)
-    if cls.fragment and (fragments := hasprocess_fragments(ontology, cls, WATR, SH))
+    if cls.fragment and (fragments := hasprocess_fragments(ontology, cls))
 }
 
 

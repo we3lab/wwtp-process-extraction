@@ -11,19 +11,19 @@ from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
 from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
-# Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
-# facility. The benchmark facilities are a subset of it. Each model folder keeps its postprocessed
-# JSONs in a nested ontology_postprocess/ subfolder.
-input_dir = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini"
+
+ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
+           "document_order_no"]
+
+# Any status that means the extractor found the process; a row with none of them is empty.
+PRESENT_LIKE = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
+
+input_dir = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini" # Full CA dataset run
 output_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_pdf_llm.csv")
 output_fac_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_facility_llm.csv")
 site_data_csv = Path(f"wwtp_process_extraction/output/site_data_relevant.csv")
-output_json_dir = input_dir / "ontology_postprocess"
+output_json_dir = input_dir / "ontology_postprocess" # postprocessed JSONs in nested subfolder
 output_json_dir.mkdir(parents=True, exist_ok=True)
-
-# Model comparison iterates the per-model subfolders of llm_extraction.
-MODEL_COMPARISON_DIR = LLM_EXTRACTION_DIR
-MANUAL_PATH = Path("wwtp_process_extraction/data") / "unit_processes_by_facility_manual.csv"
 
 with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
     keywords = json.load(f)
@@ -81,31 +81,12 @@ ontology = load_ontology()
 equipment_own_processes = {
     cls.fragment: fragments
     for cls in ontology.subjects(RDF.type, WATR.Class)
-    if cls.fragment and (fragments := hasprocess_fragments(ontology, cls))
+    if (fragments := hasprocess_fragments(ontology, cls))
 }
-
-
-def equipment_hasprocess_closure(equipment_fragment):
-    """Own + rdfs:subClassOf-inherited hasProcess fragments for an equipment class."""
-    classes = {equipment_fragment} | {
-        a.fragment for a in ontology.transitive_objects(WATR[equipment_fragment], RDFS.subClassOf)
-        if a.fragment
-    }
-    procs = set()
-    for cls in classes:
-        procs |= equipment_own_processes.get(cls, set())
-    return procs
 
 
 def _norm_pdf(s):
     return s.lower().replace(" ", "_")
-
-
-ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
-           "document_order_no"]
-
-# Any status that means the extractor found the process; a row with none of them is empty.
-PRESENT_LIKE = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
 
 
 def normalize_records(json_data):
@@ -187,9 +168,7 @@ def ontology_labels(component_type, name):
     labels = {clean_name}
     for uri in uri_candidates:
         for ancestor_uri in ontology.transitive_objects(uri, RDFS.subClassOf):
-            fragment = ancestor_uri.fragment
-            if fragment:
-                labels.add(normalize_component_name(component_type, fragment))
+            labels.add(normalize_component_name(component_type, ancestor_uri.fragment))
 
     return labels
 
@@ -241,7 +220,9 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         # shapes), then expand those Process fragments' own ancestry too.
         implied_processes = set()
         for equipment_name in components["Equipment"]:
-            implied_processes |= equipment_hasprocess_closure(equipment_name)
+            # transitive_objects includes the class itself
+            for cls in ontology.transitive_objects(WATR[equipment_name], RDFS.subClassOf):
+                implied_processes |= equipment_own_processes.get(cls.fragment, set())
         for proc_fragment in implied_processes:
             components["Process"].update(ontology_labels("Process", proc_fragment))
 
@@ -479,7 +460,7 @@ def build_model_comparison():
 
     Benchmark facilities = the manual CSV's Place IDs; predictions are regenerated
     fresh from every model dir. Replaces the model_comparison_all.csv intermediate."""
-    wb_df = pd.read_csv(MANUAL_PATH, dtype=str)
+    wb_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str)
     manual_rows = wb_df.copy()
     manual_rows["Method"] = "Manual Read"
     up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
@@ -499,7 +480,7 @@ def build_model_comparison():
     )
 
     prediction_rows = []
-    for dir_path in sorted(MODEL_COMPARISON_DIR.iterdir()):
+    for dir_path in sorted(LLM_EXTRACTION_DIR.iterdir()):
         if not dir_path.is_dir():
             continue
         dir_name = dir_path.name

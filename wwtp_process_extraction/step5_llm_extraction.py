@@ -1,31 +1,71 @@
 import argparse
 import json
-import os
 import re
 import subprocess
-from pathlib import Path
 
 import pandas as pd
 
 from helpers.ontology_to_txt import ontology_to_txt
-from helpers.utils import build_txt_jobs, SEP
+from helpers.utils import (
+    build_txt_jobs,
+    SEP,
+    DATA_DIR,
+    OUTPUT_DIR,
+    MANUAL_CSV,
+    SITE_DATA_RELEVANT_CSV,
+    KEYWORDS_JSON,
+    WATERRAG_RETRIEVAL_DIR,
+    LLM_EXTRACTION_DIR,
+)
 from helpers.api_llm_search import (
     chat_completion_json,
     load_icl_examples,
     init_unit_process_list_from_json,
     build_example_schema,
-    get_method_paths,
     require_api_key,
 )
 
-TXT_DIR = f"wwtp_process_extraction/output/permits/text"
-MODEL = "gpt-5-mini"  # in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro
-# Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
-FACILITIES_INFO_PATH = "wwtp_process_extraction/data/unit_processes_by_facility_manual.csv"
-FULL_CA_PATH = "wwtp_process_extraction/output/site_data_relevant.csv"
-UNITPROCESS_KEYWORDS_JSON = "wwtp_process_extraction/data/unitprocess_keywords.json"
-WATERRAG_CONTEXT_DIR = "wwtp_process_extraction/output/waterrag_retrieval"
+TXT_DIR = OUTPUT_DIR / "permits" / "text"
+ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
+ALL_METHODS = ["ontology-based", "list-based"]
+MODEL = "gpt-5-mini"
 NUM_ICL_EXAMPLES = 1
+DEFAULT_MAX_TOKENS = 10000
+# Per-model completion-token limit. Reasoning models (gpt-5, etc.) spend most of
+# their completion budget on hidden reasoning before emitting JSON, so they need a
+# higher ceiling than chat models; claude-3-haiku has a hard 4096 output cap.
+MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096, "gpt-5": 32000, "gpt-5-mini": 32000}
+
+LLM_DATA_DIR = DATA_DIR / "llm_extraction"
+METHOD_PATHS = {
+    "list-based": {
+        "reference_path": LLM_DATA_DIR / "input" / "unit_process_list.txt",
+        "examples_dir": LLM_DATA_DIR / "icl_examples" / "list_based",
+        "prompt_path": LLM_DATA_DIR / "prompt" / "list_based_prompt.txt",
+    },
+    "ontology-based": {
+        "reference_path": LLM_DATA_DIR / "input" / "ontology.txt",
+        "examples_dir": LLM_DATA_DIR / "icl_examples" / "ontology_based",
+        "prompt_path": LLM_DATA_DIR / "prompt" / "ontology_based_prompt.txt",
+    },
+}
+
+WEB_SYSTEM_SUFFIX = """
+For each extracted item, set the Source field:
+- "permit_text": evidence is only in the permit extract
+- "web_search": evidence found via web search
+- "both": evidence supported by both sources
+
+For items with Source "web_search" or "both", also set the Website field to the URL or website name where you found the information.
+If from multiple sites, pick the most relevant one. Set Website to null if the source is only the permit text.
+
+Prefer the permit text. Only use web search if the permit text is ambiguous about a treatment process, or if you suspect a key process is missing from the permit description. Limit to at most 3 searches total.
+"""
+
+TOKEN_USAGE_COLUMNS = [
+    "facility_name", "place_id", "extraction_file", "structured_output",
+    "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
+]
 
 
 def parse_args():
@@ -34,14 +74,14 @@ def parse_args():
     )
     parser.add_argument(
         "--method",
-        choices=["ontology-based", "list-based"],
+        choices=ALL_METHODS,
         default="ontology-based",
         help="Prompting/extraction method to use (default: ontology-based).",
     )
     parser.add_argument(
         "--model",
         default=MODEL,
-        help=f"Model name for API calls in claude-3-haiku, claude-4-5-sonnet, gpt-5, gpt-5-mini, gemini-2.5-pro (default: {MODEL}).",
+        help=f"Model name for API calls in {', '.join(ALL_MODELS)} (default: {MODEL}).",
     )
     parser.add_argument(
         "--txt_folder",
@@ -107,55 +147,26 @@ def parse_args():
         default=None,
         help=(
             "Run the benchmark facilities N extra times with the default model/method "
-            "(for F1 run-to-run variance), each into llm_extraction/ontology-based_gpt-5-mini/"
-            "additional_runs/run_<k>/. Ignores --model/--method/--all_models."
+            "(for F1 run-to-run variance), each into output/llm_extraction/ontology-based_gpt-5-mini"
+            "[-waterrag]/additional_runs/run_<k>/. Ignores --model/--method/--all_models/--web_search/"
+            "--all_facilities."
         ),
     )
     return parser.parse_args()
 
 
-def resolve_output_dir(method, model, web_search, waterrag_context=False):
+def resolve_output_dir(method, model, web_search, waterrag_context):
     # Every run (full CA or model comparison) writes to output/llm_extraction/<method>_<model>.
     # The default ontology-based_gpt-5-mini folder accumulates the full CA set; the benchmark
     # facilities are a subset of it, so model-comparison runs for that config are reused.
     suffix = f"{method}_{model}" + ("-web" if web_search else "") + ("-waterrag" if waterrag_context else "")
-    return Path("wwtp_process_extraction/output/llm_extraction") / suffix
+    return LLM_EXTRACTION_DIR / suffix
 
 
-def render_system_message(
-    template_text: str,
-    facility_name: str,
-    reference_text: str,
-    prompt_examples: str,
-    reference_placeholder: str,
-) -> str:
-    return (
-        template_text
-        .replace("__FACILITY_NAME__", facility_name)
-        .replace(reference_placeholder, reference_text)
-        .replace("__ONTOLOGY__", reference_text)
-        .replace("__UNIT_PROCESS_LIST__", reference_text)
-        .replace("__PROMPT_EXAMPLES__", prompt_examples)
-    )
-
-
-def slugify(text):
-    slug = re.sub(r'[^A-Za-z0-9]+', '_', str(text or '').strip())
-    slug = re.sub(r'_+', '_', slug).strip('_')
-    return slug or 'facility'
-
-
-_WEB_SYSTEM_SUFFIX = """
-For each extracted item, set the Source field:
-- "permit_text": evidence is only in the permit extract
-- "web_search": evidence found via web search
-- "both": evidence supported by both sources
-
-For items with Source "web_search" or "both", also set the Website field to the URL or website name where you found the information.
-If from multiple sites, pick the most relevant one. Set Website to null if the source is only the permit text.
-
-Prefer the permit text. Only use web search if the permit text is ambiguous about a treatment process, or if you suspect a key process is missing from the permit description. Limit to at most 3 searches total.
-"""
+def raise_with_raw_output(message, raw_output):
+    err = RuntimeError(message)
+    err.raw_output = raw_output
+    raise err
 
 
 def chat_completion_web(
@@ -164,7 +175,8 @@ def chat_completion_web(
     user_message: str,
     schema: dict,
 ) -> tuple:
-    """Call claude CLI with WebSearch/WebFetch. Returns (parsed_json, cost_usd)."""
+    """Call claude CLI with WebSearch/WebFetch. Returns (parsed_json, cost_usd).
+    Parses the JSON result from the CLI output, handling multiple objects and markdown wrapping."""
     cmd = [
         "claude", "-p", user_message,
         "--system-prompt", system_message,
@@ -182,13 +194,10 @@ def chat_completion_web(
         if result.stdout.strip():
             err.raw_output = result.stdout
         raise err
-    if not result.stdout.strip():
+    stdout = result.stdout
+    if not stdout.strip():
         raise RuntimeError("empty output from CLI")
-    return _parse_claude_json(result.stdout, schema)
 
-
-def _parse_claude_json(stdout: str, schema: dict) -> tuple:
-    """Parse JSON result from claude CLI output, handling multiple objects and markdown wrapping."""
     output = None
     decoder = json.JSONDecoder()
     idx = 0
@@ -203,62 +212,57 @@ def _parse_claude_json(stdout: str, schema: dict) -> tuple:
                 idx += 1
         except json.JSONDecodeError:
             break
-    def _fail(msg):
-        err = RuntimeError(msg)
-        err.raw_output = stdout
-        raise err
 
     if not output:
-        _fail("No result found in CLI output")
+        raise_with_raw_output("No result found in CLI output", stdout)
     if output.get("is_error"):
-        _fail(f"API error: {output.get('api_error_status')}")
+        raise_with_raw_output(f"API error: {output.get('api_error_status')}", stdout)
     # --json-schema puts the validated result in structured_output; result is empty in that case
     if isinstance(output.get("structured_output"), dict):
         return output["structured_output"], float(output.get("total_cost_usd") or 0.0)
     raw = output["result"]
-    if isinstance(raw, dict):
-        parsed = raw
-    elif isinstance(raw, str) and raw.strip().startswith("{"):
+    if raw.strip().startswith("{"):
         parsed = json.loads(raw.strip())
     else:
-        if not raw or not raw.strip():
+        if not raw.strip():
             diag = {k: output.get(k) for k in ("subtype", "num_turns", "duration_ms", "total_cost_usd", "stop_reason")}
-            _fail(f"Model returned empty result (no final JSON emitted). CLI result meta: {diag}")
-        match = re.search(r'\{.*\}', str(raw), re.DOTALL)
+            raise_with_raw_output(f"Model returned empty result (no final JSON emitted). CLI result meta: {diag}", stdout)
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
         if not match:
-            _fail(f"No JSON found in result: {str(raw)[:100]}")
+            raise_with_raw_output(f"No JSON found in result: {raw[:100]}", stdout)
         parsed = json.loads(match.group())
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
-ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
-DEFAULT_MAX_TOKENS = 10000
-DEFAULT_MAX_COMPLETION_TOKENS = 20000
-# Per-model completion-token limit. Reasoning models (gpt-5, etc.) spend most of
-# their completion budget on hidden reasoning before emitting JSON, so they need a
-# higher ceiling than chat models; claude-3-haiku has a hard 4096 output cap.
-MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096, "gpt-5": 32000, "gpt-5-mini": 32000}
-ALL_METHODS = ["ontology-based", "list-based"]
+def append_row_csv(path, row):
+    df = pd.DataFrame([row], columns=TOKEN_USAGE_COLUMNS)
+    if path.exists():
+        df = pd.concat([pd.read_csv(path).reindex(columns=TOKEN_USAGE_COLUMNS), df], ignore_index=True)
+    # keep one row per extraction: prefer the latest non-FAILED row, else the latest row
+    key = df["extraction_file"].fillna(df["facility_name"])
+    failed = df["structured_output"].astype(str).str.upper() == "FAILED"
+    ordered_keys = pd.concat([key[failed], key[~failed]])
+    keep_index = ordered_keys[~ordered_keys.duplicated(keep="last")].index
+    df.loc[sorted(keep_index)].to_csv(path, index=False)
 
 
 def run_extraction(args, output_dir_override=None):
-    method_paths = get_method_paths(args.method)
-    reference_path = Path(method_paths["reference_path"])
-    prompt_path = Path(method_paths["prompt_path"])
-    examples_dir = Path(method_paths["examples_dir"])
-    facilities_info = FULL_CA_PATH if args.all_facilities else FACILITIES_INFO_PATH
+    method_paths = METHOD_PATHS[args.method]
+    reference_path = method_paths["reference_path"]
+    # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
+    facilities_info = SITE_DATA_RELEVANT_CSV if args.all_facilities else MANUAL_CSV
     output_dir = output_dir_override or resolve_output_dir(
         args.method, args.model, args.web_search, args.waterrag_context
     )
 
     if args.method == "list-based":
         generated_list_path = init_unit_process_list_from_json(
-            keywords_json_path=UNITPROCESS_KEYWORDS_JSON,
-            output_txt_path=str(reference_path),
+            keywords_json_path=KEYWORDS_JSON,
+            output_txt_path=reference_path,
         )
         print(f"Initialized unit process list file: {generated_list_path}")
 
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     jobs = build_txt_jobs(args.txt_folder, facilities_info)
 
     if not jobs:
@@ -271,9 +275,9 @@ def run_extraction(args, output_dir_override=None):
     reference_text = reference_path.read_text(encoding="utf-8")
     prompt_examples = load_icl_examples(
         num_examples=NUM_ICL_EXAMPLES,
-        examples_dir=str(examples_dir),
+        examples_dir=method_paths["examples_dir"],
     )
-    system_prompt_template = prompt_path.read_text(encoding="utf-8")
+    system_prompt_template = method_paths["prompt_path"].read_text(encoding="utf-8")
     example_schema = None if args.skip_schema_validation else build_example_schema(args.method, web=args.web_search)
 
     facilities_source_df = pd.read_csv(facilities_info, dtype=str).fillna('')
@@ -283,66 +287,45 @@ def run_extraction(args, output_dir_override=None):
     # each JSON filename ({txt_stem}_{place_id}.json), and the unit-process data lives in
     # the JSON results, so the txt_file/extraction_file names aren't stored here.
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
-    token_usage_cols = [
-        "facility_name", "place_id", "extraction_file", "structured_output",
-        "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
-    ]
-
-    def append_row_csv(path, row, columns):
-        df = pd.DataFrame([row], columns=columns)
-        if path.exists():
-            df = pd.concat([pd.read_csv(path).reindex(columns=columns), df], ignore_index=True)
-        # keep one row per extraction: prefer the latest non-FAILED row, else the latest row
-        key = df["extraction_file"].fillna(df["facility_name"])
-        failed = df["structured_output"].astype(str).str.upper() == "FAILED"
-        ordered_keys = pd.concat([key[failed], key[~failed]])
-        keep_index = ordered_keys[~ordered_keys.duplicated(keep="last")].index
-        df.loc[sorted(keep_index)].to_csv(path, index=False)
 
     if args.max_facilities is not None:
         jobs = jobs[:args.max_facilities]
 
-    for row_idx, txt_path_candidate, txt_file, facility_name in jobs:
+    for row_idx, txt_path, txt_file, facility_name in jobs:
         print("#" * 80)
         print(f"\nProcessing {txt_file} for facility {facility_name}...")
 
-        txt_path = Path(txt_path_candidate)
-        if not txt_path.exists():
-            print(f"TXT file not found: {txt_path}. Skipping.")
-            continue
-
         permit_extract = txt_path.read_text(encoding="utf-8")
         if not permit_extract.split(SEP, 1)[0].strip():
-            print(f"Empty description section, skipping.")
+            print("Empty description section, skipping.")
             continue
         print(f"Read text extract (length {len(permit_extract)})")
 
         if not args.no_token_limit and len(permit_extract) > 30000:
             print(
                 f"Warning: Extracted text length ({len(permit_extract)}) exceeds typical token limits. "
-                "Consider truncating or summarizing the text for better results."
+                "Skipping."
             )
             continue
 
         txt_stem = txt_path.stem
-        place_id = str(facilities_source_df.iloc[row_idx].get("Place ID", "")).strip() if 0 <= row_idx < len(facilities_source_df) else ""
-        file_id = place_id or slugify(facility_name)
-        extraction_file_name = f"{txt_stem}_{file_id}.json"
+        place_id = facilities_source_df.iloc[row_idx]["Place ID"].strip()
+        extraction_file_name = f"{txt_stem}_{place_id}.json"
         output_json_path = output_dir / extraction_file_name
 
         if output_json_path.exists():
             print(f"Already processed: {extraction_file_name}, skipping.")
             continue
 
-        system_msg = render_system_message(
-            template_text=system_prompt_template,
-            facility_name=facility_name,
-            reference_text=reference_text,
-            prompt_examples=prompt_examples,
-            reference_placeholder=method_paths["reference_placeholder"],
+        system_msg = (
+            system_prompt_template
+            .replace("__FACILITY_NAME__", facility_name)
+            .replace("__ONTOLOGY__", reference_text)
+            .replace("__UNIT_PROCESS_LIST__", reference_text)
+            .replace("__PROMPT_EXAMPLES__", prompt_examples)
         )
         if args.web_search:
-            system_msg = system_msg + _WEB_SYSTEM_SUFFIX
+            system_msg = system_msg + WEB_SYSTEM_SUFFIX
 
         user_msg = (
             f"Find all the treatment processes explicitly used in the {facility_name} facility. "
@@ -351,7 +334,7 @@ def run_extraction(args, output_dir_override=None):
         if args.waterrag_context:
             # Appended to the user message, never the system message, so the prompt template,
             # ontology dump and ICL example stay byte-identical to the no-retrieval control.
-            context_path = Path(WATERRAG_CONTEXT_DIR) / extraction_file_name
+            context_path = WATERRAG_RETRIEVAL_DIR / extraction_file_name
             if not context_path.exists():
                 print(f"No cached WaterRAG context ({context_path.name}), skipping. Run step5b first.")
                 continue
@@ -390,17 +373,13 @@ def run_extraction(args, output_dir_override=None):
                 structured_output = True
                 print(f"Cost: ${cost_usd:.6f}")
             else:
-                model_max = MAX_TOKENS_BY_MODEL.get(args.model)
-                result = chat_completion_json(
+                parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output = chat_completion_json(
                     model=args.model,
                     system_message=system_msg,
                     user_message=user_msg,
-                    temperature=0.0,
-                    max_tokens=None if args.no_token_limit else (model_max or DEFAULT_MAX_TOKENS),
-                    max_completion_tokens=None if args.no_token_limit else (model_max or DEFAULT_MAX_COMPLETION_TOKENS),
+                    max_tokens=None if args.no_token_limit else MAX_TOKENS_BY_MODEL.get(args.model, DEFAULT_MAX_TOKENS),
                     schema=example_schema,
                 )
-                parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output = result
                 cost_usd = None
                 print(
                     f"Token usage: completion={completion_token}, prompt={prompt_token}, "
@@ -428,14 +407,13 @@ def run_extraction(args, output_dir_override=None):
                     "reasoning_token": reasoning_tokens,
                     "cost_usd": cost_usd,
                 },
-                token_usage_cols,
             )
         except Exception as exc:
             print("Error:", exc)
             raw = getattr(exc, "raw_output", None)
             if raw:
-                failed_path = output_dir / f"{txt_stem}_{file_id}_FAILED.json"
-                failed_path.write_text(raw if isinstance(raw, str) else json.dumps(raw), encoding="utf-8")
+                failed_path = output_dir / f"{txt_stem}_{place_id}_FAILED.json"
+                failed_path.write_text(raw, encoding="utf-8")
                 print(f"Saved raw output to {failed_path.name}")
             append_row_csv(
                 token_usage_csv_path,
@@ -450,7 +428,6 @@ def run_extraction(args, output_dir_override=None):
                     "reasoning_token": 0,
                     "cost_usd": None,
                 },
-                token_usage_cols,
             )
 
     if token_usage_csv_path.exists():

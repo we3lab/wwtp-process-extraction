@@ -3,18 +3,50 @@
 # Modified by WE3Lab for California-specific analysis
 
 import pandas as pd
-import os
 # WE3Lab additions
-from helpers.utils import extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords, add_county_and_sort
-
-# Change working directory to `data` folder
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+from helpers.utils import (
+    extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords,
+    add_county_and_sort, DATA_DIR, FINAL_DIR, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
+)
 
 # Use local input data from el_abbadi/input_data directory
-EL_ABBADI_DATA_DIR = os.path.join("data", "el_abbadi")
-OUTPUT_DATA_DIR = os.path.join("output")  # Save to wwtp_process_extraction/output/ for compare_processes.py
+EL_ABBADI_DATA_DIR = DATA_DIR / "el_abbadi"
+CWNS_DATA_DIR = DATA_DIR / "cwns"
 
 ALLOWED_FACILITY_TYPES = {"Treatment Plant", "Honey Bucket Lagoon"}
+NON_CONTIGUOUS_STATES = ['PR', 'AK', 'VI', 'HI', 'MP', 'GU', 'AS']
+YES_NO_TO_BINARY = {'Y': 1, 'N': 0}
+
+
+def pad_cwns_id(x):
+    s = str(x).strip()
+    return '0' + s if len(s) < 11 else s
+
+
+def get_status(row):
+    if row['CHANGE_TYPE'] == 'Abandonment':
+        return 'PAST'
+    if row['PRES_IND'] == 1 and row['PROJ_IND'] == 1:
+        # CHANGE_TYPE may be a comma-separated list; real change if any token isn't "No Change"
+        change_type = row['CHANGE_TYPE']
+        has_change = isinstance(change_type, str) and any(
+            t.strip() and t.strip().lower() != 'no change' for t in change_type.split(',')
+        )
+        # only flag a future change if an actual change is recorded; otherwise just present
+        return 'PRESENT_AND_FUTURE' if has_change else 'PRESENT'
+    return 'PRESENT' if row['PRES_IND'] == 1 else 'FUTURE'
+
+
+def cwns_from_facility_file(path, cwns_col, state_col, state_val=None):
+    df = pd.read_csv(path, dtype=str, encoding='latin1')
+    if state_val is not None:
+        df = df[df[state_col].str.strip() == state_val]
+    return set(df[cwns_col].apply(pad_cwns_id))
+
+
+def percent_of(value, total):
+    return '' if value == '' else round(100 * value / total, 1)
+
 
 # FROM SOURCE with changes to data path
 #create inventory of active wwtps in 2022
@@ -22,62 +54,53 @@ ALLOWED_FACILITY_TYPES = {"Treatment Plant", "Honey Bucket Lagoon"}
 #upload facility locations — base for all treatment plants regardless of flow
 # change from El Abbadi which only used facilities with reported flow
 facilities_2022 = pd.concat([
-    pd.read_csv('data/cwns/2022/FACILITIES.csv', dtype=str),
-    pd.read_csv('data/cwns/2022/FACILITIES_CONFIRMED.csv', dtype=str),
+    pd.read_csv(CWNS_DATA_DIR / '2022' / 'FACILITIES.csv', dtype=str),
+    pd.read_csv(CWNS_DATA_DIR / '2022' / 'FACILITIES_CONFIRMED.csv', dtype=str),
 ])
 
 #upload facility types and filter to treatment plants and honey bucket lagoons
-types = pd.read_csv(f'data/cwns/2022/FACILITY_TYPES.csv', dtype=str).rename(columns={'CWNS_ID': 'CWNS_NUM'})
+types = pd.read_csv(CWNS_DATA_DIR / '2022' / 'FACILITY_TYPES.csv', dtype=str).rename(columns={'CWNS_ID': 'CWNS_NUM'})
 types = types.loc[types['FACILITY_TYPE'].isin(ALLOWED_FACILITY_TYPES)].drop_duplicates(subset = 'CWNS_NUM')
 types.reset_index(inplace = True, drop = True)
 
-#start from all treatment plants (inner join on type), then left-join flow so missing flow → NaN
+#start from all treatment plants (inner join on type)
 wwtps = facilities_2022[['CWNS_ID','STATE_CODE']].drop_duplicates(subset='CWNS_ID').rename(columns={'CWNS_ID':'CWNS_NUM','STATE_CODE':'STATE'})
 wwtps = wwtps.merge(types[['CWNS_NUM','FACILITY_TYPE']], on='CWNS_NUM', how='inner')
-
-#upload columns indicating nutrient removal in 2012 (note, 2022 CWNS does not include these columns, so we have to rely on outdated information)
-nutr_rem = pd.read_excel(f'data/cwns/2012/2012_SUMMARY_EFFLUENT.xlsx', sheet_name = 'SUMMARY_EFFLUENT', dtype = {'CWNS_NUMBER':str})
-nutr_rem = nutr_rem[['CWNS_NUMBER','PRES_NITROGEN_REMOVAL','PRES_PHOSPHOROUS_REMOVAL','PRES_AMMONIA_REMOVAL']].rename(columns = {'CWNS_NUMBER':'CWNS_NUM'})
-wwtps = wwtps.merge(nutr_rem, on = 'CWNS_NUM', how = 'left')
-
 
 #check for facilities with duplicate entries
 assert wwtps['CWNS_NUM'].value_counts().max() == 1
 
 #add leading zero to CWNS ids with less than 11 digits to ensure correct merge with other datasets
-wwtps['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in wwtps['CWNS_NUM']]
+wwtps['CWNS_NUM'] = wwtps['CWNS_NUM'].apply(pad_cwns_id)
 
 #filter to wwtps in the contiguous United States and reset indexing
-wwtps = wwtps.loc[(wwtps['STATE'] != 'PR') & (wwtps['STATE'] != 'AK') & (wwtps['STATE'] != 'VI') & (wwtps['STATE'] != 'HI') & (wwtps['STATE'] != 'MP') & (wwtps['STATE'] != 'GU') & (wwtps['STATE'] != 'AS')]
+wwtps = wwtps.loc[~wwtps['STATE'].isin(NON_CONTIGUOUS_STATES)]
 wwtps.reset_index(inplace = True, drop = True)
 
 # read in unit processes from the 2022 CWNS
-up2022 = pd.read_csv('data/cwns/2022/UNIT_PROCESSES.csv', dtype = {"CWNS_ID" : str})
+up2022 = pd.read_csv(CWNS_DATA_DIR / '2022' / 'UNIT_PROCESSES.csv', dtype = {"CWNS_ID" : str})
 up2022.rename(columns = {'CWNS_ID':'CWNS_NUM'}, inplace = True)
 
 #add a leading zero to CWNS ids with a length less than 11 to ensure proper merge
-up2022['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up2022['CWNS_NUM']]
+up2022['CWNS_NUM'] = up2022['CWNS_NUM'].apply(pad_cwns_id)
 
 # change formatting of 2022 unit process names to match that of prior years
 # note: 'Biological Treatment, Other' was manually corrected to be more specific. 'Chemical N Removal' was assumed to be roughly the same energy intensity as 'Chemical P removal'
-upnames_2022 = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_NAMES_2022.csv')
+upnames_2022 = pd.read_csv(EL_ABBADI_DATA_DIR / 'UNIT_PROCESS_NAMES_2022.csv')
 up2022 = pd.merge(left = up2022, right = upnames_2022, how = 'left', left_on = 'UNIT_PROCESS', right_on = '2022_UNIT_PROCESS_NAME')
 
 #filter to relevant columns and rename to match the formatting of old unit process dataframes
 up2022 = up2022[['CWNS_NUM','FINAL_UNIT_PROCESS_NAME','EXISTING_FLAG','PLANNED_FLAG']]
 up2022.rename(columns = {'EXISTING_FLAG':'PRES_IND','PLANNED_FLAG':'PROJ_IND'}, inplace = True)
-up2022.loc[up2022['PRES_IND'] == 'Y', 'PRES_IND'] = 1
-up2022.loc[up2022['PRES_IND'] == 'N', 'PRES_IND'] = 0
-up2022.loc[pd.isna(up2022['PRES_IND']), 'PRES_IND'] = 0
-up2022.loc[up2022['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
-up2022.loc[up2022['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
-up2022.loc[pd.isna(up2022['PROJ_IND']), 'PROJ_IND'] = 0
+up2022['PRES_IND'] = up2022['PRES_IND'].map(YES_NO_TO_BINARY).fillna(0)
+up2022['PROJ_IND'] = up2022['PROJ_IND'].map(YES_NO_TO_BINARY).fillna(0)
 up2022['REPORT_YEAR'] = 2022
 
 #read in unit processs reported in the 2004, 2008, and 2012 releases of CWNS
-up2012 = pd.read_csv(f'data/cwns/2012/2012_SUMMARY_UNIT_PROCESS.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding='latin1', on_bad_lines='warn')
-up2008 = pd.read_csv(f'data/cwns/2008/2008_SUMMARY_UNIT_PROCESS.csv',dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding='latin1')
-up2004 = pd.read_csv(f'data/cwns/2004/2004_Unit_Processes.csv', dtype = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}, encoding='latin1', low_memory=False)
+old_up_dtypes = {'REPORT_YEAR':int, "CWNS_NUMBER":str, "TREATMENT_TYPE":str,"UNIT_PROCESS":str}
+up2012 = pd.read_csv(CWNS_DATA_DIR / '2012' / '2012_SUMMARY_UNIT_PROCESS.csv', dtype = old_up_dtypes, encoding='latin1', on_bad_lines='warn')
+up2008 = pd.read_csv(CWNS_DATA_DIR / '2008' / '2008_SUMMARY_UNIT_PROCESS.csv', dtype = old_up_dtypes, encoding='latin1')
+up2004 = pd.read_csv(CWNS_DATA_DIR / '2004' / '2004_Unit_Processes.csv', dtype = old_up_dtypes, encoding='latin1', low_memory=False)
 
 #aggregate 2004, 2008, and 2012 unit process lists
 up_old = pd.concat([up2012, up2008,up2004], axis = 0)
@@ -85,10 +108,10 @@ up_old.drop(['BACKUP_IND','PLANNED_YEAR','ADDITIONAL_NOTES','LAST_UPDATED_TS','B
 up_old.rename(columns = {'CWNS_NUMBER':'CWNS_NUM'}, inplace = True)
 
 #add a leading zero to CWNS ids with a length less than 11 to ensure proper merge
-up_old['CWNS_NUM'] = ['0' + str(cwns) if len(str(cwns)) < 11 else str(cwns) for cwns in up_old['CWNS_NUM']]
+up_old['CWNS_NUM'] = up_old['CWNS_NUM'].apply(pad_cwns_id)
 
 #reconcile unit process naming conventions between report years
-upnames = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_NAMES.csv', dtype=str)
+upnames = pd.read_csv(EL_ABBADI_DATA_DIR / 'UNIT_PROCESS_NAMES.csv', dtype=str)
 up_old = pd.merge(left = up_old, right = upnames, how = 'left', left_on = 'UNIT_PROCESS', right_on = 'ORIGINAL_UP_NAME')
 up_old.drop(['ORIGINAL_UP_NAME'], inplace = True, axis = 1)
 
@@ -97,13 +120,9 @@ up_old = up_old.loc[~((up_old['PRES_IND'] == 'N') & (up_old['PROJ_IND'] == 'N'))
 up_old = up_old[['CWNS_NUM','REPORT_YEAR','PRES_IND','PROJ_IND','CHANGE_TYPE','FINAL_UNIT_PROCESS_NAME']]
 
 #change formatting of present and projected indices to binary
-up_old.loc[up_old['PRES_IND'] == 'Y', 'PRES_IND'] = 1
-up_old.loc[up_old['PRES_IND'] == 'N', 'PRES_IND'] = 0
-up_old.loc[up_old['PROJ_IND'] == 'Y', 'PROJ_IND'] = 1
-up_old.loc[up_old['PROJ_IND'] == 'N', 'PROJ_IND'] = 0
+up_old['PRES_IND'] = up_old['PRES_IND'].map(YES_NO_TO_BINARY)
+up_old['PROJ_IND'] = up_old['PROJ_IND'].map(YES_NO_TO_BINARY)
 
-#join 2022 unit process list and old unit process list
-# uplist_all = pd.concat([up2022, up_old], axis = 0)
 up_old_raw = up_old.copy()
 uplist_all = up_old
 
@@ -114,18 +133,11 @@ uplist_all.sort_values(by = ['CWNS_NUM','REPORT_YEAR'], ascending = True, inplac
 uplist_all.drop_duplicates(subset = ['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME','PRES_IND','PROJ_IND'], inplace = True, keep = 'last')
 uplist_recent = uplist_all.reset_index(drop = True)
 
-#assign key unit processes a code (ie. 'Activated Sludge' is assigned the code 'AS'); note, not all unit processes receive a code
-up_eicodes = pd.read_csv(f'{EL_ABBADI_DATA_DIR}/UNIT_PROCESS_EI_CODES_WERF_modified.csv', dtype=str)
-uplist_eicodes = uplist_recent.merge(up_eicodes[['FINAL_UNIT_PROCESS_NAME','WERF_CODE','DISPOSAL_CODE']].drop_duplicates(subset = ['FINAL_UNIT_PROCESS_NAME']), how = 'left', on = 'FINAL_UNIT_PROCESS_NAME')
-
-#create column to indicate if a unit process was present in 2022
-uplist_eicodes['2022_MIN_IND'] = uplist_eicodes['PRES_IND']
-
 # WE3LAB NEW ADDITIONS
 
 leaves = extract_leaves(unitprocess_keywords)
 all_keys = [name for name, _, _ in leaves]
-column_priority = {name: details.get("priority", 1) for name, details, _ in leaves if isinstance(details, dict)}
+column_priority = {name: details.get("priority", 1) for name, details, _ in leaves}
 top_category_to_columns, column_secondary_categories, column_global_priority = \
     build_secondary_category_lookup(unitprocess_keywords)
 
@@ -134,28 +146,10 @@ for process_name, details, _ in leaves:
     for cwns_name in details["cwns_processes"]:
         cwns_to_taxonomy.setdefault(cwns_name.lower().strip(), []).append(process_name)
 
-def pad_cwns_id(x):
-    s = str(x).strip()
-    return '0' + s if len(s) < 11 else s
-
-active_ups = uplist_eicodes[(uplist_eicodes['PRES_IND'] == 1) | (uplist_eicodes['PROJ_IND'] == 1)].copy()
+active_ups = uplist_recent[(uplist_recent['PRES_IND'] == 1) | (uplist_recent['PROJ_IND'] == 1)].copy()
 active_ups = (active_ups.sort_values('REPORT_YEAR', kind='stable')
               .drop_duplicates(subset=['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME'], keep='last'))
 active_ups = active_ups[active_ups['CWNS_NUM'].isin(set(wwtps['CWNS_NUM']))]
-
-def has_change(change_type):
-    # CHANGE_TYPE may be a comma-separated list; real change if any token isn't "No Change"
-    if not isinstance(change_type, str):
-        return False
-    return any(t.strip() and t.strip().lower() != 'no change' for t in change_type.split(','))
-
-def get_status(row):
-    if row.get('CHANGE_TYPE') == 'Abandonment':
-        return 'PAST'
-    if row['PRES_IND'] == 1 and row['PROJ_IND'] == 1:
-        # only flag a future change if an actual change is recorded; otherwise just present
-        return 'PRESENT_AND_FUTURE' if has_change(row.get('CHANGE_TYPE')) else 'PRESENT'
-    return 'PRESENT' if row['PRES_IND'] == 1 else 'FUTURE'
 
 active_ups['STATUS'] = active_ups.apply(get_status, axis=1)
 active_ups['PROCESS'] = active_ups['FINAL_UNIT_PROCESS_NAME'].str.lower().str.strip().map(cwns_to_taxonomy)
@@ -176,7 +170,7 @@ for proc in all_keys:
     if proc not in unit_processes_df.columns:
         unit_processes_df[proc] = '0'
 
-facility_permit = pd.read_csv('data/cwns/2022/FACILITY_PERMIT.csv', dtype={'CWNS_ID': str, 'STATE_CODE': str})
+facility_permit = pd.read_csv(CWNS_DATA_DIR / '2022' / 'FACILITY_PERMIT.csv', dtype={'CWNS_ID': str, 'STATE_CODE': str})
 facility_permit['CWNS_ID'] = facility_permit['CWNS_ID'].apply(pad_cwns_id)
 
 unit_processes_df = unit_processes_df.merge(
@@ -188,7 +182,7 @@ unit_processes_df = unit_processes_df.merge(
 facility_names = facilities_2022[['CWNS_ID', 'FACILITY_NAME', 'FACILITY_ID']].drop_duplicates(['CWNS_ID', 'FACILITY_ID'])
 unit_processes_df = unit_processes_df.merge(facility_names, on='CWNS_ID', how='left')
 
-fac12 = pd.read_csv('data/cwns/2012/Facility_Details.csv', dtype=str)
+fac12 = pd.read_csv(CWNS_DATA_DIR / '2012' / 'Facility_Details.csv', dtype=str)
 fac12['CWNS Number'] = fac12['CWNS Number'].apply(pad_cwns_id)
 fac12_map = fac12.drop_duplicates('CWNS Number').set_index('CWNS Number')['Facility/Project Name']
 null_name = unit_processes_df['FACILITY_NAME'].isna()
@@ -214,15 +208,11 @@ ca_permits = facility_permit[
 ]
 required_ids = set(ca_permits['CWNS_ID'].astype(str).str.strip())
 
-ciwqs_path = os.path.join('data', 'ciwqs_to_cwns.csv')
-ciwqs_mapping = (
-    pd.read_csv(ciwqs_path, dtype=str).fillna('')
-    if os.path.isfile(ciwqs_path)
-    else pd.DataFrame()
-)
-for cid in ciwqs_mapping.get('CWNS_ID', pd.Series(dtype=str)).astype(str).str.strip():
-    if cid and cid.upper() != 'NA':
-        required_ids.add(pad_cwns_id(cid))
+ciwqs_mapping = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str).fillna('')
+stripped_cwns = ciwqs_mapping['CWNS_ID'].astype(str).str.strip()
+ciwqs_rows = ciwqs_mapping.loc[stripped_cwns.ne('') & stripped_cwns.str.upper().ne('NA')].copy()
+ciwqs_rows['padded_cwns_id'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
+required_ids |= set(ciwqs_rows['padded_cwns_id'])
 
 missing_ids = sorted(required_ids - ids_in_export)
 if missing_ids:
@@ -235,9 +225,6 @@ if missing_ids:
         .set_index('cwns_key')
     )
 
-    stripped_cwns = ciwqs_mapping.get('CWNS_ID', pd.Series(dtype=str)).astype(str).str.strip()
-    ciwqs_rows = ciwqs_mapping.loc[stripped_cwns.ne('') & stripped_cwns.str.upper().ne('NA')].copy()
-    ciwqs_rows['padded_cwns_id'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
     ciwqs_by_cwns = ciwqs_rows.drop_duplicates('padded_cwns_id', keep='first').set_index('padded_cwns_id')
 
     fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
@@ -286,13 +273,13 @@ for idx in ca_consolidated.index:
     )
     ca_consolidated.loc[idx, proc_cols_backfill] = pd.Series(status_dict)
 
-cwns_phys = pd.read_csv('data/cwns/2022/PHYSICAL_LOCATION.csv', dtype=str).fillna("")
+cwns_phys = pd.read_csv(CWNS_DATA_DIR / '2022' / 'PHYSICAL_LOCATION.csv', dtype=str).fillna("")
 ca_consolidated = ca_consolidated.merge(
     cwns_phys[['CWNS_ID', 'FACILITY_ID', 'LATITUDE', 'LONGITUDE']].drop_duplicates(),
     on=['CWNS_ID', 'FACILITY_ID'], how='left'
 )
 ca_consolidated = add_county_and_sort(ca_consolidated, "FACILITY_NAME", cwns_id_col="CWNS_ID")
-ca_consolidated.to_csv(os.path.join(OUTPUT_DATA_DIR, "unit_processes_by_facility_cwns.csv"), index=False)
+ca_consolidated.to_csv(CWNS_TABLE_CSV, index=False)
 print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")
 
 # Track CA facilities and unit process changes across CWNS survey years
@@ -300,22 +287,16 @@ ca_ids = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
 ca_up_check = up_old_raw[up_old_raw['CWNS_NUM'].astype(str).str.strip().isin(ca_ids)]
 ca_up_2022 = up2022[up2022['CWNS_NUM'].astype(str).str.strip().isin(ca_ids)]
 
-def cwns_from_facility_file(path, cwns_col, state_col, state_val=None):
-    df = pd.read_csv(path, dtype=str, encoding='latin1')
-    if state_val is not None:
-        df = df[df[state_col].str.strip() == state_val]
-    return set(df[cwns_col].apply(pad_cwns_id))
-
 fac_2004 = set(ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]['CWNS_NUM'].astype(str).str.strip()) & ca_ids
-fac_2008 = cwns_from_facility_file('data/cwns/2008/Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
-fac_2012 = cwns_from_facility_file('data/cwns/2012/Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
+fac_2008 = cwns_from_facility_file(CWNS_DATA_DIR / '2008' / 'Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
+fac_2012 = cwns_from_facility_file(CWNS_DATA_DIR / '2012' / 'Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
 fac_2022 = set(facilities_2022[facilities_2022['STATE_CODE'].str.strip() == 'CA']['CWNS_ID'].apply(pad_cwns_id)) & ca_ids
 
 # US-wide equivalents of the per-year facility sets, over all contiguous US treatment plants
 us_ids = set(wwtps['CWNS_NUM'].astype(str).str.strip())
 usfac_2004 = set(up_old_raw[up_old_raw['REPORT_YEAR'] == 2004]['CWNS_NUM'].astype(str).str.strip()) & us_ids
-usfac_2008 = cwns_from_facility_file('data/cwns/2008/Facility_Details.csv', 'CWNS Number', 'State') & us_ids
-usfac_2012 = cwns_from_facility_file('data/cwns/2012/Facility_Details.csv', 'CWNS Number', 'State') & us_ids
+usfac_2008 = cwns_from_facility_file(CWNS_DATA_DIR / '2008' / 'Facility_Details.csv', 'CWNS Number', 'State') & us_ids
+usfac_2012 = cwns_from_facility_file(CWNS_DATA_DIR / '2012' / 'Facility_Details.csv', 'CWNS Number', 'State') & us_ids
 usfac_2022 = set(facilities_2022['CWNS_ID'].apply(pad_cwns_id)) & us_ids
 
 # Most recent CWNS survey year with unit process records; 0 = never reported
@@ -360,17 +341,16 @@ for label, year_data, rec in [
 
     years = [y for y, _, _ in year_data]
     total = len(cum)
-    pct = lambda v: '' if v == '' else round(100 * v / total, 1)
     for metric, counts in [
         ('New facilities added (#)', n_new),
-        ('New facilities added (% of 2022 cumulative)', {y: pct(n_new[y]) for y in years}),
+        ('New facilities added (% of 2022 cumulative)', {y: percent_of(n_new[y], total) for y in years}),
         ('Facilities with process updates (#)', n_upd),
-        ('Facilities with process updates (% of 2022 cumulative)', {y: pct(n_upd[y]) for y in years}),
+        ('Facilities with process updates (% of 2022 cumulative)', {y: percent_of(n_upd[y], total) for y in years}),
         ('Facilities with most recent update in this year (#)', n_recent),
-        ('Facilities with most recent update in this year (% of 2022 cumulative)', {y: pct(n_recent[y]) for y in years}),
+        ('Facilities with most recent update in this year (% of 2022 cumulative)', {y: percent_of(n_recent[y], total) for y in years}),
     ]:
         table_rows.append({'Region': label, 'Metric': metric, **{str(y): counts[y] for y in years}})
 
 table_s1 = pd.DataFrame(table_rows, dtype=object)
-table_s1.to_csv(os.path.join(OUTPUT_DATA_DIR, 'final', 'table_s1.csv'), index=False)
+table_s1.to_csv(FINAL_DIR / 'table_s1.csv', index=False)
 print(f"Saved table_s1.csv (CA n={len(ca_ids)}, US n={len(us_ids)})")

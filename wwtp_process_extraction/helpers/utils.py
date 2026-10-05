@@ -2,8 +2,7 @@ import pandas as pd
 import os
 import re
 import json
-import io
-import PyPDF2
+from functools import cache
 from pathlib import Path
 import unicodedata
 
@@ -14,34 +13,83 @@ STATUS_TOKENS = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "O
 # table_1 state accuracy then checks the exact state on those detected cells.
 PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
 DETECTED_STATUSES = PRESENT_STATUSES | {"FUTURE", "OFFSITE"}
+# Which status wins when one process gets several
+STATUS_RANK = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
 
 PLACE_ID_RE = re.compile(r"_(\d+)\.json$")
 
+SEP = "\n\n===PLANNED CHANGES===\n\n"
 
-_document_recency_cache = None
+# A statewide general order (2014-0153-DWQ, 97-010-DWQ) describes no single plant. All boilerplate
+# Detection has to be content-based since enrollee's order_no IS the general order number.
+GENERAL_ORDER_RE = re.compile(r"general\s+waste\s+discharge\s+requirements", re.IGNORECASE)
+NOA_HEADER_RE = re.compile(r"notice\s+of\s+applicability", re.IGNORECASE)
+STATE_BOARD_RE = re.compile(r"state\s+water\s+resources\s+control\s+board", re.IGNORECASE)
+ANY_PAGE_MARKER_RE = re.compile(r"===PAGE \d+===\n?|\[Page \d+\]\n?")
+GENERAL_ORDER_TITLE_CHARS = 300
+NOA_HEADER_CHARS = 900
+
+# Drop watershed permit "agency"
+COLLECTIVE_AGENCY_RE = re.compile(r"\borganizations?\s+under\b", re.IGNORECASE)
+
+# Canonical project paths, resolved from this file so they survive any os.chdir.
+PACKAGE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = PACKAGE_DIR / "data"
+OUTPUT_DIR = PACKAGE_DIR / "output"
+FINAL_DIR = OUTPUT_DIR / "final"
+FIGURES_DIR = OUTPUT_DIR / "figures"
+LLM_EXTRACTION_DIR = OUTPUT_DIR / "llm_extraction"
+WATERRAG_RETRIEVAL_DIR = OUTPUT_DIR / "waterrag_retrieval"
+CIWQS_TO_CWNS_CSV = DATA_DIR / "ciwqs_to_cwns.csv"
+KEYWORDS_JSON = DATA_DIR / "unitprocess_keywords.json"
+MANUAL_CSV = DATA_DIR / "unit_processes_by_facility_manual.csv"
+SITE_DATA_ALL_CSV = OUTPUT_DIR / "site_data_all.csv"
+SITE_DATA_RELEVANT_CSV = OUTPUT_DIR / "site_data_relevant.csv"
+CWNS_TABLE_CSV = OUTPUT_DIR / "unit_processes_by_facility_cwns.csv"
+# Output column order for rewriting ciwqs_to_cwns.csv (figure_3)
+CIWQS_TO_CWNS_COLUMNS = [
+    "WDID", "Place ID", "Facility Name", "NPDES No.", "Region",
+    "Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS",
+    "CWNS_ID", "FACILITY_ID", "CWNS Facility Name",
+]
+
+mapping_df = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False)
+
+for c in mapping_df.columns:
+    mapping_df[c] = mapping_df[c].str.strip()
+
+mapping_df = mapping_df.sort_values(
+    by="NPDES No.", key=lambda s: s.eq(""), ascending=True
+).drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first")
+
+cwns_mapping = mapping_df[
+    mapping_df["CWNS_ID"].ne("") & mapping_df["CWNS_ID"].str.upper().ne("NA")
+].copy()
+
+no_cwns_pids: set[str] = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq("NA"), "Place ID"])
+
+with open(KEYWORDS_JSON, "r") as f:
+    unitprocess_keywords = json.load(f)
 
 
+@cache
 def document_recency():
     """(place_id, pdf_stem) -> newest snapshot date that document appears in, '' if none.
 
-    step2 writes a dated site_data_relevant.csv per AS_OF run and step2c unions them into
+    step2 writes a dated site_data_relevant.csv per AS_OF run and unions them into
     as_of_dates. The document a facility holds in the newest snapshot is its current permit;
     one absent from every snapshot is a leftover from a superseded order.
     """
-    global _document_recency_cache
-    if _document_recency_cache is None:
-        recency = {}
-        rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False).fillna("")
-        dates_col = "as_of_dates" if "as_of_dates" in rel.columns else None
-        for _, row in rel.iterrows():
-            pdf = row["PDF_File"].strip()
-            if not pdf:
-                continue
-            key = (row["Place ID"].strip(), Path(pdf).stem)
-            newest = max(row[dates_col].split(";")) if dates_col and row[dates_col] else ""
-            recency[key] = max(recency.get(key, ""), newest)
-        _document_recency_cache = recency
-    return _document_recency_cache
+    recency = {}
+    rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False)
+    for _, row in rel.iterrows():
+        pdf = row["PDF_File"].strip()
+        if not pdf:
+            continue
+        key = (row["Place ID"].strip(), Path(pdf).stem)
+        newest = max(row["as_of_dates"].split(";")) if row["as_of_dates"] else ""
+        recency[key] = max(recency.get(key, ""), newest)
+    return recency
 
 
 def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_id=None):
@@ -62,9 +110,9 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
     candidates = {}
     for json_file in Path(json_dir).glob("*.json"):
         m = PLACE_ID_RE.search(json_file.name)
-        place_id = m.group(1) if m else ""
-        if not place_id:
+        if not m:
             continue
+        place_id = m.group(1)
         if place_id_filter is not None and place_id not in place_id_filter:
             continue
         if pdf_stem_by_place_id and place_id in pdf_stem_by_place_id:
@@ -79,13 +127,10 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
         if len(files) == 1:
             selected[place_id] = files[0]
             continue
-        ranked = sorted(
-            files,
-            key=lambda f: recency.get((place_id, f.name[: -(len(place_id) + 6)]), ""),
-            reverse=True,
-        )
-        best = recency.get((place_id, ranked[0].name[: -(len(place_id) + 6)]), "")
-        tied = [f for f in ranked if recency.get((place_id, f.name[: -(len(place_id) + 6)]), "") == best]
+        file_recency = {f: recency.get((place_id, f.name[: -(len(place_id) + 6)]), "") for f in files}
+        ranked = sorted(files, key=file_recency.get, reverse=True)
+        best = file_recency[ranked[0]]
+        tied = [f for f in ranked if file_recency[f] == best]
         if len(tied) > 1:
             raise ValueError(
                 f"Place {place_id} in {Path(json_dir).name}: {len(tied)} documents are equally "
@@ -94,23 +139,6 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
             )
         selected[place_id] = ranked[0]
     return selected
-
-SEP = "\n\n===PLANNED CHANGES===\n\n"
-
-# A statewide general order (2014-0153-DWQ, 97-010-DWQ) describes no single plant — its generic
-# process list ("septic tank, Imhoff tank, package treatment tank...") would otherwise be
-# attributed to every enrolled facility. Detection has to be content-based: the order number
-# can't discriminate, because an enrollee's order_no IS the general order number.
-_GENERAL_ORDER_RE = re.compile(r"general\s+waste\s+discharge\s+requirements", re.IGNORECASE)
-_NOA_HEADER_RE = re.compile(r"notice\s+of\s+applicability", re.IGNORECASE)
-_STATE_BOARD_RE = re.compile(r"state\s+water\s+resources\s+control\s+board", re.IGNORECASE)
-_ANY_PAGE_MARKER_RE = re.compile(r"===PAGE \d+===\n?|\[Page \d+\]\n?")
-GENERAL_ORDER_TITLE_CHARS = 300
-NOA_HEADER_CHARS = 900
-
-
-# Drop watershed permit "agency"
-COLLECTIVE_AGENCY_RE = re.compile(r"\borganizations?\s+under\b", re.IGNORECASE)
 
 
 def is_general_order(text):
@@ -124,72 +152,13 @@ def is_general_order(text):
       - no "Notice of Applicability" heading, because an enrollee's own NOA cites the general
         order in its header and would otherwise match
     """
-    head = _ANY_PAGE_MARKER_RE.sub("", text[:NOA_HEADER_CHARS * 2])
-    if not _GENERAL_ORDER_RE.search(head[:GENERAL_ORDER_TITLE_CHARS]):
+    head = ANY_PAGE_MARKER_RE.sub("", text[:NOA_HEADER_CHARS * 2])
+    if not GENERAL_ORDER_RE.search(head[:GENERAL_ORDER_TITLE_CHARS]):
         return False
-    if not _STATE_BOARD_RE.search(head[:NOA_HEADER_CHARS]):
+    if not STATE_BOARD_RE.search(head[:NOA_HEADER_CHARS]):
         return False
-    return not _NOA_HEADER_RE.search(head[:NOA_HEADER_CHARS])
+    return not NOA_HEADER_RE.search(head[:NOA_HEADER_CHARS])
 
-# Canonical project paths, resolved from this file so they survive any os.chdir.
-PACKAGE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = PACKAGE_DIR / "data"
-OUTPUT_DIR = PACKAGE_DIR / "output"
-CIWQS_TO_CWNS_CSV = DATA_DIR / "ciwqs_to_cwns.csv"
-KEYWORDS_JSON = DATA_DIR / "unitprocess_keywords.json"
-SITE_DATA_ALL_CSV = OUTPUT_DIR / "site_data_all.csv"
-SITE_DATA_RELEVANT_CSV = OUTPUT_DIR / "site_data_relevant.csv"
-FACILITIES_JSON = OUTPUT_DIR / "facilities.json"
-CWNS_TABLE_CSV = OUTPUT_DIR / "unit_processes_by_facility_cwns.csv"
-# Output column order for rewriting ciwqs_to_cwns.csv (figure_3)
-CIWQS_TO_CWNS_COLUMNS = [
-    "WDID", "Place ID", "Facility Name", "NPDES No.", "Region",
-    "Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS",
-    "CWNS_ID", "FACILITY_ID", "CWNS Facility Name",
-]
-
-mapping_df = pd.read_csv(
-    CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False
-).fillna("")
-
-for c in mapping_df.columns:
-    mapping_df[c] = mapping_df[c].str.strip()
-
-mapping_df = mapping_df.sort_values(
-    by="NPDES No.", key=lambda s: s.eq(""), ascending=True
-).drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first")
-
-cwns_mapping = mapping_df[
-    mapping_df["CWNS_ID"].ne("") & mapping_df["CWNS_ID"].str.upper().ne("NA")
-].copy()
-
-no_cwns_pids: set[str] = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq("NA"), "Place ID"])
-
-with open(KEYWORDS_JSON, "r") as f:
-    unitprocess_keywords = json.load(f)
-
-
-def package_sub_readers(reader):
-    """For a PDF Package/Portfolio, yield a PdfReader for each embedded PDF sub-file."""
-    try:
-        root = reader.trailer['/Root'].get_object()
-        names_obj = root['/Names'].get_object()
-        emb_node = names_obj.get('/EmbeddedFiles')
-        if not emb_node:
-            return
-        emb_names = emb_node.get_object()['/Names']
-        for i in range(0, len(emb_names), 2):
-            try:
-                fspec = emb_names[i + 1].get_object()
-                ef = fspec.get('/EF', {}).get_object()
-                fstream = ef.get('/F') or ef.get('/UF')
-                if fstream:
-                    yield PyPDF2.PdfReader(io.BytesIO(fstream.get_object().get_data()))
-            except Exception:
-                continue
-    except Exception:
-        return
-    
 
 def normalize_text(text, lower=True):
     """Normalize for matching: NFKC, drop zero-width chars, collapse whitespace, lowercase.
@@ -202,6 +171,7 @@ def normalize_text(text, lower=True):
     text = re.sub(r"[­​‌‍﻿]", "", text)  # zero-width chars
     text = re.sub(r"\s+", " ", text).strip()
     return text.lower() if lower else text
+
 
 def parse_status(val) -> str:
     """Canonical status token for a cell (see STATUS_TOKENS), or '' if blank.
@@ -226,31 +196,6 @@ def is_present(val, statuses=PRESENT_STATUSES) -> bool:
     return parse_status(val) in statuses
 
 
-def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None):
-    """Per-column TP/FP/FN between a truth row and a prediction row, using is_present on both sides.
-
-    Returns (tp, fp, fn, missed, extra) where missed/extra are sorted column-name lists.
-    """
-    truth_cols = truth_row.index if truth_cols is None else truth_cols
-    pred_cols = pred_row.index if pred_cols is None else pred_cols
-    tp = fp = fn = 0
-    missed, extra = [], []
-    for col in cols:
-        truth_val = truth_row.get(col, "") if col in truth_cols else ""
-        pred_val = pred_row.get(col, "") if col in pred_cols else ""
-        truth_positive = is_present(truth_val)
-        pred_positive = is_present(pred_val)
-        if truth_positive and pred_positive:
-            tp += 1
-        elif pred_positive:
-            fp += 1
-            extra.append(col)
-        elif truth_positive:
-            fn += 1
-            missed.append(col)
-    return tp, fp, fn, sorted(missed), sorted(extra)
-
-
 def precision_recall_f1(tp, fp, fn, empty=float("nan")):
     """Precision, recall, F1, and Jaccard overlap from TP/FP/FN counts.
 
@@ -264,27 +209,11 @@ def precision_recall_f1(tp, fp, fn, empty=float("nan")):
     return precision, recall, f1, jaccard
 
 
-def f1_error_parts(tp, fp, fn, empty=0):
-    """Split F1 error (1 - F1) into missed (FN) and extra (FP) shares, plus their total.
-
-    All three divide by 2*tp+fp+fn (= |truth| + |prediction|, the F1/Dice denominator), so
-    missed + extra equals the total error 1 - F1, bounded in [0, 1] — figure_2's error is
-    exactly the complement of table_1's F1. empty is returned when the denominator is zero.
-    Returns (missed, extra, total).
-    """
-    denom = 2 * tp + fp + fn
-    if not denom:
-        return empty, empty, empty
-    return fn / denom, fp / denom, (fp + fn) / denom
-
-
 def extract_leaves(processes_dict, group_id=None, exclude_keys=()):
     """Return list of (name, details_dict, group_id) for all leaf entries."""
     leaves = []
     for name, details in processes_dict.items():
         if name in exclude_keys:
-            continue
-        if not isinstance(details, dict):
             continue
         if "alt_names" in details:
             leaves.append((name, details, group_id))
@@ -319,11 +248,10 @@ def build_secondary_category_lookup(keywords_dict):
     for top_cat, cat_val in keywords_dict.items():
         for name, details, _ in extract_leaves({top_cat: cat_val}):
             top_category_to_columns.setdefault(top_cat, []).append(name)
-            if isinstance(details, dict):
-                column_global_priority[name] = details.get("global_priority", 1)
-                sc = details.get("secondary_category", [])
-                if sc and isinstance(sc, list):
-                    column_secondary_categories[name] = sc
+            column_global_priority[name] = details.get("global_priority", 1)
+            secondary_categories = details.get("secondary_category", [])
+            if secondary_categories:
+                column_secondary_categories[name] = secondary_categories
     return top_category_to_columns, column_secondary_categories, column_global_priority
 
 
@@ -339,8 +267,8 @@ def apply_secondary_category_backfill(
     """Backfill secondary categories: if a PRESENT process requests a secondary category
     that has no PRESENT process, mark the best fallback (unspecified-first) as PRESENT.
 
-    ontology_resolve_fn(source_col, sec_cat, sec_cols) -> str | None: optional hook for
-    ontology-based selection (used by step4). Returns the chosen column name, or None to
+    ontology_resolve_fn(sec_cols) -> str | None: optional hook for
+    ontology-based selection (used by step6). Returns the chosen column name, or None to
     fall back to unspecified-first heuristic.
     excluded_cols: columns cleared by exclude_if_any for this item — never backfilled,
     so the backfill can't resurrect a column an exclusion just removed.
@@ -354,7 +282,7 @@ def apply_secondary_category_backfill(
             available = [c for c in sec_cols if c in status_dict and c not in excluded_cols]
             if not available:
                 continue
-            chosen = ontology_resolve_fn(source_col, sec_cat, sec_cols) if ontology_resolve_fn else None
+            chosen = ontology_resolve_fn(sec_cols) if ontology_resolve_fn else None
             if chosen is None:
                 # Prefer the category-level catch-all (e.g., "Unspecified Filtration")
                 # before nested catch-alls (e.g., "Unspecified FFR").
@@ -384,10 +312,7 @@ def merge_column_statuses(column) -> str:
     tokens = {parse_status(v) for v in column}
     if "PRESENT_AND_FUTURE" in tokens or ("PRESENT" in tokens and "FUTURE" in tokens):
         return "PRESENT_AND_FUTURE"
-    for token in ("PRESENT", "FUTURE", "OFFSITE", "PAST"):
-        if token in tokens:
-            return token
-    return ""
+    return max(tokens, key=STATUS_RANK.get, default="")
 
 
 def collapse_facility_processes(
@@ -426,12 +351,6 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
     return cwns_by_facility, merged
 
 
-def normalize_order_no(value):
-    # "R5-2007-0090", "r5 2007 0090" and "WQ 2007-0090" are one order written three ways
-    text = re.sub(r"[^0-9A-Za-z]", "", str(value)).upper()
-    return re.sub(r"^(R\d{1,2}[A-Z]?)?WQ", "", text) or text
-
-
 def same_order_no(a, b):
     """Whether two order numbers name the same order. None if either is missing.
 
@@ -444,17 +363,20 @@ def same_order_no(a, b):
     """
     if not a or not b:
         return None
-    a, b = normalize_order_no(a), normalize_order_no(b)
+    # "R5-2007-0090", "r5 2007 0090" and "WQ 2007-0090" are one order written three ways
+    normalized = []
+    for value in (a, b):
+        text = re.sub(r"[^0-9A-Za-z]", "", str(value)).upper()
+        normalized.append(re.sub(r"^(R\d{1,2}[A-Z]?)?WQ", "", text) or text)
+    a, b = normalized
     return a in b or b in a
 
 
-_orders_in_force_cache = {}
-
-
+@cache
 def orders_in_force(as_of=None):
     """place_id -> set of Order_No values CIWQS listed for it as of a snapshot date.
 
-    step2c unions each dated scrape into site_data_relevant.csv's as_of_dates, so the orders
+    step2 unions each dated scrape into site_data_relevant.csv's as_of_dates, so the orders
     a facility held on a given date are the Order_No values on rows carrying that date. Read
     from the union rather than output/site_data/<date>/ because as_of_dates carries dates that
     have no snapshot directory.
@@ -462,22 +384,19 @@ def orders_in_force(as_of=None):
     as_of=None uses the newest date present. Pass an explicit date to reconstruct the fleet as
     it stood then -- comparisons against CWNS 2022 want the 2022 permits, not today's.
     """
-    key = as_of or ""
-    if key not in _orders_in_force_cache:
-        rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False).fillna("")
-        dates = set()
-        for v in rel["as_of_dates"]:
-            dates |= {d for d in str(v).split(";") if d}
-        target = as_of or (max(dates) if dates else "")
-        held = {}
-        for _, row in rel.iterrows():
-            if target and target not in str(row["as_of_dates"]).split(";"):
-                continue
-            order = str(row["Order_No"]).strip()
-            if order:
-                held.setdefault(normalize_id(row["Place ID"]), set()).add(order)
-        _orders_in_force_cache[key] = held
-    return _orders_in_force_cache[key]
+    rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False)
+    dates = set()
+    for v in rel["as_of_dates"]:
+        dates |= {d for d in str(v).split(";") if d}
+    target = as_of or (max(dates) if dates else "")
+    held = {}
+    for _, row in rel.iterrows():
+        if target and target not in str(row["as_of_dates"]).split(";"):
+            continue
+        order = str(row["Order_No"]).strip()
+        if order:
+            held.setdefault(normalize_id(row["Place ID"]), set()).add(order)
+    return held
 
 
 def order_year(order):
@@ -571,7 +490,7 @@ def add_county_and_sort(df, name_col, place_id_col=None, wdid_col=None, cwns_id_
     Place ID and CWNS_ID so any of the three keys can resolve a county. Rows with no
     county sort last.
     """
-    site = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str, keep_default_na=False).fillna("")
+    site = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str, keep_default_na=False)
     county_by_wdid = {}
     for wdid, county in zip(site["WDID"].str.strip(), site["County"].str.strip()):
         if wdid and county and wdid not in county_by_wdid:
@@ -586,49 +505,35 @@ def add_county_and_sort(df, name_col, place_id_col=None, wdid_col=None, cwns_id_
         if county and cwns_id:
             county_by_cwns_id.setdefault(cwns_id, county)
 
-    def county_for(row):
-        place_id = normalize_id(row[place_id_col]) if place_id_col else ""
-        wdid = row[wdid_col].strip() if wdid_col else ""
-        cwns_id = normalize_id(row[cwns_id_col]) if cwns_id_col else ""
-        return county_by_place_id.get(place_id) or county_by_wdid.get(wdid) or county_by_cwns_id.get(cwns_id) or ""
-
-    df.insert(df.columns.get_loc(name_col) + 1, "County", df.apply(county_for, axis=1))
+    county = pd.Series(pd.NA, index=df.index, dtype=object)
+    if place_id_col:
+        county = county.fillna(df[place_id_col].map(normalize_id).map(county_by_place_id))
+    if wdid_col:
+        county = county.fillna(df[wdid_col].str.strip().map(county_by_wdid))
+    if cwns_id_col:
+        county = county.fillna(df[cwns_id_col].map(normalize_id).map(county_by_cwns_id))
+    df.insert(df.columns.get_loc(name_col) + 1, "County", county.fillna(""))
     n_missing = (df["County"].str.strip() == "").sum()
     print(f"  add_county_and_sort: {len(df) - n_missing}/{len(df)} rows got a county ({n_missing} blank)")
-    sort_key = lambda col: col.map(lambda v: "￿" if not str(v).strip() else str(v).lower())
-    return df.sort_values(by=["County", name_col], key=sort_key).reset_index(drop=True)
+    return df.sort_values(
+        by=["County", name_col],
+        key=lambda col: col.map(lambda v: "￿" if not str(v).strip() else str(v).lower()),
+    ).reset_index(drop=True)
 
 
 def build_txt_jobs(txt_folder: str, facilities_information: str):
     txt_folder_path = Path(txt_folder)
-    facilities_path = Path(facilities_information)
-    facilities_df = pd.read_csv(facilities_path, dtype=str).fillna("")
-    required_columns = {"Facility Name", "PDF_File"}
-    missing_columns = required_columns.difference(set(facilities_df.columns))
-    if missing_columns:
-        raise ValueError(
-            "--facilities_information is missing required columns: "
-            + ", ".join(sorted(missing_columns))
-        )
+    facilities_df = pd.read_csv(facilities_information, dtype=str).fillna("")
 
     jobs = []
     for row_idx, row in facilities_df.iterrows():
         facility_name = str(row["Facility Name"]).strip()
         pdf_file_value = str(row["PDF_File"]).strip()
-
-        if not facility_name or facility_name.lower() == "nan":
-            continue
-        if not pdf_file_value or pdf_file_value.lower() == "nan":
+        if not facility_name or not pdf_file_value:
             continue
 
-        txt_path = Path(pdf_file_value)
-        if not txt_path.is_absolute():
-            path_value = Path(pdf_file_value)
-            path_value = txt_folder_path / path_value
-            txt_name = path_value.with_suffix(".txt").name
-            txt_path = txt_folder_path / txt_name
-
-        if not txt_path.exists() or not txt_path.is_file():
+        txt_path = txt_folder_path / Path(pdf_file_value).with_suffix(".txt").name
+        if not txt_path.is_file():
             print(f"No txt for '{facility_name}': {txt_path.name}, skipping.")
             continue
 

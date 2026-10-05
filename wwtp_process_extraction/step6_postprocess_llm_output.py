@@ -2,73 +2,54 @@ import pandas as pd
 import json
 import os
 import sys
+from functools import partial
 from pathlib import Path
 from collections import Counter
 from rdflib import RDF, RDFS
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask, DATA_DIR, OUTPUT_DIR, KEYWORDS_JSON, SITE_DATA_RELEVANT_CSV
-
-LLM_EXTRACTION_DIR = OUTPUT_DIR / "llm_extraction"
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask, unitprocess_keywords, OUTPUT_DIR, LLM_EXTRACTION_DIR, MANUAL_CSV, SITE_DATA_RELEVANT_CSV, STATUS_TOKENS, STATUS_RANK
 
 ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
            "document_order_no"]
 
-# Any status that means the extractor found the process; a row with none of them is empty.
-PRESENT_LIKE = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
-STATUS_RANK = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
-
 input_dir = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini" # Full CA dataset run
 output_csv = OUTPUT_DIR / "unit_processes_by_pdf_llm.csv"
 output_fac_csv = OUTPUT_DIR / "unit_processes_by_facility_llm.csv"
-site_data_csv = SITE_DATA_RELEVANT_CSV
 output_json_dir = input_dir / "ontology_postprocess" # postprocessed JSONs in nested subfolder
-output_json_dir.mkdir(parents=True, exist_ok=True)
 
-with open(KEYWORDS_JSON) as f:
-    keywords = json.load(f)
-
-leaves = []
-for top_cat, cat_val in keywords.items():
-    for name, details, group_id in extract_leaves({top_cat: cat_val}):
-        leaves.append((name, details, group_id, top_cat))
-columns = [name for name, _, _, _ in leaves]
+leaves = extract_leaves(unitprocess_keywords)
+columns = [name for name, _, _ in leaves]
 group_to_columns = {}
 column_priority = {}
 column_exclude_if_any = {}
 column_trigger_clauses = {}
+# ontology_triggers rules sorted by priority
+trigger_rules = []
 top_category_to_columns, column_secondary_categories, column_global_priority = \
-    build_secondary_category_lookup(keywords)
-for name, _, group_id, _ in leaves:
+    build_secondary_category_lookup(unitprocess_keywords)
+for name, details, group_id in leaves:
     if group_id:
         group_to_columns.setdefault(group_id, []).append(name)
-for name, details, _, _ in leaves:
-    column_priority[name] = details.get("priority", 1)
+    priority = details.get("priority", 1)
+    column_priority[name] = priority
     exclude_tokens = details.get("exclude_if_any", [])
-    if exclude_tokens and isinstance(exclude_tokens, list):
+    if exclude_tokens:
         column_exclude_if_any[name] = exclude_tokens
     trigger = details.get("ontology_triggers")
     if trigger:
-        column_trigger_clauses[name] = [trigger] if isinstance(trigger[0], str) else trigger
-
-# ontology_triggers rules sorted by priority
-trigger_rules = []
-for name, details, group_id, _ in leaves:
-    trigger = details.get("ontology_triggers")
-    if not trigger:
-        continue
-    # Normalize: single list → list-of-lists
-    clauses = [trigger] if isinstance(trigger[0], str) else trigger
-    priority = details.get("priority", 1)
-    trigger_rules.append((name, clauses, priority, group_id))
+        # Normalize: single list → list-of-lists
+        clauses = [trigger] if isinstance(trigger[0], str) else trigger
+        column_trigger_clauses[name] = clauses
+        trigger_rules.append((name, clauses, priority, group_id))
 trigger_rules.sort(key=lambda r: r[2])
 
 # ontology_triggers_multi: role counts aggregated facility-wide across matching items, so a
 # config split across separate basins still fires. List specific reactor classes (not generic
 # Reactor/Tank) so an AnaerobicDigester never matches and can't leak its Anaerobic role.
 facility_multi_rules = []
-for name, details, _, _ in leaves:
+for name, details, _ in leaves:
     me = details.get("ontology_triggers_multi")
     if me:
         for rule in (me if isinstance(me, list) else [me]):
@@ -86,27 +67,22 @@ equipment_own_processes = {
 }
 
 
-def _norm_pdf(s):
+def normalize_pdf_name(s):
     return s.lower().replace(" ", "_")
 
 
-def normalize_records(json_data):
-    if not isinstance(json_data, dict):
-        return []
-    # Handle {"items": [...]} and {"result": {"items": [...]}}
-    for key in ("items", "result"):
-        val = json_data.get(key)
-        if isinstance(val, list):
-            return val
-        if isinstance(val, dict):
-            inner = val.get("items")
-            if isinstance(inner, list):
-                return inner
-    return []
-
-
-def get_field(item, field_name):
-    return item.get(field_name) or item.get(field_name.lower()) or item.get(field_name.upper())
+def model_run_dirs():
+    """(dir_path, method_label, model_label) for each ontology-based_/list-based_ run dir."""
+    run_dirs = []
+    for dir_path in sorted(LLM_EXTRACTION_DIR.iterdir()):
+        if not dir_path.is_dir():
+            continue
+        dir_name = dir_path.name
+        if dir_name.startswith("ontology-based_"):
+            run_dirs.append((dir_path, "Ontology", dir_name[len("ontology-based_"):]))
+        elif dir_name.startswith("list-based_"):
+            run_dirs.append((dir_path, "List", dir_name[len("list-based_"):]))
+    return run_dirs
 
 
 def normalize_values(value):
@@ -184,20 +160,33 @@ def matches_item(item, components):
     return normalize_component_name("Substance", item) in components.get("Substance", set())
 
 
+def clauses_match(clauses, components):
+    return any(all(matches_item(token, components) for token in clause) for clause in clauses)
+
+
+def resolve_secondary_by_ontology(components, excluded_cols, secondary_cols):
+    """ontology_resolve_fn hook for apply_secondary_category_backfill."""
+    matching = [
+        c for c in secondary_cols
+        if c not in excluded_cols and c in column_trigger_clauses
+        and clauses_match(column_trigger_clauses[c], components)
+    ]
+    if matching:
+        return min(matching, key=lambda c: (column_priority.get(c, 1), column_global_priority.get(c, 1), c))
+    return None
+
+
 def process_json_to_unit_process_dict(json_data, output_json_path=None):
     """Run ontology mapping on a single JSON extraction result. Returns {col: status} dict."""
     result = {col: "" for col in columns}
-    records = normalize_records(json_data)
-    output_json_data = None
+    records = json_data["items"]
     if output_json_path is not None:
-        output_json_data = {
-            "items": [dict(item) if isinstance(item, dict) else item for item in records]
-        }
+        output_json_data = {"items": [dict(item) for item in records]}
 
     item_components = []
     for item_idx, item in enumerate(records):
-        impl_value = get_field(item, "Implementation")
-        impl_location = get_field(item, "Location")
+        impl_value = item.get("Implementation")
+        impl_location = item.get("Location")
         components = {
             "Process": set(),
             "Role": set(),
@@ -206,7 +195,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         }
         item_role_counts = Counter()
         for comp_type in components:
-            for clean in normalize_values(get_field(item, comp_type)):
+            for clean in normalize_values(item.get(comp_type)):
                 components[comp_type].add(clean)
                 if comp_type == "Role":
                     item_role_counts[clean] += 1
@@ -238,11 +227,9 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
 
         fired_group_best_priority = {}
         for col, clauses, priority, group_id in trigger_rules:
-            if col not in item_result:
-                continue
             if group_id and priority > fired_group_best_priority.get(group_id, float("inf")):
                 continue
-            if any(all(matches_item(token, components) for token in clause) for clause in clauses):
+            if clauses_match(clauses, components):
                 item_result[col] = "PRESENT"
                 if group_id:
                     fired_group_best_priority[group_id] = min(
@@ -291,28 +278,15 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
 
         # secondary_category backfill (best effort): ontology trigger matching first,
         # then unspecified-first fallback via shared helper.
-        def _ontology_resolve(source_col, sec_cat, sec_cols):
-            matching = [
-                c for c in sec_cols
-                if c not in excluded_cols and column_trigger_clauses.get(c) and any(
-                    all(matches_item(token, components) for token in clause)
-                    for clause in column_trigger_clauses[c]
-                )
-            ]
-            if matching:
-                return min(matching, key=lambda c: (column_priority.get(c, 1), column_global_priority.get(c, 1), c))
-            return None
-
         apply_secondary_category_backfill(
             item_result, column_secondary_categories, top_category_to_columns,
-            column_global_priority, column_priority, ontology_resolve_fn=_ontology_resolve,
+            column_global_priority, column_priority,
+            ontology_resolve_fn=partial(resolve_secondary_by_ontology, components, excluded_cols),
             excluded_cols=excluded_cols,
         )
 
         triggered = sorted(col for col, v in item_result.items() if v == "PRESENT")
-        if output_json_data is not None and item_idx < len(output_json_data["items"]) and isinstance(
-            output_json_data["items"][item_idx], dict
-        ):
+        if output_json_path is not None:
             output_json_data["items"][item_idx]["trigger_process"] = triggered
 
         for col, value in item_result.items():
@@ -321,8 +295,6 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
 
     # Full facility-scoped multi-matching rules aggregate the role counts across matching items
     for col, rule in facility_multi_rules:
-        if col not in result:
-            continue
         eq_set = set(rule.get("Equipment", []))
         matching = [
             (components, role_counts, impl_value, impl_location)
@@ -344,7 +316,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         if ok and STATUS_RANK.get(status, 0) > STATUS_RANK.get(result.get(col, ""), 0):
             result[col] = status
 
-    if output_json_data is not None and output_json_path is not None:
+    if output_json_path is not None:
         with open(output_json_path, "w") as f:
             json.dump(output_json_data, f, indent=2)
 
@@ -355,40 +327,28 @@ def process_list_based_json(json_data):
     """Map list-based LLM output directly to unit process columns.
 
     List-based items use Process names that are leaf keys from the unit process
-    list, so no ontology trigger resolution is needed. The JSON structure is also
-    nested differently: {"output": {"items": [...]}}.
+    list, so no ontology trigger resolution is needed.
     """
     result = {col: "" for col in columns}
-    if not isinstance(json_data, dict):
-        return result
-
-    # Flat list format (e.g. claude-haiku): {"array_of_strings": ["Process A", ...]}
-    if "array_of_strings" in json_data:
-        for proc in normalize_values(json_data["array_of_strings"]):
-            if proc in result:
-                result[proc] = "PRESENT"
-        return result
-
-    # Structured format: {"output": {"items": [{"Process": [...], "Implementation": ...}]}}
-    inner = json_data.get("output", json_data)
-    items = inner.get("items", []) if isinstance(inner, dict) else []
-    for item in items:
-        impl_value = get_field(item, "Implementation")
-        impl_location = get_field(item, "Location")
-        for proc in normalize_values(get_field(item, "Process")):
+    for item in json_data["items"]:
+        impl_value = item.get("Implementation")
+        impl_location = item.get("Location")
+        for proc in normalize_values(item.get("Process")):
             if proc in result:
                 result[proc] = apply_implementation(result.get(proc, ""), impl_value, impl_location)
     return result
 
 
 def main():
-    site_df = pd.read_csv(site_data_csv, dtype=str).fillna("")
+    site_df = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
     pdf_map = {}
     for _, row in site_df.iterrows():
         # Use Path.stem so double-extension files (*.pdf.pdf) map to the same stem
         # the LLM JSON generator uses when naming output files.
-        key = _norm_pdf(Path(row["PDF_File"]).stem)
+        key = normalize_pdf_name(Path(row["PDF_File"]).stem)
         pdf_map.setdefault(key, []).append({c: row[c] for c in ID_COLS})
+
+    pdf_stems_by_length = sorted(pdf_map, key=len, reverse=True)
 
     # ── full dataset ────────────────────────────────────────────────────
     results = []
@@ -403,8 +363,8 @@ def main():
         result = process_json_to_unit_process_dict(json_data, output_json_path=output_json_dir / filename)
 
         identity = {}
-        norm_stem = _norm_pdf(Path(filename).stem)
-        for pdf_stem in sorted(pdf_map, key=len, reverse=True):
+        norm_stem = normalize_pdf_name(Path(filename).stem)
+        for pdf_stem in pdf_stems_by_length:
             if norm_stem == pdf_stem or norm_stem.startswith(pdf_stem + "_"):
                 rows = pdf_map[pdf_stem]
                 if len(rows) == 1:
@@ -429,14 +389,13 @@ def main():
     for c in cols:
         if c not in ID_COLS:
             df[c] = df[c].map(parse_status)
-    df[cols].to_csv(output_csv, index=False)
+    raw_df = df[cols]
     print(f"Saved {len(results)} matched rows ({len(unmatched_files)} unmatched files skipped)")
 
-    raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
     # Collapse only the current permit. Unioning across cycles reads a process out of a
     # superseded order as if the facility still ran it.
-    proc_cols = [c for c in raw_df.columns if c not in ID_COLS and c != "County"]
-    has_content = raw_df[proc_cols].isin(PRESENT_LIKE).any(axis=1)
+    proc_cols = [c for c in raw_df.columns if c not in ID_COLS]
+    has_content = raw_df[proc_cols].isin(STATUS_TOKENS).any(axis=1)
     current = current_permit_mask(raw_df, content=has_content)
     print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
           f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
@@ -460,46 +419,28 @@ def build_model_comparison():
 
     Benchmark facilities = the manual CSV's Place IDs; predictions are regenerated
     fresh from every model dir. Replaces the model_comparison_all.csv intermediate."""
-    wb_df = pd.read_csv(DATA_DIR / "unit_processes_by_facility_manual.csv", dtype=str)
-    manual_rows = wb_df.copy()
+    manual_rows = pd.read_csv(MANUAL_CSV, dtype=str)
+    up_columns = [c for c in manual_rows.columns if c not in {"Method", "Model", "PDF_File"}]
     manual_rows["Method"] = "Manual Read"
-    up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
     # Descriptive facility columns vs unit-process status columns
     meta_cols = [c for c in ["Agency", "Facility Name", "Place ID", "NPDES No."] if c in up_columns]
     proc_columns = [c for c in up_columns if c not in meta_cols]
     # The comparison only covers the benchmark (manually-read) facilities. The default
     # ontology-based_gpt-5-mini folder also holds the full CA set, so filter each model to these.
-    benchmark_pids = set(manual_rows["Place ID"].astype(str).str.strip())
+    benchmark_pids = set(manual_rows["Place ID"])
     # Some facilities have multiple permit-document JSONs (an original + later
     # modifications) sharing one Place ID; pick the document the manual labels
     # were actually read from (see select_json_per_place_id).
-    stem_df = manual_rows[["Place ID", "PDF_File"]].copy()
-    stem_df["Place ID"] = stem_df["Place ID"].astype(str).str.strip()
-    pdf_stem_by_place_id = (
-        stem_df.dropna(subset=["PDF_File"]).drop_duplicates("Place ID").set_index("Place ID")["PDF_File"].to_dict()
-    )
+    pdf_stem_by_place_id = manual_rows.set_index("Place ID")["PDF_File"].to_dict()
 
     prediction_rows = []
-    for dir_path in sorted(LLM_EXTRACTION_DIR.iterdir()):
-        if not dir_path.is_dir():
-            continue
-        dir_name = dir_path.name
-        if dir_name.startswith("ontology-based_"):
-            method_label = "Ontology"
-            model_label = dir_name[len("ontology-based_"):]
-        elif dir_name.startswith("list-based_"):
-            method_label = "List"
-            model_label = dir_name[len("list-based_"):]
-        else:
-            continue
-
+    for dir_path, method_label, model_label in model_run_dirs():
         postprocess_dir = dir_path / "ontology_postprocess"
         for place_id, json_file in select_json_per_place_id(dir_path, benchmark_pids, pdf_stem_by_place_id).items():
             with open(json_file) as f:
                 json_data = json.load(f)
 
             if method_label == "Ontology":
-                postprocess_dir.mkdir(exist_ok=True)
                 unit_process_result = process_json_to_unit_process_dict(
                     json_data, output_json_path=postprocess_dir / json_file.name
                 )
@@ -514,10 +455,8 @@ def build_model_comparison():
     pred_df = pd.DataFrame(prediction_rows, columns=["Method", "Model"] + up_columns + ["PDF_File"])
 
     # Backfill the remaining facility metadata (and PDF_File) from manual rows by Place ID
-    backfill_cols = [c for c in meta_cols if c != "Place ID"]
-    if "PDF_File" in manual_rows.columns:
-        backfill_cols.append("PDF_File")
-    meta_by_pid = manual_rows.drop_duplicates("Place ID").set_index("Place ID")[backfill_cols]
+    backfill_cols = [c for c in meta_cols if c != "Place ID"] + ["PDF_File"]
+    meta_by_pid = manual_rows.set_index("Place ID")[backfill_cols]
     pred_df[backfill_cols] = meta_by_pid.reindex(pred_df["Place ID"]).values
 
     combined_df = pd.concat([manual_rows, pred_df], ignore_index=True)

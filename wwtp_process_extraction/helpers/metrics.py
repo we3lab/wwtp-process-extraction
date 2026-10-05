@@ -1,5 +1,5 @@
 import pandas as pd
-from helpers.utils import is_present
+from helpers.utils import is_present, parse_status, precision_recall_f1, merge_column_statuses
 
 # 0–1 scalar metrics (per label or per facility); violin / summaries use this order.
 METRIC_SCORE_COLUMNS = (
@@ -13,13 +13,11 @@ METRIC_SCORE_COLUMNS = (
 )
 
 
-def _score_from_counts(
+def score_from_counts(
     tp: int, fp: int, fn: int, tn: int, state_correct: int, state_total: int
 ) -> dict:
     """Compute scalar metrics from confusion counts and state-match counts."""
-    precision = tp / (tp + fp) if (tp + fp) else float("nan")
-    recall = tp / (tp + fn) if (tp + fn) else float("nan")
-    f1 = 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else float("nan")
+    precision, recall, f1, _ = precision_recall_f1(tp, fp, fn)
     accuracy = (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float("nan")
     missed_rate = fn / (tp + fn) if (tp + fn) else float("nan")
     hallucinated_rate = fp / (tp + fp) if (tp + fp) else float("nan")
@@ -35,7 +33,7 @@ def _score_from_counts(
     }
 
 
-def _confusion_and_state_counts(manual_states, pred_states) -> tuple:
+def confusion_and_state_counts(manual_states, pred_states) -> tuple:
     """Return (tp, fp, fn, tn, state_correct, state_total) over paired statuses."""
     tp = fp = fn = tn = 0
     state_correct = state_total = 0
@@ -56,6 +54,39 @@ def _confusion_and_state_counts(manual_states, pred_states) -> tuple:
     return tp, fp, fn, tn, state_correct, state_total
 
 
+def build_metric_inputs(process_names, manual_df, pred_df):
+    """Build key-aligned manual/pred status dataframes (one row per shared Place ID) for compute_metrics."""
+    common_keys = sorted(set(manual_df["Place ID"].dropna()) & set(pred_df["Place ID"].dropna()))
+
+    manual_sub = (
+        manual_df[manual_df["Place ID"].isin(common_keys)]
+        .drop_duplicates(subset="Place ID")
+        .set_index("Place ID")
+    )
+    pred_sub = (
+        pred_df[pred_df["Place ID"].isin(common_keys)].drop_duplicates(subset="Place ID").set_index("Place ID")
+    )
+
+    manual_metric_df = pd.DataFrame({"key": common_keys})
+    pred_metric_df = pd.DataFrame({"key": common_keys})
+
+    for process in process_names:
+        manual_metric_df[process] = (
+            manual_sub.reindex(common_keys)[process].map(parse_status).values
+        )
+        pred_metric_df[process] = pred_sub.reindex(common_keys)[process].map(parse_status).values
+
+    return manual_metric_df, pred_metric_df
+
+
+def aggregate_to_category_states(metric_df, category_to_leaves):
+    """Collapse leaf-status columns into category-status columns per facility key."""
+    out = pd.DataFrame({"key": metric_df["key"]})
+    for category, leaves in category_to_leaves.items():
+        out[category] = metric_df[leaves].apply(merge_column_statuses, axis=1)
+    return out
+
+
 def compute_metrics(
     manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str
 ) -> pd.DataFrame:
@@ -67,10 +98,10 @@ def compute_metrics(
     for label in label_cols:
         manual_states = manual_indexed.loc[keys, label]
         pred_states = pred_indexed.loc[keys, label]
-        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(
+        tp, fp, fn, tn, state_correct, state_total = confusion_and_state_counts(
             manual_states, pred_states
         )
-        scores = _score_from_counts(tp, fp, fn, tn, state_correct, state_total)
+        scores = score_from_counts(tp, fp, fn, tn, state_correct, state_total)
 
         rows.append(
             {
@@ -100,10 +131,10 @@ def compute_facility_metric_rows(
     for key in manual_indexed.index:
         manual_states = manual_indexed.loc[key, label_cols]
         pred_states = pred_indexed.loc[key, label_cols]
-        tp, fp, fn, tn, state_correct, state_total = _confusion_and_state_counts(
+        tp, fp, fn, tn, state_correct, state_total = confusion_and_state_counts(
             manual_states, pred_states
         )
-        scores = _score_from_counts(tp, fp, fn, tn, state_correct, state_total)
+        scores = score_from_counts(tp, fp, fn, tn, state_correct, state_total)
 
         row = {"Source": source_name, "key": key}
         for col in METRIC_SCORE_COLUMNS:

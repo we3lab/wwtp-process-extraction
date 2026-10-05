@@ -23,8 +23,6 @@ def require_api_key():
 
 def get_headers():
     api_key = API_KEY_PATH.read_text(encoding="utf-8").strip()
-    if not api_key:
-        raise ValueError("API_key.txt is empty.")
     return {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -39,28 +37,16 @@ def get_models():
     return resp.json()
 
 
-def load_icl_examples(num_examples: int, examples_dir: str) -> str:
-    if num_examples < 0:
-        raise ValueError("--num_examples must be >= 0.")
-    if num_examples == 0:
-        return ""
-
-    examples_root = Path(examples_dir)
+def load_icl_examples(num_examples: int, examples_dir: Path) -> str:
     examples = []
     for idx in range(1, num_examples + 1):
-        example_path = examples_root / f"example{idx}.txt"
-        if not example_path.exists() or not example_path.is_file():
-            raise FileNotFoundError(
-                f"ICL example file not found: {example_path}. "
-                "Create the file or reduce --num_examples."
-            )
-        example_content = example_path.read_text(encoding="utf-8").strip()
+        example_content = (examples_dir / f"example{idx}.txt").read_text(encoding="utf-8").strip()
         examples.append(f"Example {idx}:\n{example_content}")
 
     return "\n\n".join(examples)
 
 
-def _collect_process_entries(
+def collect_process_entries(
     data: Dict[str, Any],
     entries: Optional[List[Tuple[str, List[str]]]] = None,
 ) -> List[Tuple[str, List[str]]]:
@@ -72,36 +58,19 @@ def _collect_process_entries(
             continue
 
         if "alt_names" in value or "alt_names_case_sensitive" in value:
-            alt_names = value.get("alt_names", [])
-            alt_names_case_sensitive = value.get("alt_names_case_sensitive", [])
-            all_alt_names = []
-            if isinstance(alt_names, list):
-                all_alt_names.extend([str(item).strip() for item in alt_names if str(item).strip()])
-            if isinstance(alt_names_case_sensitive, list):
-                all_alt_names.extend(
-                    [str(item).strip() for item in alt_names_case_sensitive if str(item).strip()]
-                )
-
+            all_alt_names = value.get("alt_names", []) + value.get("alt_names_case_sensitive", [])
+            all_alt_names = [str(item).strip() for item in all_alt_names if str(item).strip()]
             dedup_alt_names = list(dict.fromkeys(all_alt_names))
-            entries.append((str(process_name), dedup_alt_names))
+            entries.append((process_name, dedup_alt_names))
 
-        _collect_process_entries(value, entries)
+        collect_process_entries(value, entries)
 
     return entries
 
 
-def init_unit_process_list_from_json(keywords_json_path: str, output_txt_path: str) -> Path:
-    source_path = Path(keywords_json_path)
-    if not source_path.exists() or not source_path.is_file():
-        raise FileNotFoundError(f"unitprocess keywords JSON not found: {source_path}")
-
-    data = json.loads(source_path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise ValueError("unitprocess keywords JSON must contain a top-level object.")
-
-    entries = _collect_process_entries(data)
-    if not entries:
-        raise ValueError("No process entries with alt names found in unitprocess keywords JSON.")
+def init_unit_process_list_from_json(keywords_json_path: Path, output_txt_path: Path) -> Path:
+    data = json.loads(Path(keywords_json_path).read_text(encoding="utf-8"))
+    entries = collect_process_entries(data)
 
     lines = []
     for process_name, alt_names in entries:
@@ -111,20 +80,8 @@ def init_unit_process_list_from_json(keywords_json_path: str, output_txt_path: s
             lines.append(f"{process_name}:")
 
     output_path = Path(output_txt_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return output_path
-
-
-_SOURCE_FIELD = {
-    "type": "string",
-    "enum": ["permit_text", "web_search", "both"],
-}
-
-_WEBSITE_FIELD = {
-    "type": ["string", "null"],
-    "description": "Website or URL source if Source includes web_search",
-}
 
 
 def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
@@ -135,85 +92,71 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
                 "items": {"type": "string"},
                 "minItems": 1,
             },
-            "Implementation": {
-                "type": "string",
-                "enum": ["present", "future", "past"],
-            },
-            "Location": {
-                "type": ["string", "null"],
-                "enum": ["on-site", "off-site", None],
-            },
-            "Sentence": {"type": "string"},
         }
-        required = ["Process", "Implementation", "Location", "Sentence"]
-        if web:
-            props["Source"] = _SOURCE_FIELD
-            props["Website"] = _WEBSITE_FIELD
-            required.append("Source")
-        return {
-            "type": "object",
-            "properties": {
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": props,
-                        "required": required,
-                        "additionalProperties": False,
+        required = ["Process"]
+        method_constraints = {}
+    else:
+        props = {
+            "Equipment": {"type": ["string", "null"]},
+            "Process": {
+                "anyOf": [
+                    {"type": "null"},
+                    {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minItems": 1,
                     },
-                }
+                ]
             },
-            "required": ["items"],
-            "additionalProperties": False,
+            "Role": {
+                "anyOf": [
+                    {"type": "null"},
+                    {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                ]
+            },
+            "Substance": {
+                "anyOf": [
+                    {"type": "null"},
+                    {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                ]
+            },
+        }
+        required = ["Equipment", "Process", "Role", "Substance"]
+        method_constraints = {
+            "not": {
+                "properties": {
+                    "Equipment": {"type": "null"},
+                    "Process": {"type": "null"},
+                },
+                "required": ["Equipment", "Process"],
+            },
         }
 
-    props = {
-        "Equipment": {"type": ["string", "null"]},
-        "Process": {
-            "anyOf": [
-                {"type": "null"},
-                {
-                    "type": "array",
-                    "items": {"type": "string"},
-                    "minItems": 1,
-                },
-            ]
-        },
-        "Role": {
-            "anyOf": [
-                {"type": "null"},
-                {
-                    "type": "array",
-                    "items": {"type": "string"},
-                },
-            ]
-        },
-        "Substance": {
-            "anyOf": [
-                {"type": "null"},
-                {
-                    "type": "array",
-                    "items": {"type": "string"},
-                },
-            ]
-        },
-        "Implementation": {
-            "type": "string",
-            "enum": ["present", "future", "past"],
-        },
-        "Location": {
-            "type": ["string", "null"],
-            "enum": ["on-site", "off-site", None],
-        },
-        "Sentence": {"type": "string"},
+    props["Implementation"] = {
+        "type": "string",
+        "enum": ["present", "future", "past"],
     }
-    required = [
-        "Equipment", "Process", "Role", "Substance",
-        "Implementation", "Location", "Sentence",
-    ]
+    props["Location"] = {
+        "type": ["string", "null"],
+        "enum": ["on-site", "off-site", None],
+    }
+    props["Sentence"] = {"type": "string"}
+    required += ["Implementation", "Location", "Sentence"]
     if web:
-        props["Source"] = _SOURCE_FIELD
-        props["Website"] = _WEBSITE_FIELD
+        props["Source"] = {
+            "type": "string",
+            "enum": ["permit_text", "web_search", "both"],
+        }
+        props["Website"] = {
+            "type": ["string", "null"],
+            "description": "Website or URL source if Source includes web_search",
+        }
         required.append("Source")
     return {
         "type": "object",
@@ -224,13 +167,7 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
                     "type": "object",
                     "properties": props,
                     "required": required,
-                    "not": {
-                        "properties": {
-                            "Equipment": {"type": "null"},
-                            "Process": {"type": "null"},
-                        },
-                        "required": ["Equipment", "Process"],
-                    },
+                    **method_constraints,
                     "additionalProperties": False,
                 },
             }
@@ -240,26 +177,7 @@ def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
     }
 
 
-def get_method_paths(method: str) -> Dict[str, str]:
-    if method == "list-based":
-        return {
-            "reference_path": "wwtp_process_extraction/data/llm_extraction/input/unit_process_list.txt",
-            "examples_dir": "wwtp_process_extraction/data/llm_extraction/icl_examples/list_based",
-            "prompt_path": "wwtp_process_extraction/data/llm_extraction/prompt/list_based_prompt.txt",
-            "output_dir": "wwtp_process_extraction/output/2026-2-18/llm_search_list",
-            "reference_placeholder": "__UNIT_PROCESS_LIST__",
-        }
-
-    return {
-        "reference_path": "wwtp_process_extraction/data/llm_extraction/input/ontology.txt",
-        "examples_dir": "wwtp_process_extraction/data/llm_extraction/icl_examples/ontology_based",
-        "prompt_path": "wwtp_process_extraction/data/llm_extraction/prompt/ontology_based_prompt.txt",
-        "output_dir": "wwtp_process_extraction/output/2026-2-18/llm_search_ontology",
-        "reference_placeholder": "__ONTOLOGY__",
-    }
-
-
-def _coerce_extraction_json(parsed):
+def coerce_extraction_json(parsed):
     """Best-effort reshape of model output so it matches the extraction schema.
 
     Weaker models sometimes drop the {"items": [...]} wrapper or return single
@@ -309,46 +227,32 @@ def _coerce_extraction_json(parsed):
 
 def chat_completion_json(
     model: str,
+    system_message: str,
     user_message: str,
-    system_message: Optional[str] = None,
-    temperature: float = 0.0,
-    max_tokens: Optional[int] = 3000,
-    max_completion_tokens: Optional[int] = 8000,
-    stop: Optional[Any] = None,
-    retry_delay: float = 1.0,
-    schema: Optional[Dict] = None,
-) -> Dict[str, Any]:
+    max_tokens: Optional[int],
+    schema: Optional[Dict],
+) -> Tuple:
     """
-    Request a JSON object from the model. Returns the parsed JSON (dict/list).
-    Retries parsing/validation up to `retries` times if needed.
+    Request a JSON object from the model. Returns (parsed_json, completion_tokens,
+    prompt_tokens, total_tokens, reasoning_tokens, structured_output).
+    max_tokens=None sends no token limit.
     """
     url = f"{BASE_URL}/chat/completions"
 
-    messages = []
-    if system_message is not None:
-        messages.append({"role": "system", "content": system_message})
-    messages.append({"role": "user", "content": user_message})
-
-    effective_max_completion_tokens = None
-    if max_tokens is not None and max_completion_tokens is not None:
-        effective_max_completion_tokens = min(max_tokens, max_completion_tokens)
-    elif max_completion_tokens is not None:
-        effective_max_completion_tokens = max_completion_tokens
-    elif max_tokens is not None:
-        effective_max_completion_tokens = max_tokens
+    messages = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": user_message},
+    ]
 
     payload = {
         "model": model,
         "messages": messages,
-        "temperature": temperature,
+        "temperature": 0.0,
         "response_format": {"type": "json_object"},
     }
     if max_tokens is not None:
         payload["max_tokens"] = max_tokens
-    if effective_max_completion_tokens is not None:
-        payload["max_completion_tokens"] = effective_max_completion_tokens
-    if stop is not None:
-        payload["stop"] = stop
+        payload["max_completion_tokens"] = max_tokens
 
     content = None
     try:
@@ -376,7 +280,7 @@ def chat_completion_json(
         if finish_reason == "length":
             raise ValueError(
                 f"Generation stopped (finish_reason='length', completion_tokens={completion_token}, "
-                f"max_tokens={max_tokens}, max_completion_tokens={effective_max_completion_tokens}). "
+                f"max_tokens={max_tokens}, max_completion_tokens={max_tokens}). "
             )
 
         if not content.strip():
@@ -396,7 +300,7 @@ def chat_completion_json(
             except jsonschema.ValidationError:
                 structured_output = False
 
-        parsed = _coerce_extraction_json(parsed)
+        parsed = coerce_extraction_json(parsed)
 
         # Proceed as long as we recovered an items list. Individual items may be
         # missing optional fields; those are left blank rather than dropped, and

@@ -12,7 +12,7 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
     - [wwtp_process_extraction/step2_scrape_npdes.py](wwtp_process_extraction/step2_scrape_npdes.py): downloads NPDES permit PDFs and writes site_data_relevant and matched_cwns_npdes_ca.csv
         - set *AS_OF=YYYY-MM-DD* to select the permit in force at a past date instead of today's active one; each run snapshots its facilities.json and site_data_relevant.csv to output/site_data/<AS_OF>/
         - the top-level facilities.json is always restored to the base snapshot (2026-06-01, override with *BASE_SNAPSHOT_DATE*) when a run finishes, so a retrospective year never masquerades as current
-    - [wwtp_process_extraction/step2c_union_site_data.py](wwtp_process_extraction/step2c_union_site_data.py): unions the dated snapshots into the top-level site_data_relevant.csv so steps 3-6 process each document once
+        - unions all dated snapshots into site_data_relevant.csv, so steps 3-6 process each document once
 
 3. Extract permit text
     - [wwtp_process_extraction/step3_get_facility_descriptions.py](wwtp_process_extraction/step3_get_facility_descriptions.py): extracts relevant text sections from permit PDFs into per-facility text files
@@ -54,8 +54,6 @@ python wwtp_process_extraction/step2_scrape_npdes.py
 # already held. PDFs and LLM outputs stay in the shared folders -- a document's extraction
 # does not change between years -- so only genuinely new orders cost anything.
 for y in 2026 2025 2024 2023 2022 2021; do AS_OF=$y-06-01 python wwtp_process_extraction/step2_scrape_npdes.py; done
-# then fold every snapshot into one working file before steps 3-6 (they read the top-level copy)
-python wwtp_process_extraction/step2c_union_site_data.py
 python wwtp_process_extraction/step3_get_facility_descriptions.py
 python wwtp_process_extraction/step4_keyword_extraction.py
 # MODEL COMPARISON (all manual-read facilities, default FACILITIES_INFO_PATH)
@@ -64,7 +62,7 @@ python wwtp_process_extraction/step5_llm_extraction.py --all_models
 python wwtp_process_extraction/step5_llm_extraction.py  --model claude-sonnet-4-6 --web_search --all_methods
 # WATERRAG (gpt-5-mini)
 # Run step5b must in a SEPARATE Python 3.11 env with torch/langchain/faiss. Python 3.12 which has no torch
-# --overwrite; it redoes all facilities
+# cached contexts in output/waterrag_retrieval/ are skipped
 conda run --no-capture-output -n waterrag python wwtp_process_extraction/step5b_waterrag_retrieval.py
 python wwtp_process_extraction/step5_llm_extraction.py --method ontology-based --model gpt-5-mini --waterrag_context
 # FULL CA, ONTOLOGY-BASED, GPT-5-MINI

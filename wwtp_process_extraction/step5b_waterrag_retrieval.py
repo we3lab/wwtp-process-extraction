@@ -28,7 +28,7 @@ from helpers.utils import (
     SEP,
     build_txt_jobs,
     extract_leaves,
-    OUTPUT_DIR,
+    TXT_DIR,
     MANUAL_CSV,
     SITE_DATA_RELEVANT_CSV,
     unitprocess_keywords,
@@ -36,7 +36,6 @@ from helpers.utils import (
 )
 from step4_keyword_extraction import search_processes_in_text
 
-TXT_DIR = OUTPUT_DIR / "permits" / "text"
 # WATERRAG_RETRIEVAL_DIR is deliberately outside output/llm_extraction/: these are retrieved
 # literature chunks fed into step5's prompt, not extraction results. The schema-conformant
 # items land in output/llm_extraction/ontology-based_<model>-waterrag/.
@@ -216,26 +215,24 @@ def retrieve_context(retrieval, reranker, queries):
 def main():
     args = parse_args()
     facilities_info = SITE_DATA_RELEVANT_CSV if args.all_facilities else MANUAL_CSV
-    jobs = build_txt_jobs(TXT_DIR, facilities_info)
+    jobs = build_txt_jobs(facilities_info)
     if not jobs:
         raise SystemExit(f"No facilities found. Check {facilities_info} and {TXT_DIR}.")
 
-    facilities_source_df = pd.read_csv(facilities_info, dtype=str).fillna("")
     retrieval, reranker = load_waterrag()
 
-    for row_idx, txt_path, txt_file, facility_name in jobs:
+    for txt_path, facility_name, place_id in jobs:
         description_text = txt_path.read_text(encoding="utf-8").split(SEP, 1)[0]
         if not description_text.strip():
             print(f"{facility_name}: empty description section, skipping.")
             continue
 
-        place_id = facilities_source_df.iloc[row_idx]["Place ID"].strip()
         output_path = WATERRAG_RETRIEVAL_DIR / f"{txt_path.stem}_{place_id}.json"
         if output_path.exists():
             print(f"{facility_name}: cached, skipping.")
             continue
 
-        print(f"\nProcessing {txt_file} for {facility_name}...")
+        print(f"\nProcessing {txt_path.name} for {facility_name}...")
         queries = build_queries(description_text, unitprocess_keywords)
         print(f"  {len(queries)} queries: {[q[:40] for q in queries]}")
 

@@ -36,6 +36,7 @@ COLLECTIVE_AGENCY_RE = re.compile(r"\borganizations?\s+under\b", re.IGNORECASE)
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PACKAGE_DIR / "data"
 OUTPUT_DIR = PACKAGE_DIR / "output"
+TXT_DIR = OUTPUT_DIR / "permits" / "text"
 FINAL_DIR = OUTPUT_DIR / "final"
 FIGURES_DIR = OUTPUT_DIR / "figures"
 LLM_EXTRACTION_DIR = OUTPUT_DIR / "llm_extraction"
@@ -521,22 +522,21 @@ def add_county_and_sort(df, name_col, place_id_col=None, wdid_col=None, cwns_id_
     ).reset_index(drop=True)
 
 
-def build_txt_jobs(txt_folder: str, facilities_information: str):
-    txt_folder_path = Path(txt_folder)
+def build_txt_jobs(facilities_information):
     facilities_df = pd.read_csv(facilities_information, dtype=str).fillna("")
 
     jobs = []
-    for row_idx, row in facilities_df.iterrows():
+    for _, row in facilities_df.iterrows():
         facility_name = str(row["Facility Name"]).strip()
         pdf_file_value = str(row["PDF_File"]).strip()
         if not facility_name or not pdf_file_value:
             continue
 
-        txt_path = txt_folder_path / Path(pdf_file_value).with_suffix(".txt").name
+        txt_path = TXT_DIR / Path(pdf_file_value).with_suffix(".txt").name
         if not txt_path.is_file():
             print(f"No txt for '{facility_name}': {txt_path.name}, skipping.")
             continue
 
-        jobs.append((row_idx, txt_path, txt_path.name, facility_name))
+        jobs.append((txt_path, facility_name, row["Place ID"].strip()))
 
     return jobs

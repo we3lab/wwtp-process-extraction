@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison, normalize_pdf_name, model_run_dirs
 from helpers.utils import (
     get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, build_secondary_category_lookup,
-    DETECTED_STATUSES, DATA_DIR, OUTPUT_DIR, FINAL_DIR, LLM_EXTRACTION_DIR, WATERRAG_RETRIEVAL_DIR,
+    DETECTED_STATUSES, DATA_DIR, OUTPUT_DIR, TXT_DIR, FINAL_DIR, LLM_EXTRACTION_DIR, WATERRAG_RETRIEVAL_DIR,
     MANUAL_CSV, SITE_DATA_RELEVANT_CSV, unitprocess_keywords,
 )
 
@@ -50,7 +50,6 @@ META_COLS = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name
 
 # table_s3: how the labeled sets compare to the full CA dataset on region, size and permit structure
 REPRESENTATIVENESS_CSV = FINAL_DIR / "table_s3.csv"
-TXT_DIR = OUTPUT_DIR / "permits" / "text"
 SUPPLEMENTAL_PATH = DATA_DIR / "unit_processes_by_facility_supplemental_data.csv"
 # figure_2 restricts the 17 supplemental facilities to those also present in the NPDES text and
 # CWNS mappings; its per-facility output is the definitive list of the 15 that survive.

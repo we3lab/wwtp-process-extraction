@@ -22,9 +22,9 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 
 5. Detect treatment processes with LLM extraction
     - [wwtp_process_extraction/step5_llm_extraction.py](wwtp_process_extraction/step5_llm_extraction.py): runs LLM extraction on permit text
-        - use *--method ontology-based* (default) or *--method list-based* to select prompting strategy
-        - use *--model "model_name" --txt_folder "path_to_txt_folder" --facilities_information "path_to_facilities_csv"*
-        - results saved as JSON under output/date/llm_search_ontology or llm_search_list
+        - default: ontology-based gpt-5-mini on the manually-read facilities; *--all_facilities* runs the full CA set
+        - *--method* / *--model* pick one config; *--all_methods* / *--all_models* loop over all of them
+        - results saved as JSON under output/llm_extraction/<method>_<model>/
 
 6. Post-process LLM output back to CWNS format
     - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): post-processes LLM outputs and writes unit_processes_by_facility_llm.csv with present/future/past status
@@ -57,14 +57,14 @@ for y in 2026 2025 2024 2023 2022 2021; do AS_OF=$y-06-01 python wwtp_process_ex
 python wwtp_process_extraction/step3_get_facility_descriptions.py
 python wwtp_process_extraction/step4_keyword_extraction.py
 # MODEL COMPARISON (all manual-read facilities, default FACILITIES_INFO_PATH)
-python wwtp_process_extraction/step5_llm_extraction.py --all_models
+python wwtp_process_extraction/step5_llm_extraction.py --all_models --all_methods
 # WEB SEARCH (claude-sonnet-4-6)
 python wwtp_process_extraction/step5_llm_extraction.py  --model claude-sonnet-4-6 --web_search --all_methods
 # WATERRAG (gpt-5-mini)
 # Run step5b must in a SEPARATE Python 3.11 env with torch/langchain/faiss. Python 3.12 which has no torch
 # cached contexts in output/waterrag_retrieval/ are skipped
 conda run --no-capture-output -n waterrag python wwtp_process_extraction/step5b_waterrag_retrieval.py
-python wwtp_process_extraction/step5_llm_extraction.py --method ontology-based --model gpt-5-mini --waterrag_context
+python wwtp_process_extraction/step5_llm_extraction.py --waterrag_context
 # FULL CA, ONTOLOGY-BASED, GPT-5-MINI
 python wwtp_process_extraction/step5_llm_extraction.py --all_facilities
 # F1 VARIANCE: 2 extra benchmark runs

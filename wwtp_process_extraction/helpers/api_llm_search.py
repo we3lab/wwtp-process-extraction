@@ -229,13 +229,12 @@ def chat_completion_json(
     model: str,
     system_message: str,
     user_message: str,
-    max_tokens: Optional[int],
-    schema: Optional[Dict],
+    max_tokens: int,
+    schema: Dict,
 ) -> Tuple:
     """
     Request a JSON object from the model. Returns (parsed_json, completion_tokens,
     prompt_tokens, total_tokens, reasoning_tokens, structured_output).
-    max_tokens=None sends no token limit.
     """
     url = f"{BASE_URL}/chat/completions"
 
@@ -249,10 +248,9 @@ def chat_completion_json(
         "messages": messages,
         "temperature": 0.0,
         "response_format": {"type": "json_object"},
+        "max_tokens": max_tokens,
+        "max_completion_tokens": max_tokens,
     }
-    if max_tokens is not None:
-        payload["max_tokens"] = max_tokens
-        payload["max_completion_tokens"] = max_tokens
 
     content = None
     try:
@@ -292,20 +290,18 @@ def chat_completion_json(
 
         # Record whether the raw model output already matched the desired schema,
         # before any coercion. This feeds the "fraction structured output" metric.
-        structured_output = None
-        if schema is not None:
-            try:
-                jsonschema.validate(instance=parsed, schema=schema)
-                structured_output = True
-            except jsonschema.ValidationError:
-                structured_output = False
+        try:
+            jsonschema.validate(instance=parsed, schema=schema)
+            structured_output = True
+        except jsonschema.ValidationError:
+            structured_output = False
 
         parsed = coerce_extraction_json(parsed)
 
         # Proceed as long as we recovered an items list. Individual items may be
         # missing optional fields; those are left blank rather than dropped, and
         # structured_output already records that the raw output was non-conforming.
-        if schema is not None and not isinstance(parsed.get("items"), list):
+        if not isinstance(parsed.get("items"), list):
             raise ValueError("JSON output had no recoverable items list")
 
         return parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output

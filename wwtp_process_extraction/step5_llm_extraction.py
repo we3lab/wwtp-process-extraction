@@ -10,7 +10,7 @@ from helpers.utils import (
     build_txt_jobs,
     SEP,
     DATA_DIR,
-    OUTPUT_DIR,
+    TXT_DIR,
     MANUAL_CSV,
     SITE_DATA_RELEVANT_CSV,
     KEYWORDS_JSON,
@@ -25,7 +25,6 @@ from helpers.api_llm_search import (
     require_api_key,
 )
 
-TXT_DIR = OUTPUT_DIR / "permits" / "text"
 ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
 ALL_METHODS = ["ontology-based", "list-based"]
 MODEL = "gpt-5-mini"
@@ -49,18 +48,8 @@ METHOD_PATHS = {
         "prompt_path": LLM_DATA_DIR / "prompt" / "ontology_based_prompt.txt",
     },
 }
+WEB_PROMPT_SUFFIX_PATH = LLM_DATA_DIR / "prompt" / "web_search_suffix.txt"
 
-WEB_SYSTEM_SUFFIX = """
-For each extracted item, set the Source field:
-- "permit_text": evidence is only in the permit extract
-- "web_search": evidence found via web search
-- "both": evidence supported by both sources
-
-For items with Source "web_search" or "both", also set the Website field to the URL or website name where you found the information.
-If from multiple sites, pick the most relevant one. Set Website to null if the source is only the permit text.
-
-Prefer the permit text. Only use web search if the permit text is ambiguous about a treatment process, or if you suspect a key process is missing from the permit description. Limit to at most 3 searches total.
-"""
 
 TOKEN_USAGE_COLUMNS = [
     "facility_name", "place_id", "extraction_file", "structured_output",
@@ -84,22 +73,14 @@ def parse_args():
         help=f"Model name for API calls in {', '.join(ALL_MODELS)} (default: {MODEL}).",
     )
     parser.add_argument(
-        "--txt_folder",
-        default=TXT_DIR,
-        help=f"Path to folder containing permit TXT files (default: {TXT_DIR}).",
+        "--all_methods",
+        action="store_true",
+        help="Loop over both methods instead of --method.",
     )
     parser.add_argument(
-        "--skip_schema_validation",
+        "--all_models",
         action="store_true",
-        help="Skip local JSON schema validation of the model response.",
-    )
-    parser.add_argument(
-        "--no_token_limit",
-        action="store_true",
-        help=(
-            "Do not send max token limits to the API and do not skip long permit extracts. "
-            "Server-side/model limits may still apply."
-        ),
+        help="Loop over ALL_MODELS instead of --model.",
     )
     parser.add_argument(
         "--web_search",
@@ -118,22 +99,6 @@ def parse_args():
         ),
     )
     parser.add_argument(
-        "--max_facilities",
-        type=int,
-        default=None,
-        help="Limit number of facilities processed (useful for testing).",
-    )
-    parser.add_argument(
-        "--all_models",
-        action="store_true",
-        help="Loop over all models and methods (model_comparison mode). Ignores --model and --method.",
-    )
-    parser.add_argument(
-        "--all_methods",
-        action="store_true",
-        help="Loop over both methods (ontology-based and list-based) for the given --model in one run.",
-    )
-    parser.add_argument(
         "--all_facilities",
         action="store_true",
         help=(
@@ -148,7 +113,7 @@ def parse_args():
         help=(
             "Run the benchmark facilities N extra times with the default model/method "
             "(for F1 run-to-run variance), each into output/llm_extraction/ontology-based_gpt-5-mini"
-            "[-waterrag]/additional_runs/run_<k>/. Ignores --model/--method/--all_models/--web_search/"
+            "[-waterrag]/additional_runs/run_<k>/. Ignores --model/--method/--all_models/--all_methods/--web_search/"
             "--all_facilities."
         ),
     )
@@ -185,9 +150,8 @@ def chat_completion_web(
         "--model", model,
         "--effort", "medium",
         "--no-session-persistence",
+        "--json-schema", json.dumps(schema),
     ]
-    if schema is not None:
-        cmd += ["--json-schema", json.dumps(schema)]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     if result.returncode != 0:
         err = RuntimeError(f"CLI failed: {result.stderr[:200]}")
@@ -255,22 +219,15 @@ def run_extraction(args, output_dir_override=None):
         args.method, args.model, args.web_search, args.waterrag_context
     )
 
-    if args.method == "list-based":
-        generated_list_path = init_unit_process_list_from_json(
-            keywords_json_path=KEYWORDS_JSON,
-            output_txt_path=reference_path,
-        )
-        print(f"Initialized unit process list file: {generated_list_path}")
-
     output_dir.mkdir(parents=True, exist_ok=True)
-    jobs = build_txt_jobs(args.txt_folder, facilities_info)
+    jobs = build_txt_jobs(facilities_info)
 
     if not jobs:
         print(
             "No facilities were processed. "
-            f"Check the facilities file ({facilities_info}) and --txt_folder ({args.txt_folder})."
+            f"Check the facilities file ({facilities_info}) and {TXT_DIR}."
         )
-        raise SystemExit(0)
+        return
 
     reference_text = reference_path.read_text(encoding="utf-8")
     prompt_examples = load_icl_examples(
@@ -278,9 +235,7 @@ def run_extraction(args, output_dir_override=None):
         examples_dir=method_paths["examples_dir"],
     )
     system_prompt_template = method_paths["prompt_path"].read_text(encoding="utf-8")
-    example_schema = None if args.skip_schema_validation else build_example_schema(args.method, web=args.web_search)
-
-    facilities_source_df = pd.read_csv(facilities_info, dtype=str).fillna('')
+    example_schema = build_example_schema(args.method, web=args.web_search)
 
     # Single per-dir summary, written one row at a time so interrupting mid-model doesn't
     # lose progress. This is the only file step6/table_1 need: step6 derives Place ID from
@@ -288,12 +243,9 @@ def run_extraction(args, output_dir_override=None):
     # the JSON results, so the txt_file/extraction_file names aren't stored here.
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
 
-    if args.max_facilities is not None:
-        jobs = jobs[:args.max_facilities]
-
-    for row_idx, txt_path, txt_file, facility_name in jobs:
+    for txt_path, facility_name, place_id in jobs:
         print("#" * 80)
-        print(f"\nProcessing {txt_file} for facility {facility_name}...")
+        print(f"\nProcessing {txt_path.name} for facility {facility_name}...")
 
         permit_extract = txt_path.read_text(encoding="utf-8")
         if not permit_extract.split(SEP, 1)[0].strip():
@@ -301,15 +253,7 @@ def run_extraction(args, output_dir_override=None):
             continue
         print(f"Read text extract (length {len(permit_extract)})")
 
-        if not args.no_token_limit and len(permit_extract) > 30000:
-            print(
-                f"Warning: Extracted text length ({len(permit_extract)}) exceeds typical token limits. "
-                "Skipping."
-            )
-            continue
-
         txt_stem = txt_path.stem
-        place_id = facilities_source_df.iloc[row_idx]["Place ID"].strip()
         extraction_file_name = f"{txt_stem}_{place_id}.json"
         output_json_path = output_dir / extraction_file_name
 
@@ -325,7 +269,7 @@ def run_extraction(args, output_dir_override=None):
             .replace("__PROMPT_EXAMPLES__", prompt_examples)
         )
         if args.web_search:
-            system_msg = system_msg + WEB_SYSTEM_SUFFIX
+            system_msg = system_msg + WEB_PROMPT_SUFFIX_PATH.read_text(encoding="utf-8")
 
         user_msg = (
             f"Find all the treatment processes explicitly used in the {facility_name} facility. "
@@ -377,7 +321,7 @@ def run_extraction(args, output_dir_override=None):
                     model=args.model,
                     system_message=system_msg,
                     user_message=user_msg,
-                    max_tokens=None if args.no_token_limit else MAX_TOKENS_BY_MODEL.get(args.model, DEFAULT_MAX_TOKENS),
+                    max_tokens=MAX_TOKENS_BY_MODEL.get(args.model, DEFAULT_MAX_TOKENS),
                     schema=example_schema,
                 )
                 cost_usd = None
@@ -449,19 +393,18 @@ if __name__ == "__main__":
         for k in range(1, args.repeat_runs + 1):
             print(f"\n{'='*80}\nRepeat run {k}/{args.repeat_runs}\n{'='*80}\n")
             run_extraction(args, output_dir_override=base / f"run_{k}")
-    elif args.all_models:
-        for method in ALL_METHODS:
-            for model in ALL_MODELS:
-                print(f"\n{'='*80}")
-                print(f"Running method={method} model={model}")
-                print(f"{'='*80}\n")
-                args.method = method
-                args.model = model
-                run_extraction(args)
-    elif args.all_methods:
-        for method in ALL_METHODS:
-            print(f"\n{'='*80}\nRunning method={method} model={args.model}\n{'='*80}\n")
-            args.method = method
+        raise SystemExit(0)
+
+    methods = ALL_METHODS if args.all_methods else [args.method]
+    models = ALL_MODELS if args.all_models else [args.model]
+
+    if "list-based" in methods:
+        init_unit_process_list_from_json(
+            keywords_json_path=KEYWORDS_JSON,
+            output_txt_path=METHOD_PATHS["list-based"]["reference_path"],
+        )
+    for method in methods:
+        for model in models:
+            print(f"\n{'='*80}\nRunning method={method} model={model}\n{'='*80}\n")
+            args.method, args.model = method, model
             run_extraction(args)
-    else:
-        run_extraction(args)

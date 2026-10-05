@@ -16,23 +16,9 @@ DETECTED_STATUSES = PRESENT_STATUSES | {"FUTURE", "OFFSITE"}
 # Which status wins when one process gets several
 STATUS_RANK = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
 
-PLACE_ID_RE = re.compile(r"_(\d+)\.json$")
-
 SEP = "\n\n===PLANNED CHANGES===\n\n"
 
-# A statewide general order (2014-0153-DWQ, 97-010-DWQ) describes no single plant. All boilerplate
-# Detection has to be content-based since enrollee's order_no IS the general order number.
-GENERAL_ORDER_RE = re.compile(r"general\s+waste\s+discharge\s+requirements", re.IGNORECASE)
-NOA_HEADER_RE = re.compile(r"notice\s+of\s+applicability", re.IGNORECASE)
-STATE_BOARD_RE = re.compile(r"state\s+water\s+resources\s+control\s+board", re.IGNORECASE)
-ANY_PAGE_MARKER_RE = re.compile(r"===PAGE \d+===\n?|\[Page \d+\]\n?")
-GENERAL_ORDER_TITLE_CHARS = 300
-NOA_HEADER_CHARS = 900
-
-# Drop watershed permit "agency"
-COLLECTIVE_AGENCY_RE = re.compile(r"\borganizations?\s+under\b", re.IGNORECASE)
-
-# Canonical project paths, resolved from this file so they survive any os.chdir.
+# Project paths, resolved from this file so scripts work from any directory
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PACKAGE_DIR / "data"
 OUTPUT_DIR = PACKAGE_DIR / "output"
@@ -47,12 +33,6 @@ MANUAL_CSV = DATA_DIR / "unit_processes_by_facility_manual.csv"
 SITE_DATA_ALL_CSV = OUTPUT_DIR / "site_data_all.csv"
 SITE_DATA_RELEVANT_CSV = OUTPUT_DIR / "site_data_relevant.csv"
 CWNS_TABLE_CSV = OUTPUT_DIR / "unit_processes_by_facility_cwns.csv"
-# Output column order for rewriting ciwqs_to_cwns.csv (figure_3)
-CIWQS_TO_CWNS_COLUMNS = [
-    "WDID", "Place ID", "Facility Name", "NPDES No.", "Region",
-    "Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS",
-    "CWNS_ID", "FACILITY_ID", "CWNS Facility Name",
-]
 
 mapping_df = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False)
 
@@ -110,10 +90,10 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
     """
     candidates = {}
     for json_file in Path(json_dir).glob("*.json"):
-        m = PLACE_ID_RE.search(json_file.name)
-        if not m:
+        parts = json_file.stem.split("_")
+        place_id = parts[-1]
+        if len(parts) < 2 or not place_id.isdigit():
             continue
-        place_id = m.group(1)
         if place_id_filter is not None and place_id not in place_id_filter:
             continue
         if pdf_stem_by_place_id and place_id in pdf_stem_by_place_id:
@@ -143,7 +123,8 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
 
 
 def is_general_order(text):
-    """True if text opens as a statewide general order rather than a facility-specific permit.
+    """True if text opens as a statewide general order (e.g. 2014-0153-DWQ) rather than a
+    facility-specific permit. Must be content-based: an enrollee's order_no IS the general order number.
 
     Three conditions, each ruling out a distinct look-alike:
       - title phrase in the opening block, because a general order announces itself there
@@ -153,12 +134,12 @@ def is_general_order(text):
       - no "Notice of Applicability" heading, because an enrollee's own NOA cites the general
         order in its header and would otherwise match
     """
-    head = ANY_PAGE_MARKER_RE.sub("", text[:NOA_HEADER_CHARS * 2])
-    if not GENERAL_ORDER_RE.search(head[:GENERAL_ORDER_TITLE_CHARS]):
+    head = re.sub(r"===PAGE \d+===\n?|\[Page \d+\]\n?", "", text[:1800])
+    if not re.search(r"general\s+waste\s+discharge\s+requirements", head[:300], re.IGNORECASE):
         return False
-    if not STATE_BOARD_RE.search(head[:NOA_HEADER_CHARS]):
+    if not re.search(r"state\s+water\s+resources\s+control\s+board", head[:900], re.IGNORECASE):
         return False
-    return not NOA_HEADER_RE.search(head[:NOA_HEADER_CHARS])
+    return not re.search(r"notice\s+of\s+applicability", head[:900], re.IGNORECASE)
 
 
 def normalize_text(text, lower=True):
@@ -254,6 +235,17 @@ def build_secondary_category_lookup(keywords_dict):
             if secondary_categories:
                 column_secondary_categories[name] = secondary_categories
     return top_category_to_columns, column_secondary_categories, column_global_priority
+
+
+def keep_best_priority(status_dict, cols, priority, cleared=""):
+    """Among the present cols, clear every one ranked below the best (lowest) priority value."""
+    present_cols = [c for c in cols if status_dict.get(c) in PRESENT_STATUSES]
+    if len(present_cols) <= 1:
+        return
+    best_priority = min(priority.get(c, 1) for c in present_cols)
+    for col in present_cols:
+        if priority.get(col, 1) > best_priority:
+            status_dict[col] = cleared
 
 
 def apply_secondary_category_backfill(
@@ -526,7 +518,7 @@ def build_txt_jobs(facilities_information):
     facilities_df = pd.read_csv(facilities_information, dtype=str).fillna("")
 
     jobs = []
-    for _, row in facilities_df.iterrows():
+    for row_idx, row in facilities_df.iterrows():
         facility_name = str(row["Facility Name"]).strip()
         pdf_file_value = str(row["PDF_File"]).strip()
         if not facility_name or not pdf_file_value:
@@ -537,6 +529,6 @@ def build_txt_jobs(facilities_information):
             print(f"No txt for '{facility_name}': {txt_path.name}, skipping.")
             continue
 
-        jobs.append((txt_path, facility_name, row["Place ID"].strip()))
+        jobs.append((row_idx, txt_path, facility_name, row["Place ID"].strip()))
 
     return jobs

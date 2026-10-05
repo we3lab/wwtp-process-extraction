@@ -12,14 +12,13 @@ from helpers.utils import (
     build_txt_jobs,
     extract_leaves,
     collapse_facility_processes,
-    PRESENT_STATUSES,
     build_secondary_category_lookup,
     apply_secondary_category_backfill,
+    keep_best_priority,
     add_county_and_sort,
     current_permit_mask,
 )
 
-TXT_FOLDER = OUTPUT_DIR / "permits" / "text"
 PDF_KW_CSV = OUTPUT_DIR / "unit_processes_by_pdf_kw.csv"
 FACILITY_KW_CSV = OUTPUT_DIR / "unit_processes_by_facility_kw.csv"
 METADATA_COLUMNS = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF",
@@ -78,7 +77,7 @@ def main():
     top_category_to_columns, column_secondary_categories, column_global_priority = \
         build_secondary_category_lookup(unitprocess_keywords)
 
-    jobs = build_txt_jobs(TXT_FOLDER, SITE_DATA_RELEVANT_CSV)
+    jobs = build_txt_jobs(SITE_DATA_RELEVANT_CSV)
 
     # Extract keyword results per unique txt file
     txt_cache = {}  # txt_stem -> (present_results, future_results)
@@ -126,13 +125,7 @@ def main():
                     row_status[key] = "0"
 
             for sibling_cols in group_to_columns.values():
-                present_cols = [c for c in sibling_cols if row_status.get(c, "0") in PRESENT_STATUSES]
-                if len(present_cols) <= 1:
-                    continue
-                best_priority = min(column_priority.get(c, 1) for c in present_cols)
-                for col in present_cols:
-                    if column_priority.get(col, 1) > best_priority:
-                        row_status[col] = "0"
+                keep_best_priority(row_status, sibling_cols, column_priority, cleared="0")
 
             apply_secondary_category_backfill(
                 row_status, column_secondary_categories, top_category_to_columns,

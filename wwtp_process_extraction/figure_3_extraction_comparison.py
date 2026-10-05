@@ -41,7 +41,6 @@ from helpers.utils import (
     SITE_DATA_ALL_CSV,
     CWNS_TABLE_CSV,
     CIWQS_TO_CWNS_CSV,
-    CIWQS_TO_CWNS_COLUMNS,
 )
 from helpers.plotting import COLORS, HATCH_PATTERNS, make_grouped_legend, save_and_close, set_thick_spines
 
@@ -211,6 +210,7 @@ ca_cwns = pd.read_csv(CWNS_TABLE_CSV, dtype=str)
 ca_cwns["CWNS_ID"] = ca_cwns["CWNS_ID"].str.strip()
 site = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
 ciwqs = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False)
+ciwqs_columns = list(ciwqs.columns)  # rewritten with the same column order
 all_npdes = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str).fillna("").rename(
     columns={"Latitude": "Latitude_CIWQS_from_npdes", "Longitude": "Longitude_CIWQS_from_npdes"}
 )
@@ -547,10 +547,10 @@ for dest, src in [("Latitude_CWNS", "Latitude_CWNS_from_cwns"), ("Longitude_CWNS
     ciwqs[dest] = coalesce_blank(ciwqs[src], ciwqs[dest])
     ciwqs = ciwqs.drop(columns=[src])
 
-ciwqs_out = ciwqs[CIWQS_TO_CWNS_COLUMNS]
+ciwqs_out = ciwqs[ciwqs_columns]
 
 if new_rows:
-    new_df = pd.DataFrame(new_rows, columns=CIWQS_TO_CWNS_COLUMNS)
+    new_df = pd.DataFrame(new_rows, columns=ciwqs_columns)
     combined = pd.concat([ciwqs_out, new_df], ignore_index=True)
     print(f"\nAdded {len(new_rows)} rows. ciwqs_to_cwns.csv now has {len(combined)} rows.")
 else:
@@ -564,7 +564,7 @@ to_save["npdes_empty"] = to_save["NPDES No."].eq("")
     to_save.sort_values(["npdes_empty", "orig_order"])
     .drop_duplicates(subset=["Place ID", "FACILITY_ID"], keep="first")
     .sort_values("orig_order")
-    [CIWQS_TO_CWNS_COLUMNS]
+    [ciwqs_columns]
     .to_csv(CIWQS_TO_CWNS_CSV, index=False)
 )
 

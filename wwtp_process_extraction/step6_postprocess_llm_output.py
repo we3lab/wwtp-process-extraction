@@ -9,7 +9,7 @@ from rdflib import RDF, RDFS
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask, unitprocess_keywords, OUTPUT_DIR, LLM_EXTRACTION_DIR, MANUAL_CSV, SITE_DATA_RELEVANT_CSV, STATUS_TOKENS, STATUS_RANK
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, keep_best_priority, add_county_and_sort, select_json_per_place_id, current_permit_mask, unitprocess_keywords, OUTPUT_DIR, LLM_EXTRACTION_DIR, MANUAL_CSV, SITE_DATA_RELEVANT_CSV, STATUS_TOKENS, STATUS_RANK
 
 ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
            "document_order_no"]
@@ -237,8 +237,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
                         priority,
                     )
 
-        # Optional keyword-level exclusion rules from unitprocess_keywords.json
-        # Example: {"exclude_if_any": ["Equipment-GritChamber"]}
+        # exclude_if_any: clear a column if the item has any listed token (e.g. Equipment-GritChamber)
         excluded_cols = set()
         for col, exclusion_tokens in column_exclude_if_any.items():
             if item_result.get(col) != "PRESENT":
@@ -247,37 +246,16 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
                 item_result[col] = ""
                 excluded_cols.add(col)
 
-        for group_id, sibling_cols in group_to_columns.items():
-            present_cols = [c for c in sibling_cols if item_result.get(c) == "PRESENT"]
-            if len(present_cols) <= 1:
-                continue
-            best_priority = min(column_priority.get(c, 1) for c in present_cols)
-            for col in present_cols:
-                if column_priority.get(col, 1) > best_priority:
-                    item_result[col] = ""
+        for sibling_cols in group_to_columns.values():
+            keep_best_priority(item_result, sibling_cols, column_priority)
 
-        # Filtration resolution also applies within-item only.
-        filtration_cols = top_category_to_columns.get("Filtration", [])
-        present_filtration = [c for c in filtration_cols if item_result.get(c) == "PRESENT"]
-        if len(present_filtration) > 1:
-            best_filtration_priority = min(column_priority.get(c, 1) for c in present_filtration)
-            for col in present_filtration:
-                if column_priority.get(col, 1) > best_filtration_priority:
-                    item_result[col] = ""
+        # Only the best-priority filtration column survives
+        keep_best_priority(item_result, top_category_to_columns.get("Filtration", []), column_priority)
 
-        # Global priority resolution (optional per keyword via `global_priority`).
-        # Lower value means higher priority. This is used to demote generic
-        # processes (e.g., unspecified categories) when a more specific trigger
-        # is also present in the same item.
-        present_cols = [c for c, value in item_result.items() if value == "PRESENT"]
-        if len(present_cols) > 1:
-            best_global_priority = min(column_global_priority.get(c, 1) for c in present_cols)
-            for col in present_cols:
-                if column_global_priority.get(col, 1) > best_global_priority:
-                    item_result[col] = ""
+        # global_priority (lower wins): drop generic columns (e.g. Unspecified X) when a specific one fired
+        keep_best_priority(item_result, list(item_result), column_global_priority)
 
-        # secondary_category backfill (best effort): ontology trigger matching first,
-        # then unspecified-first fallback via shared helper.
+        # Fill missing secondary categories: ontology triggers first, else the Unspecified fallback
         apply_secondary_category_backfill(
             item_result, column_secondary_categories, top_category_to_columns,
             column_global_priority, column_priority,

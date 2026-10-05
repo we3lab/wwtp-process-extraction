@@ -25,12 +25,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException
-from helpers.utils import normalize_text, is_general_order, COLLECTIVE_AGENCY_RE, OUTPUT_DIR, SITE_DATA_RELEVANT_CSV
+from helpers.utils import normalize_text, is_general_order, OUTPUT_DIR, SITE_DATA_RELEVANT_CSV
 # Modified using Claude 4.5
 
 # Link to Interactive Regulated Facilities Report
 CIWQS_ROOT = "https://ciwqs.waterboards.ca.gov"
 CIWQS_SERVLET = f"{CIWQS_ROOT}/ciwqs/readOnly/CiwqsReportServlet"
+# Watershed permits list "Organizations Under ..." as the agency; those aren't facilities
+COLLECTIVE_AGENCY = "organizations under"
 REGULATED_FACILITY_REPORT_URL = f"{CIWQS_SERVLET}?inCommand=reset&reportName=RegulatedFacility"
 
 PROGRAMS = {"NPDES": {"NPDESWW", "NPDMUNI"}, "WDR": {"WDRMUNILRG", "WDRMUNIOTH"}}
@@ -49,8 +51,8 @@ CIWQS_WASTE_TYPE = "Domestic wastewater"
 CIWQS_RELATED_PERMIT_STATUS = "Active"
 CIWQS_DRILLDOWN_QUERY_DROP = ("enrollee",) # drop enrollee=Y filter
 
-WAIT_TIME = 300  # For CIWQS/grid/export - large number of results
-CIWQS_OVERLAY_WAIT = 180  # loading spinner / overlay after changing page size
+WAIT_TIME = 300  # CIWQS grid/export pages are large and slow
+CIWQS_OVERLAY_WAIT = 180  # loading overlay after changing page size
 FACILITY_CIWQS_COLUMNS = ["WDID", "Facility Name", "NPDES No."]
 XP_GRID = "//table[contains(@class,'ciwqsReportDataTable')]"
 PDF_XPATH = "//a[contains(text(), '.pdf') or contains(text(), '.PDF')]"
@@ -62,37 +64,32 @@ PERMITS_DIR = OUTPUT_DIR / "permits"
 # Cache on size+mtime so a re-downloaded or edited file is still re-scanned.
 SIGNAL_CACHE_PATH = OUTPUT_DIR / "pdf_signal_cache.json"
 
-# Each scrape also lands a dated copy under output/site_data/<RUN_DATE>/
+# Each run also saves a dated copy under output/site_data/<date>/
 RUN_DATE = os.environ.get("RUN_DATE") or datetime.now().strftime("%Y-%m-%d")
 
-# Unset (default) = today's active permit.
-# Set AS_OF=2021-06-01 to pick the order in force on that date instead
+# AS_OF=2021-06-01 picks the order in force on that date; unset = today's active permit
 AS_OF = pd.Timestamp(os.environ["AS_OF"]) if os.environ.get("AS_OF") else None
-# A retrospective run belongs in its as-of folder, not today's.
+# Past-date runs save under their AS_OF date, not today's
 SNAPSHOT_DATE = os.environ.get("AS_OF") or RUN_DATE
 SNAPSHOT_DIR = OUTPUT_DIR / "site_data" / SNAPSHOT_DATE
 
-# Each AS_OF run writes just that year's permits, but step3 and step5 --all_facilities both read the
-# one top-level site_data_relevant.csv, so after writing its dated snapshot the top-level file is
-# rewritten as the union of all snapshots: every document appears exactly once, and text/LLM
-# extraction run once per document rather than once per document per year.
-# A facility can hold several orders across snapshots, and one order can carry several PDFs;
-# general orders (e.g. 2014-0153-DWQ) are shared by hundreds of facilities. Reg_Measure_ID is
-# the stable per-order id, with Order_No as fallback where it is blank.
+# Each AS_OF run only sees that year's permits, but steps 3-5 read one top-level
+# site_data_relevant.csv. So it is rewritten as the union of all dated snapshots,
+# and each document is extracted once instead of once per year.
+# One row per facility + order + PDF; Reg_Measure_ID identifies the order (Order_No if blank).
 SNAPSHOT_UNION_KEY = ["Place ID", "order_key", "PDF_File"]
 
 # The snapshot the top-level output/facilities.json should represent between runs
 BASE_SNAPSHOT_DATE = os.environ.get("BASE_SNAPSHOT_DATE", "2026-06-01")
 
-# Standalone Chrome + matching driver, under the user's home rather than a hardcoded username.
-# Override with CHROME_BIN / CHROMEDRIVER_BIN if they live elsewhere.
+# Chrome + chromedriver location; override with CHROME_BIN / CHROMEDRIVER_BIN
 CHROME_BIN = Path(os.environ.get("CHROME_BIN") or Path.home() / "bin/chrome/chrome-linux64/chrome")
 CHROMEDRIVER_BIN = Path(os.environ.get("CHROMEDRIVER_BIN")
                         or Path.home() / "bin/chrome/chromedriver-linux64/chromedriver")
 
-# PDF filenames matching this regex are skipped on the order page.
+# Skip non-permit PDFs (reports, letters, maps...) by filename
 FILENAME_SEP = r"[ ._-]"  # - must be last to avoid range interpretation
-SKIP_BASE_KW = "rpts|rowd|memo|nov|map|rwd|gwmp|mgo"  # match only with separators (e.g. "_memo_")
+SKIP_BASE_KW = "rpts|rowd|memo|nov|map|rwd|gwmp|mgo"  # short words: only between separators (e.g. "_map_"), not inside other words
 SKIP_PHRASE = (
     "report|financial|response to|rate study|ratestudy|study|"
     "addendum|registration|adoption|"
@@ -101,12 +98,12 @@ SKIP_PHRASE = (
 )  # skip if anywhere in filename
 SKIP_RE = re.compile(rf"^(?:{SKIP_BASE_KW}){FILENAME_SEP}|{FILENAME_SEP}(?:{SKIP_BASE_KW}){FILENAME_SEP}|{SKIP_PHRASE}", re.IGNORECASE)
 
-# skip these UNLESS keep_re is present too
+# skip these unless KEEP_RE also matches
 CONTINGENT_SKIP_PHRASE = "amendment|mrp"
 CONTINGENT_SKIP_RE = re.compile(CONTINGENT_SKIP_PHRASE, re.IGNORECASE)
 
-# keep these, overriding contingent skip
-KEEP_RE = re.compile(r"(?<![a-zA-Z])(noa|wdrs?|order|npdes)(?![a-zA-Z])", re.IGNORECASE)  # always keep NOA/WDR/NPDES files
+# NOA/WDR/order/NPDES as a whole word overrides the contingent skip
+KEEP_RE = re.compile(r"(?<![a-zA-Z])(noa|wdrs?|order|npdes)(?![a-zA-Z])", re.IGNORECASE)
 
 RULES = {
     "NPDES": {
@@ -125,10 +122,9 @@ RULES = {
 MAX_SCAN_PAGES = 5
 MIN_PDF_PAGES = 10
 
-# tolerant regex: allow spaces, lines changes and some special chars between letters
+# PDF text is messy: allow spaces, line breaks and soft hyphens between letters
 FUZZY_INNER_SEP = r"(?:[\s­​\-])*"
-# "the following <...> subject to <...> set forth in this <...> order", each letter fuzzy;
-# allow up to 600 chars in captures (non-greedy), DOTALL so dot matches newlines
+# Matches "the following ... subject to ... set forth in this ... order", up to 600 chars per gap
 NPDES_SENTENCE_RE = re.compile(
     r"(.{1,600}?)".join(
         "".join(re.escape(ch) + FUZZY_INNER_SEP for ch in phrase)
@@ -138,17 +134,12 @@ NPDES_SENTENCE_RE = re.compile(
 )
 CAG_PERMIT_RE = re.compile(r"\bca\s*g\d+", re.IGNORECASE)
 
-# Per-facility logging. Each worker buffers
-# its lines in thread-local storage; facility_log flushes them in one locked write.
+# Each worker buffers its log lines; facility_log prints them together so they don't interleave
 worker_log = threading.local()
 
 
 def snapshot(filename):
-    """Copy a just-written top-level output into the dated batch folder.
-
-    No sidecar metadata: the folder name carries the date and the files carry their own row
-    counts, so a run_info.json would only be derived state that can drift out of sync.
-    """
+    """Copy a just-written top-level output into the dated snapshot folder."""
     src = OUTPUT_DIR / filename
     os.makedirs(SNAPSHOT_DIR, exist_ok=True)
     shutil.copy2(src, os.path.join(SNAPSHOT_DIR, filename))
@@ -156,12 +147,9 @@ def snapshot(filename):
 
 
 def restore_base_facilities():
-    """Leave the top-level facilities.json holding the base snapshot, not this run's.
+    """After a past-date (AS_OF) run, put the base-date facilities.json back at the top level.
 
-    A retrospective run overwrites output/facilities.json with the orders in force at its
-    as-of date, so whichever year ran last would otherwise masquerade as current -- and this
-    script reads that same file as its starting facility list. The dated copies under
-    site_data/ are the durable per-year record; the top level always means "now".
+    This script starts from that file, so it should always mean "now".
     """
     src = OUTPUT_DIR / "site_data" / BASE_SNAPSHOT_DATE / "facilities.json"
     dst = OUTPUT_DIR / "facilities.json"
@@ -194,13 +182,9 @@ def facility_log(lock):
 
 
 def repair_href(href):
-    """Undo BeautifulSoup's entity decoding of '&regMeasID='.
+    """Undo BeautifulSoup turning '&regMeasID=' into '\u00aeMeasID=' ('&reg' is the (R) symbol).
 
-    '&reg' is a valid named entity, so html.parser turns '...&regMeasID=436745' into
-    '...\u00aeMeasID=436745'. Two things then break silently: requesting that URL returns
-    HTTP 200 with an empty body, and parse_qs finds no regMeasID, which makes
-    resolve_download_url fall back to the first rmAttachmentPopup link on the page --
-    potentially a different order's attachments.
+    Otherwise the URL silently returns an empty page, or another order's attachments.
     """
     return href.replace("\u00aeMeasID", "&regMeasID") if href else href
 
@@ -244,11 +228,9 @@ def select_value(soup, name, visible_text, *, required_label=None):
 
 
 def retry_request(session, method, url, *, data=None, max_attempts=4, timeout=120):
-    """Retry on transient transport errors; HTTPError and the rest propagate immediately.
+    """Retry timeouts and dropped connections (CIWQS drops big responses).
 
-    CIWQS drops the connection mid-response on larger payloads (SSLEOFError / connection
-    reset), which is retryable and distinct from a real HTTP failure -- retrying a 404 would
-    just waste four round trips.
+    Real HTTP errors like 404 raise right away; retrying them won't help.
     """
     transient = (requests.exceptions.Timeout,
                  requests.exceptions.SSLError,
@@ -346,11 +328,7 @@ def open_in_new_tab(driver, url, main_window):
 def resolve_download_url(href, soup):
     """Map an order link to its attachment page, matching on regMeasID.
 
-    Both sides must be run through repair_href: `href` arrives already repaired via abs_url,
-    but the candidates come straight off the soup and still carry the '\u00aeMeasID=' form, so
-    comparing a repaired id against an unrepaired href never matches. Getting that wrong
-    silently returns the order page instead of the attachments page, which reads as
-    "Found 0 PDFs on page".
+    Page links still have the broken '\u00aeMeasID=' form, so repair them before comparing.
     """
     reg_id_val = parse_qs(urlparse(repair_href(href)).query).get("regMeasID", [None])[0]
 
@@ -398,8 +376,8 @@ def find_best_order(driver, fac_url, main_window):
 
             col_index = {t: i for i, t in enumerate(texts)}
 
-            # Process data rows: collect (rank, -eff, href, rm_type, eff, wdid) tuples; min() picks the best.
-            # href may be None for rows without a clickable link — still included so we can store order metadata.
+            # Collect candidate orders; min() picks the best (permit type, then newest).
+            # Rows without a link are kept so their order metadata is still recorded.
             candidates = []
             for data_row in all_rows[hdr_idx + 1:]:
                 cells = data_row.find_all("td")
@@ -408,19 +386,17 @@ def find_best_order(driver, fac_url, main_window):
                 status = cell_text(cells, col_index.get("Status")).lower()
                 eff = pd.to_datetime(cell_text(cells, col_index.get("Effective Date")), errors="coerce")
                 if AS_OF is None:
-                    # default: today's governing permit, as before
+                    # default: only today's active orders
                     if status != "active":
                         continue
                 else:
-                    # retrospective: accept Historical/Terminated rows too and let the
-                    # effective-date cut decide. Ranking below already prefers permit type
-                    # then newest effective date, which is the governing order at AS_OF.
+                    # past date: also accept Historical/Terminated orders that took effect by AS_OF
                     if status == "never active":
                         continue
                     if pd.isna(eff) or eff > AS_OF:
                         continue
 
-                # Apply validation checks
+                # Only permit types in TYPE_RANK; WDRs only from municipal programs
                 rm_type = cell_text(cells, col_index.get("Reg Measure Type")).upper()
                 if rm_type not in TYPE_RANK:
                     continue
@@ -470,7 +446,7 @@ def download_order_pdfs(driver, order_url, worker_dir, main_window):
             pass
         pdf_documents = driver.find_elements(By.XPATH, PDF_XPATH)
         all_attachments = driver.find_elements(By.XPATH, ATTACHMENT_XPATH)
-        # total_on_page means "documents present", so an unusable format still counts as found
+        # Count every attachment, so a page with only .doc files still counts as found
         total_on_page = max(len(all_attachments), len(pdf_documents))
         say(f"  Found {len(pdf_documents)} PDFs on page"
             + (f" ({len(all_attachments)} attachments total)"
@@ -598,8 +574,8 @@ def run_ciwqs_search():
     in_status = select_value(
         search_soup, "inStatus", CIWQS_RELATED_PERMIT_STATUS, required_label="Related Permit Status"
     )
-    # Multi-select post → total drilldown URL (used for Excel export only).
-    # Multi-select yields a grouped-by-agency view; re-submit per-program for the flat table.
+    # One search over all programs gives the Excel export link. Its table is grouped by
+    # agency, so each program is also searched alone below to get a flat table.
     filter_kwargs = dict(facility_type=CIWQS_FACILITY_TYPE, waste_type=CIWQS_WASTE_TYPE, status=in_status)
     print("[requests] Submitting filters")
     resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}",
@@ -623,7 +599,7 @@ def run_ciwqs_search():
         else:
             print(f"[requests] Warning: no drilldown URL found for {prog}")
 
-    # Fresh Chrome profile (empty cookies) — only touches the Excel summary drilldown URL (total_url).
+    # Fresh Chrome profile (no cookies), used only for the Excel export
     driver = new_chrome_driver(OTHER_PDFS_DIR)
     driver.set_page_load_timeout(WAIT_TIME)
     load_ciwqs_table(driver, total_url, "Facility page")
@@ -678,7 +654,7 @@ def run_ciwqs_search():
     excel_file = max(excel_files, key=os.path.getctime)
     df = pd.read_csv(excel_file, sep='\t', encoding='latin-1', on_bad_lines='warn', dtype=str)
 
-    # Filtering matching original CIWQS form logic
+    # Re-apply the search form's filters to the export
     df = df[
         df["Program"].fillna("").str.upper().str.contains("|".join(ACCEPTED_PROGRAMS), na=False, regex=True) &
         (df["Regulatory Measure Status"].fillna("").str.upper() == CIWQS_RELATED_PERMIT_STATUS.upper()) &
@@ -710,12 +686,11 @@ def collect_facility_page_urls(program_urls):
     facilities_by_place = {}  # place_id -> {"facilities": [dict keyed by FACILITY_CIWQS_COLUMNS, ...]}
     name_to_place_id = {}  # facility name -> place_id, collected pre-filter for reconciliation
 
-    # Navigate per-program RegulatedFacilityDetail URLs. New Chrome profile per URL so no stale CIWQS cookies.
     col = {}  # CIWQS header text -> column index (detected on first program)
 
     for prog, prog_url in program_urls:
         print(f"\n--- {prog}: {prog_url}")
-        # Try a new driver every time, since cookies from original search make tables too slow to load
+        # New Chrome per program: cookies from the search make tables load too slowly
         driver = new_chrome_driver(OTHER_PDFS_DIR)
         driver.set_page_load_timeout(WAIT_TIME)
         load_ciwqs_table(driver, prog_url, prog)
@@ -820,9 +795,7 @@ def needs_retry(entry):
     # Deliberately skipped (no link or pre-2004) — not a failure, never retry
     if entry.get("pdf_skip_reason"):
         return False
-    # A reg measure was clicked and 0 PDFs came back. Usually transient (page slow to
-    # render), but some attachment pages really are empty, so this is retried a bounded
-    # number of times and then marked pdf_skip_reason above.
+    # Clicked an order but got 0 PDFs: usually a slow page, so retry
     if entry.get("reg_measure_type") and not entry.get("pdfs") and not entry.get("total_pdfs"):
         return True
     return False
@@ -945,12 +918,11 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=24):
             shutil.rmtree(worker_dir, ignore_errors=True)
 
     def logged_facility(args):
-        """Buffer this worker's lines and flush them as one block, so a facility's output
-        is contiguous instead of interleaved with the other workers."""
+        """Print each facility's lines as one block, not mixed with other workers."""
         with facility_log(lock):
             return process_facility(args)
 
-    # loop mutates each entry in facilities_by_place in-place to add 'pdfs', 'total_pdfs', 'reg_measure_id', 'reg_measure_type'
+    # Fills in pdfs, total_pdfs, reg_measure_id/type on each entry in place
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         executor.map(logged_facility, enumerate(items, 1))
 
@@ -1071,13 +1043,12 @@ def detect_npdes(pdf_file: str) -> str | None:
     raw_text = extract_pdf_text(pdf_file)
     text = raw_text.lower()
 
-    # Check NOA first — needed to gate the CAG short-circuit
+    # NOA is checked first because the CAG rule below depends on it
     has_noa = rule_matches(RULES["NOA"], text, raw_text)
     has_cag = bool(CAG_PERMIT_RE.search(text))
 
-    # Statewide general order: CAG_PERMIT_RE only catches CAG-numbered NPDES general permits,
-    # and a WDR general order has no CAG number. Test before the NOA check — the order describes
-    # the NOA process in its body prose, so has_noa is True and would otherwise rescue it.
+    # Statewide general orders aren't facility permits, CAG number or not. Check before the
+    # NOA return: a general order's text describes NOAs, so has_noa would be True.
     if is_general_order(text):
         return None
 
@@ -1174,8 +1145,7 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
             if assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
                 matched_type = None  # general order for enrolled facilities, not facility-specific
         elif matched_type == "NOA":
-            # Count facilities, not reg-measure groups: enrollees under one general order share a
-            # single reg_measure_id, so the group count is 1 no matter how many plants point at it.
+            # Count facilities, not orders: many enrollees share one general order's reg_measure_id
             places = pdf_to_places.get(filename, set())
             assoc_types = {group_to_rm_type.get(group, "") for group in pdf_to_groups.get(filename, set())}
             if len(places) > 1 and assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
@@ -1201,8 +1171,8 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
 def create_site_data_csv(facilities_by_place, npdes_pdfs):
     print("\n STEP 4: Creating site_data_relevant with relevant NPDES/WDR/NOA documents only")
 
-    # Build (WDID, Facility Name) → {Agency, Region, Major/Minor, Order_No, NPDES No.} from
-    # site_data_all.csv. Order_No is overridden with the scraped regulatory measure value when available.
+    # (WDID, Facility Name) -> agency/region/order metadata from site_data_all.csv.
+    # The scraped order_no replaces Order_No when present.
     csv_path = OUTPUT_DIR / "site_data_all.csv"
     xls_path = OTHER_PDFS_DIR / "Regualted_Facility_Report_Detail.xls"
     meta_keys = ("Agency", "Region", "Major/Minor", "Order_No", "NPDES No.")
@@ -1238,8 +1208,7 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs):
         fac_name = entry.get("Facility Name", "")
         wdid = entry.get("WDID", "")
         meta = enrich.get((wdid, fac_name), {})
-        # Drop watershed permit "agencies"
-        if COLLECTIVE_AGENCY_RE.search(meta.get("Agency", "")):
+        if COLLECTIVE_AGENCY in meta.get("Agency", "").lower():
             skipped_collective.append(f"{place_id} {fac_name}")
             continue
         facility_npdes_pdfs = [p for p in entry.get("pdfs", []) if p in npdes_pdfs]
@@ -1307,7 +1276,7 @@ def union_site_data_snapshots():
         allrows["Reg_Measure_ID"].str.strip().ne(""), allrows["Order_No"])
 
     # Older snapshots predate the collective-permittee filter, so drop those places here too
-    collective = allrows["Agency"].str.contains(COLLECTIVE_AGENCY_RE)
+    collective = allrows["Agency"].str.lower().str.contains(COLLECTIVE_AGENCY, regex=False)
     if collective.any():
         dropped = allrows.loc[collective, ["Place ID", "Facility Name"]].drop_duplicates()
         print(f"\ncollective-permittee places dropped (not facilities): {len(dropped)}")
@@ -1324,8 +1293,7 @@ def union_site_data_snapshots():
     union = (allrows.sort_values("as_of", ascending=False)
              .drop_duplicates(subset=SNAPSHOT_UNION_KEY, keep="first"))
 
-    # provenance rides along as columns rather than a side file: the year-over-year figure
-    # needs to know which snapshots a document appeared in, and a second file only drifts
+    # Provenance is stored as columns, not a side file, so it can't drift out of sync
     union = union.merge(provenance, on=SNAPSHOT_UNION_KEY, how="left")
     cols = ([c for c in allrows.columns if c not in ("as_of", "order_key")]
             + ["as_of_dates", "n_snapshots"])
@@ -1354,13 +1322,11 @@ def union_site_data_snapshots():
 
 if __name__ == "__main__":
 
-    # Sometimes it takes a few tries to get the facility results page to load / Excel to download
-    # Try a few times or wait a couple of hours to let CIWQS stabilize if needed
+    # CIWQS is flaky: if the results page or Excel won't load, retry or wait a few hours.
+    # Clearing old Chrome temp files sometimes helps:
+    # find /tmp -maxdepth 1 -name "chrome_user_data_*" -user $USER -exec rm -rf {} +
 
-    # sometimes helpful to clear chrome temp files
-    # find /tmp -maxdepth 1 -name "chrome_user_data_*" -user daly -print
-    # find /tmp -maxdepth 1 -name "chrome_user_data_*" -user daly -exec rm -rf {} +
-
+    # Full run (uncomment):
     # program_urls = run_ciwqs_search()
     # facilities = collect_facility_page_urls(program_urls)
     # To restart from a checkpoint, replace the step(s) above with:

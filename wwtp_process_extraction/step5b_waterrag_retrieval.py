@@ -221,7 +221,7 @@ def main():
 
     retrieval, reranker = load_waterrag()
 
-    for txt_path, facility_name, place_id in jobs:
+    for _, txt_path, facility_name, place_id in jobs:
         description_text = txt_path.read_text(encoding="utf-8").split(SEP, 1)[0]
         if not description_text.strip():
             print(f"{facility_name}: empty description section, skipping.")

@@ -243,7 +243,7 @@ def run_extraction(args, output_dir_override=None):
     # the JSON results, so the txt_file/extraction_file names aren't stored here.
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
 
-    for txt_path, facility_name, place_id in jobs:
+    for _, txt_path, facility_name, place_id in jobs:
         print("#" * 80)
         print(f"\nProcessing {txt_path.name} for facility {facility_name}...")
 

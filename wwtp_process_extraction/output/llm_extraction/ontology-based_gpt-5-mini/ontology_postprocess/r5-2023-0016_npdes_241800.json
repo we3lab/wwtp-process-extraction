@@ -33,22 +33,6 @@
       ]
     },
     {
-      "Equipment": "GritChamber",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The treatment system consists of a mechanical spiral screen, grit chamber, activated sludge with 2-stage aeration, clarification, filtration with disk filters, and UV disinfection.",
-      "trigger_process": [
-        "Grit Removal"
-      ]
-    },
-    {
       "Equipment": "Pond",
       "Process": [
         "Aeration"
@@ -78,7 +62,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dissolved air flotation thickener (DAFT) and rapid sand filtration",
+      "Sentence": "dissolved air flotation thickener (DAFT)",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -95,7 +79,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dissolved air flotation thickener (DAFT) and rapid sand filtration",
+      "Sentence": "rapid sand filtration unit",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -104,15 +88,12 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
         "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "chlorine contact chamber, dechlorination system",
@@ -123,21 +104,16 @@
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Backwash",
+        "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Scum is periodically skimmed from the DAFT unit and conveyed to the backwash pond to dry.",
+      "Sentence": "Scum is periodically skimmed from the DAFT unit and conveyed to the backwash pond to dry",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
@@ -152,16 +128,31 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a mechanical spiral screen, grit chamber, activated sludge with 2-stage aeration, clarification, filtration with disk filters, and UV disinfection.",
+      "Sentence": "mechanical spiral screen",
       "trigger_process": [
         "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "grit chamber",
+      "trigger_process": [
+        "Grit Removal"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -175,9 +166,8 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a mechanical spiral screen, grit chamber, activated sludge with 2-stage aeration, clarification, filtration with disk filters, and UV disinfection.",
+      "Sentence": "activated sludge with 2-stage aeration ... capable of nitrification and denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Nitrification"
       ]
@@ -193,7 +183,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a mechanical spiral screen, grit chamber, activated sludge with 2-stage aeration, clarification, filtration with disk filters, and UV disinfection.",
+      "Sentence": "clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -209,7 +199,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a mechanical spiral screen, grit chamber, activated sludge with 2-stage aeration, clarification, filtration with disk filters, and UV disinfection.",
+      "Sentence": "filtration with disk filters / new cloth filtration",
       "trigger_process": [
         "Unspecified Filtration"
       ]
@@ -217,8 +207,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -226,25 +215,24 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a mechanical spiral screen, grit chamber, activated sludge with 2-stage aeration, clarification, filtration with disk filters, and UV disinfection.",
+      "Sentence": "switching chlorine disinfection to UV disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "Filter",
-      "Process": [
-        "MediaFiltration"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Tertiary"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "installing new clarifiers and activated sludge treatment capable of nitrification and denitrification, new cloth filtration, and switching chlorine disinfection to UV disinfection.",
+      "Sentence": "overflow from the disk filters will flow to an unlined overflow pond on site before being re-routed back to the treatment train",
       "trigger_process": [
-        "Media Filtration"
+        "Equalization"
       ]
     },
     {
@@ -261,13 +249,13 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Solids are collected from the various treatment processes and treatment includes aerobic digestion and mechanical sludge dewatering in a fan press.",
+      "Sentence": "treatment includes aerobic digestion",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -279,7 +267,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Solids are collected from the various treatment processes and treatment includes aerobic digestion and mechanical sludge dewatering in a fan press.",
+      "Sentence": "mechanical sludge dewatering in a fan press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -292,10 +280,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Solids are collected in covered bins then hauled to a landfill for final disposal.",
+      "Sentence": "Solids are collected in covered bins then hauled to a landfill for final disposal",
       "trigger_process": [
         "Biosolids Landfill"
       ]

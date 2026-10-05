@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel",
+      "Sentence": "The headworks system two automatic bar screens, conveyor, two grinder-washer compactors, a grit channel, grit pump, grit cyclone separator",
       "Source": "permit_text",
       "Website": null
     },
@@ -26,7 +26,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Screening solids removed from the headworks system are routed to a grinder-washer/compactor unit where the soft organics are separated from the screenings and returned to the process flow stream. The screenings are grinded, washed and then compacted",
+      "Sentence": "two grinder-washer compactors... The screenings are grinded, washed and then compacted and transferred to a roll off dumpster.",
       "Source": "permit_text",
       "Website": null
     },
@@ -56,7 +56,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a lagoon treatment system rated at 7.0 million gallons per day (MGD)...Each of the four lagoon treatment modules are comprise of four lined aerated lagoons",
+      "Sentence": "Each of the four lagoon treatment modules are comprise of four lined aerated lagoons (a total of 16 aeration lagoons)",
       "Source": "permit_text",
       "Website": null
     },
@@ -71,14 +71,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds)",
+      "Sentence": "two lined polishing ponds (a total of 16 aeration lagoons and 8 polishing ponds). All lagoons are lined with a synthetic membrane liner.",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary"
@@ -86,7 +87,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a Biolac® activated sludge treatment system rated at 2.9 MGD...two activated sludge basins",
+      "Sentence": "a Biolac® activated sludge treatment system rated at 2.9 MGD... The activated sludge treatment system consists of two activated sludge basins",
       "Source": "permit_text",
       "Website": null
     },
@@ -120,14 +121,31 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Combined secondary effluent...is conveyed to the chlorine contact basin to be disinfected and de-chlorinated...chlorine and sulfur dioxide gas...3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination",
+      "Sentence": "conveyed to the chlorine contact basin to be disinfected and de-chlorinated prior to discharge... dispersing the chlorine and sulfur dioxide gas... 3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster.",
       "Source": "permit_text",
       "Website": null
     },
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Filtration"
+        "Thickening",
+        "Filtration",
+        "Sedimentation"
       ],
       "Role": [
         "SolidsHandling"
@@ -147,8 +165,7 @@
       "Process": null,
       "Role": [
         "SolidsHandling",
-        "Storage",
-        "Equalization"
+        "Detention"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -160,9 +177,10 @@
       "Website": null
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -172,14 +190,14 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a single 2-meter gravity belt filter press where it is dewatered. The dewatered sludge is discharged into a truck trailer",
+      "Sentence": "pumped to a single 2-meter gravity belt filter press where it is dewatered",
       "Source": "permit_text",
       "Website": null
     },
     {
-      "Equipment": null,
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -189,7 +207,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total). The solids are periodically transferred to a storage area for continued drying",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total)... The Discharger stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids.",
       "Source": "permit_text",
       "Website": null
     },
@@ -206,7 +224,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "hauled off site by a private hauler for composting...Synagro Arizona Soils Composting facility in Vicksburg, Arizona",
+      "Sentence": "sludge from the facility has been hauled away to the Synagro Arizona Soils Composting facility in Vicksburg, Arizona",
       "Source": "permit_text",
       "Website": null
     },
@@ -215,7 +233,9 @@
       "Process": [
         "Landfill"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -224,9 +244,9 @@
       "Website": null
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -241,7 +261,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -256,7 +277,8 @@
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination"
+        "Chlorination",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -266,7 +288,20 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "a chemical storage and feed system (sodium hypochlorite)",
+      "Sentence": "chemical storage and feed system (sodium hypochlorite)",
+      "Source": "permit_text",
+      "Website": null
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "seasonal and operational storage",
       "Source": "permit_text",
       "Website": null
     }

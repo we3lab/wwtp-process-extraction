@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of bar screening, grit removal, and grinders."
+      "Sentence": "Preliminary treatment consists of bar screening"
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of bar screening, grit removal, and grinders."
+      "Sentence": "Preliminary treatment consists of ... grit removal"
     },
     {
       "Equipment": "Grinder",
@@ -37,7 +37,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of bar screening, grit removal, and grinders."
+      "Sentence": "Preliminary treatment consists of ... grinders."
     },
     {
       "Equipment": "SedimentationTank",
@@ -61,20 +61,19 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a 125,000-gallon flow equalization basin."
+      "Sentence": "followed by a 125,000-gallon flow equalization basin"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Secondary treatment consists of activated sludge (three 125,000-gallon aeration tanks)"
@@ -90,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification (two 50-foot diameter clarifiers)."
+      "Sentence": "and secondary clarification (two 50-foot diameter clarifiers)"
     },
     {
       "Equipment": "CoagulationBasin",
@@ -103,7 +102,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration."
+      "Sentence": "Tertiary treatment consists of coagulation"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -116,7 +115,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration."
+      "Sentence": "Tertiary treatment consists of ... flocculation"
     },
     {
       "Equipment": "SedimentationTank",
@@ -129,12 +128,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration."
+      "Sentence": "Tertiary treatment consists of ... tube settling"
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -142,7 +141,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration."
+      "Sentence": "Tertiary treatment consists of ... sand filtration"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -150,43 +149,75 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary-treated effluent is then disinfected by ultraviolet light."
+      "Sentence": "The tertiary-treated effluent is then disinfected by ultraviolet light"
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dried biosolids are stored onsite at the location(s) identified in Attachment C"
+      "Sentence": "Dried biosolids are stored onsite"
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dried biosolids ... are hauled off-site by Liberty Composting Inc."
+      "Sentence": "are hauled off-site by Liberty Composting Inc."
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include new preliminary treatment"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include ... flow equalization"
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include ... secondary treatment"
     },
     {
       "Equipment": null,
@@ -194,13 +225,26 @@
         "Denitrification"
       ],
       "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Once the upgrades are complete, the Facility will be capable of denitrification."
+      "Sentence": "Once the upgrades are complete, the Facility will be capable of denitrification"
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Disinfection"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The existing tertiary treatment and UV disinfection will be upgraded"
     },
     {
       "Equipment": "AerobicDigester",
@@ -209,11 +253,10 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The Discharger also plans to add a new aerobic sludge digestion system"
@@ -226,12 +269,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "and sludge dewatering screw press."
+      "Sentence": "and sludge dewatering screw press"
     }
   ]
 }

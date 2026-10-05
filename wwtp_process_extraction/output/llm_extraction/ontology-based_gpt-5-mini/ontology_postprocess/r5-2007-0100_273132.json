@@ -10,8 +10,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "the headworks is contained at the Manning lift station and consists of a 3-inch Parshall flume and a manually-cleaned bar screen immediately upstream of the lift station.",
+      "Location": "on-site",
+      "Sentence": "the headworks ... consists of ... a manually-cleaned bar screen immediately upstream of the lift station.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -24,39 +24,41 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Effluent is pumped from the Manning lift station to the WWTF one half mile to the west.",
       "trigger_process": []
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
       "Role": [
-        "Detention",
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "an unlined aerated pond (Pond 1)",
-      "trigger_process": []
+      "Sentence": "Pond 1 is approximately 6 ft deep ... Aeration is provided by two 5 horsepower surface aerators operated on timers.",
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": "Pond",
       "Process": [
         "Sedimentation"
       ],
       "Role": [
-        "Detention"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two sedimentation ponds (Ponds 2 and 3)",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
     },
     {
@@ -65,13 +67,12 @@
         "Evaporation"
       ],
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent from Ponds 2 and 3 discharge to evaporation/percolation Ponds 4, 5 and 6 (disposal ponds).",
+      "Sentence": "three evaporation and percolation ponds (Ponds 4 through 6).",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -79,7 +80,7 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying",
+        "AirDrying",
         "LandApplication"
       ],
       "Role": [
@@ -92,10 +93,103 @@
       "Location": "on-site",
       "Sentence": "The Discharger currently disposes of sludge onsite by draining and drying the ponds and discing the residual sludge into soils underlying the ponds.",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Land Application",
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The RWD describes the City\u2019s plans to construct a new extended aeration biological treatment process ... The treatment process will be operated to allow for de-nitrification.",
+      "trigger_process": [
+        "Denitrification",
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The WWTF will consist of an aeration basin, an integral clarifier, return and waste activated sludge pumps...",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Recirculation",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The WWTF will consist of ... return and waste activated sludge pumps...",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The WWTF will consist of ... sludge handling and storage facilities.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City will install new pumping equipment at the pump station to accommodate the increase in flow.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City plans to convert Ponds 2 and 3 and possibly Pond 1 into disposal ponds.",
+      "trigger_process": [
+        "Evaporation Pond"
       ]
     },
     {

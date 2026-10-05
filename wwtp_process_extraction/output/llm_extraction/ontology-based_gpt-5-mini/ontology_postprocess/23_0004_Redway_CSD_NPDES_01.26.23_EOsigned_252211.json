@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The Dogwood lift station pumps raw wastewater into an 8-inch pressure main...",
+      "trigger_process": []
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
@@ -17,25 +27,12 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Dogwood lift station pumps raw wastewater into an 8-inch pressure main down Dogwood Lane...",
-      "trigger_process": []
-    },
-    {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -51,14 +48,13 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of a 300,000-gallon oxidation ditch, secondary clarifier...",
+      "Sentence": "secondary clarifier",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -70,9 +66,7 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -87,7 +81,9 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -99,20 +95,34 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "Drying",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids removed from the secondary clarifier are dewatered in the Facility\u2019s sludge drying beds or an Aeromod Draimad bagger...",
+      "Sentence": "dewatered in the Facility\u2019s sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "or an Aeromod Draimad bagger before being transported to an approved landfill for final disposal.",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -120,9 +130,7 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Recirculation"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -130,57 +138,75 @@
       "trigger_process": []
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Facility has historically received septage at a septage receiving station located at the Facility; however, the Permittee no longer accepts septage...",
+      "trigger_process": []
+    },
+    {
       "Equipment": null,
       "Process": [
         "LandApplication"
       ],
       "Role": [
-        "LandApplication"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "past",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "Solids were previously disposed of though land application in a wooded area owned by the Permittee north of the Facility; this practice was discontinued in 2018.",
       "trigger_process": [
         "Land Application"
       ]
     },
     {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "a new headworks process,",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "aerator upgrades,",
+      "Location": "off-site",
+      "Sentence": "lift station SCADA improvements and pump upgrades",
       "trigger_process": []
     },
     {
-      "Equipment": "AnaerobicDigester",
+      "Equipment": "OxidationDitch",
       "Process": [
-        "AnaerobicDigestion"
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "aerator upgrades",
+      "trigger_process": [
+        "Oxidation Ditch"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "clarifier rehabilitation",
+      "trigger_process": [
+        "Unspecified Clarification"
+      ]
+    },
+    {
+      "Equipment": "Digester",
+      "Process": [
+        "Digestion"
       ],
       "Role": [
         "SolidsHandling"
@@ -188,9 +214,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "increased digestor volume,",
+      "Sentence": "increased digestor volume",
       "trigger_process": [
-        "Anaerobic Digestion"
+        "Unspecified Digestion"
       ]
     },
     {
@@ -199,15 +225,13 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary"
-      ],
+      "Role": null,
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new chlorine contact basin and effluent pump station,",
+      "Sentence": "a new chlorine contact basin",
       "trigger_process": [
         "Chlorination"
       ]
@@ -215,14 +239,29 @@
     {
       "Equipment": "Pump",
       "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "effluent pump station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Drying",
+        "AirDrying"
+      ],
       "Role": [
-        "Permeate"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "new chlorine contact basin and effluent pump station,",
-      "trigger_process": []
+      "Sentence": "sludge drying cover",
+      "trigger_process": [
+        "Air Drying"
+      ]
     }
   ]
 }

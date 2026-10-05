@@ -5,11 +5,13 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "includes a bar screen,",
+      "Sentence": "includes a bar screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -25,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary wastewater treatment process prior to discharge from Discharge Point 002 includes the same bar screen, aeration basins, and clarifiers",
+      "Sentence": "two aeration basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -41,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four clarifiers,",
+      "Sentence": "four clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -78,13 +80,32 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three filters, where polymer is added to improve solids removal",
+      "Sentence": "wastewater is routed to filters, where polymer is added to improve solids removal",
       "trigger_process": [
         "Polymer Addition"
       ]
     },
     {
       "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "a secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "DisinfectionUnit",
       "Process": [
         "Disinfection"
       ],
@@ -94,9 +115,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After filtration, wastewater is routed to the tertiary chlorine contact basin.",
+      "Sentence": "After filtration, wastewater is routed to the tertiary chlorine contact basin",
       "trigger_process": [
-        "Chlorination"
+        "Unspecified Disinfection"
       ]
     },
     {
@@ -105,8 +126,7 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Storage"
+        "Tertiary"
       ],
       "Substance": [
         "ReducingAgent"
@@ -128,47 +148,9 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "four Riverside Ponds that operate in series.",
+      "Sentence": "four Riverside Ponds that operate in series",
       "trigger_process": [
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "ReducingAgent"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a secondary chlorine contact basin, where the Discharger adds sodium hypochlorite for disinfection. The Discharger adds sodium bisulfite to dechlorinate",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination",
-        "Reduction"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Equalization",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "One 5.6-million-gallon Flow Equalization Basin",
-      "trigger_process": [
-        "Equalization"
       ]
     },
     {
@@ -194,9 +176,43 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Two Irrigation Storage Ponds (with capacities of 10 and 16.4 million gallons) that receive effluent from the tertiary effluent clearwell for recycled water storage.",
+      "Sentence": "Two Irrigation Storage Ponds (with capacities of 10 and 16.4 million gallons) that receive effluent from the tertiary effluent clearwell for recycled water storage",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "One 5.6-million-gallon Flow Equalization Basin that enables it to collect and store wastewater of any condition",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": [
+        "ReducingAgent"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger adds sodium bisulfite to dechlorinate the wastewater prior to discharge to the Napa River via Discharge Point 002",
+      "trigger_process": [
+        "Dechlorination",
+        "Reduction"
       ]
     },
     {
@@ -211,7 +227,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "to a 72,000-gallon-capacity sludge holding tank",
+      "Sentence": "to a 72,000-gallon-capacity sludge holding tank and then to the sludge drying beds",
       "trigger_process": []
     },
     {
@@ -227,9 +243,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then to the sludge drying beds.",
+      "Sentence": "then to the sludge drying beds",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "remove the sludge for further treatment or land application (e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley)",
       "trigger_process": [
-        "Drying"
+        "Land Application"
       ]
     },
     {
@@ -245,27 +277,9 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Potrero Hills Landfill",
+      "Sentence": "(e.g., at the Potrero Hills Landfill or agricultural sites in the Central Valley)",
       "trigger_process": [
         "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "agricultural sites in the Central Valley",
-      "trigger_process": [
-        "Land Application"
       ]
     },
     {
@@ -281,7 +295,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility",
+      "Sentence": "A portion of the sludge undergoes anaerobic digestion at the El Nido Composting Facility (Central Valley Composting)",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -294,7 +308,9 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "installing a new screw press for increased sludge dewatering",

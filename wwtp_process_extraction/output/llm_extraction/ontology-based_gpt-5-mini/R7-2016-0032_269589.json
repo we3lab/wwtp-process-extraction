@@ -11,33 +11,53 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the other with an automatic bar screen and compactor."
+      "Sentence": "the wastewater flow is split into two channels, one for bypass (normally closed) and the other with an automatic bar screen and compactor."
+    },
+    {
+      "Equipment": "Filter",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pushes the air through a biological air filter for odor removal."
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation",
-        "AnaerobicDigestion",
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "Anaerobic",
+        "Stabilization",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The fermentation pit allows for the accumulation and storage of biosolids in an anaerobic environment. Anaerobic bacteria decompose and stabilize the biosolids"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "BiologicalProcess",
         "Aeration",
-        "BiologicalProcess"
+        "Sedimentation"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "Anaerobic",
-        "Stabilization",
-        "SolidsHandling",
-        "Detention"
+        "NitrogenRemoval"
       ],
       "Substance": [
-        "Fluid-Sludge",
-        "Constituent-SuspendedSolids",
         "Constituent-Ammonia",
         "Constituent-Metals"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Pond 1 is a 13-acre, 5-foot deep pond, with a 2.5-acre front-end, 13-foot deep fermentation pit... Solids settle out in the fermentation pit... Anaerobic bacteria decompose and stabilize the biosolids... Digestion gases are broken down in the aerobic water layer at the top of the pond where oxygen concentration is enhanced by mechanical aeration."
+      "Sentence": "Four mechanical aerators provide oxygen to the top layer of the pond...provides secondary biological treatment...designed to remove approximately 75 percent of the influent Biochemical Oxygen Demand (BOD) by rapid growth of algae and concurrent production of oxygen, oxidation of organics, ammonia removal, and heavy metals removal."
     },
     {
       "Equipment": "Pond",
@@ -48,49 +68,28 @@
       "Role": [
         "Secondary",
         "Extended",
-        "Detention",
-        "Storage"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Pond A is approximately 5 feet deep with a surface area of approximately 20 acres. The design detention time is approximately 18 days. Pond A ... provides only limited treatment; its primary purpose is settlement of algae."
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Recirculation",
-        "Storage"
-      ],
-      "Role": [
-        "Storage",
-        "Equalization"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "When there is a need to store more water ... water can be pumped to Ponds C and D. Ponds C and D are used as additional storage ... The water from these ponds is pumped back to Pond A for inclusion in the treatment process."
+      "Sentence": "Pond A ... provides only limited treatment; its primary purpose is settlement of algae... other ponds provide extended secondary treatment and act as effluent polishing systems."
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Coagulation",
         "Sedimentation",
-        "Recirculation"
+        "Coagulation"
       ],
       "Role": [
-        "Secondary",
-        "SolidsHandling"
+        "Primary"
       ],
       "Substance": [
-        "Coagulant-PolyaluminumChloride",
-        "Fluid-Sludge"
+        "Coagulant-PolyaluminumChloride"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The clarifier influent pumps then supply the water to three clarifiers... Polyaluminum chloride (PAC) is added as a coagulant at the clarifiers. The sludge from the clarifiers is withdrawn using three sludge pumps and sent back to the fermentation pit in Pond 1 for digestion and treatment."
+      "Sentence": "The clarifier influent pumps then supply the water to three clarifiers. Polyaluminum chloride (PAC) is added as a coagulant at the clarifiers."
     },
     {
       "Equipment": "Pump",
@@ -98,10 +97,11 @@
         "Recirculation"
       ],
       "Role": [
-        "SolidsHandling",
-        "Recirculation"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The sludge from the clarifiers is withdrawn using three sludge pumps and sent back to the fermentation pit in Pond 1 for digestion and treatment."
@@ -135,10 +135,9 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "Biofiltration"
+        "BiologicalProcess"
       ],
       "Role": [
-        "Tertiary",
         "Posttreatment"
       ],
       "Substance": null,
@@ -164,17 +163,17 @@
       "Sentence": "Chlorine is generated on-site by a hypochlorite generation and injection system that produces the chlorine equivalent of 150 pounds per day of 0.8-percent sodium hypochlorite (NaClO)."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Pump",
       "Process": [
-        "Drying"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Storage"
       ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger intends to use one of the de-commissioned wetland basins as a sludge drying basin."
+      "Sentence": "water can be pumped to Ponds C and D. The water from these ponds is pumped back to Pond A for inclusion in the treatment process."
     }
   ]
 }

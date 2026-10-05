@@ -5,7 +5,9 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -14,7 +16,6 @@
     {
       "Equipment": null,
       "Process": [
-        "ChemicalAddition",
         "Oxidation"
       ],
       "Role": null,
@@ -30,7 +31,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -81,7 +84,10 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
@@ -110,7 +116,8 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -122,7 +129,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -137,7 +145,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -154,10 +162,12 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "inline sewage grinding, grinding with augers"
     },
     {
@@ -170,7 +180,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "primary sedimentation"
     },
     {
@@ -178,10 +188,12 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "roughing filtration"
     },
     {
@@ -194,7 +206,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "biological treatment using activated sludge"
     },
     {
@@ -207,7 +219,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "secondary clarification"
     },
     {
@@ -220,7 +232,7 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "tertiary filtration"
     },
     {
@@ -229,23 +241,29 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "chlorine disinfection"
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration"
+        "MediaFiltration",
+        "Backwashing"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "continuous backwash granulated media filtration"
     },
     {
@@ -253,46 +271,39 @@
       "Process": [
         "Microfiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "microfiltration (MF)"
+      "Location": "off-site",
+      "Sentence": "microfiltration or ultrafiltration (MF/UF)"
     },
     {
       "Equipment": "UltrafiltrationUnit",
       "Process": [
         "Ultrafiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "ultrafiltration (UF)"
+      "Location": "off-site",
+      "Sentence": "microfiltration or ultrafiltration (MF/UF)"
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
         "ReverseOsmosis"
       ],
-      "Role": null,
-      "Substance": [
-        "Water-Brackish"
+      "Role": [
+        "Tertiary"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "reverse osmosis (RO) membrane filtration (typically bypassed)"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Stripping"
-      ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "decarbonation (typically bypassed)"
+      "Location": "off-site",
+      "Sentence": "reverse osmosis (RO) membrane filtration (typically bypassed)"
     },
     {
       "Equipment": "Thickener",
@@ -304,8 +315,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "solids thickening"
+      "Location": "off-site",
+      "Sentence": "MF/UF backwash...is thickened and returned to the EWPCF for treatment and disposal"
     }
   ]
 }

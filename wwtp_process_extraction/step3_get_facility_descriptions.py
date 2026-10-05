@@ -7,7 +7,7 @@ from collections import Counter, defaultdict
 from PyPDF2 import PdfReader
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers, normalize_text
+from helpers.utils import extract_leaves, SEP, unitprocess_keywords, package_sub_readers, normalize_text, is_general_order, same_order_no
 
 
 def clean_excerpt(text):
@@ -20,6 +20,13 @@ def clean_excerpt(text):
 DOT_RE = re.compile(r"\.{5,}")
 ATTACHMENT_F_RE = re.compile(r"ATTACHMENT\s+F\s*[-–—‐]\s*FACT\s+SHEET", re.IGNORECASE)
 PAGE_MARKER_RE = re.compile(r"\[Page (\d+)\]")
+# A document's own order number, read from its title block.
+# Anchor on the "ORDER NO." label: lifts accuracy from 68 to 90% on documents with order no in filename
+# the residual misses are scanned title pages.
+ORDER_NUM = r"(?:R\d{1,2}[A-Z]?[-\s])?(?:WQ[-\s])?(?:20\d{2}|9\d)[-\s]\d{3,4}(?:[-\s](?:DWQ|EXEC))?"
+ORDER_LABELLED_RE = re.compile(r"ORDER\s*(?:NO\.?|NUMBER)?\s*[:\s]\s*(" + ORDER_NUM + r")", re.IGNORECASE)
+ORDER_ANY_RE = re.compile(r"\b(" + ORDER_NUM + r")\b", re.IGNORECASE)
+ORDER_HEAD_CHARS = 2500
 WASTEWATER_VOCAB_RE = re.compile(
     "|".join(
         re.escape(term)
@@ -314,9 +321,42 @@ def extract_from_pdf(pdf_path, mode, multi_facility=False):
                 page_parts.append(page.extract_text() or "")
     raw = "\n".join(page_parts)
 
+    # OCR fallback for scanned PDFs with no text layer (105 documents, ~6000 pages). Left off:
+    # step3 re-extracts every PDF on each run, so enabling it without the cache below would
+    # re-OCR everything every time. Cache raw text (not sections) so section-logic changes
+    # don't force re-OCR. 300 dpi is the verified-legible setting.
+    # if len(re.sub(r"===PAGE \d+===\n?", "", raw).strip()) < 100:
+    #     ocr_cache = Path(pdf_path).parent / "ocr" / f"{Path(pdf_path).stem}.txt"
+    #     if ocr_cache.exists():
+    #         raw = ocr_cache.read_text(encoding="utf-8")
+    #     else:
+    #         import io, fitz, pytesseract
+    #         from PIL import Image
+    #         doc = fitz.open(pdf_path)
+    #         parts = []
+    #         for page_num, page in enumerate(doc):
+    #             parts.append(f"===PAGE {page_num}===")
+    #             png = page.get_pixmap(dpi=300).tobytes("png")
+    #             parts.append(pytesseract.image_to_string(Image.open(io.BytesIO(png))))
+    #         doc.close()
+    #         raw = "\n".join(parts)
+    #         ocr_cache.parent.mkdir(parents=True, exist_ok=True)
+    #         ocr_cache.write_text(raw, encoding="utf-8")
+
+    # A statewide general order describes no single plant — its generic process list would be
+    # attributed to every enrolled facility. Skip before any section extraction.
+    if is_general_order(raw):
+        return {"general_order": True}
+
     # Build the single text region to search. NPDES: the Attachment F fact sheet.
     # NOA/WDR: the full document.
     text = None
+
+    # The order number printed in the document's own title block, or ''.
+    head = re.sub(r"===PAGE \d+===\n?", "", raw[:ORDER_HEAD_CHARS])
+    m = ORDER_LABELLED_RE.search(head) or ORDER_ANY_RE.search(head)
+    doc_order = m.group(1).upper().replace(" ", "-") if m else ""
+
     if spec["context"] == "attachment":
         attachment_pos = find_attachment_f_page(raw)
         first_attachment_match = ATTACHMENT_F_RE.search(raw)
@@ -333,6 +373,11 @@ def extract_from_pdf(pdf_path, mode, multi_facility=False):
                 elif (toc_restart := attachment_text.lower().find("attachment f", 1000)) != -1:
                     attachment_text = attachment_text[toc_restart:]
             text = clean_excerpt(attachment_text)
+        if text is None:
+            # No Attachment F reference anywhere (44 documents, mostly pre-dating the fact-sheet
+            # convention) — the full document is all there is. Only reachable when the scoped
+            # path found nothing, so it cannot change a document that already extracts.
+            text = clean_excerpt(raw)
     else:
         text = clean_excerpt(raw)
 
@@ -389,10 +434,12 @@ def extract_from_pdf(pdf_path, mode, multi_facility=False):
             prev_end = section["metadata"]["end_pos"]
         combined_txt = "\n\n".join(section["txt_section"] for section in sections if section["txt_section"])
         changes = next((section["txt_changes"] for section in sections if section["txt_changes"]), "")
-        return {**sections[0], "txt_section": combined_txt, "txt_changes": changes}
+        return {**sections[0], "txt_section": combined_txt, "txt_changes": changes,
+                "document_order_no": doc_order}
 
     # no vocab clusters found — likely image-only or no treatment description text
-    return {"txt_section": "", "txt_changes": "", "full_text": text or "", "metadata": {}}
+    return {"txt_section": "", "txt_changes": "", "full_text": text or "", "metadata": {},
+            "document_order_no": doc_order}
 
 
 def extract_permit_sections(pdf_path):
@@ -420,8 +467,10 @@ def extract_permit_sections(pdf_path):
     # Multi-facility permit: one PDF covering several distinct Place IDs (e.g. OCSD, IEUA).
     multi_facility = len({(row.get("Place ID") or "").strip() for row in pdf_rows} - {""}) > 1
     out = extract_from_pdf(str(pdf_path), mode=mode, multi_facility=multi_facility)
-    if out:
-        cache = pdf_path.parent / "text" / f"{pdf_path.stem}.txt"
+    cache = pdf_path.parent / "text" / f"{pdf_path.stem}.txt"
+    if out and out.get("general_order"):
+        cache.unlink(missing_ok=True)  # drop text left by an earlier run, before this was caught
+    elif out:
         cache.parent.mkdir(parents=True, exist_ok=True)
         cache.write_text(out["txt_section"] + SEP + out["txt_changes"], encoding="utf-8")
     return out
@@ -452,7 +501,8 @@ def main():
     args = [(directory, pdf_file) for pdf_file in unique_pdfs]
 
     page_marker_re = re.compile(PAGE_MARKER_RE.pattern + r"\n?")
-    flag_counts = {"unreadable": 0}
+    flag_counts = {"unreadable": 0, "general_order": 0, "no_desc_in_attachment": 0}
+    doc_orders = {}
     phrase_counts = defaultdict(Counter)
 
     def flag(pdf_file, reason):
@@ -461,10 +511,13 @@ def main():
         cache.write_text(SEP, encoding="utf-8")
         flag_counts[reason] += 1
 
-    with ProcessPoolExecutor(max_workers=20) as executor:
+    with ProcessPoolExecutor(max_workers=24) as executor:
         for pdf_file, result in executor.map(extract_one, args):
             print(f"Processed {pdf_file}")
             if result is None:
+                continue
+            if result.get("general_order"):
+                flag_counts["general_order"] += 1
                 continue
             txt = result.get("txt_section", "")
             full_text = result.get("full_text", "")
@@ -472,6 +525,10 @@ def main():
             # (these are scanned image PDFs with no text layer — needs OCR)
             if not txt and len(page_marker_re.sub("", full_text).strip()) < 100:
                 flag(pdf_file, "unreadable")
+            elif not txt:
+                # readable document that still yielded no description
+                flag_counts["no_desc_in_attachment"] += 1
+            doc_orders[pdf_file] = result.get("document_order_no", "")
             val = (result.get("metadata") or {}).get("changes_start_phrase")
             if val:
                 phrase_counts["changes_start_phrase"][normalize_text(val)] += 1
@@ -479,7 +536,18 @@ def main():
     ref_lists = {
         "changes_start_phrase": ("Planned changes start", CHANGES_PHRASES),
     }
+    # Each document's own order number, to distinguish superseded order PDFs 
+    site_data["document_order_no"] = site_data["PDF_File"].map(doc_orders).fillna("")
+    site_data.to_csv(relevant_sites_csv, index=False)
+    read = site_data["document_order_no"].ne("")
+    superseded = int(sum(
+        same_order_no(d, o) is False
+        for d, o in zip(site_data["document_order_no"], site_data["Order_No"])
+    ))
+
     print(f"Non-machine-readable PDFs: {flag_counts['unreadable']}")
+    print(f"Statewide general orders skipped: {flag_counts['general_order']}")
+    print(f"Readable but no description found: {flag_counts['no_desc_in_attachment']}")
     print()
     for key, (label, ref) in ref_lists.items():
         counts = Counter({normalize_text(t): 0 for t in ref})

@@ -1,84 +1,181 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Grinder",
       "Process": [
-        "Aeration"
+        "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The aerated ponds' increased depth and anti-erosion plates will focus aeration to the pond surface",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": null,
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "allowing solids settling and digestion in the deeper fermentation pit portion of Aeration Pond No. 2.",
+      "Sentence": "routed through a Parshall flume and a comminuter to the influent wet well",
       "trigger_process": [
-        "Unspecified Clarification",
-        "Unspecified Lagoon"
+        "Comminution"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "Screen",
       "Process": [
-        "Digestion"
+        "Screening"
       ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
+      "Role": [
+        "Pretreatment"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "allowing solids settling and digestion in the deeper fermentation pit portion of Aeration Pond No. 2.",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The two remaining oxidation ponds will function as facultative lagoons.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "DisinfectionUnit",
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Discharger has been disinfecting treated effluent for several years to comply with its NPDES permit.",
+      "Sentence": "flows from the flume are rerouted through a bar screen",
       "trigger_process": [
-        "Unspecified Disinfection"
+        "Screening/Microstrainer"
       ]
     },
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "from which it is pumped to the aeration lagoon",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Detention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "After approximately three days detention in the aeration lagoon",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the wastewater flows through a series of three oxidation ponds to a chlorine contact basin",
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "to a chlorine contact basin where sodium hypochlorite solution is added",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and then to a dechlorination system prior to discharge to surface waters",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Constructing an effluent pumping station and pipeline to convey treated effluent to an effluent storage pond at the water recycling site;",
+      "Sentence": "Increasing the depth of the existing aerated pond (Aeration Pond No.1)",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Converting Oxidation Pond #I to a second aerated pond (Aeration Pond No. 2)",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anaerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Deepening the Oxidation Ponds #2 and #3 to convert them to facultative lagoons (Facultative Lagoon Nos. 1 and 2)",
+      "trigger_process": [
+        "Aerated Lagoon",
+        "Anaerobic Lagoon",
+        "Facultative Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Constructing an effluent pumping station and pipeline to convey treated effluent to an effluent storage pond at the water recycling site",
       "trigger_process": []
     },
     {
@@ -90,7 +187,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "to convey treated effluent to an effluent storage pond at the water recycling site;",
+      "Sentence": "effluent storage pond at the water recycling site",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -98,33 +195,23 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Dewatering"
+        "Purging",
+        "AirDrying"
       ],
-      "Role": null,
+      "Role": [
+        "BiosolidsDisposal",
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The plans require that the contractor decant free liquids into one of the ponds",
+      "Sentence": "decant free liquids into one of the ponds and dry the sludge either within the ponds",
       "trigger_process": [
+        "Air Drying",
+        "Biosolids Lagoon",
         "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "dry the sludge either within the ponds or by placing it on a three-acre field south of the existing ponds.",
-      "trigger_process": [
-        "Drying"
       ]
     },
     {
@@ -132,13 +219,15 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": null,
+      "Role": [
+        "BiosolidsDisposal"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Once dry to an unspecified degree, the sludge is to be spread on the field.",
+      "Sentence": "Once dry to an unspecified degree, the sludge is to be spread on the field",
       "trigger_process": [
         "Land Application"
       ]

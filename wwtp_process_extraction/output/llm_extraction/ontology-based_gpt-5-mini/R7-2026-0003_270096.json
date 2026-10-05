@@ -51,7 +51,22 @@
       "Sentence": "and then to the primary clarifiers"
     },
     {
-      "Equipment": null,
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The activated sludge treatment system consists of anoxic selectors, aeration basins, secondary clarifiers"
+    },
+    {
+      "Equipment": "Reactor",
       "Process": [
         "Denitrification"
       ],
@@ -62,22 +77,6 @@
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The activated sludge treatment system consists of anoxic selectors"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Nitrification"
-      ],
-      "Role": [
-        "Aerobic",
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The activated sludge treatment system consists of ... aeration basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -99,48 +98,15 @@
         "Disinfection",
         "Dechlorination"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated effluent from each treatment system ... is disinfected with sodium hypochlorite in separate chlorine contact tanks ... combined and dechlorinated with the addition of sodium bisulfite prior to discharge"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "BiologicalProcess"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The oxidation pond system consists of two oxidation ponds and two cells"
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Screenings are removed ... and are sent to a grinder for washing and compaction"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The screening and grit dumpster are hauled to a landfill weekly for disposal"
+      "Sentence": "Treated effluent from each treatment system ... is disinfected with sodium hypochlorite in separate chlorine contact tanks ... is then combined and dechlorinated with the addition of sodium bisulfite"
     },
     {
       "Equipment": "Pond",
@@ -171,7 +137,7 @@
       "Sentence": "Primary sludge from the primary clarifiers is pumped to the anaerobic digester"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -183,12 +149,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids ... are pumped to a belt press for dewatering"
+      "Sentence": "Solids from the anaerobic digester and oxidation ponds are pumped to a belt press for dewatering"
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -201,26 +167,54 @@
       "Sentence": "Dewatered solids are placed on drying beds for further moisture reduction prior to disposal"
     },
     {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screenings are removed ... and are sent to a grinder for washing and compaction"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The screening and grit dumpster are hauled to a landfill weekly for disposal"
+    },
+    {
       "Equipment": null,
       "Process": [
         "Composting"
       ],
       "Role": [
-        "LandApplication"
+        "BiosolidsDisposal"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids ... are transported to Arizona for further treatment by composting to ensure Class A requirements are met prior to land application"
+      "Sentence": "Biosolids are continuously removed from the facility site and are transported to Arizona for further treatment by composting"
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Rehabilitation of the Influent Pump Station"
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "composting to ensure Class A requirements are met prior to land application"
     },
     {
       "Equipment": "Screen",
@@ -250,7 +244,9 @@
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -274,8 +270,12 @@
     },
     {
       "Equipment": "Flare",
-      "Process": null,
-      "Role": null,
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -286,25 +286,18 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "Recirculation"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Addition of pump station to return sludge dewatering filtrate back to headworks"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Pond 2 and Pond 3 free water will drain and treated prior to discharge to the Coachella Valley Stormwater Channel"
-    },
-    {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -315,17 +308,13 @@
       "Sentence": "Sludge from Pond 2 and Pond 3 will be dredged for solar drying"
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Equipment": "Conditioner",
+      "Process": null,
+      "Role": null,
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Construction of extension to sludge drying bed"
+      "Sentence": "Installation of digester gas holding facility (optional)"
     },
     {
       "Equipment": "Cogenerator",
@@ -337,6 +326,24 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Implementation of cogeneration with digester gas (optional)"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The oxidation pond system consists of two oxidation ponds and two cells"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Pond 2 and Pond 3 free water will drain and treated prior to discharge to the Coachella Valley Stormwater Channel"
     }
   ]
 }

@@ -7,8 +7,7 @@
         "Aeration"
       ],
       "Role": [
-        "Pretreatment",
-        "Storage"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -33,7 +32,8 @@
     {
       "Equipment": "MixingBasin",
       "Process": [
-        "Mixing"
+        "Mixing",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
@@ -43,7 +43,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater is then mixed with activated sludge in the mixed liquor structure..."
+      "Sentence": "Wastewater is then mixed with activated sludge in the mixed liquor structure, and it is subsequently directed to a 170 feet (ft) x 124 ft Biolac® aeration basin"
     },
     {
       "Equipment": "AerationBasin",
@@ -58,7 +58,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...it is subsequently directed to a 170 feet (ft) x 124 ft Biolac® aeration basin where air is once again introduced into the sewage water."
+      "Sentence": "...directed to a 170 feet (ft) x 124 ft Biolac® aeration basin where air is once again introduced into the sewage water."
     },
     {
       "Equipment": "SedimentationTank",
@@ -74,9 +74,36 @@
       "Sentence": "Wastewater discharged from the Biolac® aeration basin is then passed through two (2) secondary clarifiers (40 ft x 43 ft) in parallel."
     },
     {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater from the secondary clarifiers flows through a ultraviolet (UV) disinfection system and an effluent flow metering system before being discharged to the Pear Drain."
+    },
+    {
+      "Equipment": "Filter",
+      "Process": [
+        "Filtration",
+        "Backwashing"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "There is an option for the use of a secondary effluent pump station and continuous backwash upflow filter if deemed necessary by the operational staff."
+    },
+    {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Dewatering",
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -87,12 +114,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge collected from the secondary clarifiers is dewatered at a rotary drum thickener..."
+      "Sentence": "Sludge collected from the secondary clarifiers is dewatered at a rotary drum thickener and then pumped to six (6) sludge drying beds"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -102,27 +130,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...and then pumped to six (6) sludge drying beds..."
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The sludge drying beds are equipped with sand filters and perforated underdrains."
+      "Sentence": "...pumped to six (6) sludge drying beds... The sludge drying beds are equipped with sand filters and perforated underdrains."
     },
     {
       "Equipment": "Pump",
       "Process": [
         "Recirculation"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -142,34 +159,6 @@
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "After drying, the sludge is hauled away to a farm in Arizona."
-    },
-    {
-      "Equipment": "MediaFiltrationUnit",
-      "Process": [
-        "MediaFiltration",
-        "Backwashing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "There is an option for the use of a secondary effluent pump station and continuous backwash upflow filter if deemed necessary by the operational staff."
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The wastewater from the secondary clarifiers flows through a ultraviolet (UV) disinfection system..."
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Headworks consists of ... two ¼” step screens"
+      "Sentence": "two ¼” step screens"
     },
     {
       "Equipment": "Pump",
@@ -22,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Headworks consists of ... a submersible pump station (including backup)"
+      "Sentence": "a submersible pump station (including backup)"
     },
     {
       "Equipment": "GritChamber",
@@ -35,7 +35,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater flows into a vortex aerated grit chamber"
+      "Sentence": "vortex aerated grit chamber"
     },
     {
       "Equipment": "SedimentationTank",
@@ -48,7 +48,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater flows into the primary clarifier splitter box after degritting"
+      "Sentence": "primary clarifier splitter box"
     },
     {
       "Equipment": "Pond",
@@ -59,37 +59,35 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "High salts flow goes to the high TDS pond"
+      "Sentence": "shotcrete-lined high TDS pond"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two equalization ponds"
+      "Sentence": "The low salts pond receives flow"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
-        "Anaerobic",
+        "Aerobic",
         "Anoxic",
-        "Aerobic"
+        "Anaerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The aeration basins ... have six zones and ... anaerobic, anoxic, or oxic functions"
+      "Sentence": "the aeration basins are sized for 3.2 mgd and a solids retention time (SRT) of 12 days"
     },
     {
       "Equipment": "SedimentationTank",
@@ -99,12 +97,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two secondary clarifiers ... Solids from the two secondary clarifiers are sent to concrete lined beds for drying"
+      "Sentence": "two secondary clarifiers"
     },
     {
       "Equipment": "Pump",
@@ -112,35 +108,31 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "Recirculation",
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a return activated sludge (RAS) and wasted activated sludge (WAS) pump station"
+      "Sentence": "return activated sludge (RAS) and wasted activated sludge (WAS) pump station"
     },
     {
-      "Equipment": "UltrafiltrationUnit",
-      "Process": [
-        "Ultrafiltration"
-      ],
+      "Equipment": "Pond",
+      "Process": null,
       "Role": [
-        "Tertiary"
+        "Equalization",
+        "Storage"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids",
-        "Constituent-Inorganics"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filtration of the low salt concentration wastewater stream is performed by the UF membrane facility"
+      "Sentence": "two equalization ponds"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "BiologicallyActiveFiltration",
-        "Ultrafiltration",
-        "ActivatedSludge"
+        "Biofiltration",
+        "Ultrafiltration"
       ],
       "Role": [
         "Secondary"
@@ -148,7 +140,21 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "high salt concentrations ... are pumped ... to a MBR for biological treatment and ultrafiltration (UF)"
+      "Sentence": "a membrane bioreactor (MBR) for biological treatment and ultrafiltration (UF)"
+    },
+    {
+      "Equipment": "UltrafiltrationUnit",
+      "Process": [
+        "Ultrafiltration"
+      ],
+      "Role": [
+        "Tertiary",
+        "Permeate"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Filtration of the low salt concentration wastewater stream is performed by the UF membrane facility"
     },
     {
       "Equipment": "CartridgeFiltrationUnit",
@@ -156,51 +162,35 @@
         "Filtration"
       ],
       "Role": [
-        "Pretreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Each of the three units houses a cartridge filter assembly"
+      "Sentence": "Each unit houses a cartridge filter assembly"
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
       "Process": [
-        "ReverseOsmosis"
+        "ReverseOsmosis",
+        "pHAdjustment"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Permeate"
       ],
       "Substance": [
-        "Constituent-Inorganics",
-        "Constituent-Ammonia",
-        "pHAdjuster-SulfuricAcid"
+        "pHAdjuster-SulfuricAcid",
+        "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The high salts treatment train flows from the MBR to a reverse osmosis (RO) system ... employed to remove dissolved solids (salt)"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Constituent-Ammonia",
-        "pHAdjuster-SulfuricAcid"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "MBR effluent is dosed with ammonia ... Sulfuric acid and antiscalant is also dosed"
+      "Sentence": "MBR effluent is dosed with ammonia to convert free chlorine to chloramines ... Sulfuric acid ... is also dosed"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -208,7 +198,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The UV disinfection system ... consists of 4 inline Model 7500 medium pressure lamp chambers"
+      "Sentence": "The UV disinfection system ... consists of 4 inline Model 7500 medium pressure lamp UV chambers"
     },
     {
       "Equipment": "DewateringUnit",
@@ -223,7 +213,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids from the two secondary clarifiers are sent to concrete lined beds for drying"
+      "Sentence": "concrete lined beds for drying"
     },
     {
       "Equipment": null,
@@ -231,7 +221,7 @@
         "Composting"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"

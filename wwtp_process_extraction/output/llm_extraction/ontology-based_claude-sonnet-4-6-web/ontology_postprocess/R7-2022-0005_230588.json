@@ -1,9 +1,10 @@
 {
   "items": [
     {
-      "Equipment": "AerationBasin",
+      "Equipment": "Tank",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "Mixing"
       ],
       "Role": [
         "Pretreatment",
@@ -12,7 +13,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Raw sewage first enters the septage receiving station where it's mixed with air in the septage holding tanks.",
+      "Sentence": "raw sewage first enters the septage receiving station where it's mixed with air in the septage holding tanks",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -30,7 +31,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The raw sewage is then received at the headworks, where it's passed through a grit chamber to separate solid particles.",
+      "Sentence": "received at the headworks, where it's passed through a grit chamber to separate solid particles",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -63,18 +64,16 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Extended"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "it is subsequently directed to a 170 feet (ft) x 124 ft Biolac\u00ae aeration basin where air is once again introduced into the sewage water.",
+      "Sentence": "directed to a 170 feet (ft) x 124 ft Biolac\u00ae aeration basin where air is once again introduced into the sewage water",
       "Source": "both",
-      "Website": "https://www.nadb.org/our-projects/infrastructure-projects/wastewater-treatment-plant-improvements-holtville-california",
+      "Website": "https://www.parkson.com/products/biolac",
       "trigger_process": [
-        "Unspecified AS"
+        "Extended Aeration"
       ]
     },
     {
@@ -85,12 +84,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater discharged from the Biolac\u00ae aeration basin is then passed through two (2) secondary clarifiers (40 ft x 43 ft) in parallel.",
+      "Sentence": "Wastewater discharged from the Biolac\u00ae aeration basin is then passed through two (2) secondary clarifiers (40 ft x 43 ft) in parallel",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -100,7 +97,8 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
-        "Filtration"
+        "Filtration",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -120,7 +118,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -130,15 +129,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then pumped to six (6) sludge drying beds... The sludge drying beds are equipped with sand filters and perforated underdrains.",
+      "Sentence": "pumped to six (6) sludge drying beds (three (3) sludge beds measuring 70 ft x 38 ft and three (3) more measuring 92 ft x 40 ft)... equipped with sand filters and perforated underdrains",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Leachate collected from the drying beds is pumped back to the headworks for reprocessing",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": []
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
         "MediaFiltration"
       ],
@@ -148,7 +161,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There is an option for the use of a secondary effluent pump station and continuous backwash upflow filter if deemed necessary by the operational staff.",
+      "Sentence": "There is an option for the use of a secondary effluent pump station and continuous backwash upflow filter if deemed necessary by the operational staff",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -166,7 +179,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater from the secondary clarifiers flows through a ultraviolet (UV) disinfection system",
+      "Sentence": "the wastewater from the secondary clarifiers flows through a ultraviolet (UV) disinfection system",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -186,7 +199,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "After drying, the sludge is hauled away to a farm in Arizona.",
+      "Sentence": "After drying, the sludge is hauled away to a farm in Arizona",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [

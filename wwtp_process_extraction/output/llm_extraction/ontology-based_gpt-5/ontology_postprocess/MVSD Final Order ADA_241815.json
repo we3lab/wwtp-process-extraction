@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification...",
+      "Sentence": "The treatment system consists of screening...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -51,11 +51,12 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "Nitrification",
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Nitrification"
       ],
       "Role": [
         "Secondary",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": [
@@ -105,8 +106,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -123,21 +123,26 @@
       "Equipment": "Wetland",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": [
         "Constituent-Ammonia"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for \u201cpolishing\u201d treatment to remove ammonia...",
+      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for \u201cpolishing\u201d treatment to remove ammonia and other pollutants...",
       "trigger_process": [
+        "Unspecified Nutrient Removal",
         "Wetland"
       ]
     },
     {
       "Equipment": "Thickener",
-      "Process": null,
+      "Process": [
+        "Thickening"
+      ],
       "Role": [
         "SolidsHandling"
       ],
@@ -146,7 +151,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened...",
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
       "trigger_process": [
         "Thickening"
       ]
@@ -158,22 +163,22 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...anaerobically digested...",
+      "Sentence": "Sludge is... anaerobically digested...",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -186,13 +191,14 @@
       "Location": "on-site",
       "Sentence": "...dewatered in a centrifuge...",
       "trigger_process": [
+        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -204,7 +210,7 @@
       "Location": "on-site",
       "Sentence": "Seasonally, sludge volume is further reduced in drying beds...",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -226,10 +232,23 @@
       ]
     },
     {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day.",
+      "trigger_process": [
+        "Neutralization"
+      ]
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary"
@@ -237,26 +256,26 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls...",
+      "Sentence": "The Discharger plans to replace the existing UV disinfection system equipment and controls with new equipment and controls.",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
+      "Sentence": "The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
       "trigger_process": [
+        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
@@ -271,7 +290,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism.",
+      "Sentence": "The Discharger plans to rebuild the headworks automatic screening mechanism.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -280,7 +299,6 @@
       "Equipment": "Wetland",
       "Process": null,
       "Role": [
-        "Posttreatment",
         "NutrientRemoval"
       ],
       "Substance": null,

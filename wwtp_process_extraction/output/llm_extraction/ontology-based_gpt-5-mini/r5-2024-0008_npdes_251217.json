@@ -49,26 +49,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The new Emergency Equalization Basin ... can be used to capture peak flows"
-    },
-    {
-      "Equipment": "PlugFlowReactor",
-      "Process": [
-        "ActivatedSludge"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "secondary treatment system uses an activated sludge process that is plug flow"
+      "Sentence": "The new Emergency Equalization Basin...can be used to capture peak flows...This flow can be routed back to the head of the plant for treatment"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
-        "ActivatedSludge"
+        "Aeration"
+      ],
+      "Role": [
+        "Feed",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The selector tank is aerated by coarse bubble diffusers. It receives primary effluent from the headworks and recycled activated sludge (RAS) from the clarifier."
+    },
+    {
+      "Equipment": "PlugFlowReactor",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
@@ -78,20 +79,22 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The selector tank is aerated by coarse bubble diffusers...first stage and second stage aeration tanks are alternately aerated and unaerated"
+      "Sentence": "secondary treatment system uses an activated sludge process that is plug flow with sequential aeration followed by secondary clarifiers"
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids/liquid separation occurs in the clarifier tank"
+      "Sentence": "Solids/liquid separation occurs in the clarifier tank over concrete wedges. RAS is collected and returned to the selector."
     },
     {
       "Equipment": "AerobicDigester",
@@ -100,57 +103,55 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one aerobic digester...WAS is transferred to the aerobic digesters"
+      "Sentence": "one aerobic digester...Waste activated sludge (WAS) is transferred to the aerobic digesters"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Posttreatment",
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Disinfection occurs within the Chlorine Contact Basin...chlorine mixer upstream for sodium hypochlorite addition"
-    },
-    {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Dechlorination",
-        "ChemicalAddition"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorinated through addition of sodium bisulfite in the sodium bisulfite (SBIS) Mixing Box"
+      "Sentence": "Disinfection occurs within the Chlorine Contact Basin...chlorine mixer upstream for sodium hypochlorite addition. Disinfected flow is dechlorinated through addition of sodium bisulfite in the sodium bisulfite (SBIS) Mixing Box"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Storage",
-        "Containment"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "concrete-lined sludge lagoon for storage"
+      "Sentence": "The Irrigation Pond is used to store recycled water before it is discharged to the pasture irrigation site"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "effluent is discharged to the Irrigation Pond land applied to neighboring Leonhardt Ranch, a non-dairy cattle pasture"
     },
     {
       "Equipment": "DewateringUnit",
@@ -165,12 +166,24 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Polymer is added to the incoming sludge prior to dewatering via screw press"
+      "Sentence": "Polymer is added to the incoming sludge prior to dewatering via screw press."
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "concrete-lined sludge lagoon for storage"
+    },
+    {
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -178,19 +191,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered solids are conveyed to a common sludge drying bed for final solar drying"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Equalization"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Irrigation Pond is used to store recycled water before it is discharged to the pasture irrigation site"
+      "Sentence": "Dewatered solids are conveyed to a common sludge drying bed for final solar drying prior to off-haul"
     },
     {
       "Equipment": null,

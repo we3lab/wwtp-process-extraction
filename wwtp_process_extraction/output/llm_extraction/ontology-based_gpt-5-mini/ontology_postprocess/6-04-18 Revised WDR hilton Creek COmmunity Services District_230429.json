@@ -1,9 +1,9 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
+      "Equipment": "Grinder",
       "Process": [
-        "Screening"
+        "Comminution"
       ],
       "Role": [
         "Pretreatment"
@@ -11,16 +11,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment is provided by a barminutor,",
+      "Sentence": "Treatment is provided by a barminutor",
       "trigger_process": [
-        "Screening/Microstrainer"
+        "Comminution"
       ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -41,10 +40,11 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary",
-        "SolidsHandling"
+        "Secondary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a secondary clarifier",
@@ -55,8 +55,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -66,9 +66,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge drying beds",
+      "Sentence": "Sludge is periodically removed from the secondary clarifier to drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -79,8 +79,8 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Treated wastewater is disposed in four percolation ponds connected in parallel.",
+      "Location": "on-site",
+      "Sentence": "Treated wastewater is disposed in four percolation ponds connected in parallel",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -93,12 +93,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried sludge is disposed at the Benton Crossing Class III solid waste disposal site or an alternate authorized disposal site.",
+      "Sentence": "Dried sludge is disposed at the Benton Crossing Class III solid waste disposal site",
       "trigger_process": [
         "Biosolids Landfill"
       ]

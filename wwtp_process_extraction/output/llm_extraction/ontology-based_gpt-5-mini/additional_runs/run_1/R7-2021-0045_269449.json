@@ -4,12 +4,24 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three 18,000-gallon equalization tanks"
+      "Sentence": "influent diversion box"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three equalization tanks"
     },
     {
       "Equipment": "Screen",
@@ -19,7 +31,9 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "automatic bar screen"
@@ -47,11 +61,11 @@
         "Secondary"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by solids separation in the secondary clarifier"
+      "Sentence": "solids separation in the secondary clarifier"
     },
     {
       "Equipment": "Pump",
@@ -63,7 +77,7 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -72,7 +86,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -100,32 +114,46 @@
       "Sentence": "hauled away by a contractor ... to the Allied Waste Imperial Landfill (Imperial, CA) for disposal"
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Retention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "4-million-gallon overflow storage pond with a synthetic liner"
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination",
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent is chlorinated using sodium hypochlorite solution and dechlorinated using a sodium bisulfite prior to discharge."
+      "Sentence": "Effluent is chlorinated using sodium hypochlorite solution"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "Dechlorination"
+      ],
       "Role": [
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility also maintains a 4-million-gallon overflow storage pond with a synthetic liner"
+      "Sentence": "dechlorinated using a sodium bisulfite prior to discharge"
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal...",
+      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal...",
+      "Sentence": "pre-aeration/grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of screening, pre-aeration/grit removal...",
+      "Sentence": "pre-aeration",
       "trigger_process": []
     },
     {
@@ -57,7 +57,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of...primary sedimentation...",
+      "Sentence": "primary sedimentation",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -65,8 +65,7 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration",
-        "Biofiltration"
+        "TricklingFiltration"
       ],
       "Role": [
         "Secondary"
@@ -74,7 +73,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of...biological filtration (trickling filters)...",
+      "Sentence": "biological filtration (trickling filters)",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -86,12 +85,13 @@
       ],
       "Role": [
         "Secondary",
+        "Aerobic",
         "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of...solids contact stabilization (activated sludge)...",
+      "Sentence": "solids contact stabilization (activated sludge)",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -107,29 +107,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treatment facilities consist of...secondary clarification.",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Since approximately 1998, the Facility has not disinfected its effluent prior to ocean outfall discharge.",
-      "trigger_process": [
-        "Unspecified Disinfection"
-      ]
-    },
-    {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -139,7 +125,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
+      "Sentence": "Biosolids ... are treated on the site using gravity thickening",
       "trigger_process": [
         "Thickening"
       ]
@@ -159,15 +145,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using gravity thickening, anaerobic digestion, drying beds, and belt filter press dewatering...",
+      "Sentence": "Biosolids ... are treated on the site using ... anaerobic digestion",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -177,14 +163,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using ... drying beds ...",
+      "Sentence": "Biosolids ... are treated on the site using ... drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -195,25 +182,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids ... are treated on the site using ... belt filter press dewatering...",
+      "Sentence": "belt filter press dewatering",
       "trigger_process": [
         "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Biosolids ... are land-applied at various sites.",
-      "trigger_process": [
-        "Land Application"
       ]
     },
     {
@@ -221,13 +192,11 @@
       "Process": [
         "Cogeneration"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat, which are then used at the facility.",
+      "Sentence": "Methane gas by-product from sludge digestion is used as a fuel for producing electrical energy and heat",
       "trigger_process": [
         "Cogeneration",
         "Heat Recovery"
@@ -239,14 +208,50 @@
         "Sedimentation"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The leachate ... is discharged into the septic receiving station and from there is directed into the headworks.",
+      "Sentence": "leachate ... is discharged into the septic receiving station and from there is directed into the headworks",
       "trigger_process": [
         "Septic Tank"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "BiosolidsDisposal"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Biosolids ... are land-applied at various sites",
+      "trigger_process": [
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Since approximately 1998, the Facility has not disinfected its effluent prior to ocean outfall discharge.",
+      "trigger_process": [
+        "Unspecified Disinfection"
       ]
     }
   ]

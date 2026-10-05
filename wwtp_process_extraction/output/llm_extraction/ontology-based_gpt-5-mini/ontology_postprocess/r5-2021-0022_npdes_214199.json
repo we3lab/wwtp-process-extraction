@@ -18,18 +18,20 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Aeration"
+      ],
       "Role": [
         "Secondary",
-        "Stabilization",
         "Detention",
-        "Retention"
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "After preliminary treatment wastewater is sent through four additional stabilization ponds connected in series.",
+      "Sentence": "After preliminary treatment wastewater is sent through four additional stabilization ponds connected in series... Solar powered circulators float in the center of each pond",
       "trigger_process": [
+        "Aerated Lagoon",
         "Stabilization Pond"
       ]
     },
@@ -48,7 +50,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "effluent is conveyed through a chlorine detention basin and disinfected prior to release to either the wetland ponds or Lake Almanor via an open 1/2-mile long channel;",
+      "Sentence": "effluent is conveyed through a chlorine detention basin and disinfected prior to release",
       "trigger_process": [
         "Chlorination"
       ]
@@ -59,13 +61,12 @@
         "Dechlorination"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "effluent is dechlorinated when discharging to Lake Almanor.",
+      "Sentence": "effluent is dechlorinated when discharging to Lake Almanor",
       "trigger_process": [
         "Dechlorination"
       ]
@@ -79,7 +80,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary treated disinfected municipal wastewater is not de-chlorinated when discharged to the wetland ponds (LND-007, LND-008, LND-009, and LND-010).",
+      "Sentence": "disinfected prior to release to either the wetland ponds or Lake Almanor via an open 1/2-mile long channel",
       "trigger_process": [
         "Wetland"
       ]
@@ -88,7 +89,7 @@
       "Equipment": "Pond",
       "Process": [
         "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling",
@@ -99,10 +100,10 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "For sludge removal purposes, LND-001 or LND-002 can be dewatered and allowed to dry before being disked and scraped.",
+      "Sentence": "LND-001 or LND-002 can be dewatered and allowed to dry before being disked and scraped",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Stabilization Pond"
       ]
     },
@@ -114,12 +115,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried sludge, usually no more than an inch or two thick, is hauled offsite and disposed of as required.",
+      "Sentence": "Dried sludge... is hauled offsite and disposed of as required",
       "trigger_process": [
         "Unspecified Disposal"
       ]

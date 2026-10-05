@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of ... rag screening,",
+      "Sentence": "The treatment system consists of ... rag screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of ... grit removal,",
+      "Sentence": "The treatment system consists of ... grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -84,7 +84,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -94,31 +94,16 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination using sodium hypochlorite",
+      "Sentence": "chlorination using sodium hypochlorite, and dechlorination using sodium bisulfite",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dechlorination using sodium bisulfite",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -126,7 +111,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the primary clarifier is pumped to a gravity thickener",
+      "Sentence": "pumped to a gravity thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -138,22 +123,24 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "and then to two anaerobic digesters.",
+      "Sentence": "then to two anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "AirDrying"
+      ],
       "Role": [
         "Storage"
       ],
@@ -162,43 +149,31 @@
       "Location": "on-site",
       "Sentence": "Skimmings from the primary clarifier are sent to an unlined grease lagoon for drying and storage",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Air Drying",
+        "Evaporation Pond"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "BiosolidsDisposal"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "off-site",
-      "Sentence": "then are taken to a municipal solid waste landfill for final disposal.",
-      "trigger_process": [
-        "Biosolids Landfill"
-      ]
-    },
-    {
-      "Equipment": "Pump",
+      "Equipment": "SedimentationTank",
       "Process": [
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Sludge from the secondary clarifier is pumped back to the primary clarifier",
-      "trigger_process": []
+      "trigger_process": [
+        "Unspecified Clarification"
+      ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -208,7 +183,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The digested primary and secondary settled sludge is dewatered to a minimum of 15 percent solids in a gravity belt press.",
+      "Sentence": "digested primary and secondary settled sludge is dewatered to a minimum of 15 percent solids in a gravity belt press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -216,7 +191,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -224,9 +199,9 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The sludge drying beds have been demolished to make room for construction of the Aero-Mod facility.",
+      "Sentence": "The sludge drying beds have been demolished",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -240,7 +215,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The upgraded treatment system consists of ... grit removal,",
+      "Sentence": "The upgraded treatment system ... grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -251,24 +226,28 @@
         "Mixing"
       ],
       "Role": [
-        "Pretreatment"
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Aero-Mod system is an extended aeration, activated sludge treatment system that includes a selector tank,",
-      "trigger_process": []
+      "Sentence": "The Aero-Mod system ... includes a selector tank",
+      "trigger_process": [
+        "Unspecified Nutrient Removal"
+      ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Nitrification"
+        "Nitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -283,12 +262,14 @@
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
-        "Denitrification"
+        "Denitrification",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
@@ -310,23 +291,21 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "and two clarification tanks.",
+      "Sentence": "The Aero-Mod system ... and two clarification tanks",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
       "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The existing clarifiers will be repurposed and used as flow equalization basins during large storm events",
+      "Sentence": "The existing clarifiers will be repurposed and used as flow equalization basins",
       "trigger_process": [
         "Equalization"
       ]
@@ -335,7 +314,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
@@ -345,24 +324,9 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection using sodium hypochlorite",
+      "Sentence": "The upgraded treatment system ... chlorine disinfection using sodium hypochlorite, and sodium bisulfite dichlorination",
       "trigger_process": [
-        "Chlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Dechlorination"
-      ],
-      "Role": [
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "and sodium bisulfite dichlorination.",
-      "trigger_process": [
+        "Chlorination",
         "Dechlorination"
       ]
     },
@@ -373,6 +337,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Aerobic"
       ],
       "Substance": [
@@ -386,9 +351,10 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -398,7 +364,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "and dewatered through a belt filter press.",
+      "Sentence": "and dewatered through a belt filter press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -406,7 +372,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -414,9 +380,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "New sludge drying beds will be constructed in the footprint of the old trickling filters.",
+      "Sentence": "New sludge drying beds will be constructed",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     }
   ]

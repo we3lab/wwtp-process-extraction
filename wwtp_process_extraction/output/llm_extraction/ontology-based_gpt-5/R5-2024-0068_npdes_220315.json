@@ -11,34 +11,61 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
+      "Sentence": "Plant 1 is equipped with ... a mechanical screen ..."
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
       "Sentence": "Plant 2 contains additional mechanical screens."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Plant 1 is equipped with influent pumps"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Equalization",
-        "Storage",
-        "Retention"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Emergency Storage Lagoon can be used, if needed, to capture peak flows in excess of the Facility’s peak design capacity of 2.35 mgd."
+      "Sentence": "The Emergency Storage Lagoon can be used, if needed, to capture peak flows ... routed back to the Facility headworks for treatment"
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
       ],
       "Role": [
         "Secondary",
-        "Anoxic"
+        "Aerobic",
+        "Anoxic",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility’s secondary treatment system consists of three parallel trains of oxidation ditches with anoxic basins"
+      "Sentence": "three parallel trains of oxidation ditches with anoxic basins"
     },
     {
       "Equipment": "SedimentationTank",
@@ -58,7 +85,9 @@
       "Process": [
         "MediaFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -70,7 +99,9 @@
         "UVDisinfection",
         "Disinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -83,6 +114,7 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
         "Aerobic"
       ],
       "Substance": [
@@ -96,7 +128,9 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage",
+        "Containment"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -106,9 +140,10 @@
       "Sentence": "three clay lined sludge lagoons"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -123,7 +158,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -141,12 +176,13 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are ... hauled to a local landfill once per year."
+      "Sentence": "Biosolids ... are hauled to a local landfill once per year."
     }
   ]
 }

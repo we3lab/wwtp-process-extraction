@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation..."
     },
     {
       "Equipment": "GritChamber",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,25 +37,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... primary sedimentation, flow equalization, trickling filtration ..."
+      "Sentence": "The treatment process consists of screening, grit removal, primary sedimentation..."
     },
     {
-      "Equipment": "MixingBasin",
-      "Process": [
-        "Mixing"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... flow equalization, trickling filtration ..."
+      "Sentence": "The treatment process consists of ... flow equalization ..."
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -63,7 +62,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... trickling filtration, activated sludge aeration, secondary clarification ..."
+      "Sentence": "The treatment process consists of ... trickling filtration, activated sludge aeration ..."
     },
     {
       "Equipment": "AerationBasin",
@@ -91,7 +90,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of ... activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "The treatment process consists of ... secondary clarification ..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -121,36 +120,27 @@
       "Sentence": "The plant also has five acres of out-of-service oxidation ponds that can be used for emergency storage."
     },
     {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The City is constructing a demonstration treatment wetland that would accept up to 0.95 MGD of its wastewater for polishing treatment."
-    },
-    {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested, dewatered using a belt filter press, and air dried."
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested..."
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -160,12 +150,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... dewatered using a belt filter press ..."
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... dewatered using a belt filter press..."
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -175,11 +165,12 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is anaerobically digested, dewatered using a belt filter press, and air dried."
+      "Sentence": "Sludge at the City of San Leandro Water Pollution Control Plant is ... air dried."
     },
     {
       "Equipment": null,
       "Process": [
+        "BiosolidsDisposal",
         "LandApplication"
       ],
       "Role": [
@@ -190,7 +181,47 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The City hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids or Class B biosolids ..."
+      "Sentence": "The City hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids or Class B biosolids..."
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": [
+        "Biofiltration"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City is constructing a demonstration treatment wetland that would accept up to 0.95 MGD of its wastewater for polishing treatment."
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City of San Leandro also plans to install a second high-efficiency turbo blower in its aeration basins..."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Feed",
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The City of San Leandro also plans ... a high-strength waste receiving station..."
     }
   ]
 }

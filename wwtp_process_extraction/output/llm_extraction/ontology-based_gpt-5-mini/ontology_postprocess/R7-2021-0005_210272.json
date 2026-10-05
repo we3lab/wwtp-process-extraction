@@ -1,60 +1,52 @@
 {
   "items": [
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Facility consists of three raw water lift stations",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks facility, which consists of a step screen",
+      "Sentence": "headworks, which consists of a step screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks, which consists of ... a vortex grit pump",
+      "trigger_process": []
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks facility, which consists of ... a grit separator",
+      "Sentence": "headworks, which consists of ... a grit separator",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "headworks facility, which consists of ... a vortex grit pump",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "three raw water lift stations",
-      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -63,16 +55,18 @@
         "Aeration"
       ],
       "Role": [
-        "Primary"
+        "Primary",
+        "Aerobic",
+        "Extended"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three wave oxidation Biolac\u00ae activated sludge treatment units equipped with diffusers that provide extended aeration",
+      "Sentence": "three wave oxidation Biolac\u0000\u0000 activated sludge treatment units equipped with diffusers that provide extended aeration, which consists of the primary treatment",
       "trigger_process": [
-        "Unspecified AS"
+        "Extended Aeration"
       ]
     },
     {
@@ -102,6 +96,21 @@
       "trigger_process": []
     },
     {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection",
+        "Disinfection"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an ultraviolet disinfection system",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
       "Equipment": "Thickener",
       "Process": [
         "Thickening"
@@ -110,13 +119,51 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "converted one of the inactive primary clarifiers into a sludge thickening unit",
+      "Sentence": "Wasted activated sludge is thickened in a sludge thickening unit",
       "trigger_process": [
         "Thickening"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered in a centrifuge sludge dewatering unit",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dried in two solar greenhouse sludge drying structures",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -132,59 +179,6 @@
       "Location": "on-site",
       "Sentence": "the other inactive primary clarifier into a sludge holding tank",
       "trigger_process": []
-    },
-    {
-      "Equipment": "CentrifugalDewateringUnit",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered in a centrifuge sludge dewatering unit",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "solar greenhouse sludge drying structures",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "an ultraviolet disinfection system",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
     },
     {
       "Equipment": "SedimentationTank",

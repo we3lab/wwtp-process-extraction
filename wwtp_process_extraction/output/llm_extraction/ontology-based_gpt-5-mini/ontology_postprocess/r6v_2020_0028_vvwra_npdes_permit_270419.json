@@ -8,12 +8,10 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Influent wastewater undergoes screening (two influent channels) through bar screens, a.k.a. \"aquascreens\"",
+      "Sentence": "Influent wastewater undergoes screening (two influent channels) through bar screens, a.k.a. 'aquascreens,'",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -29,24 +27,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "prior to two parallel, aerated grit chambers",
+      "Sentence": "prior to two parallel, aerated grit chambers.",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Separation"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Grit that is removed passes through one of two hydrocyclones operated in parallel",
-      "trigger_process": []
     },
     {
       "Equipment": "Tank",
@@ -81,23 +65,23 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
         "Aeration",
+        "ActivatedSludge",
         "Recirculation"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
         "Anoxic",
-        "Anaerobic",
-        "Recirculation"
+        "Extended"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The aeration basins are configured to allow for recirculation within the chambers to provide extended treatment.",
       "trigger_process": [
-        "Unspecified AS"
+        "Extended Aeration",
+        "Unspecified Nutrient Removal"
       ]
     },
     {
@@ -111,7 +95,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flows to one of 10 secondary clarifiers for solids settling.",
+      "Sentence": "Wastewater in the mixed liquor channel flows to one of 10 secondary clarifiers for solids settling.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -121,9 +105,7 @@
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Recirculation"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -133,7 +115,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -144,11 +127,30 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste activated sludge ... is pumped to a dissolved air flotation thickener (DAFT). Polymer is added to sludge at the DAFTs for improved gas formation.",
+      "Sentence": "Waste activated sludge ... is pumped to a dissolved air flotation thickener (DAFT). Polymer is added to sludge at the DAFTs",
       "trigger_process": [
         "Flotation",
         "Polymer Addition",
         "Thickening"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "Flocculation"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Flocculant-Polymer"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following secondary clarification, wastewater flows to a chamber formerly used for polymer addition...they have the capability to do so at this location.",
+      "trigger_process": [
+        "Flocculation",
+        "Polymer Addition"
       ]
     },
     {
@@ -160,15 +162,12 @@
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Flocculant-Polymer"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility employs two Aqua Diamond filtration units ... cloth media filtration and are equipped with a travelling bridge backwash component.",
+      "Sentence": "The Facility employs two Aqua Diamond filtration units ... provide cloth media filtration and are equipped with a travelling bridge backwash component.",
       "trigger_process": [
-        "Media Filtration",
-        "Polymer Addition"
+        "Media Filtration"
       ]
     },
     {
@@ -182,7 +181,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "An enclosed building contains the UV disinfection units.",
+      "Sentence": "Treatment processes consist of ... ultraviolet (UV) light disinfection.",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -191,12 +190,12 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The north percolation ponds are used when the plant cannot achieve the treatment quality required for direct river discharge.",
+      "Sentence": "The disposal facility consists of six north percolation ponds and seven south percolation ponds.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -204,7 +203,7 @@
     {
       "Equipment": "GravityThickener",
       "Process": [
-        "Sedimentation"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -214,48 +213,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The two sludge lagoons act as sludge thickeners.",
+      "Sentence": "The sludge lagoons act as sludge thickeners.",
       "trigger_process": [
         "Thickening"
-      ]
-    },
-    {
-      "Equipment": "GravityBeltThickener",
-      "Process": [
-        "Filtration",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "then is dewatered by gravity belt thickener",
-      "trigger_process": [
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "then transferred to soil-cement lined solar drying beds.",
-      "trigger_process": [
-        "Drying"
       ]
     },
     {
@@ -278,36 +238,95 @@
       ]
     },
     {
-      "Equipment": "Tank",
-      "Process": null,
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Dewatering",
+        "Thickening"
+      ],
       "Role": [
-        "Storage"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids undergo thickening, anaerobic digestion, dewatering, and on-site storage until transported off-site for fuel, land application, or composting.",
-      "trigger_process": []
+      "Sentence": "then is dewatered by gravity belt thickener",
+      "trigger_process": [
+        "Mechanical Dewatering",
+        "Thickening"
+      ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication",
-        "Composting",
-        "BiosolidsDisposal"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "then transferred to soil-cement lined solar drying beds.",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "thickened sludge ... is applied off-site as a soil amendment for agricultural use; transported off-site for fuel, land application, or composting.",
+      "Sentence": "the thickened sludge, now called bio-solids, is applied off-site as a soil amendment for agricultural use.",
       "trigger_process": [
-        "Composting",
         "Land Application"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "transported off-site for fuel, land application, or composting.",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "transported off-site for fuel, land application, or composting.",
+      "trigger_process": [
+        "Unspecified Incineration"
       ]
     }
   ]

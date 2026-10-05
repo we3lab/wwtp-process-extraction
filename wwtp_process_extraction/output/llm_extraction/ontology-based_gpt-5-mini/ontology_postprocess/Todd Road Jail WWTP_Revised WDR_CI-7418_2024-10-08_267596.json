@@ -1,11 +1,13 @@
 {
   "items": [
     {
-      "Equipment": "Grinder",
+      "Equipment": "Pump",
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -20,7 +22,9 @@
         "Screening"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a rotating drum screen",
@@ -29,24 +33,42 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "At the influent lift station, the screened wastewater is pumped into the treatment system via two 120-gallon per minute (gpm) submersible pumps",
+      "trigger_process": []
+    },
+    {
       "Equipment": "Tank",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Storage",
+        "Equalization"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a 25,000-gallon influent surge tank",
-      "trigger_process": []
+      "trigger_process": [
+        "Equalization"
+      ]
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "Aeration",
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Recirculation"
       ],
       "Role": [
-        "Aerobic",
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -67,7 +89,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dual 52,000-gallon clarifiers",
+      "Sentence": "two secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -75,10 +97,27 @@
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion"
+        "AerobicDigestion",
+        "Digestion"
       ],
       "Role": [
-        "Aerobic",
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wasted sludge is aerobically digested in the 50,000-gallon sludge digester tank",
+      "trigger_process": [
+        "Aerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
         "SolidsHandling"
       ],
       "Substance": [
@@ -86,29 +125,14 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a 50,000-gallon aerobic sludge digester tank",
-      "trigger_process": [
-        "Aerobic Digestion"
-      ]
+      "Sentence": "a NEMO NE30A positive displacement sludge pump delivers sludge from the digester tank to six lined sludge drying beds",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Return activated sludge is returned to the aeration tanks",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -120,7 +144,7 @@
       "Location": "on-site",
       "Sentence": "six 20-foot by 35-foot sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -129,23 +153,15 @@
         "Evaporation"
       ],
       "Role": null,
-      "Substance": null,
+      "Substance": [
+        "Water-Freshwater"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "three percolation/evaporation ponds",
       "trigger_process": [
         "Evaporation Pond"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a NEMO NE30A positive displacement sludge pump",
-      "trigger_process": []
     },
     {
       "Equipment": null,
@@ -156,7 +172,8 @@
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "off-site",

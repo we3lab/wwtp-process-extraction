@@ -3,23 +3,7 @@
     {
       "Equipment": "Screen",
       "Process": [
-        "Screening",
-        "Disinfection"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the headworks system two automatic bar screens"
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
+        "Screening"
       ],
       "Role": [
         "Pretreatment"
@@ -27,7 +11,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grinder-washer compactors"
+      "Sentence": "The headworks system two automatic bar screens"
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids",
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Screening solids removed from the headworks system are routed to a grinderwasher/ compactor unit"
     },
     {
       "Equipment": "GritChamber",
@@ -40,7 +40,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "grit channel, grit pump, grit cyclone separator"
+      "Sentence": "a grit channel, grit pump, grit cyclone separator"
     },
     {
       "Equipment": "Pump",
@@ -81,6 +81,20 @@
       "Sentence": "two lined polishing ponds"
     },
     {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The activated sludge treatment system consists of two activated sludge basins"
+    },
+    {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
@@ -94,59 +108,46 @@
       "Sentence": "two secondary clarifiers"
     },
     {
-      "Equipment": "ChlorinationUnit",
+      "Equipment": "GravityBeltThickener",
       "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Thickening"
       ],
       "Role": [
-        "Tertiary"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "conveyed to the chlorine contact basin to be disinfected and de-chlorinated ... dispersing the chlorine"
+      "Sentence": "Waste activated sludge is pumped from the two secondary clarifiers to a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer before entering the thickener."
     },
     {
-      "Equipment": "GravityBeltThickener",
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The thickened waste activated sludge flows to a 48,000-gallon sludge holding tank"
+    },
+    {
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Dewatering",
         "Filtration"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Flocculant-Polymer"
+        "Fluid-Sludge"
       ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "pumped ... to a single 1.5-meter gravity belt thickener. The sludge is conditioned with a cationic emulsion polymer"
-    },
-    {
-      "Equipment": "Tank",
-      "Process": [
-        "Storage"
-      ],
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "thickened waste activated sludge flows to a 48,000-gallon sludge holding tank"
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "pumped to a single 2-meter gravity belt filter press where it is dewatered"
@@ -154,7 +155,54 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
+        "AirDrying",
         "Drying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dredged solids are deposited in unlined drying beds"
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Dechlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Combined secondary effluent ... is conveyed to the chlorine contact basin to be disinfected and de-chlorinated"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "ChemicalAddition"
+      ],
+      "Role": [
+        "MakeUp"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "3 peristaltic pumps provide sodium bisulfite liquid solution for de-chlorination"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Cleaning"
       ],
       "Role": [
         "SolidsHandling"
@@ -162,21 +210,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "dredged solids are deposited in unlined drying beds (8 total)"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids"
+      "Sentence": "The polishing ponds in the aeration lagoon system are dredged to remove accumulated solids"
     },
     {
       "Equipment": null,
@@ -184,39 +218,38 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling"
+        "BiosolidsDisposal"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "screenings ... hauled off site for disposal at a County of Riverside landfill"
+      "Sentence": "screenings are hauled off site for disposal at a County of Riverside landfill"
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
-        "SolidsHandling"
+        "BiosolidsDisposal"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dewatered sludge ... hauled off site by a private hauler for composting"
+      "Sentence": "Currently, sludge from the facility has been hauled away to the Synagro Arizona Soils Composting facility in Vicksburg, Arizona"
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "Filter",
       "Process": [
-        "MediaFiltration"
+        "Filtration"
       ],
       "Role": [
-        "Tertiary",
-        "Permeate"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "tertiary filtration ... cloth disk filters"
+      "Sentence": "tertiary filters utilizing cloth disk filters"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -225,13 +258,28 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "ultraviolet (UV) disinfection"
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "chemical storage and feed system (sodium hypochlorite)"
     },
     {
       "Equipment": "Pump",
@@ -242,22 +290,18 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Filter Feed Pump Station"
+      "Sentence": "Filter Feed Pump Station, ... a recycled water pump station"
     },
     {
-      "Equipment": "Tank",
-      "Process": [
-        "ChemicalAddition"
-      ],
+      "Equipment": "Reservoir",
+      "Process": null,
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "chemical storage and feed system (sodium hypochlorite)"
+      "Sentence": "seasonal and operational storage"
     }
   ]
 }

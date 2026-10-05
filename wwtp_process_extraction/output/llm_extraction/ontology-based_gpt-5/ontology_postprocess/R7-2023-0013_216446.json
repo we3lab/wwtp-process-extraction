@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two automatic bar screens",
+      "Sentence": "The headworks system two automatic bar screens...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two grinder-washer compactors",
+      "Sentence": "Screening solids removed from the headworks system are routed to a grinderwasher/compactor unit...",
       "trigger_process": [
         "Comminution"
       ]
@@ -54,7 +54,8 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -70,14 +71,14 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two lined polishing ponds",
       "trigger_process": [
-        "Secondary Clarification"
+        "Polishing Lagoon"
       ]
     },
     {
@@ -86,12 +87,13 @@
         "ActivatedSludge"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two activated sludge basins",
+      "Sentence": "The activated sludge treatment system consists of two activated sludge basins",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -128,49 +130,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine contact basin to be disinfected and de-chlorinated",
+      "Sentence": "to be disinfected and de-chlorinated... dispersing the chlorine and sulfur dioxide gas... sodium bisulfite",
       "trigger_process": [
         "Chlorination",
         "Dechlorination",
         "Reduction"
-      ]
-    },
-    {
-      "Equipment": "StaticMixer",
-      "Process": [
-        "Mixing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine",
-        "ReducingAgent"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a chemical induction unit which employs a vacuum and gas system capable of dispersing the chlorine and sulfur dioxide gas",
-      "trigger_process": [
-        "Reduction"
-      ]
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster.",
-      "trigger_process": [
-        "Chlorination"
       ]
     },
     {
@@ -197,20 +161,21 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "48,000-gallon sludge holding tank",
+      "Sentence": "flows to a 48,000-gallon sludge holding tank",
       "trigger_process": []
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -221,64 +186,27 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a single 2-meter gravity belt filter press where it is dewatered",
+      "Sentence": "pumped to a single 2-meter gravity belt filter press where it is dewatered",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total).",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "stockpiles the sludge removed from the lagoons to dry it to at least 90 percent solids.",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
       "Equipment": null,
       "Process": [
-        "Composting"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Constituent-Solids"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hauled off site by a private hauler for composting.",
+      "Location": "on-site",
+      "Sentence": "Dredged solids are deposited in unlined drying beds (8 total)... continued drying",
       "trigger_process": [
-        "Composting"
+        "Air Drying"
       ]
     },
     {
@@ -287,17 +215,53 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling",
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": [
         "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "screenings are hauled off site for disposal at a County of Riverside landfill.",
+      "Sentence": "the screenings are hauled off site for disposal at a County of Riverside landfill",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Solids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "The dewatered sludge is... hauled off site by a private hauler for composting",
+      "trigger_process": [
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Disinfection",
+        "Chlorination"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A liquid bleach disinfectant is manually applied to the screenings in the dumpster",
+      "trigger_process": [
+        "Chlorination"
       ]
     },
     {
@@ -340,8 +304,7 @@
         "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -352,19 +315,6 @@
       "trigger_process": [
         "Chlorination"
       ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "seasonal and operational storage",
-      "trigger_process": []
     }
   ]
 }

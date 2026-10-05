@@ -51,8 +51,8 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -88,11 +88,10 @@
         "Chlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
       ],
-      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "a chlorine contact tank",
@@ -103,7 +102,8 @@
     {
       "Equipment": "DissolvedAirFlotationThickener",
       "Process": [
-        "Flotation"
+        "Flotation",
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -125,9 +125,7 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Anaerobic"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -140,40 +138,46 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
+        "Storage",
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "transferred via a pipeline approximately 4.5 miles to about 11 acres of soil cement lined sludge drying beds on City owned land adjacent to the airport",
+      "Location": "on-site",
+      "Sentence": "a biosolids transfer station",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The old percolation ponds are now used as emergency storage ponds",
       "trigger_process": [
-        "Drying"
+        "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Prior to 1995, the City discharged sludge to unlined sludge drying beds at the WVVTF",
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "transferred via a pipeline approximately 4.5 miles to about 11 acres of soil cement lined sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -181,12 +185,8 @@
       "Process": [
         "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "past",
       "Location": "off-site",
       "Sentence": "Dried sludge was then transported to San Joaquin Composting for disposal",
@@ -199,14 +199,10 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "past",
-      "Location": "on-site",
+      "Location": "off-site",
       "Sentence": "The biosolids were spread and disked into select fields in November 2007",
       "trigger_process": [
         "Land Application"
@@ -215,49 +211,14 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "discharged directly to about 60 acres of percolation basins",
+      "Sentence": "undisinfected secondary treated effluent is discharged to the Reclamation Area where it is used to irrigate feed and fodder crops or discharged directly to about 60 acres of percolation basins",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": [
-        "Water-Freshwater"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Prior to 1987, the treated effluent was discharged to 12-acres of percolation basins at the WWTF",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "a biosolids transfer station",
-      "trigger_process": []
     }
   ]
 }

@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "bar screening and grit removal",
+      "Sentence": "bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "bar screening and grit removal",
+      "Sentence": "grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -53,10 +53,7 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": [
-        "Secondary",
-        "Aerobic"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -88,13 +85,8 @@
         "Dechlorination",
         "Disinfection"
       ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "chlorination/dichlorination for disinfection",
@@ -104,8 +96,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
+        "Filtration",
         "Dewatering"
       ],
       "Role": [
@@ -116,7 +109,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Sludge is dewatered off-site at the Discharger\u0019s Northwest Wastewater Treatment and Reclamation Facility by belt filter press dewatering",
+      "Sentence": "Sludge is dewatered off-site ... by belt filter press dewatering",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -124,38 +117,20 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "followed by solar greenhouse drying to Class A biosolids quality",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Constituent-Solids"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Transportation and disposal/reuse of the biosolids are regulated by U.S. EPA under 40 C.F.R. part 503",
+      "Sentence": "solar greenhouse drying to Class A biosolids quality ... 95% solids content",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Air Drying"
       ]
     }
   ]

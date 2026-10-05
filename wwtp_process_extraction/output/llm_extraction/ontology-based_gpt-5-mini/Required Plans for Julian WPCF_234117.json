@@ -10,7 +10,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater from the town of Julian initially flows through an eight-inch sewer main into the equalization tank for pre-treatment."
+      "Sentence": "flows through an eight-inch sewer main into the equalization tank for pre-treatment"
     },
     {
       "Equipment": "Screen",
@@ -23,13 +23,13 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The headworks are housed in a 5 feet x 10 feet below-grade concrete tank, with dual channels and bar screens."
+      "Sentence": "The headworks are housed in a 5 feet x 10 feet below-grade concrete tank, with dual channels and bar screens"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary",
@@ -39,7 +39,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The aeration tanks consist of two 53 feet x 53 feet below-grade concrete basins, each equipped with a floating mechanical aerator to facilitate complete mix, extended aeration secondary treatment."
+      "Sentence": "The aeration tanks consist of two 53 feet x 53 feet below-grade concrete basins, each equipped with a floating mechanical aerator to facilitate complete mix, extended aeration secondary treatment"
     },
     {
       "Equipment": "SedimentationTank",
@@ -47,15 +47,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary",
-        "SolidsHandling"
+        "Secondary"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater then flows to the secondary clarifiers for sludge settling and removal, which consist of two 18 feet diameter concrete tanks."
+      "Sentence": "The wastewater then flows to the secondary clarifiers for sludge settling and removal, which consist of two 18 feet diameter concrete tanks"
     },
     {
       "Equipment": "Pump",
@@ -64,38 +61,34 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Recirculation"
+        "Feed"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The settled sludge from the clarifiers is then routed to the Return Activated Sludge (RAS)/Waste Activated Sludge (WAS) pump station."
+      "Sentence": "The RAS/WAS pump station is comprised of two rotary lobe pumps ... capable of returning or wasting the settled sludge from the secondary clarifiers"
     },
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion",
-        "Digestion"
+        "AerobicDigestion"
       ],
       "Role": [
-        "Aerobic",
+        "SolidsHandling",
         "Stabilization",
-        "SolidsHandling"
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The aerobic digesters are two 18 feet x 18 feet above-ground concrete tanks where the sludge digestion process is completed."
+      "Sentence": "The aerobic digesters are two 18 feet x 18 feet above-ground concrete tanks where the sludge digestion process is completed"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -105,7 +98,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Once digestion is complete, the WAS is sent to the Sludge Drying Beds until it becomes dry enough to haul away to an appropriate landfill."
+      "Sentence": "the WAS is sent to the Sludge Drying Beds until it becomes dry enough to haul away to an appropriate landfill"
     },
     {
       "Equipment": null,
@@ -113,6 +106,7 @@
         "Landfill"
       ],
       "Role": [
+        "BiosolidsDisposal",
         "SolidsHandling"
       ],
       "Substance": [
@@ -120,19 +114,29 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Once digestion is complete, the WAS is sent to the Sludge Drying Beds until it becomes dry enough to haul away to an appropriate landfill."
+      "Sentence": "Sludge generated from the treatment process is regularly hauled offsite from sludge drying Beds to an approved landfill"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "From the clarifiers, the effluent flows into the effluent wetwell"
     },
     {
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The storage basins are below-grade concrete lined ponds with a total capacity of 225,000 cubic feet of storage..."
+      "Sentence": "The storage basins are below-grade concrete lined ponds with a total capacity of 225,000 cubic feet of storage"
     },
     {
       "Equipment": null,
@@ -145,7 +149,20 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The clarified effluent is pumped to an adjacent field on the site and used for spray irrigation."
+      "Sentence": "The clarified effluent is pumped to an adjacent field on the site and used for spray irrigation"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Chlorination"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wash down aerators and finals. Add chlorine, if odor problems"
     }
   ]
 }

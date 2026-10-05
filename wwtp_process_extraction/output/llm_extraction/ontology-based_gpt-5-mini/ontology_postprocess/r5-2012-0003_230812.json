@@ -5,7 +5,9 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -19,13 +21,15 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "two new concrete clarifiers",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
     },
     {
@@ -33,7 +37,9 @@
       "Process": [
         "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -49,13 +55,15 @@
       "Process": [
         "Dewatering"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "previous wastewater treatment plant consisted of ... a sludge dewatering press",
+      "Sentence": "the previous headworks, aeration tank, secondary clarifier, and sludge dewatering press have been abandoned and destroyed",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -63,52 +71,27 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": null,
+      "Role": [
+        "SolidsHandling"
+      ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "three uncovered sludge drying beds ... have been left intact and will be used for backup if the indoor filter press is inoperable",
+      "Sentence": "three uncovered sludge drying beds...have been left intact and will be used for backup if the indoor filter press is inoperable",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "previous wastewater treatment plant consisted of a headworks, an aeration tank, a secondary clarifier...",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Since 2003, the Discharger has been disinfecting the treated wastewater with sodium hypochlorite prior to disposal to nine rapid infiltration disposal ponds",
-      "trigger_process": [
-        "Chlorination"
+        "Air Drying"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -120,13 +103,67 @@
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The pipeline leading to Ponds 5 through 10 has been plugged with cement so the ponds cannot be used in the future",
+      "Sentence": "Ponds 5 through 10 are located within the 100-year flood plain but have not been used since 2006...the pipeline leading to Ponds 5 through 10 has been plugged with cement so the ponds cannot be used in the future",
       "trigger_process": [
         "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Since 2003, the Discharger has been disinfecting the treated wastewater with sodium hypochlorite prior to disposal to nine rapid infiltration disposal ponds",
+      "trigger_process": [
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the previous wastewater treatment plant consisted of ... an aeration tank...the previous headworks, aeration tank, secondary clarifier, and sludge dewatering press have been abandoned and destroyed",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "ReverseOsmosisMembrane",
+      "Process": [
+        "ReverseOsmosis"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Replacing the water softener supplying water to the boiler with a reverse osmosis (RO) system. The RO reject water is discharged to the sewer",
+      "trigger_process": [
+        "Reverse Osmosis"
       ]
     },
     {
@@ -134,7 +171,9 @@
       "Process": [
         "Flotation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": [
         "Constituent-SuspendedSolids"
       ],
@@ -144,20 +183,6 @@
       "trigger_process": [
         "Flotation",
         "Thickening"
-      ]
-    },
-    {
-      "Equipment": "ReverseOsmosisMembrane",
-      "Process": [
-        "ReverseOsmosis"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Replacing the water softener supplying water to the boiler with a reverse osmosis (RO) system",
-      "trigger_process": [
-        "Reverse Osmosis"
       ]
     }
   ]

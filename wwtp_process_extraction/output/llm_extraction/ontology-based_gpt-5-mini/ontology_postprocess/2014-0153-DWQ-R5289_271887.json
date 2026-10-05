@@ -47,18 +47,18 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
-        "Extended"
+        "Extended",
+        "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "extended aeration activated sludge treatment process (aerations tanks, clarifiers, and return and waste activated sludge pumping)",
+      "Sentence": "extended aeration activated sludge treatment process (aerations tanks",
       "trigger_process": [
         "Extended Aeration"
       ]
@@ -74,7 +74,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "aerations tanks, clarifiers",
+      "Sentence": "extended aeration activated sludge treatment process (aerations tanks, clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -85,11 +85,9 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "return and waste activated sludge pumping",
@@ -98,9 +96,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Coagulation"
+        "Coagulation",
+        "Flocculation"
       ],
       "Role": [
+        "Pretreatment",
         "Tertiary"
       ],
       "Substance": [
@@ -112,6 +112,7 @@
       "Sentence": "coagulant and polymer injection",
       "trigger_process": [
         "Coagulation",
+        "Flocculation",
         "Polymer Addition"
       ]
     },
@@ -132,9 +133,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -148,13 +149,30 @@
       ]
     },
     {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dual Media Filtration",
+      "trigger_process": [
+        "Media Filtration"
+      ]
+    },
+    {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
         "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
@@ -199,25 +217,48 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "past",
       "Location": "on-site",
       "Sentence": "digested sludge is hauled to the El Portal wastewater treatment facility for processing rather than drying in the Wawona sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "digested sludge is hauled to the El Portal wastewater treatment facility for processing",
+      "trigger_process": [
+        "Unspecified Disposal"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication",
+        "BiosolidsDisposal"
       ],
       "Role": [
         "SolidsHandling"

@@ -7,7 +7,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "headworks distribution box",
+      "Sentence": "The treatment system at the Facility consists of a headworks distribution box,",
       "trigger_process": []
     },
     {
@@ -22,7 +22,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "five unlined facultative treatment ponds",
+      "Sentence": "five unlined facultative treatment ponds, chlorination with liquid chlorine, and dechlorination. Aeration is achieved using a 5-horsepower vertical aerator... allowed to either percolate or evaporate.",
       "trigger_process": [
         "Evaporation Pond"
       ]
@@ -40,7 +40,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorination with liquid chlorine, and dechlorination",
+      "Sentence": "chlorination with liquid chlorine, and dechlorination.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -49,24 +49,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Biosolids are collected from all ponds ... allowed to dry on site",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
+        "AirDrying",
         "Landfill"
       ],
       "Role": [
@@ -76,10 +59,25 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "hauled to a permitted landfill",
+      "Location": "on-site",
+      "Sentence": "Biosolids are collected from all ponds as needed to maintain the Facility operation and allowed to dry on site. Dried biosolids are sampled and used on site or hauled to a permitted landfill.",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Containment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Facility upgrades to line ponds",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -91,9 +89,9 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "improve aeration",
+      "Sentence": "upgrades ... to ... improve aeration",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Aerated Lagoon"
       ]
     }
   ]

@@ -55,6 +55,17 @@
       "Sentence": "Following preliminary treatment, wastewater is pumped into rectangular primary clarifiers to remove floatable and settleable material."
     },
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers."
+    },
+    {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
@@ -117,11 +128,8 @@
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "Equalization"
-      ],
+      "Process": null,
       "Role": [
-        "Equalization",
         "Storage"
       ],
       "Substance": null,
@@ -134,7 +142,9 @@
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -145,7 +155,9 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Backwash"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -165,24 +177,36 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay."
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection."
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
-        "Chlorination",
-        "Disinfection",
+        "Disinfection"
+      ],
+      "Role": [
+        "Backwash"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection prior to discharge to San Francisco Bay."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "ChemicalAddition",
         "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "ReducingAgent"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels to produce a solution of chloramines for disinfection. As the effluent leaves the contact channels, its chlorine residual is measured, and an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite."
+      "Sentence": "As the effluent leaves the contact channels, its chlorine residual is measured, and an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite."
     },
     {
       "Equipment": "Tank",
@@ -263,7 +287,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -296,9 +320,7 @@
       "Process": [
         "Landfill"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -309,9 +331,7 @@
       "Process": [
         "LandApplication"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -322,9 +342,7 @@
       "Process": [
         "Composting"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
@@ -371,16 +389,11 @@
     },
     {
       "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "This project will renew the mesophilic digester tanks and the mechanical, electrical, and instrumentation and control equipment associated with them, as well as replacing the existing floating covers with fixed covers."
@@ -412,6 +425,21 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "This project will build a new digested sludge dewatering facility, including a new building, centrifuges, conveyors, truck bays, and polymer storage and dosing equipment is underway."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "The Sludge Dewatering Facility will eventually replace the lagoon and solar drying biosolids processing."
     }
   ]
 }

@@ -9,7 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The influent pump station then transfers raw wastewater to the gravity separator"
+      "Sentence": "The wastewater treatment plant consists of an influent pumping station"
     },
     {
       "Equipment": "Screen",
@@ -19,10 +19,27 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the gravity separator, which comprises two screened horizontal troughs that are manually cleaned"
+      "Sentence": "the influent pump station then transfers raw wastewater to the gravity separator, which comprises two screened horizontal troughs"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pumped to the influent fine screens"
     },
     {
       "Equipment": "GritChamber",
@@ -32,72 +49,91 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "influent fine screens and then flows through the grit removal system"
+      "Sentence": "flows through the grit removal system"
     },
     {
       "Equipment": "MixingBasin",
       "Process": [
         "Mixing"
       ],
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "flow enters the aeration basin mixing box where raw influent is mixed with return activated sludge"
     },
     {
-      "Equipment": "Reactor",
-      "Process": null,
-      "Role": [
-        "Anoxic"
+      "Equipment": "MixingBasin",
+      "Process": [
+        "Denitrification"
       ],
-      "Substance": null,
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval",
+        "Secondary"
+      ],
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater treatment plant consists of an influent pumping station, grit chamber, anoxic basins, aeration basins, membrane bioreactor treatment train,"
+      "Sentence": "anoxic basins"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration"
+        "Aeration",
+        "ActivatedSludge",
+        "Nitrification"
       ],
       "Role": [
-        "Aerobic"
+        "Aerobic",
+        "Secondary",
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the mixing box, flow is pumped into the anoxic and aeration basins"
+      "Sentence": "aeration basins"
     },
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess"
+        "Biofiltration"
       ],
       "Role": [
+        "Secondary",
         "Permeate"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The membrane bioreactor (MBR) follows the aeration basin where the membrane permeate pumps pull water through the hollow fiber membranes"
+      "Sentence": "the membrane bioreactor (MBR) follows the aeration basin where the membrane permeate pumps pull water through the hollow fiber membranes"
     },
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": "Pump",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "Recirculation"
       ],
       "Role": [
-        "Tertiary"
+        "Recirculation"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treated effluent from the MBR system is conveyed to the UV disinfection system"
+      "Sentence": "Return activated sludge (RAS) is pumped from the MBR basins to the aeration basin mixing box"
     },
     {
       "Equipment": "DewateringUnit",
@@ -112,7 +148,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are wasted from the treatment system and dewatered utilizing a mechanical screw press and/or drying beds"
+      "Sentence": "sludge dewatering screw press"
     },
     {
       "Equipment": "DewateringUnit",
@@ -127,18 +163,22 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are wasted from the treatment system and dewatered utilizing a mechanical screw press and/or drying beds"
+      "Sentence": "dewatered utilizing a mechanical screw press and/or drying beds"
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "UltravioletLightUnit",
       "Process": [
-        "Recirculation"
+        "UVDisinfection"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary",
+        "Posttreatment",
+        "Disinfection"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return activated sludge (RAS) is pumped from the MBR basins to the aeration basin mixing box"
+      "Sentence": "The UV system is comprised of one channel equipped with two racks in series of Trojan 3000 Plus equipment (open channel)"
     },
     {
       "Equipment": null,
@@ -148,7 +188,24 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "Screened materials are collected and placed in a dumpster for subsequent transport to landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "Dried biosolids are transported to a landfill following adequate drying"

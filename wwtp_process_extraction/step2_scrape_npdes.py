@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from pathlib import Path
 import json
 import os
 import re
@@ -24,7 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException
-from helpers.utils import normalize_text
+from helpers.utils import normalize_text, is_general_order, COLLECTIVE_AGENCY_RE
 # Modified using Claude 4.5
 
 # Link to Interactive Regulated Facilities Report
@@ -61,6 +62,57 @@ pdfs_path = os.path.join(OUT, "other_pdfs")
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(pdfs_path, exist_ok=True)
 
+# Each scrape also lands a dated copy under output/site_data/<RUN_DATE>/
+RUN_DATE = os.environ.get("RUN_DATE") or datetime.now().strftime("%Y-%m-%d")
+
+# Unset (default) = today's active permit.
+# Set AS_OF=2021-06-01 to pick the order in force on that date instead
+AS_OF = pd.Timestamp(os.environ["AS_OF"]) if os.environ.get("AS_OF") else None
+# A retrospective run belongs in its as-of folder, not today's.
+SNAPSHOT_DATE = os.environ.get("AS_OF") or RUN_DATE
+SNAPSHOT_DIR = os.path.join(OUT, "site_data", SNAPSHOT_DATE)
+SNAPSHOT_FILES = ("facilities.json", "site_data_all.csv", "site_data_relevant.csv")
+
+# The snapshot the top-level output/facilities.json should represent between runs
+BASE_SNAPSHOT_DATE = os.environ.get("BASE_SNAPSHOT_DATE", "2026-06-01")
+
+# Standalone Chrome + matching driver, under the user's home rather than a hardcoded username.
+# Override with CHROME_BIN / CHROMEDRIVER_BIN if they live elsewhere.
+CHROME_BIN = Path(os.environ.get("CHROME_BIN") or Path.home() / "bin/chrome/chrome-linux64/chrome")
+CHROMEDRIVER_BIN = Path(os.environ.get("CHROMEDRIVER_BIN")
+                        or Path.home() / "bin/chrome/chromedriver-linux64/chromedriver")
+
+
+def snapshot(filename):
+    """Copy a just-written top-level output into the dated batch folder.
+
+    No sidecar metadata: the folder name carries the date and the files carry their own row
+    counts, so a run_info.json would only be derived state that can drift out of sync.
+    """
+    src = os.path.join(OUT, filename)
+    if not os.path.exists(src):
+        return
+    os.makedirs(SNAPSHOT_DIR, exist_ok=True)
+    shutil.copy2(src, os.path.join(SNAPSHOT_DIR, filename))
+    print(f"  snapshot -> site_data/{SNAPSHOT_DATE}/{filename}")
+
+
+def restore_base_facilities():
+    """Leave the top-level facilities.json holding the base snapshot, not this run's.
+
+    A retrospective run overwrites output/facilities.json with the orders in force at its
+    as-of date, so whichever year ran last would otherwise masquerade as current -- and this
+    script reads that same file as its starting facility list. The dated copies under
+    site_data/ are the durable per-year record; the top level always means "now".
+    """
+    src = os.path.join(OUT, "site_data", BASE_SNAPSHOT_DATE, "facilities.json")
+    dst = os.path.join(OUT, "facilities.json")
+    if SNAPSHOT_DATE == BASE_SNAPSHOT_DATE or not os.path.exists(src):
+        return
+    shutil.copy2(src, dst)
+    print(f"Top-level facilities.json restored to the {BASE_SNAPSHOT_DATE} snapshot")
+
+
 # PDF filenames matching this regex are skipped on the order page.
 SEP = r"[ ._-]"  # - must be last to avoid range interpretation
 SKIP_BASE_KW = ["rpts|rowd|memo|nov|map|rwd|gwmp|mgo"]  # match only with separators (e.g. "_memo_")
@@ -79,8 +131,48 @@ CONTINGENT_SKIP_RE = re.compile(CONTINGENT_SKIP_PHRASE, re.IGNORECASE)
 # keep these, overriding contingent skip
 KEEP_RE = re.compile(r"(?<![a-zA-Z])(noa|wdrs?|order|npdes)(?![a-zA-Z])", re.IGNORECASE)  # always keep NOA/WDR/NPDES files
 
+
+# Per-facility logging. Each worker buffers
+# its lines in thread-local storage; facility_log flushes them in one locked write.
+_worker_log = threading.local()
+
+
+def say(msg):
+    """Buffer a line for the current worker, or print directly outside a worker."""
+    buf = getattr(_worker_log, "lines", None)
+    if buf is None:
+        print(msg)
+    else:
+        buf.append(msg)
+
+
+@contextmanager
+def facility_log(lock):
+    _worker_log.lines = []
+    try:
+        yield
+    finally:
+        lines = _worker_log.lines
+        _worker_log.lines = None
+        if lines:
+            with lock:
+                print("\n".join(lines), flush=True)
+
+
+def repair_href(href):
+    """Undo BeautifulSoup's entity decoding of '&regMeasID='.
+
+    '&reg' is a valid named entity, so html.parser turns '...&regMeasID=436745' into
+    '...\u00aeMeasID=436745'. Two things then break silently: requesting that URL returns
+    HTTP 200 with an empty body, and parse_qs finds no regMeasID, which makes
+    _resolve_download_url fall back to the first rmAttachmentPopup link on the page --
+    potentially a different order's attachments.
+    """
+    return href.replace("\u00aeMeasID", "&regMeasID") if href else href
+
+
 def abs_url(href):
-    return urljoin(f"{CIWQS_ROOT}/ciwqs/readOnly/", href) if href else href
+    return urljoin(f"{CIWQS_ROOT}/ciwqs/readOnly/", repair_href(href)) if href else href
 
 
 def facility_url(place_id):
@@ -107,16 +199,25 @@ def select_value(soup, name, visible_text, *, required_label=None):
 
 
 def retry_request(session, method, url, *, data=None, max_attempts=4, timeout=120):
-    """Retry only on Timeout; other RequestException subclasses propagate immediately."""
+    """Retry on transient transport errors; HTTPError and the rest propagate immediately.
+
+    CIWQS drops the connection mid-response on larger payloads (SSLEOFError / connection
+    reset), which is retryable and distinct from a real HTTP failure -- retrying a 404 would
+    just waste four round trips.
+    """
+    transient = (requests.exceptions.Timeout,
+                 requests.exceptions.SSLError,
+                 requests.exceptions.ConnectionError)
     for attempt in range(1, max_attempts + 1):
         try:
             r = session.request(method, url, data=data, timeout=timeout)
             r.raise_for_status()
             return r
-        except requests.exceptions.Timeout:
-            print(f"[requests] {method.upper()} timed out ({attempt}/{max_attempts}): {url}")
+        except transient as exc:
+            print(f"[requests] {method.upper()} {type(exc).__name__} ({attempt}/{max_attempts}): {url[:90]}")
             if attempt == max_attempts:
                 raise
+            time.sleep(3 * attempt)
 
 
 def new_chrome_driver(pdfs_path):
@@ -140,8 +241,8 @@ def new_chrome_driver(pdfs_path):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--headless")  # for server/SSH
-    options.binary_location = "/home/daly/bin/chrome/chrome-linux64/chrome"
-    service = Service("/home/daly/bin/chrome/chromedriver-linux64/chromedriver")
+    options.binary_location = str(CHROME_BIN)
+    service = Service(str(CHROMEDRIVER_BIN))
     return webdriver.Chrome(service=service, options=options)
 
 
@@ -200,11 +301,24 @@ def _open_in_new_tab(driver, url, main_window, *, post_switch_sleep=0):
 
 
 def _resolve_download_url(href, soup):
-    reg_id_val = parse_qs(urlparse(href).query).get("regMeasID", [None])[0]
-    attach_tag = soup.find(
-        "a", href=lambda h, r=reg_id_val: h and "rmAttachmentPopup" in h
-        and (not r or f"regMeasID={r}" in h)
-    )
+    """Map an order link to its attachment page, matching on regMeasID.
+
+    Both sides must be run through repair_href: `href` arrives already repaired via abs_url,
+    but the candidates come straight off the soup and still carry the '\u00aeMeasID=' form, so
+    comparing a repaired id against an unrepaired href never matches. Getting that wrong
+    silently returns the order page instead of the attachments page, which reads as
+    "Found 0 PDFs on page".
+    """
+    reg_id_val = parse_qs(urlparse(repair_href(href)).query).get("regMeasID", [None])[0]
+
+    def is_attachment_link(candidate):
+        if not candidate:
+            return False
+        fixed = repair_href(candidate)
+        return "rmAttachmentPopup" in fixed and (
+            not reg_id_val or f"regMeasID={reg_id_val}" in fixed)
+
+    attach_tag = soup.find("a", href=is_attachment_link)
     return abs_url(attach_tag["href"]) if attach_tag else href
 
 
@@ -218,7 +332,9 @@ def _download_and_move(driver, url, worker_dir, main_window, check_dirs, pdfs_pa
 
 
 def find_best_order(driver, fac_url, main_window):
-    """Navigate to facility page, parse HTML, and return best active NPDES order.
+    """Navigate to facility page, parse HTML, and return the governing NPDES order.
+
+    Governing = active today, or in force at AS_OF when that env var is set.
 
     Returns: (order_url, reg_measure_type, wdid, eff, addtl_orders, order_no)
       order_url may be None if best order has no clickable link.
@@ -258,8 +374,21 @@ def find_best_order(driver, fac_url, main_window):
             candidates = []
             for data_row in all_rows[hdr_idx + 1:]:
                 dcells = data_row.find_all("td")
-                if not dcells or gc("Status").lower() != "active":
+                if not dcells:
                     continue
+                if AS_OF is None:
+                    # default: today's governing permit, as before
+                    if gc("Status").lower() != "active":
+                        continue
+                else:
+                    # retrospective: accept Historical/Terminated rows too and let the
+                    # effective-date cut decide. Ranking below already prefers permit type
+                    # then newest effective date, which is the governing order at AS_OF.
+                    if gc("Status").lower() == "never active":
+                        continue
+                    row_eff = pd.to_datetime(gc("Effective Date"), errors="coerce")
+                    if pd.isna(row_eff) or row_eff > AS_OF:
+                        continue
 
                 # Apply validation checks
                 rm_type = gc("Reg Measure Type").upper()
@@ -281,7 +410,7 @@ def find_best_order(driver, fac_url, main_window):
 
             if candidates:
                 rank, _, href, rm_type, eff, wdid, order_no = min(candidates, key=lambda c: (c[0], c[1], 0 if c[2] else 1))
-                print(f"  Best order: {rm_type}, rank={rank}, effective={eff.date()}, order={order_no}, link={'yes' if href else 'no'}")
+                say(f"  Best order: {rm_type}, rank={rank}, effective={eff.date()}, order={order_no}, link={'yes' if href else 'no'}")
 
                 download_url = _resolve_download_url(href, soup) if href else None
 
@@ -304,14 +433,23 @@ def download_pdfs_for_order(driver, order_url, output_dir, main_window, check_di
     downloaded_pdfs = []
     missed_pdfs = []
     PDF_XPATH = "//a[contains(text(), '.pdf') or contains(text(), '.PDF')]"
+    # Older orders are occasionally filed as .doc
+    ATTACHMENT_XPATH = "//a[contains(@href, 'PublicAttachmentRetriever')]"
     with _open_in_new_tab(driver, order_url, main_window, post_switch_sleep=0):
         try:
-            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, PDF_XPATH)))
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, ATTACHMENT_XPATH)))
         except TimeoutException:
             pass
         pdf_documents = driver.find_elements(By.XPATH, PDF_XPATH)
-        total_on_page = len(pdf_documents)
-        print(f"  Found {total_on_page} PDFs on page")
+        all_attachments = driver.find_elements(By.XPATH, ATTACHMENT_XPATH)
+        # total_on_page means "documents present", so an unusable format still counts as found
+        total_on_page = max(len(all_attachments), len(pdf_documents))
+        say(f"  Found {len(pdf_documents)} PDFs on page"
+            + (f" ({len(all_attachments)} attachments total)"
+               if len(all_attachments) != len(pdf_documents) else ""))
+        if all_attachments and not pdf_documents:
+            others = [a.text for a in all_attachments if a.text]
+            say(f"  ! attachments present but none are PDF, skipping: {others}")
 
         for pdf_element in pdf_documents:
             try:
@@ -325,11 +463,11 @@ def download_pdfs_for_order(driver, order_url, output_dir, main_window, check_di
 
                 # TODO: can remove if not re-running old dates
                 if any(os.path.exists(os.path.join(d, pdf_name)) for d in check_dirs):
-                    print(f"        Already exists, skipping: {pdf_name}")
+                    say(f"        Already exists, skipping: {pdf_name}")
                     downloaded_pdfs.append(pdf_name)
                     continue
 
-                print(f"        Downloading: {pdf_name}")
+                say(f"        Downloading: {pdf_name}")
                 before = {f for f in os.listdir(output_dir) if f.lower().endswith(".pdf")}
                 pdf_element.click()
 
@@ -350,12 +488,12 @@ def download_pdfs_for_order(driver, order_url, output_dir, main_window, check_di
                     time.sleep(0.5)
 
                 if not new_file:
-                    print(f"        X Timed out waiting for: {pdf_name}")
+                    say(f"        X Timed out waiting for: {pdf_name}")
                     missed_pdfs.append(pdf_name)
                     continue
                 downloaded_pdfs.append(new_file)
             except Exception as e:
-                print(f"        X Download failed: {pdf_name} — {e}")
+                say(f"        X Download failed: {pdf_name} — {e}")
                 missed_pdfs.append(pdf_name)
 
     return downloaded_pdfs, missed_pdfs, total_on_page
@@ -539,6 +677,7 @@ def run_ciwqs_search():
 
     df_deduplicated.to_csv(os.path.join(OUT, "site_data_all.csv"), index=False)
     print(f"Saved {len(df_deduplicated)} rows to site_data_all.csv")
+    snapshot("site_data_all.csv")
 
     driver.quit()
     return program_urls
@@ -662,10 +801,11 @@ def collect_facility_page_urls(program_urls):
     with open(os.path.join(OUT, 'facilities.json'), 'w') as f:
         json.dump(facilities_by_place, f, indent=2, default=str)
     print(f"Checkpoint saved: {len(facilities_by_place)} facilities → facilities.json")
+    snapshot("facilities.json")
 
     return facilities_by_place
 
-def download_facility_page_pdfs(facilities_by_place, max_workers=12):
+def download_facility_page_pdfs(facilities_by_place, max_workers=24):
     # UPDATE max_workers to be higher if running on server
     print("\n STEP 2: Visiting facility pages and downloading PDFs")
 
@@ -685,11 +825,11 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
         main_window = driver.window_handles[0]
         fac_url = facility_url(place_id)
         fac_name = entry["facilities"][0]["Facility Name"] if "facilities" in entry else entry.get("Facility Name", place_id)
-        print(f"\n[{idx}/{total}] {fac_name}")
+        say(f"[{idx}/{total}] {fac_name}")
         try:
             order_url, rm_type, wdid, eff, addtl_orders, order_no = find_best_order(driver, fac_url, main_window)
             if rm_type is None:
-                print("  X No suitable active NPDES order found")
+                say("  X No suitable active NPDES order found")
                 entry.update(
                     {"Facility Name": fac_name,
                      "WDID": wdid,
@@ -707,7 +847,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
             # Store order metadata but skip PDFs if no link or pre-2004
             if not order_url or (eff and eff.year < 2004):
                 reason = "pre-2004" if (eff and eff.year < 2004) else "no link"
-                print(f"  Skipping PDFs ({reason}): {rm_type}, eff={eff.date() if eff else 'unknown'}")
+                say(f"  Skipping PDFs ({reason}): {rm_type}, eff={eff.date() if eff else 'unknown'}")
                 entry.update({"Facility Name": fac_name, "WDID": wdid, "pdfs": [],
                               "total_pdfs": 0, "reg_measure_id": reg_id,
                               "reg_measure_type": rm_type, "order_no": order_no,
@@ -717,7 +857,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
 
             with lock:
                 if reg_id and reg_id in reg_id_to_info:
-                    print(f"  Dedup: reusing already-processed order {reg_id}")
+                    say(f"  Dedup: reusing already-processed order {reg_id}")
                     entry.update(reg_id_to_info[reg_id])
                     entry["Facility Name"] = fac_name
                     entry["WDID"] = wdid
@@ -771,7 +911,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                     reg_id_to_info[reg_id] = info
 
         except Exception as e:
-            print(f"  X {e}")
+            say(f"  X {e}")
         finally:
             try:
                 driver.quit()
@@ -779,9 +919,15 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                 pass
             shutil.rmtree(worker_dir, ignore_errors=True)
 
+    def logged_facility(args):
+        """Buffer this worker's lines and flush them as one block, so a facility's output
+        is contiguous instead of interleaved with the other workers."""
+        with facility_log(lock):
+            return process_facility(args)
+
     # loop mutates each entry in facilities_by_place in-place to add 'pdfs', 'total_pdfs', 'reg_measure_id', 'reg_measure_type'
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        executor.map(process_facility, enumerate(items, 1))
+        executor.map(logged_facility, enumerate(items, 1))
 
     def _needs_retry(entry):
         # Unprocessed (exception during process_facility left "facilities" key intact)
@@ -790,7 +936,9 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
         # Deliberately skipped (no link or pre-2004) — not a failure, never retry
         if entry.get("pdf_skip_reason"):
             return False
-        # A reg measure was clicked and 0 PDFs came back — should be impossible; retry
+        # A reg measure was clicked and 0 PDFs came back. Usually transient (page slow to
+        # render), but some attachment pages really are empty, so this is retried a bounded
+        # number of times and then marked pdf_skip_reason above.
         if entry.get("reg_measure_type") and not entry.get("pdfs") and not entry.get("total_pdfs"):
             return True
         return False
@@ -813,7 +961,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
                     entry.pop("missed_pdfs", None)
             total = len(retry_items)
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                executor.map(process_facility, [(i + 1, item) for i, item in enumerate(retry_items)])
+                executor.map(logged_facility, [(i + 1, item) for i, item in enumerate(retry_items)])
     except KeyboardInterrupt:
         still_failing = [
             {"place_id": place_id}
@@ -830,6 +978,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=12):
     with open(os.path.join(OUT, "facilities.json"), "w") as f:
         json.dump(facilities_by_place, f, indent=2, default=str)
     print(f"Checkpoint saved: facilities.json (with order info)")
+    snapshot("facilities.json")
 
     return facilities_by_place
 
@@ -994,6 +1143,12 @@ def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> str | None:
     has_noa = _rule_matches(pdf_file, RULES["NOA"], max_pages)
     has_cag = bool(_CAG_PERMIT_RE.search(noa_text))
 
+    # Statewide general order: _CAG_PERMIT_RE only catches CAG-numbered NPDES general permits,
+    # and a WDR general order has no CAG number. Test before the NOA check — the order describes
+    # the NOA process in its body prose, so has_noa is True and would otherwise rescue it.
+    if is_general_order(noa_text):
+        return None
+
     # Generic CAG order (no NOA): not facility-specific, skip
     if has_cag and not has_noa:
         return None
@@ -1008,6 +1163,32 @@ def detect_npdes(pdf_file: str, max_pages=5, min_length=10) -> str | None:
     return None
 
 
+# Cache on size+mtime so a re-downloaded or edited file is still re-scanned.
+SIGNAL_CACHE_PATH = os.path.join(OUT, "pdf_signal_cache.json")
+
+def save_signal_cache(cache):
+    with open(SIGNAL_CACHE_PATH, "w") as f:
+        json.dump(cache, f, sort_keys=True, indent=0)
+
+
+def _cache_entry(cache, filename, path):
+    """Entry for this file, reset if the file changed since it was cached."""
+    st = os.stat(path)
+    fp = f"{st.st_size}:{st.st_mtime_ns}"
+    entry = cache.get(filename)
+    if not entry or entry.get("fp") != fp:
+        entry = {"fp": fp}
+        cache[filename] = entry
+    return entry
+
+
+def cached_length_of_pdf(cache, filename, path):
+    entry = _cache_entry(cache, filename, path)
+    if "pages" not in entry:
+        entry["pages"] = length_of_pdf(path)
+    return entry["pages"]
+
+
 def detect_and_move_npdes_pdfs(facilities_by_place):
     print("\n STEP 3: Detecting and moving NPDES PDFs")
     permit_path = os.path.join(OUT, "permits")
@@ -1019,11 +1200,13 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     # PDF to Reg MeasureGrouping
     pdf_to_groups, group_to_pdfs = {}, {}
     group_to_rm_type = {}
+    pdf_to_places = {}
     for place_id, entry in facilities_by_place.items():
         g = entry.get("reg_measure_id") or place_id
         group_to_rm_type[g] = entry.get("reg_measure_type", "")
         for pdf in entry.get("pdfs", []):
             pdf_to_groups.setdefault(pdf, set()).add(g)
+            pdf_to_places.setdefault(pdf, set()).add(place_id)
             group_to_pdfs.setdefault(g, set()).add(pdf)
     pdf_signals = {}
 
@@ -1037,8 +1220,22 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
         if len(entry.get("pdfs", [])) == 1
     }
 
+    with open(SIGNAL_CACHE_PATH) as f:
+        signal_cache = json.load(f)
+    reused = 0
+
     for filename in pdf_files:
-        pdf_signals[filename] = detect_npdes(os.path.join(pdfs_path, filename))
+        path = os.path.join(pdfs_path, filename)
+        # a surviving "signal" is a cache hit
+        entry = _cache_entry(signal_cache, filename, path)
+        if "signal" in entry:
+            reused += 1
+        else:
+            entry["signal"] = detect_npdes(path)
+        pdf_signals[filename] = entry["signal"]
+    save_signal_cache(signal_cache)
+    print(f"  Scanned {len(pdf_files)} PDFs ({reused} reused from cache, "
+          f"{len(pdf_files) - reused} newly scanned)")
 
     for filename in pdf_files:
         matched_type = pdf_signals[filename]
@@ -1051,21 +1248,24 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
             if assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
                 matched_type = None  # general order for enrolled facilities, not facility-specific
         elif matched_type == "NOA":
-            groups = pdf_to_groups.get(filename, set())
-            assoc_types = {group_to_rm_type.get(g, "") for g in groups}
-            if len(groups) > 1 and assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
+            # Count facilities, not reg-measure groups: enrollees under one general order share a
+            # single reg_measure_id, so the group count is 1 no matter how many plants point at it.
+            places = pdf_to_places.get(filename, set())
+            assoc_types = {group_to_rm_type.get(g, "") for g in pdf_to_groups.get(filename, set())}
+            if len(places) > 1 and assoc_types and all(t.startswith("ENROLLEE") for t in assoc_types):
                 matched_type = None  # shared general order contains NOA language but not facility-specific
         if matched_type:
             os.rename(src, os.path.join(permit_path, filename))
             print(f"{matched_type} detected: {filename}")
             npdes_pdfs.add(filename)
-        elif filename in single_pdf_files and length_of_pdf(src) >= 3:
+        elif filename in single_pdf_files and cached_length_of_pdf(signal_cache, filename, src) >= 3:
             os.rename(src, os.path.join(permit_path, filename))
             print(f"single PDF, kept: {filename}")
             npdes_pdfs.add(filename)
         else:
             non_npdes_pdfs.add(filename)
 
+    save_signal_cache(signal_cache)
     print(f"\nNPDES/NOA/WDR PDFs moved: {len(npdes_pdfs)}")
     print(f"Non-NPDES/NOA/WDR PDFs kept in pdfs folder: {len(non_npdes_pdfs)}")
 
@@ -1105,12 +1305,17 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
                 pdf_to_n_facilities[pdf] = pdf_to_n_facilities.get(pdf, 0) + 1
 
     rows = []
+    skipped_collective = []
     for place_id, entry in facilities_by_place.items():
         fac_url = facility_url(place_id)
         rm_type = entry.get("reg_measure_type")
         fac_name = entry.get("Facility Name", "")
         wdid = entry.get("WDID", "")
         meta = enrich.get((wdid, fac_name), {})
+        # Drop watershed permit "agencies"
+        if COLLECTIVE_AGENCY_RE.search(meta.get("Agency", "")):
+            skipped_collective.append(f"{place_id} {fac_name}")
+            continue
         facility_npdes_pdfs = [p for p in entry.get("pdfs", []) if p in npdes_pdfs]
         meta_dict = {key: meta.get(key, "") for key in meta_keys}
         if entry.get("order_no"):
@@ -1133,9 +1338,15 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs, pdf_signals):
                 }
             )
 
+    if skipped_collective:
+        print(f"  Collective-permittee places dropped (not facilities): {len(skipped_collective)}")
+        for label in skipped_collective:
+            print(f"    {label}")
+
     df_out = pd.DataFrame(rows)
     df_out.to_csv(os.path.join(OUT, "site_data_relevant.csv"), index=False)
     print(f"Wrote {len(rows)} rows to site_data_relevant.csv")
+    snapshot("site_data_relevant.csv")
 
     # Breakdown by Reg_Measure_Type (one row per unique Place ID)
     df_fac = df_out.drop_duplicates(subset="Place ID")
@@ -1167,6 +1378,9 @@ if __name__ == "__main__":
     # To restart from a checkpoint, replace the step(s) above with:
     with open(os.path.join(OUT, "facilities.json")) as f:
         facilities = json.load(f)
-    # facilities = download_facility_page_pdfs(facilities)
-    npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
-    create_site_data_csv(facilities, npdes_pdfs, pdf_signals)
+    try:
+        facilities = download_facility_page_pdfs(facilities)
+        npdes_pdfs, _, pdf_signals = detect_and_move_npdes_pdfs(facilities)
+        create_site_data_csv(facilities, npdes_pdfs, pdf_signals)
+    finally:
+        restore_base_facilities()

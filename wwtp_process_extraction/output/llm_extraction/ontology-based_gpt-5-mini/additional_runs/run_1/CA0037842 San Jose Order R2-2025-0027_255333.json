@@ -24,20 +24,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of screens followed by grit removal."
+      "Sentence": "influent screening and grit removal"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization",
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available"
     },
     {
       "Equipment": "Tank",
       "Process": [
-        "ChemicalAddition"
+        "Coagulation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": [
         "Coagulant-FerricChloride"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control."
+      "Sentence": "An iron salts dosing station doses ferric chloride at the Emergency Basin Overflow Structure for odor control"
     },
     {
       "Equipment": "SedimentationTank",
@@ -50,7 +64,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater is pumped into rectangular primary clarifiers to remove floatable and settleable material."
+      "Sentence": "rectangular primary clarifiers"
     },
     {
       "Equipment": "AerationBasin",
@@ -69,7 +83,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A modified biological nutrient removal (BNR) process... Each basin is divided into four sections referred to as “quads.” The first and third quads are operated under anoxic conditions, while the second and fourth quads are operated under aerobic/anaerobic conditions."
+      "Sentence": "a modified biological nutrient removal (BNR) process ... each basin is divided into four sections referred to as “quads”"
     },
     {
       "Equipment": "SedimentationTank",
@@ -82,13 +96,12 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following biological treatment, the wastewater flows by gravity to secondary clarifiers."
+      "Sentence": "Following biological treatment, the wastewater flows by gravity to secondary clarifiers"
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "MediaFiltration",
-        "Backwashing"
+        "MediaFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -96,19 +109,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "There are 16 separate mono media filters... The Discharger backwashes the filters to clean the media."
+      "Sentence": "mono-media gravity filtration"
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Filter backwash water is sent to a backwash equalization basin for storage"
+      "Sentence": "backwash equalization basin for storage"
     },
     {
       "Equipment": "FlocculationBasin",
@@ -116,12 +128,12 @@
         "Flocculation"
       ],
       "Role": [
-        "Backwash"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by flocculation and sedimentation."
+      "Sentence": "followed by flocculation"
     },
     {
       "Equipment": "SedimentationTank",
@@ -129,73 +141,44 @@
         "Sedimentation"
       ],
       "Role": [
-        "Backwash"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by flocculation and sedimentation."
+      "Sentence": "followed by ... sedimentation"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treated backwash water is pumped to chlorine contact tanks for disinfection"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The settled solids from the backwash water are pumped back to primary treatment."
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Dechlorination",
-        "Disinfection"
+        "Disinfection",
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
       "Substance": [
-        "Disinfectant-Chlorine"
+        "Disinfectant-Chlorine",
+        "Constituent-Ammonia"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent at the head of four serpentine chlorine contact channels... an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite."
+      "Sentence": "Sodium hypochlorite and ammonia are metered into the filter effluent ... an appropriate amount of sodium bisulfite is added to neutralize the hypochlorite"
     },
     {
       "Equipment": null,
       "Process": [
-        "Aeration",
-        "Dechlorination"
+        "Aeration"
       ],
       "Role": [
-        "Posttreatment"
+        "Posttreatment",
+        "Stabilization"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected, and a backup dechlorination system"
+      "Sentence": "The channel provides additional stabilization of the treated effluent, backup aeration if low dissolved oxygen levels are detected"
     },
     {
       "Equipment": "Screen",
@@ -240,52 +223,87 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters that are operated in series."
+      "Sentence": "processed using Temperature Phased Anaerobic Digestion (TPAD) with thermophilic and mesophilic anaerobic digesters"
     },
     {
       "Equipment": "Pond",
-      "Process": [
-        "Drying"
-      ],
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge then undergoes either lagoon stabilization and dewatering using open air drying beds"
+      "Sentence": "lagoon stabilization"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatering using open air drying beds"
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge",
         "Flocculant-Polymer"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete)."
+      "Sentence": "mechanical dewatering using centrifuges (once the new biosolids dewatering facility is complete)"
     },
     {
-      "Equipment": "Reservoir",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
       "Role": [
-        "Storage",
-        "Equalization",
-        "Containment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A 12-million-gallon, concrete-lined emergency basin is available for temporary storage prior to the plant headworks, along with an additional 16 million gallons of storage used for daily flow equalization after the primary clarifiers. A 10-million-gallon overflow basin is also available"
+      "Location": "off-site",
+      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "land applied as a soil amendment"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Composting"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "processed further into a compost or fertilizer"
     },
     {
       "Equipment": "MicrofiltrationUnit",
@@ -298,7 +316,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "capable of treating up to 10 MGD of the Facility's secondary effluent using microfiltration"
+      "Sentence": "treating up to 10 MGD ... using microfiltration"
     },
     {
       "Equipment": "ReverseOsmosisMembrane",
@@ -311,7 +329,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using ... reverse osmosis"
+      "Sentence": "treating ... using ... reverse osmosis"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -324,35 +342,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "treating up to 10 MGD of the Facility's secondary effluent using ... ultraviolet light disinfection"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication",
-        "Composting",
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Dewatered biosolids are used as alternative daily cover at a landfill, land applied as a soil amendment, or processed further into a compost or fertilizer."
+      "Sentence": "using ... ultraviolet light disinfection"
     },
     {
       "Equipment": "Tank",
-      "Process": [
-        "ChemicalAddition"
+      "Process": null,
+      "Role": [
+        "Storage"
       ],
-      "Role": null,
-      "Substance": [
-        "Flocculant-Polymer"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "This project will build a new digested sludge dewatering facility, including... polymer storage and dosing equipment"
+      "Sentence": "construct a new fats, oil and grease receiving facility, including storage tanks"
     }
   ]
 }

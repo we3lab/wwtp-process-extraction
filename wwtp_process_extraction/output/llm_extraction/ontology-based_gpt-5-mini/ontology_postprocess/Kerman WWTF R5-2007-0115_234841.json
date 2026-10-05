@@ -1,26 +1,155 @@
 {
   "items": [
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the headworks houses a screen/compactor",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "headworks with an auger grinding solids",
+      "trigger_process": [
+        "Comminution"
+      ]
+    },
+    {
       "Equipment": "Pump",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
-      "Implementation": "future",
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Recent changes will include replacing the existing Parshall Flume flow metering structure with a magnetic flow meter on the pump discharge line.",
+      "Sentence": "a lift station with pumps",
       "trigger_process": []
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Solids from the screen/compactor are dewatered and deposited in a trash-bin",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Primary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Influent is then discharged to CM Lagoon 1... Aeration is provided by two... surface aerators",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Wastewater from CM Lagoon 1 is discharged to PM Lagoons 1 through 3, which are typically operated in series",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three settling ponds (Settling Ponds 1, 2 and 3)",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "three disposal ponds (Disposal Ponds 4, 5 and 6)",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Retention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "discharges it to an 11-acre retention basin at the WWTF",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Equalization",
-        "Storage"
+        "Storage",
+        "Equalization"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The RWD describes the City's plans to install a new 5,000-gallon storage tank for septage receiving, management, and equalization.",
+      "Sentence": "plans to install a new 5,000-gallon storage tank for septage receiving, management, and equalization",
       "trigger_process": [
         "Equalization"
       ]
@@ -30,59 +159,39 @@
       "Process": [
         "ActivatedSludge",
         "Aeration",
+        "Nitrification",
         "Denitrification"
       ],
       "Role": [
-        "Extended",
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
         "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The RWD describes the City's plans to construct Biolac System\u00a9, which is an extended aeration biological treatment process with diffused fine bubble aeration to replace the existing mechanical surface aerated pond system.",
+      "Sentence": "construct Biolac System\u00a9, which is an extended aeration biological treatment process with diffused fine bubble aeration... The WWTF will consist of an aeration basin",
       "trigger_process": [
         "Denitrification",
-        "Extended Aeration"
+        "Nitrification"
       ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "to replace the existing mechanical surface aerated pond system.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Biolac system will utilize the existing CM Lagoon 1 and will bring the treatment capacity to 2 mgd. The WWTF will consist of an aeration basin (CM Lagoon 1)...",
-      "trigger_process": []
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The WWTF will consist of an aeration basin (CM Lagoon 1), two concrete clarifiers...",
+      "Sentence": "The WWTF will consist of... two concrete clarifiers",
       "trigger_process": [
-        "Unspecified Clarification"
+        "Secondary Clarification"
       ]
     },
     {
@@ -91,14 +200,15 @@
         "Recirculation"
       ],
       "Role": [
+        "Recirculation",
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The WWTF will consist of ... return and waste activated sludge pumps...",
+      "Sentence": "return and waste activated sludge pumps",
       "trigger_process": []
     },
     {
@@ -107,15 +217,16 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "Aerobic",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The WWTF will consist of ... aerobic sludge digester ... Sludge from the clarifiers will be pumped to the aerobic sludge digester.",
+      "Sentence": "aerobic sludge digester",
       "trigger_process": [
         "Aerobic Digestion"
       ]
@@ -123,8 +234,8 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -134,9 +245,27 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Digested sludge, at approximately 2-6 percent solids, will be pumped to reinforced concrete sludge drying beds during the summer and mechanically dewatered in the winter.",
+      "Sentence": "Digested sludge... will be pumped to reinforced concrete sludge drying beds during the summer",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "mechanically dewatered in the winter",
+      "trigger_process": [
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -152,7 +281,7 @@
       ],
       "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "Sludge will then be hauled offsite to a permitted facility.",
+      "Sentence": "Sludge will then be hauled offsite to a permitted facility",
       "trigger_process": [
         "Unspecified Disposal"
       ]
@@ -164,37 +293,9 @@
         "Storage"
       ],
       "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Effluent from the clarifiers will be discharged to Storage Ponds A through C (current PM Lagoons 1 through 3).",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The City proposes converting Settling Ponds 1 and 2 to Disposal Ponds.",
-      "trigger_process": [
-        "Unspecified Lagoon"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "In total, the City will have seven Disposal Ponds (Disposal Ponds 1 through 3 and 5 through 8) with a total storage capacity of 338 acre-feet.",
+      "Sentence": "Effluent from the clarifiers will be discharged to Storage Ponds A through C (current PM Lagoons 1 through 3)",
       "trigger_process": [
         "Unspecified Lagoon"
       ]

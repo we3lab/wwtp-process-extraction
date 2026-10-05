@@ -6,14 +6,15 @@
         "Comminution"
       ],
       "Role": [
-        "Pretreatment"
+        "Pretreatment",
+        "Feed"
       ],
       "Substance": [
-        "Constituent-Solids"
+        "Constituent-SuspendedSolids"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The preliminary treatment system consists of four chopper pumps...",
+      "Sentence": "the preliminary treatment system consists of four chopper pumps",
       "trigger_process": [
         "Comminution"
       ]
@@ -29,7 +30,7 @@
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Removing the existing channel grinder...",
+      "Sentence": "Removing the existing channel grinder",
       "trigger_process": [
         "Comminution"
       ]
@@ -38,12 +39,12 @@
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Pretreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Removing the existing ... four influent pumps...",
+      "Sentence": "Removing the existing ... four influent pumps",
       "trigger_process": []
     },
     {
@@ -57,22 +58,10 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The preliminary treatment system consists of ... one grit vortex inducer, two grit pumps, and two grit classifiers.",
+      "Sentence": "one grit vortex inducer, two grit pumps, and two grit classifiers",
       "trigger_process": [
         "Grit Removal"
       ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The preliminary treatment system consists of ... two grit pumps...",
-      "trigger_process": []
     },
     {
       "Equipment": "AerationBasin",
@@ -82,13 +71,13 @@
       "Role": [
         "Primary",
         "Secondary",
-        "Aerobic",
-        "Extended"
+        "Extended",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater ... gravity flows to one or more of the five extended aeration units for primary and secondary treatment.",
+      "Sentence": "Wastewater ... gravity flows to one or more of the five extended aeration units for primary and secondary treatment",
       "trigger_process": [
         "Extended Aeration"
       ]
@@ -104,26 +93,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Effluent from the extended aeration units then gravity flows to the secondary clarifiers...",
+      "Sentence": "Effluent from the extended aeration units then gravity flows to the secondary clarifiers",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "Filter",
+      "Equipment": "MediaFiltrationUnit",
       "Process": [
-        "Filtration"
+        "MediaFiltration"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary treatment units consist of ... one cloth filter...",
+      "Sentence": "installation of a cloth filter unit to reduce the amount of settleable solids reaching the percolation ponds",
       "trigger_process": [
-        "Unspecified Filtration"
+        "Media Filtration"
       ]
     },
     {
@@ -137,14 +127,34 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary and secondary treatment units consist of ... eight evaporation/percolation ponds.",
+      "Sentence": "Primary and secondary treatment units consist of ... and eight evaporation/percolation ponds",
       "trigger_process": [
         "Evaporation Pond"
       ]
     },
     {
+      "Equipment": "BeltFilterPress",
+      "Process": [
+        "Dewatering",
+        "Filtration"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Scum and sludge from the five secondary clarifiers are pumped to a 2.0-meter skid mounted belt filter press",
+      "trigger_process": [
+        "Mechanical Dewatering"
+      ]
+    },
+    {
       "Equipment": "DewateringUnit",
       "Process": [
+        "AirDrying",
         "Dewatering"
       ],
       "Role": [
@@ -155,45 +165,28 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Scum and sludge from the five secondary clarifiers are pumped to a 2.0-meter skid mounted belt filter press.",
+      "Sentence": "eleven asphalt bottom sludge drying beds are also available for service",
       "trigger_process": [
-        "Mechanical Dewatering"
+        "Air Drying"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "pHAdjustment"
+        "Neutralization"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "pHAdjuster-Lime"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The trailers are hauled offsite for advanced treatment including lime stabilization and \u201cClass A\u201d standards.",
+      "Sentence": "hauled offsite for advanced treatment including lime stabilization",
       "trigger_process": [
         "Lime Stabilization",
         "Neutralization"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "For emergency operation only, eleven asphalt bottom sludge drying beds are also available for service.",
-      "trigger_process": [
-        "Drying"
       ]
     }
   ]

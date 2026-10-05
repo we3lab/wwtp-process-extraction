@@ -173,8 +173,9 @@
       "alt_names": ["aerated lagoon", "aerated pond", "oxidation pond"],
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Aerated"],
-      "ontology_triggers": ["Equipment-Pond", "Role-Aerobic"],
-      "priority": 2,
+      "ontology_triggers": [["Equipment-Pond", "Role-Aerobic"], ["Equipment-Pond", "Process-Aeration"]],
+      "exclude_if_any": ["Role-SolidsHandling", "Role-Storage", "Process-Evaporation"],
+      "priority": 1,
       "werf_codes": ["LAGOON_AER"]
     },
     "Anaerobic Lagoon": {
@@ -182,7 +183,7 @@
       "alt_names_case_sensitive": [],
       "cwns_processes": ["Lagoon, Anaerobic"],
       "ontology_triggers": ["Equipment-Pond", "Role-Anaerobic"],
-      "priority": 2,
+      "priority": 1,
       "werf_codes": ["LAGOON_ANAER"]
     },
     "Polishing Lagoon": {
@@ -219,23 +220,16 @@
   },
   "Nutrient Removal": {
     "Biological Nutrient Removal": {
-      "AO (anoxic/oxic)": {
+      "AnO": {
         "alt_names": ["anoxic-oxic", "a/o", "anoxic oxic", "anoxic-aerobic", "anoxic aerobic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
-        "ontology_triggers": [["Process-AO"], ["Role-Anoxic", "Role-Aerobic"], ["Process-Nitrification", "Process-Denitrification", "Equipment-Reactor"]],
-        "ontology_triggers_multi": [
-          {
-            "priority": 3,
-            "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
-            "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
-          }
-        ],
-        "exclude_if_any": ["Role-Anaerobic", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
+        "ontology_triggers": [["Process-AO"]],
+        "exclude_if_any": ["Role-Anaerobic", "Process-MLE", "Process-A2O", "Process-UCT", "Process-FourStageBardenpho", "Process-FiveStageBardenpho"],
         "secondary_category": ["Activated Sludge"],
         "werf_codes": ["AS-BDENIT"]
       },
-      "AO (anaerobic/oxic)": {
+      "AO": {
         "alt_names": ["anaerobic-oxic", "anaerobic oxic", "anaerobic-aerobic", "anaerobic aerobic"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
@@ -304,7 +298,16 @@
         "ontology_triggers": [
           ["Process-Nitrification"],
           ["Process-Denitrification"],
-          ["Role-NutrientRemoval"]
+          ["Role-NutrientRemoval"],
+          ["Role-Anoxic", "Role-Aerobic"],
+          ["Process-Nitrification", "Process-Denitrification", "Equipment-Reactor"]
+        ],
+        "ontology_triggers_multi": [
+          {
+            "priority": 3,
+            "Equipment": ["AerationBasin", "MixingBasin", "OxidationDitch", "MembraneBioreactor", "SequencingBatchReactor"],
+            "role_counts": {"Anaerobic": {"max": 0}, "Anoxic": {"min": 1}, "Aerobic": {"min": 1}}
+          }
         ],
         "priority": 1000,
         "werf_codes": ["BNR"]
@@ -425,7 +428,7 @@
         "alt_names_case_sensitive": [],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-NanofiltrationUnit"],
-        "priority": 2,
+        "priority": 1,
         "werf_codes": []
       },
       "Electrodialysis Reversal": {
@@ -457,7 +460,8 @@
         "alt_names_case_sensitive": ["UF"],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-UltrafiltrationUnit"],
-        "priority": 2,
+        "exclude_if_any": ["Equipment-MembraneBioreactor"],
+        "priority": 1,
         "werf_codes": []
       },
       "Microfiltration": {
@@ -465,7 +469,8 @@
         "alt_names_case_sensitive": ["MF"],
         "cwns_processes": [],
         "ontology_triggers": ["Equipment-MicrofiltrationUnit"],
-        "priority": 2,
+        "exclude_if_any": ["Equipment-MembraneBioreactor"],
+        "priority": 1,
         "werf_codes": []
       },
       "Membrane Bioreactor": {
@@ -487,7 +492,7 @@
     },
     "Unspecified Filtration": {
       "alt_names": ["pressure filter"],
-      "alt_names_case_sensitive": ["MF"],
+      "alt_names_case_sensitive": [],
       "cwns_processes": ["Filter, Other", "Filter, Pressure"],
       "ontology_triggers": ["Process-Filtration"],
       "priority": 1000,
@@ -642,7 +647,7 @@
         ["Process-pHAdjustment"],
         ["pHAdjuster"]
       ],
-      "priority": 10,
+      "priority": 1,
       "werf_codes": ["MOD_CHEM"]
     },
     "Unspecified Chemical Addition": {
@@ -709,19 +714,29 @@
         "exclude_if_any": ["Equipment-CentrifugalThickener"],
         "werf_codes": ["DEWATER"]
       },
-      "Drying": {
-        "alt_names": ["drying"],
+      "Heat Drying": {
+        "alt_names": ["heat dry", "sludge dryer", "pyrolysis", "pyrolize", "thermal dry"],
         "alt_names_case_sensitive": [],
         "cwns_processes": [
-          "Biosolids Heat Drying", 
-          "Biosolids Air Drying, Sand Beds", 
-          "Biosolids Air Drying, Other Media", 
-          "Biosolids Air Drying", 
-          "Biosolids (Heat Treatment-Blowers)", 
+          "Biosolids Heat Drying",
+          "Biosolids (Heat Treatment-Blowers)",
           "Biosolods (Heat Treatment)"
         ],
-        "ontology_triggers": [],
+        "ontology_triggers": [["Process-ThermalDrying"]],
+        "priority": 1,
         "werf_codes": ["BIODRY"]
+      },
+      "Air Drying": {
+        "alt_names": ["air drying", "drying bed", "sludge drying bed", "drying lagoon", "solar drying", "sand bed"],
+        "alt_names_case_sensitive": [],
+        "cwns_processes": [
+          "Biosolids Air Drying, Sand Beds",
+          "Biosolids Air Drying, Other Media",
+          "Biosolids Air Drying"
+        ],
+        "ontology_triggers": [["Process-AirDrying"]],
+        "priority": 1,
+        "werf_codes": []
       },
       "Elutriation": {
         "alt_names": ["elutriation"],
@@ -743,7 +758,7 @@
     "Thickening": {
       "Thickening": {
         "alt_names": ["thicken"],
-        "alt_names_case_sensitive": ["DAF", "GBT"],
+        "alt_names_case_sensitive": ["DAF", "DAFT", "GBT"],
         "cwns_processes": ["Biosolids Thickening, Dissolved Air Flotation", "Biosolids Thickening, tank", "Biosolids Thickening, Gravity", "Biosolids Thickening, Other", "Swirl Concentrators", "Vortex Solids Separators"],
         "ontology_triggers": [
           ["Equipment-Thickener"],
@@ -834,7 +849,7 @@
     "Incineration": {
       "MHI": {
         "alt_names": ["multiple hearth incineration", "multiple hearth incinerator"],
-        "alt_names_case_sensitive": ["MHI"],
+        "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Incineration, Multiple Hearth"],
         "ontology_triggers": ["Process-MultipleHearthIncineration"],
         "werf_codes": ["MHI"]
@@ -850,7 +865,7 @@
         "alt_names": ["incineration", "incinerator"],
         "alt_names_case_sensitive": [],
         "cwns_processes": ["Biosolids Co-Incineration With Solid Waste", "Biosolids Incineration (Other)", "Incineration - Rotary Kiln"],
-        "ontology_triggers": ["Process-Incineration"],
+        "ontology_triggers": [["Process-Combustion", "Substance-Fluid-Sludge"]],
         "priority": 1000,
         "werf_codes": []
       }
@@ -860,7 +875,7 @@
         "alt_names": ["cogeneration", "chp", "combined heat and power"],
         "alt_names_case_sensitive": ["CHP"],
         "cwns_processes": ["Biosolids Digestor Gas Utilization Facilities"],
-        "ontology_triggers": ["Process-Cogeneration"],
+        "ontology_triggers": [["Process-Cogeneration"], ["Equipment-Cogenerator"]],
         "werf_codes": ["BIOGAS_CWNS"]
       },
       "Heat Recovery": {

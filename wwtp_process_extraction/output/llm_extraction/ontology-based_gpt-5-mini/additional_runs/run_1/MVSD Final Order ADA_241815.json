@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening,"
+      "Sentence": "The treatment system consists of screening..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -24,7 +24,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of ... primary clarification,"
+      "Sentence": "The treatment system consists of ... primary clarification..."
     },
     {
       "Equipment": "TricklingFilter",
@@ -37,10 +37,12 @@
         "NitrogenRemoval",
         "Aerobic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "trickling filtration, ammonia removal nitrification (accomplished in a bio-tower),"
+      "Sentence": "The treatment system consists of ... trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -53,7 +55,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary sedimentation,"
+      "Sentence": "The treatment system consists of ... secondary sedimentation..."
     },
     {
       "Equipment": "RapidSandFilter",
@@ -66,7 +68,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sand filtration,"
+      "Sentence": "The treatment system consists of ... sand filtration..."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -79,25 +81,27 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ultraviolet light (UV) disinfection."
+      "Sentence": "The treatment system consists of ... ultraviolet light (UV) disinfection."
     },
     {
       "Equipment": "Wetland",
       "Process": [
-        "Nitrification"
+        "Biofiltration"
       ],
       "Role": [
         "Posttreatment",
         "NutrientRemoval",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Ammonia"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for “polishing” treatment to remove ammonia and other pollutants"
+      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for “polishing” treatment to remove ammonia and other pollutants..."
     },
     {
-      "Equipment": "Thickener",
+      "Equipment": null,
       "Process": [
         "Thickening"
       ],
@@ -109,7 +113,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill."
+      "Sentence": "Sludge is thickened..."
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -126,12 +130,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill."
+      "Sentence": "Sludge is ... anaerobically digested..."
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -141,12 +146,13 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is ... dewatered in a centrifuge, and placed as alternative daily cover at a landfill."
+      "Sentence": "Sludge is ... dewatered in a centrifuge..."
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -159,20 +165,6 @@
       "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill."
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks."
-    },
-    {
       "Equipment": null,
       "Process": [
         "Landfill"
@@ -180,23 +172,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "placed as alternative daily cover at a landfill."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Biotower Feed Pump Improvements: The Discharger replaced one pump, rehabilitated another..."
+      "Sentence": "Sludge is ... placed as alternative daily cover at a landfill."
     },
     {
       "Equipment": "Pump",
@@ -204,14 +183,12 @@
         "Recirculation"
       ],
       "Role": [
-        "Feed"
+        "Recirculation"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "increased the amount of ammonia returned to the plant headworks in the centrate side stream."
+      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks."
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -224,20 +201,23 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls."
+      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls..."
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls."
+      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls..."
     },
     {
       "Equipment": "Screen",
@@ -254,7 +234,9 @@
     },
     {
       "Equipment": "Wetland",
-      "Process": null,
+      "Process": [
+        "Biofiltration"
+      ],
       "Role": [
         "NutrientRemoval"
       ],
@@ -262,6 +244,19 @@
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Nutrient Removal in Moorhen Marsh: The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger has since modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day."
     }
   ]
 }

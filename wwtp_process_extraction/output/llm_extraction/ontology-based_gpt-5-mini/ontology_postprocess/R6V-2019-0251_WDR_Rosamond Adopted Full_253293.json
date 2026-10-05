@@ -1,15 +1,47 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
+      "Equipment": "Pond",
       "Process": [
-        "Screening"
+        "Aeration",
+        "Evaporation"
       ],
       "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Currently, all influent is first discharged into one of the ponds which serves as a treatment pond with aerators before going to the remaining evaporation/oxidation ponds.",
+      "trigger_process": [
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The headworks consists of the influent pump station, bar screen, and a grit removal/classification system.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The bar screen is operated as a traveling chain-and-link system that removes large solids.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -19,8 +51,12 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Influent is pumped through a vortex grit chamber at grade.",
@@ -33,8 +69,12 @@
       "Process": [
         "Dewatering"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Grit slurry collected in the vortex grit chamber is pumped to a vortex grit separator and classifier for dewatering.",
@@ -43,12 +83,30 @@
       ]
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to Facility upgrades, septage was delivered to evaporation/oxidation Pond 11.",
+      "trigger_process": [
+        "Unspecified Lagoon"
+      ]
+    },
+    {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Septage from the receiving station is passed through a coarse screen to remove large solids before proceeding to an 80-mil high density polyethylene (HDPE) lined septage holding pond.",
@@ -64,125 +122,70 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The aerated and mixed septage holding pond will contain approximately 90,000 gallons of septage waste...",
+      "Sentence": "The aerated and mixed septage holding pond will contain approximately 90,000 gallons of septage waste.",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration",
+        "Denitrification",
+        "Nitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Proposed upgrades to the treatment plant will provide secondary treatment that feeds influent from the headworks into two Biolac aeration basins ... Biolac ... suspended aerators for extended aeration, activated sludge treatment. Denitrification is achieved by creating a series of oxic and anoxic zones within the basin.",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Denitrification",
+        "Nitrification"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "SedimentationTank",
       "Process": [
-        "Evaporation",
-        "Aeration"
+        "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Currently, all influent is first discharged into one of the ponds which serves as a treatment pond with aerators before going to the remaining evaporation/oxidation ponds.",
+      "Sentence": "Proposed upgrades ... two secondary clarifiers ... existing secondary clarifier has a 45-foot diameter and a depth of 16 feet while the new secondary clarifier will have a 65-foot diameter and a depth of 16 feet.",
       "trigger_process": [
-        "Evaporation Pond"
+        "Secondary Clarification"
       ]
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
+      "Role": [
+        "Posttreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "convert the two newest oxidation/evaporation Ponds 15 and 17, located south of the treatment facility, into a series of percolation ponds for effluent disposal",
+      "Sentence": "convert the two newest oxidation/evaporation Ponds 15 and 17 ... into a series of percolation ponds for effluent disposal.",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
     },
     {
-      "Equipment": "AerationBasin",
+      "Equipment": null,
       "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger is re-adjusting the flow capacity of the existing Biolac basin to treat 0.35 MGD",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "constructing a new Biolac basin to treat 0.92 MGD for a combined total design flow of 1.27 MGD.",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Unspecified AS"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The existing secondary clarifier has a 45-foot diameter and a depth of 16 feet",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the new secondary clarifier will have a 65-foot diameter and a depth of 16 feet.",
-      "trigger_process": [
-        "Secondary Clarification"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -194,7 +197,7 @@
       "Location": "on-site",
       "Sentence": "Waste sludge will be disposed into six new lined drying beds and five of the six existing lined drying beds.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {

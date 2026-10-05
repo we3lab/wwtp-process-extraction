@@ -1,19 +1,111 @@
 {
   "items": [
     {
-      "Equipment": "UltravioletLightUnit",
+      "Equipment": "Screen",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "Screening"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The City is only authorized to produce and discharge Type 2 Discharge in the event of a malfunction or planned maintenance of the UV disinfection system.",
+      "Sentence": "two bar screens, four fine screens",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "GritChamber",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four grit tanks",
+      "trigger_process": [
+        "Grit Removal"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "five rectangular primary clarifiers",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary",
+        "Aerobic"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "four rectangular aeration basins",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "MembraneBioreactor",
+      "Process": [
+        "Biofiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "ten membrane tanks (each housing eight membrane cassettes)",
+      "trigger_process": [
+        "Membrane Bioreactor"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two recirculation lines",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two parallel channels housing six ultraviolet light (UV) banks",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -24,14 +116,15 @@
         "Digestion"
       ],
       "Role": [
-        "Primary",
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Primary sludge is fed to seven primary digesters.",
+      "Sentence": "Primary sludge is fed to seven primary digesters",
       "trigger_process": [
         "Unspecified Digestion"
       ]
@@ -39,8 +132,7 @@
     {
       "Equipment": "GravityBeltThickener",
       "Process": [
-        "Sedimentation",
-        "Filtration"
+        "Thickening"
       ],
       "Role": [
         "SolidsHandling"
@@ -50,7 +142,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Waste Activated Sludge (WAS) is processed through two 2-meter gravity belt thickeners;",
+      "Sentence": "WAS is processed through two 2-meter gravity belt thickeners",
       "trigger_process": [
         "Thickening"
       ]
@@ -74,25 +166,6 @@
       ]
     },
     {
-      "Equipment": "Digester",
-      "Process": [
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Digested sludge from the seven primary digesters is then fed into the eighth digester for secondary digestion.",
-      "trigger_process": [
-        "Unspecified Digestion"
-      ]
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering"
@@ -105,7 +178,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is pumped from the secondary digester and dewatered by 2 screw presses.",
+      "Sentence": "dewatered by 2 screw presses",
       "trigger_process": [
         "Mechanical Dewatering"
       ]
@@ -113,7 +186,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Storage",
@@ -124,9 +197,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dewatered sludge is applied to a 9-acre asphaltic-lined drying and stockpiling area for further drying and storage.",
+      "Sentence": "applied to a 9-acre asphaltic-lined drying and stockpiling area for further drying and storage",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -137,10 +210,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are removed by a permitted contractor and disposed of by either land application at an approved facility",
+      "Sentence": "disposed of by either land application at an approved facility",
       "trigger_process": [
         "Land Application"
       ]
@@ -153,10 +228,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Biosolids are removed by a permitted contractor and disposed of by either ... landfill cover at an approved landfill.",
+      "Sentence": "disposed of by ... landfill cover at an approved landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]

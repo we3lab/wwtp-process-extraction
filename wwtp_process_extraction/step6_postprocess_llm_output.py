@@ -10,12 +10,13 @@ WATR = Namespace("urn:nawi-water-ontology#")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 ontology = Graph()
 
-GITHUB_BASE = (
-    "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
-)
+# Pinned local copy of DataDrivenCPS/water-ontology PR #30 (constance/ontology_to_txt),
+# commit 760a6709094845ace3233f34acee00c5e83ef392. Local edit: Boiler hasProcess changed
+# from Process-Incineration (a class the ontology never defines) to Process-Combustion.
+ONTOLOGY_DIR = Path("wwtp_process_extraction/data/ontology")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, hasprocess_fragments, add_county_and_sort, select_json_per_place_id, current_permit_mask
 
 LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
 # Full dataset = the default model/method folder (gpt-5-mini ontology), which accumulates every CA
@@ -81,7 +82,7 @@ for name, details, _, _ in leaves:
             facility_multi_rules.append((name, rule))
 facility_multi_rules.sort(key=lambda r: r[1].get("priority", 1))
 
-# Load ontology from GitHub
+# Load ontology from the pinned local copy
 for filename in [
     "ontology.ttl",
     "equipment.ttl",
@@ -90,9 +91,9 @@ for filename in [
     "substances.ttl",
 ]:
     try:
-        ontology.parse(f"{GITHUB_BASE}/{filename}", format="turtle")
+        ontology.parse(ONTOLOGY_DIR / filename, format="turtle")
     except Exception as e:
-        print(f"Could not download {filename} from GitHub")
+        print(f"Could not load {ONTOLOGY_DIR / filename}: {e}")
 
 # Direct (own-class only) hasProcess fragments, keyed by equipment class fragment.
 equipment_own_processes = {
@@ -118,15 +119,11 @@ def _norm_pdf(s):
     return s.lower().replace(" ", "_")
 
 
-def _row_info(row):
-    return {
-        "Place ID": row["Place ID"],
-        "WDID": row["WDID"],
-        "Order_No": row["Order_No"],
-        "NPDES No.": row["NPDES No."],
-        "Agency": row["Agency"],
-        "Facility Name": row["Facility Name"],
-    }
+ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
+           "document_order_no"]
+
+# Any status that means the extractor found the process; a row with none of them is empty.
+PRESENT_LIKE = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
 
 
 def normalize_records(json_data):
@@ -428,7 +425,7 @@ def main():
         # Use Path.stem so double-extension files (*.pdf.pdf) map to the same stem
         # the LLM JSON generator uses when naming output files.
         key = _norm_pdf(Path(row["PDF_File"]).stem)
-        pdf_map.setdefault(key, []).append(_row_info(row))
+        pdf_map.setdefault(key, []).append({c: row[c] for c in ID_COLS})
 
     # ── full dataset ────────────────────────────────────────────────────
     results = []
@@ -456,28 +453,38 @@ def main():
                     identity = matching[0] if matching else rows[0]
                 break
         if not identity:
+            # No row in site_data_relevant claims this document (a superseded order, or a place
+            # since filtered out). Without a Place ID it cannot be attributed to any facility,
+            # and keeping it would collapse into a phantom facility with no identity at all.
             unmatched_files.append(filename)
+            continue
         result.update(identity)
         results.append(result)
 
     df = pd.DataFrame(results)
-    id_cols = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"]
-    cols = id_cols + [c for c in columns if c in df.columns]
+    cols = ID_COLS + [c for c in columns if c in df.columns]
     for c in cols:
-        if c not in id_cols:
+        if c not in ID_COLS:
             df[c] = df[c].map(parse_status)
     df[cols].to_csv(output_csv, index=False)
     print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
 
     raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
+    # Collapse only the current permit. Unioning across cycles reads a process out of a
+    # superseded order as if the facility still ran it.
+    proc_cols = [c for c in raw_df.columns if c not in ID_COLS and c != "County"]
+    has_content = raw_df[proc_cols].isin(PRESENT_LIKE).any(axis=1)
+    current = current_permit_mask(raw_df, content=has_content)
+    print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
+          f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
     collapsed = collapse_facility_processes(
-        raw_df,
+        raw_df[current],
         key_cols=["Place ID"],
         meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
     )
     collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(output_fac_csv, index=False)
-    print(f"Collapsed {len(raw_df)} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
+    print(f"Collapsed {int(current.sum())} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
     add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(output_csv, index=False)
     if unmatched_files:
         print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")

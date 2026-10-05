@@ -9,7 +9,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of an influent pump station, three 1600-gallon per minute (gpm) pumps,"
+      "Sentence": "The treatment system consists of an influent pump station"
     },
     {
       "Equipment": "Screen",
@@ -22,36 +22,32 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Untreated wastewater flows from the influent pump station to the bar screen and then to the mixing vault."
+      "Sentence": "bar screen"
     },
     {
       "Equipment": "MixingBasin",
       "Process": [
         "Mixing"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Untreated wastewater flows from the influent pump station to the bar screen and then to the mixing vault."
+      "Sentence": "mixing vault then flows to the 1.5-MG activated sludge basin"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge",
-        "Aeration"
+        "ActivatedSludge"
       ],
       "Role": [
         "Primary",
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater from the mixing vault then flows to the 1.5-MG activated sludge basin for primary and secondary treatment."
+      "Sentence": "1.5-MG activated sludge basin for primary and secondary treatment"
     },
     {
       "Equipment": "SedimentationTank",
@@ -64,12 +60,69 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the activated sludge basin, wastewater flows to the secondary clarifiers, and then to the evaporation/ percolation ponds for disposal."
+      "Sentence": "two 60-foot diameter secondary clarifiers"
+    },
+    {
+      "Equipment": "SeparationTank",
+      "Process": [
+        "Separation"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "two oil and grease separator pits (scum pits)"
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "one 0.100-MG oil and grease aerobic containment tank"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation",
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "return activated sludge (RAS)/waste activated sludge (WAS) pump station"
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "one 1.5-MG aerobic sludge digester"
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Evaporation"
+        "Evaporation",
+        "Separation"
       ],
       "Role": [
         "Posttreatment"
@@ -77,7 +130,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated wastewater is discharged to the 10 percolation/evaporation ponds."
+      "Sentence": "ten percolation/evaporation ponds"
     },
     {
       "Equipment": "SedimentationTank",
@@ -93,119 +146,59 @@
       "Sentence": "Wastewater from the RV dump station flows through three 10,000-gallon tanks in series for primary treatment"
     },
     {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "SolidsHandling"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids from the secondary clarifiers flow to the RAS/WAS pump station where RAS is returned to the mixing vault, and WAS flows to the 1.5-MG aerobic digester."
+      "Sentence": "septage dump station for receiving septage waste ... is also combined with the influent prior to the influent pump station"
     },
     {
-      "Equipment": "SeparationTank",
-      "Process": [
-        "Separation"
-      ],
+      "Equipment": "SedimentationTank",
+      "Process": null,
       "Role": [
-        "Pretreatment"
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "two oil and grease separator pits (scum pits),"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "one 0.100-MG oil and grease aerobic containment tank,"
-    },
-    {
-      "Equipment": "AerobicDigester",
-      "Process": [
-        "AerobicDigestion",
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "WAS flows to the 1.5-MG aerobic digester."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying",
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "six sludge drying beds, previously part of the treatment process, are still on-site, but are not currently in operation."
+      "Sentence": "an old primary clarifier is now a holding tank for onsite raw sewer line breaches"
     },
     {
       "Equipment": "SedimentationTank",
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Primary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Primary clarifiers, trickling filters, primary and secondary anaerobic digesters, one of the chlorine contact basins and six sludge drying beds, previously part of the treatment process, are still on-site, but are not currently in operation."
+      "Sentence": "Primary clarifiers ... previously part of the treatment process, are still on-site, but are not currently in operation"
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
         "TricklingFiltration"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Primary clarifiers, trickling filters, primary and secondary anaerobic digesters, one of the chlorine contact basins and six sludge drying beds, previously part of the treatment process, are still on-site, but are not currently in operation."
+      "Sentence": "trickling filters ... previously part of the treatment process, are still on-site, but are not currently in operation"
     },
     {
       "Equipment": "AnaerobicDigester",
       "Process": [
         "AnaerobicDigestion"
       ],
-      "Role": [
-        "SolidsHandling",
-        "Anaerobic"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Role": null,
+      "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Primary clarifiers, trickling filters, primary and secondary anaerobic digesters, one of the chlorine contact basins and six sludge drying beds, previously part of the treatment process, are still on-site, but are not currently in operation."
+      "Sentence": "primary and secondary anaerobic digesters ... previously part of the treatment process, are still on-site, but are not currently in operation"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -213,13 +206,59 @@
         "Chlorination",
         "Disinfection"
       ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "one of the chlorine contact basins ... previously part of the treatment process, are still on-site, but are not currently in operation"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
       "Role": [
-        "Posttreatment"
+        "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Primary clarifiers, trickling filters, primary and secondary anaerobic digesters, one of the chlorine contact basins and six sludge drying beds, previously part of the treatment process, are still on-site, but are not currently in operation."
+      "Sentence": "six sludge drying beds ... previously part of the treatment process, are still on-site, but are not currently in operation"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "one was converted to a sludge drying basin, replacing six smaller sludge drying beds"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Evaporation"
+      ],
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "One basin is currently used for drying and storing vacuum truck cleanings collected from maintenance operations"
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "the other is not in use"
     },
     {
       "Equipment": null,
@@ -234,7 +273,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried solids are hauled off-site for disposal."
+      "Sentence": "Dried solids are hauled off-site for disposal"
     }
   ]
 }

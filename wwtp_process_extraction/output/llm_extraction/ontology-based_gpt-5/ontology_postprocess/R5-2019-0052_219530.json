@@ -1,6 +1,49 @@
 {
   "items": [
     {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The treatment system at the Facility consists of a headworks distribution box",
+      "trigger_process": []
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Aeration is achieved using a 5-horsepower vertical aerator",
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
+    },
+    {
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection",
+        "Dechlorination"
+      ],
+      "Role": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "chlorination with liquid chlorine, and dechlorination",
+      "trigger_process": [
+        "Chlorination",
+        "Dechlorination"
+      ]
+    },
+    {
       "Equipment": "Pond",
       "Process": [
         "Evaporation"
@@ -19,38 +62,7 @@
     {
       "Equipment": null,
       "Process": [
-        "Aeration"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Aeration is achieved using a 5-horsepower vertical aerator, which is operated on a timer.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection",
-        "Dechlorination"
-      ],
-      "Role": null,
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "chlorination with liquid chlorine, and dechlorination.",
-      "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -60,9 +72,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Biosolids are collected from all ponds as needed to maintain the Facility operation and allowed to dry on site.",
+      "Sentence": "Biosolids are collected from all ponds as needed to maintain the Facility operation and allowed to dry on site",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -73,18 +85,16 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried biosolids are sampled and used on site or hauled to a permitted landfill.",
+      "Sentence": "Dried biosolids are sampled and used on site or hauled to a permitted landfill",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
         "Aeration"
       ],
@@ -92,8 +102,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Facility upgrades to line ponds and improve aeration",
-      "trigger_process": []
+      "Sentence": "alternatives to be considered in the PER include Facility upgrades to line ponds and improve aeration",
+      "trigger_process": [
+        "Aerated Lagoon"
+      ]
     }
   ]
 }

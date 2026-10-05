@@ -5,9 +5,7 @@
       "Process": [
         "Screening"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -21,9 +19,7 @@
       "Process": [
         "Sedimentation"
       ],
-      "Role": [
-        "Pretreatment"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -53,9 +49,7 @@
       "Process": [
         "ActivatedSludge"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -129,7 +123,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Equalization"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -161,7 +156,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -173,7 +168,7 @@
       "Location": "on-site",
       "Sentence": "then dewatered using storage basins",
       "trigger_process": [
-        "Drying"
+        "Mechanical Dewatering"
       ]
     },
     {
@@ -187,15 +182,36 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried biosolids are hauled to a landfill",
+      "Sentence": "Dried biosolids are hauled to a landfill.",
       "trigger_process": [
         "Biosolids Landfill"
       ]
     },
     {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge",
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Secondary",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "retrofitting the existing aeration basins to provide nitrification and denitrification",
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification"
+      ]
+    },
+    {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": null,
       "Substance": null,
@@ -207,24 +223,16 @@
       ]
     },
     {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Nitrification",
-        "Denitrification"
-      ],
+      "Equipment": "Pump",
+      "Process": null,
       "Role": [
-        "NitrogenRemoval"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "retrofitting the existing aeration basins to provide nitrification and denitrification",
-      "trigger_process": [
-        "AO (anoxic/oxic)",
-        "Denitrification",
-        "Nitrification"
-      ]
+      "Sentence": "replace the current influent pump station for larger capacity during wet weather flows",
+      "trigger_process": []
     }
   ]
 }

@@ -5,11 +5,13 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "wastewater passes through a hydrosieve static screen and distribution box.",
+      "Sentence": "At the treatment plant wastewater passes through a hydrosieve static screen and distribution box.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -19,7 +21,9 @@
       "Process": [
         "Comminution"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -29,12 +33,25 @@
       ]
     },
     {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "it is pumped through an 8-inch force main, to the treatment plant.",
+      "trigger_process": []
+    },
+    {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
         "Aeration"
       ],
       "Role": [
+        "Secondary",
         "Aerobic"
       ],
       "Substance": null,
@@ -69,7 +86,9 @@
       "Role": [
         "Recirculation"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Return activated sludge (RAS) is pumped back to the oxidation ditch",
@@ -83,10 +102,12 @@
       "Role": [
         "Recirculation"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarifier scum is pumped back to the hydrosieve.",
+      "Sentence": "and clarifier scum is pumped back to the hydrosieve.",
       "trigger_process": []
     },
     {
@@ -105,10 +126,12 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Digestion"
+      ],
       "Role": [
-        "Storage",
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -118,25 +141,14 @@
       "Sentence": "Waste Activated Sludge (WAS) is pumped to an HDPE lined facultative sludge lagoon.",
       "trigger_process": [
         "Biosolids Lagoon",
-        "Unspecified Lagoon"
+        "Stabilization Pond",
+        "Unspecified Digestion"
       ]
     },
     {
-      "Equipment": "Pump",
+      "Equipment": "Pond",
       "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge lagoon supernatant is sent to unlined Pond 8.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -146,9 +158,11 @@
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "Four sludge drying beds were originally installed to dry WAS from the secondary clarifier. However, these are no longer utilized due to inadequate drying area and too short of a drying season.",
+      "Sentence": "From 2014-2016, due to excess buildup of solids in the sludge lagoon, sludge was removed each summer and placed in available evaporation/percolation ponds for drying.",
       "trigger_process": [
-        "Drying"
+        "Air Drying",
+        "Biosolids Lagoon",
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -170,16 +184,22 @@
       ]
     },
     {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
       ],
-      "Substance": null,
-      "Implementation": "present",
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The Main Lift Station consists of three pumps.",
-      "trigger_process": []
+      "Sentence": "Four sludge drying beds were originally installed to dry WAS from the secondary clarifier. However, these are no longer utilized...",
+      "trigger_process": [
+        "Air Drying"
+      ]
     }
   ]
 }

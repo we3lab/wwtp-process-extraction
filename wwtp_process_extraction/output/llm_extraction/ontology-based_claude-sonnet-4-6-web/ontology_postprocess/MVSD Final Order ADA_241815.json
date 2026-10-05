@@ -11,7 +11,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -29,7 +47,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
+      "Sentence": "screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -47,7 +65,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)...",
+      "Sentence": "screening, primary clarification, trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -64,9 +82,7 @@
         "Secondary",
         "NitrogenRemoval"
       ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "ammonia removal nitrification (accomplished in a bio-tower)",
@@ -89,7 +105,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "trickling filtration, ammonia removal nitrification (accomplished in a bio-tower), secondary sedimentation, sand filtration...",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -97,9 +113,9 @@
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -107,7 +123,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "secondary sedimentation, sand filtration, and ultraviolet light (UV) disinfection",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
@@ -125,134 +141,11 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...sand filtration, and ultraviolet light (UV) disinfection.",
+      "Sentence": "sand filtration, and ultraviolet light (UV) disinfection",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
         "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "NutrientRemoval",
-        "NitrogenRemoval"
-      ],
-      "Substance": [
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for \"polishing\" treatment to remove ammonia and other pollutants before being discharged to Peyton Slough.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Unspecified Nutrient Removal",
-        "Wetland"
-      ]
-    },
-    {
-      "Equipment": "GravityThickener",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
-      "Source": "both",
-      "Website": "https://www.mvsd.org/process",
-      "trigger_process": [
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Anaerobic Digestion"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge...",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
-      "Source": "permit_text",
-      "Website": null,
-      "trigger_process": [
-        "Biosolids Landfill"
       ]
     },
     {
@@ -274,9 +167,149 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "Wetland",
       "Process": [
-        "Centrifugation"
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "Posttreatment",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for 'polishing' treatment to remove ammonia and other pollutants before being discharged to Peyton Slough.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification",
+        "Wetland"
+      ]
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": [
+        "Nitrification",
+        "Denitrification"
+      ],
+      "Role": [
+        "NutrientRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Denitrification",
+        "Nitrification",
+        "Wetland"
+      ]
+    },
+    {
+      "Equipment": "Thickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Thickening"
+      ]
+    },
+    {
+      "Equipment": "AnaerobicDigester",
+      "Process": [
+        "AnaerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge is thickened, anaerobically digested, dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Source": "both",
+      "Website": "https://www.mvsd.org/wastewater-treatment",
+      "trigger_process": [
+        "Anaerobic Digestion"
+      ]
+    },
+    {
+      "Equipment": "Boiler",
+      "Process": [
+        "Combustion"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "methane gas is recovered to heat the digester",
+      "Source": "web_search",
+      "Website": "https://www.mvsd.org/wastewater-treatment",
+      "trigger_process": []
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "pHAdjustment"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "modified its standard operating procedure to now add alkalinity (as sodium bicarbonate) when the biosolids centrifuge is run more than four hours per day",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Neutralization"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill",
+      "Source": "permit_text",
+      "Website": null,
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -295,39 +328,43 @@
       ]
     },
     {
-      "Equipment": "Screen",
+      "Equipment": "DewateringUnit",
       "Process": [
-        "Screening"
+        "AirDrying"
       ],
       "Role": [
-        "Pretreatment"
+        "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism.",
+      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill.",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Screening/Microstrainer"
+        "Air Drying"
       ]
     },
     {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "Posttreatment",
-        "NutrientRemoval"
+      "Equipment": null,
+      "Process": [
+        "Landfill"
       ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Nutrient Removal in Moorhen Marsh: The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill",
       "Source": "permit_text",
       "Website": null,
       "trigger_process": [
-        "Unspecified Nutrient Removal",
-        "Wetland"
+        "Biosolids Landfill"
       ]
     }
   ]

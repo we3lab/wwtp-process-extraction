@@ -13,7 +13,24 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility is an extended aeration, activated sludge system comprised of two oxidation ditches, two clarifiers, chlorine contact chamber, and sulfur dioxide dechlorination."
+      "Sentence": "The Facility is an extended aeration, activated sludge system comprised of two oxidation ditches..."
+    },
+    {
+      "Equipment": "OxidationDitch",
+      "Process": [
+        "Denitrification"
+      ],
+      "Role": [
+        "Anoxic",
+        "NitrogenRemoval",
+        "NutrientRemoval"
+      ],
+      "Substance": [
+        "Constituent-Nitrate"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "investigating converting sections of the oxidation ditches into anoxic denitrification zones in order to remove nitrate from the effluent"
     },
     {
       "Equipment": "SedimentationTank",
@@ -26,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility is an extended aeration, activated sludge system comprised of two oxidation ditches, two clarifiers, chlorine contact chamber, and sulfur dioxide dechlorination."
+      "Sentence": "comprised of two oxidation ditches, two clarifiers"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -43,40 +60,44 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility currently uses chlorine gas and sulfur dioxide gas for chlorination and dechlorination."
+      "Sentence": "chlorine contact chamber"
     },
     {
-      "Equipment": null,
+      "Equipment": "ChlorinationUnit",
+      "Process": [
+        "Chlorination",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "then chlorinated downstream of the clearwell prior to discharging"
+    },
+    {
+      "Equipment": "ChlorinationUnit",
       "Process": [
         "Dechlorination"
       ],
       "Role": [
-        "Posttreatment",
-        "Tertiary"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility is an extended aeration, activated sludge system comprised of two oxidation ditches, two clarifiers, chlorine contact chamber, and sulfur dioxide dechlorination."
+      "Sentence": "sulfur dioxide dechlorination"
     },
     {
       "Equipment": "MediaFiltrationUnit",
       "Process": [
+        "Coagulation",
         "MediaFiltration",
         "Backwashing"
-      ],
-      "Role": [
-        "Tertiary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "filtration through either of two continuous backwash up-flow silica sand media filters."
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Coagulation"
       ],
       "Role": [
         "Tertiary"
@@ -86,7 +107,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfected wastewater from the chlorine contact chamber is dosed with a polymer for coagulation"
+      "Sentence": "dosed with a polymer for coagulation then routed to the filter building for filtration through either of two continuous backwash up-flow silica sand media filters"
     },
     {
       "Equipment": "Tank",
@@ -100,35 +121,6 @@
       "Sentence": "Filtered wastewater is stored in the building clearwell"
     },
     {
-      "Equipment": "ChlorinationUnit",
-      "Process": [
-        "Chlorination",
-        "Disinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": [
-        "Disinfectant-Chlorine"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "and then chlorinated downstream of the clearwell"
-    },
-    {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "discharging the 3,500 lineal feet to the golf course irrigation storage pond (90,000 gallons)."
-    },
-    {
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering",
@@ -139,36 +131,19 @@
         "Stabilization"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Fluid-Sludge",
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested stabilized sludge is dewatered using a proprietary 12-bag sludge drying unit."
-    },
-    {
-      "Equipment": "Filter",
-      "Process": [
-        "Filtration"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Flocculant-Polymer",
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge from the clarifiers is mixed with a polymer and placed in filter bags that allow the liquid to escape while retaining the solids."
+      "Sentence": "Digested stabilized sludge is dewatered using a proprietary 12-bag sludge drying unit. Sludge from the clarifiers is mixed with a polymer and placed in filter bags"
     },
     {
       "Equipment": null,
       "Process": [
         "Recirculation"
       ],
-      "Role": [
-        "Secondary"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -180,13 +155,14 @@
         "Landfill"
       ],
       "Role": [
-        "SolidsHandling",
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dried sludge is taken to the Humboldt County solid waste transfer station for landfill disposal."
+      "Sentence": "dried sludge is taken to the Humboldt County solid waste transfer station for landfill disposal"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -195,7 +171,6 @@
         "Dechlorination"
       ],
       "Role": [
-        "Tertiary",
         "Posttreatment"
       ],
       "Substance": [
@@ -203,21 +178,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "investigating converting from gaseous chlorination and dechlorination to a liquid or tablet system."
-    },
-    {
-      "Equipment": "OxidationDitch",
-      "Process": [
-        "Denitrification"
-      ],
-      "Role": [
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Permittee is also investigating the possibility of converting sections of the oxidation ditches into anoxic denitrification zones in order to remove nitrate from the effluent"
+      "Sentence": "investigating converting from gaseous chlorination and dechlorination to a liquid or tablet system"
     }
   ]
 }

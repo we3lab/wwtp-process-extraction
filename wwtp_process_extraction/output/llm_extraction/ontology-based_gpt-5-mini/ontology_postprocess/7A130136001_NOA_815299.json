@@ -16,19 +16,19 @@
       "Equipment": "MixingBasin",
       "Process": [
         "Mixing",
-        "Denitrification",
-        "Recirculation"
+        "Denitrification"
       ],
       "Role": [
         "Equalization",
-        "Anoxic"
+        "Anoxic",
+        "NitrogenRemoval"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "In the equalization tank wastewater is mixed with return activated sludge under anoxic conditions to encourage denitrification.",
+      "Sentence": "wastewater is mixed with return activated sludge under anoxic conditions to encourage denitrification",
       "trigger_process": [
         "Denitrification",
         "Equalization",
@@ -38,20 +38,23 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "Aeration",
         "ActivatedSludge",
         "Nitrification"
       ],
       "Role": [
         "Secondary",
         "Aerobic",
+        "Extended",
         "NitrogenRemoval"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "transferred via an airlift pipe into a 15,592-gallon extended aeration tank, where nitrification takes place.",
+      "Sentence": "transferred via an airlift pipe into a 15,592-gallon extended aeration tank, where nitrification takes place",
       "trigger_process": [
+        "Extended Aeration",
         "Nitrification",
         "Unspecified Nutrient Removal"
       ]
@@ -64,23 +67,23 @@
       ],
       "Role": [
         "Secondary",
-        "Recirculation"
+        "SolidsHandling"
       ],
       "Substance": [
-        "Sludge-MixedLiquor",
-        "Constituent-SuspendedSolids"
+        "Constituent-SuspendedSolids",
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "flows into a 3,758-gallon circular secondary clarifier, where the mixed liquor's suspended solids are settled and recirculated back to the flow equalization tank.",
+      "Sentence": "flows into a 3,758-gallon circular secondary clarifier, where the mixed liquor's suspended solids are settled and recirculated back to the flow equalization tank",
       "trigger_process": [
         "Secondary Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -96,8 +99,7 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
         "Tertiary",
@@ -112,22 +114,21 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "biosolids from the wastewater are dried in drying beds prior to disposal.",
+      "Sentence": "biosolids from the wastewater are dried in drying beds prior to disposal",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -136,13 +137,12 @@
         "Evaporation"
       ],
       "Role": [
-        "Posttreatment",
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated wastewater effluent is then finally discharged to one of three evaporation/percolation ponds located south of the campus.",
+      "Sentence": "Treated wastewater effluent is then finally discharged to one of three evaporation/percolation ponds located south of the campus",
       "trigger_process": [
         "Evaporation Pond"
       ]

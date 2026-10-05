@@ -3,43 +3,38 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "BiologicalProcess"
       ],
       "Role": [
         "Primary",
         "Equalization"
       ],
       "Substance": [
-        "Constituent-SuspendedSolids"
+        "Constituent-SuspendedSolids",
+        "Constituent-OrganicCarbon"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "one of the original 2.4-acre lagoons was retrofitted to a primary oxidation pond and used as an equalization basin prior to entry into the Clemson system"
-    },
-    {
-      "Equipment": "Grinder",
-      "Process": [
-        "Comminution"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The current treatment system consists of flow equalization, grinding, oxidation pond treatments,"
+      "Sentence": "one of the original 2.4-acre lagoons was retrofitted to a primary oxidation pond and used as an equalization basin"
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Aeration",
-        "BiologicalProcess"
+        "BiologicalProcess",
+        "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic",
+        "Anoxic"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The oxidation pond treatment utilizes a Clemson aerated pond system consisting of five ponds with surface aerators"
+      "Sentence": "Removal and stabilization of organic matter takes place in the reaction basins, Clemson Ponds #1 and #2, through biological oxidation and reduction reactions that generate biomass."
     },
     {
       "Equipment": "Pond",
@@ -50,11 +45,24 @@
         "Secondary"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "The biomass is then separated by gravity sedimentation in the last 3 ponds, Ponds #3, #4, and #5."
+    },
+    {
+      "Equipment": "Grinder",
+      "Process": [
+        "Comminution"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The current treatment system consists of flow equalization, grinding, oxidation pond treatments"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -80,12 +88,23 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility maintains two UV disinfection units, reserving one unit as a back-up unit."
+      "Sentence": "and disinfected via UV light. The Facility maintains two UV disinfection units"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The wastewater collection system contains one lift station at the headworks of the wastewater treatment plant."
     },
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -100,9 +119,11 @@
     {
       "Equipment": "MembraneBioreactor",
       "Process": [
-        "MembraneProcess"
+        "Biofiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
@@ -113,11 +134,39 @@
       "Process": [
         "Aeration"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The septic receiving station waste will be discharged into 2 of 5 Clemson ponds where it will receive treatment via floating mechanical aerators"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The effluent from the oxidation pond will fill a new lift station where it is pumped to the MBR treatment system."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The remaining 3 of 5 Clemson ponds will be used for sludge dewatering."
     }
   ]
 }

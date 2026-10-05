@@ -57,11 +57,10 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary",
         "Equalization",
+        "Secondary",
         "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Anoxic"
       ],
       "Substance": [
         "Sludge-MixedLiquor",
@@ -69,9 +68,8 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The facility uses a sequencing batch reactor performing activated sludge secondary treatment. There are three seperate reactors working is sequence performing equalization, biological treatment, and secondary clarification.",
+      "Sentence": "The facility uses a sequencing batch reactor performing activated sludge secondary treatment.",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
         "Equalization",
         "SBR",
@@ -98,42 +96,39 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
-        "Dewatering"
+        "Dewatering",
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge",
-        "Flocculant-Polymer",
-        "Constituent-Solids"
+        "Flocculant-Polymer"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Approximately 150,000 gallons of digestate is dewatered three days a week primarily on a three belt two meter Ashbrook Belt Filter Press. A cationic polymer is added to the digestate onto the belt press.",
+      "Sentence": "Approximately 150,000 gallons of digestate is dewatered three days a week primarily on a three belt two meter Ashbrook Belt Filter Press.",
       "trigger_process": [
         "Mechanical Dewatering",
         "Polymer Addition"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "Recirculation"
       ],
       "Role": [
-        "SolidsHandling"
+        "Drain"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "2. Drying Beds",
-      "trigger_process": [
-        "Drying"
-      ]
+      "Sentence": "Filtrate is captured under the press and drains back to the facility influent sump pit.",
+      "trigger_process": []
     },
     {
       "Equipment": "Pond",
@@ -141,13 +136,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Posttreatment",
-        "Storage"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated effluent is discharged into a 1-acre-foot lined polishing pond",
+      "Sentence": "Treated effluent is discharged into a 1-acre-foot lined polishing pond...",
       "trigger_process": [
         "Unspecified Clarification",
         "Unspecified Lagoon"
@@ -155,16 +149,36 @@
     },
     {
       "Equipment": "Pond",
-      "Process": null,
+      "Process": [
+        "Evaporation"
+      ],
       "Role": [
         "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then flows into one of two percolation basins.",
+      "Sentence": "8. Evaporation/Percolation Pond #2",
       "trigger_process": [
-        "Unspecified Lagoon"
+        "Evaporation Pond"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "2. Drying Beds",
+      "trigger_process": [
+        "Air Drying"
       ]
     },
     {
@@ -175,10 +189,12 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The cake is loaded into roll off bins and is trucked to Engel and Gray in Santa Maria where it is composted",
+      "Sentence": "The cake is loaded into roll off bins and is trucked to Engel and Gray in Santa Maria where it is composted and repurposed as fertilizer.",
       "trigger_process": [
         "Composting"
       ]

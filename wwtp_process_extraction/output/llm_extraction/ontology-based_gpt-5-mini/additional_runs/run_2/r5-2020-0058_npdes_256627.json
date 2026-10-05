@@ -11,17 +11,17 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "bar screening;"
+      "Sentence": "The treatment system at the Facility consists of bar screening;"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "BiologicalProcess",
         "Nitrification",
         "Denitrification"
       ],
       "Role": [
         "Secondary",
+        "NutrientRemoval",
         "NitrogenRemoval",
         "Aerobic",
         "Anoxic"
@@ -71,11 +71,11 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection",
-        "Disinfection"
+        "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -83,7 +83,7 @@
       "Sentence": "ultraviolet light (UV) disinfection."
     },
     {
-      "Equipment": "Reservoir",
+      "Equipment": "Pond",
       "Process": null,
       "Role": [
         "Storage",
@@ -101,6 +101,24 @@
       ],
       "Role": [
         "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge processing consists of aerobic digestion and sludge storage basins."
+    },
+    {
+      "Equipment": "Tank",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage",
         "Stabilization"
       ],
       "Substance": [
@@ -108,35 +126,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge processing consists of aerobic digestion..."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "serve as drying beds during the warm summer months."
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "Stabilization",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "sludge storage basins provide storage for stabilized solids during wet weather periods;"
+      "Sentence": "The sludge storage basins provide storage for stabilized solids during wet weather periods and serve as drying beds during the warm summer months."
     },
     {
       "Equipment": null,
@@ -144,14 +134,12 @@
         "Landfill"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Dried sludge is hauled to the West Central landfill... for disposal."
+      "Sentence": "Dried sludge is hauled to the West Central landfill, operated by the City of Redding, for disposal."
     }
   ]
 }

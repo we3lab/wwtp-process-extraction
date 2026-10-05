@@ -6,12 +6,12 @@
         "Screening"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "the plant's existing secondary treatment: screening, grit removal..."
     },
     {
       "Equipment": "GritChamber",
@@ -19,12 +19,12 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "the plant's existing secondary treatment: screening, grit removal..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -37,24 +37,25 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "the plant's existing secondary treatment: ...primary sedimentation..."
     },
     {
       "Equipment": "Tank",
       "Process": null,
       "Role": [
         "Equalization",
-        "Secondary"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: screening, grit removal, primary sedimentation, flow equalization, trickling filtration, activated sludge aeration, secondary clarification, and chlorine disinfection."
+      "Sentence": "the plant's existing secondary treatment: ...flow equalization..."
     },
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
+        "TricklingFiltration",
+        "Biofiltration"
       ],
       "Role": [
         "Secondary"
@@ -62,7 +63,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: ... trickling filtration ..."
+      "Sentence": "the plant's existing secondary treatment: ...trickling filtration..."
     },
     {
       "Equipment": "AerationBasin",
@@ -71,12 +72,13 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: ... activated sludge aeration ..."
+      "Sentence": "the plant's existing secondary treatment: ...activated sludge aeration..."
     },
     {
       "Equipment": "SedimentationTank",
@@ -89,7 +91,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: ... secondary clarification ..."
+      "Sentence": "the plant's existing secondary treatment: ...secondary clarification..."
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -98,41 +100,41 @@
         "Disinfection"
       ],
       "Role": [
-        "Secondary"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process will start with the plant’s existing secondary treatment: ... and chlorine disinfection."
+      "Sentence": "the plant's existing secondary treatment: ...and chlorine disinfection."
     },
     {
       "Equipment": null,
       "Process": [
         "Dechlorination"
       ],
-      "Role": [
-        "NitrogenRemoval"
-      ],
+      "Role": null,
       "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "To improve nitrogen removal, the remaining wastewater (0.95 MGD), regulated by this Order, will be dechlorinated and routed through an enclosed nitrification system..."
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "up to 90 percent of the treated wastewater will be routed to the EBDA pipeline for dechlorination and subsequent discharge through a deepwater outfall"
     },
     {
       "Equipment": "MembraneAeratedBiofilmReaactor",
       "Process": [
         "Nitrification",
-        "Aeration"
+        "Aeration",
+        "Biofiltration"
       ],
       "Role": [
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "To improve nitrogen removal, the remaining wastewater (0.95 MGD), regulated by this Order, will be dechlorinated and routed through an enclosed nitrification system, consisting of membrane aerated biofilm reactors, with an expected nitrification efficiency of at least 75 percent."
+      "Sentence": "will be dechlorinated and routed through an enclosed nitrification system, consisting of membrane aerated biofilm reactors"
     },
     {
       "Equipment": "Reactor",
@@ -141,12 +143,13 @@
       ],
       "Role": [
         "Anoxic",
-        "NitrogenRemoval"
+        "NitrogenRemoval",
+        "NutrientRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The nitrified wastewater will then be distributed to the top of terraced denitrification bioreactors, consisting of a series of woodchip-filled crates underneath vegetated slopes that will provide a carbon-rich anoxic zone suitable for denitrification."
+      "Sentence": "distributed to the top of terraced denitrification bioreactors ... provide a carbon-rich anoxic zone suitable for denitrification"
     },
     {
       "Equipment": "Wetland",
@@ -154,12 +157,15 @@
         "Denitrification"
       ],
       "Role": [
-        "NitrogenRemoval"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-Organics"
+      ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The wastewater will trickle downward into a shallow (approximately 24 inches deep), 6.9-acre, lined and mostly unvegetated open-water wetland that will allow photolysis ... The wetland will also provide additional denitrification ..."
+      "Sentence": "a shallow ... open-water wetland that will allow photolysis (light-induced decomposition) of trace organic contaminants ... The wetland will also provide additional denitrification"
     },
     {
       "Equipment": "AnaerobicDigester",
@@ -167,20 +173,21 @@
         "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is anaerobically digested, dewatered using a belt filter press, and air dried."
+      "Sentence": "Sludge is anaerobically digested"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering",
-        "Drying"
+        "Filtration"
       ],
       "Role": [
         "SolidsHandling"
@@ -190,7 +197,37 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is anaerobically digested, dewatered using a belt filter press, and air dried."
+      "Sentence": "dewatered using a belt filter press"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "and air dried"
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauls dried biosolids to an authorized disposal site or applies the biosolids to land as Class A Exceptional Quality biosolids"
     },
     {
       "Equipment": null,
@@ -200,8 +237,8 @@
       "Role": null,
       "Substance": null,
       "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "After this point, up to 90 percent of the treated wastewater will be routed to the EBDA pipeline for dechlorination and subsequent discharge through a deepwater outfall into Lower San Francisco Bay."
+      "Location": "on-site",
+      "Sentence": "plans to install a dechlorination system and enclosed nitrification system, consisting of membrane aerated biofilm reactors"
     }
   ]
 }

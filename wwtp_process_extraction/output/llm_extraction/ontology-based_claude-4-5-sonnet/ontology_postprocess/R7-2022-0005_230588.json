@@ -32,7 +32,7 @@
       ]
     },
     {
-      "Equipment": "Tank",
+      "Equipment": "MixingBasin",
       "Process": [
         "Mixing"
       ],
@@ -44,7 +44,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater is then mixed with activated sludge in the mixed liquor structure...",
+      "Sentence": "Wastewater is then mixed with activated sludge in the mixed liquor structure",
       "trigger_process": []
     },
     {
@@ -60,7 +60,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...it is subsequently directed to a 170 feet (ft) x 124 ft Biolac\u00ae aeration basin where air is once again introduced into the sewage water.",
+      "Sentence": "it is subsequently directed to a 170 feet (ft) x 124 ft Biolac\u00ae aeration basin where air is once again introduced into the sewage water.",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -68,7 +68,8 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Separation"
       ],
       "Role": [
         "Secondary"
@@ -84,6 +85,7 @@
     {
       "Equipment": "RotaryDrumThickener",
       "Process": [
+        "Thickening",
         "Filtration"
       ],
       "Role": [
@@ -94,7 +96,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge collected from the secondary clarifiers is dewatered at a rotary drum thickener...",
+      "Sentence": "Sludge collected from the secondary clarifiers is dewatered at a rotary drum thickener",
       "trigger_process": [
         "Thickening"
       ]
@@ -102,7 +104,7 @@
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -112,39 +114,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "...then pumped to six (6) sludge drying beds (three (3) sludge beds measuring 70 ft x 38 ft and three (3) more measuring 92 ft x 40 ft). The sludge drying beds are equipped with sand filters and perforated underdrains.",
+      "Sentence": "then pumped to six (6) sludge drying beds (three (3) sludge beds measuring 70 ft x 38 ft and three (3) more measuring 92 ft x 40 ft). The sludge drying beds are equipped with sand filters and perforated underdrains.",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Leachate collected from the drying beds is pumped back to the headworks for reprocessing.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "BiosolidsDisposal"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "After drying, the sludge is hauled away to a farm in Arizona.",
-      "trigger_process": [
-        "Unspecified Disposal"
+        "Air Drying"
       ]
     },
     {
@@ -179,6 +151,24 @@
       "Sentence": "The wastewater from the secondary clarifiers flows through a ultraviolet (UV) disinfection system and an effluent flow metering system before being discharged to the Pear Drain.",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "BiosolidsDisposal"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "After drying, the sludge is hauled away to a farm in Arizona.",
+      "trigger_process": [
+        "Unspecified Disposal"
       ]
     }
   ]

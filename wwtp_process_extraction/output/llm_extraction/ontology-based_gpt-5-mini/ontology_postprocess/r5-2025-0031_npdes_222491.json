@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of bar screening, grit removal, and grinders.",
+      "Sentence": "Preliminary treatment consists of bar screening",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of bar screening, grit removal, and grinders.",
+      "Sentence": "Preliminary treatment consists of ... grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Preliminary treatment consists of bar screening, grit removal, and grinders.",
+      "Sentence": "Preliminary treatment consists of ... grinders.",
       "trigger_process": [
         "Comminution"
       ]
@@ -73,7 +73,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by a 125,000-gallon flow equalization basin.",
+      "Sentence": "followed by a 125,000-gallon flow equalization basin",
       "trigger_process": [
         "Equalization"
       ]
@@ -81,15 +81,14 @@
     {
       "Equipment": "AerationBasin",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
         "Secondary",
         "Aerobic"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Secondary treatment consists of activated sludge (three 125,000-gallon aeration tanks)",
@@ -108,7 +107,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "secondary clarification (two 50-foot diameter clarifiers).",
+      "Sentence": "and secondary clarification (two 50-foot diameter clarifiers)",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -124,7 +123,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration.",
+      "Sentence": "Tertiary treatment consists of coagulation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -141,7 +140,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration.",
+      "Sentence": "Tertiary treatment consists of ... flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -157,15 +156,15 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration.",
+      "Sentence": "Tertiary treatment consists of ... tube settling",
       "trigger_process": [
         "Unspecified Clarification"
       ]
     },
     {
-      "Equipment": "MediaFiltrationUnit",
+      "Equipment": "RapidSandFilter",
       "Process": [
-        "MediaFiltration"
+        "RapidSandFiltration"
       ],
       "Role": [
         "Tertiary"
@@ -173,7 +172,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Tertiary treatment consists of coagulation, flocculation, tube settling, and sand filtration.",
+      "Sentence": "Tertiary treatment consists of ... sand filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -184,51 +183,90 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Disinfection"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The tertiary-treated effluent is then disinfected by ultraviolet light.",
+      "Sentence": "The tertiary-treated effluent is then disinfected by ultraviolet light",
       "trigger_process": [
         "UV Disinfection"
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Drying"
-      ],
+      "Equipment": "Tank",
+      "Process": null,
       "Role": [
-        "SolidsHandling",
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Dried biosolids are stored onsite at the location(s) identified in Attachment C",
-      "trigger_process": [
-        "Drying"
-      ]
+      "Sentence": "Dried biosolids are stored onsite",
+      "trigger_process": []
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal"
+        "Composting"
       ],
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dried biosolids ... are hauled off-site by Liberty Composting Inc.",
+      "Sentence": "are hauled off-site by Liberty Composting Inc.",
       "trigger_process": [
-        "Unspecified Disposal"
+        "Composting"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include new preliminary treatment",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Equalization"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include ... flow equalization",
+      "trigger_process": [
+        "Equalization"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The upgrades include ... secondary treatment",
+      "trigger_process": [
+        "Unspecified AS"
       ]
     },
     {
@@ -237,16 +275,32 @@
         "Denitrification"
       ],
       "Role": [
-        "NitrogenRemoval",
-        "NutrientRemoval"
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Once the upgrades are complete, the Facility will be capable of denitrification.",
+      "Sentence": "Once the upgrades are complete, the Facility will be capable of denitrification",
       "trigger_process": [
         "Denitrification",
         "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary",
+        "Disinfection"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The existing tertiary treatment and UV disinfection will be upgraded",
+      "trigger_process": [
+        "UV Disinfection"
       ]
     },
     {
@@ -256,11 +310,10 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The Discharger also plans to add a new aerobic sludge digestion system",
@@ -276,12 +329,10 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "and sludge dewatering screw press.",
+      "Sentence": "and sludge dewatering screw press",
       "trigger_process": [
         "Mechanical Dewatering"
       ]

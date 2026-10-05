@@ -17,36 +17,6 @@
       ]
     },
     {
-      "Equipment": null,
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "A conveyor removes, washes, and dewaters the collected solids",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater then enters a wet well for the influent pumps",
-      "trigger_process": []
-    },
-    {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
@@ -55,7 +25,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the headworks, the wastewater is pumped to a primary clarifier",
+      "Sentence": "wastewater then enters a wet well for the influent pumps",
       "trigger_process": []
     },
     {
@@ -69,7 +39,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "From the headworks, the wastewater is pumped to a primary clarifier",
+      "Sentence": "the primary clarifier reduces the concentration of settleable solids",
       "trigger_process": [
         "Primary Clarification"
       ]
@@ -81,12 +51,11 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
-        "Stabilization"
+        "Stabilization",
+        "Anaerobic"
       ],
       "Substance": [
-        "Fluid-Sludge",
-        "Constituent-Bacteria"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
@@ -99,10 +68,11 @@
       "Equipment": "DewateringUnit",
       "Process": [
         "Dewatering",
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -111,25 +81,7 @@
       "Location": "on-site",
       "Sentence": "Treated sludge is dried in 32 cement lined drying beds",
       "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Landfill"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "off-site",
-      "Location": "off-site",
-      "Sentence": "then disposed of every three years at the Ostrom Road Landfill",
-      "trigger_process": [
-        "Biosolids Landfill"
+        "Air Drying"
       ]
     },
     {
@@ -144,7 +96,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to trickling filters to remove organic matter...The filters are aerobic attached-growth, biological treatment processes",
+      "Sentence": "pumped to trickling filters to remove organic matter ... The filters are aerobic attached-growth, biological treatment processes",
       "trigger_process": [
         "Trickling Filter"
       ]
@@ -162,7 +114,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The secondary clarifier removes settleable solids...The solids are removed from the clarifier and returned to the influent sewer main upstream of the headworks",
+      "Sentence": "The secondary clarifier removes settleable solids (sludge) that have sloughed off from the trickling filters ... The solids are removed from the clarifier and returned to the influent sewer main upstream of the headworks",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -181,7 +133,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The chlorine contact basin... Sodium hypochlorite is used as the disinfecting agent",
+      "Sentence": "The chlorine contact basin... Sodium hypochlorite is used as the disinfecting agent to kill pathogenic bacteria",
       "trigger_process": [
         "Chlorination"
       ]
@@ -209,7 +161,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Pond 4 is unlined...Treated effluent is stored in this pond prior to being pumped to the A-Street Pond",
+      "Sentence": "Pond 4 is unlined... Treated effluent is stored in this pond prior to being pumped to the A-Street Pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -223,7 +175,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The A-Street Pond is a small unlined holding pond",
+      "Sentence": "Treated effluent is stored in this pond prior to being pumped to the A-Street Pond at the golf course",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -239,7 +191,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Irrigation Field #1...is used to dispose treated wastewater",
+      "Sentence": "The wastewater from the A-Street pond is used to irrigate the 120-acre on-base, restricted access golf course; Irrigation Field #1 is used to dispose treated wastewater",
       "trigger_process": [
         "Land Application"
       ]
@@ -255,7 +207,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Construction of an additional irrigation field (Irrigation Field #2) was completed...but has not yet received wastewater",
+      "Sentence": "Construction of an additional irrigation field (Irrigation Field #2) was completed in September 2011 but has not yet received wastewater",
       "trigger_process": [
         "Land Application"
       ]

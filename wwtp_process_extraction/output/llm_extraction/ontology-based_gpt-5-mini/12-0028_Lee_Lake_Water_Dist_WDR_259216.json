@@ -5,69 +5,78 @@
       "Process": [
         "Screening"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "screening"
+      "Location": "on-site",
+      "Sentence": "The wastewater treatment process consists of screening, grit removal,"
     },
     {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "grit removal"
+      "Location": "on-site",
+      "Sentence": "The wastewater treatment process consists of screening, grit removal,"
     },
     {
       "Equipment": "SequencingBatchReactor",
       "Process": [
-        "ActivatedSludge",
-        "Sedimentation"
+        "ActivatedSludge"
       ],
       "Role": [
         "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
+      "Location": "on-site",
       "Sentence": "seven sequencing batch reactors (activated sludge/secondary clarification)"
     },
     {
       "Equipment": "Tank",
-      "Process": null,
+      "Process": [
+        "Equalization"
+      ],
       "Role": [
         "Equalization"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "flow equalization"
+      "Location": "on-site",
+      "Sentence": "flow equalization,"
     },
     {
       "Equipment": "StaticMixer",
       "Process": [
         "Mixing"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "rapid mix"
+      "Location": "on-site",
+      "Sentence": "rapid mix/flocculation"
     },
     {
       "Equipment": "FlocculationBasin",
       "Process": [
         "Flocculation"
       ],
-      "Role": null,
+      "Role": [
+        "Pretreatment"
+      ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "flocculation"
+      "Location": "on-site",
+      "Sentence": "rapid mix/flocculation"
     },
     {
       "Equipment": "MediaFiltrationUnit",
@@ -79,22 +88,26 @@
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "filtration"
+      "Location": "on-site",
+      "Sentence": "filtration,"
     },
     {
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Dechlorination"
+        "Dechlorination",
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
-      "Substance": null,
+      "Substance": [
+        "Disinfectant-Chlorine"
+      ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "chlorination and dechlorination"
+      "Location": "on-site",
+      "Sentence": "chlorination and dechlorination."
     },
     {
       "Equipment": "AerobicDigester",
@@ -102,19 +115,22 @@
         "AerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "three aerobic digesters"
+      "Location": "on-site",
+      "Sentence": "Waste activated sludge is conveyed to three aerobic digesters and dewatered"
     },
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -123,13 +139,14 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Digested sludge is dewatered with a centrifuge"
+      "Location": "on-site",
+      "Sentence": "Digested sludge is dewatered with a centrifuge and the sludge cake"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -138,23 +155,8 @@
         "Fluid-Sludge"
       ],
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "on-site lined drying beds as a secondary method of dewatering"
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "Filtrate from the dewatering process is returned to the headworks"
+      "Location": "on-site",
+      "Sentence": "The Facility can also utilize on-site lined drying beds as a secondary method of dewatering."
     },
     {
       "Equipment": null,
@@ -162,14 +164,41 @@
         "Composting"
       ],
       "Role": [
-        "SolidsHandling"
+        "BiosolidsDisposal"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "sludge cake (Class B Biosolids) is delivered directly to a local composting facility"
+      "Sentence": "sludge cake (Class B Biosolids) is delivered directly to a local composting facility."
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "Recirculation"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Filtrate from the dewatering process is returned to the headworks of the treatment facility."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage",
+        "Retention"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Undisinfected secondary treated wastewater may be discharged to an unlined storage/percolation basin"
     }
   ]
 }

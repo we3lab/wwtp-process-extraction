@@ -3,8 +3,7 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation",
-        "Aeration"
+        "Sedimentation"
       ],
       "Role": [
         "Pretreatment"
@@ -12,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment process consists of aerated grit removal...",
+      "Sentence": "aerated grit removal",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -36,18 +35,22 @@
     {
       "Equipment": "SedimentationTank",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Thickening"
       ],
       "Role": [
         "Primary",
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "primary clarification",
+      "Sentence": "primary clarifier, which operates as an initial sludge thickener",
       "trigger_process": [
-        "Primary Clarification"
+        "Primary Clarification",
+        "Thickening"
       ]
     },
     {
@@ -126,7 +129,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation and flocculation",
+      "Sentence": "coagulation",
       "trigger_process": [
         "Coagulation",
         "Unspecified Chemical Addition"
@@ -143,7 +146,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "coagulation and flocculation",
+      "Sentence": "flocculation",
       "trigger_process": [
         "Flocculation"
       ]
@@ -175,7 +178,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "compressible media filtration (Fuzzy Filter)",
+      "Sentence": "compressible media filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -184,8 +187,7 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -195,29 +197,25 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "disinfection using sodium hypochlorite, and dechlorination with sodium bisulfite.",
+      "Sentence": "disinfection using sodium hypochlorite",
       "trigger_process": [
-        "Chlorination",
-        "Dechlorination"
+        "Chlorination"
       ]
     },
     {
-      "Equipment": "OzonationUnit",
+      "Equipment": null,
       "Process": [
-        "Ozonation",
-        "Disinfection"
+        "Dechlorination"
       ],
       "Role": [
         "Tertiary"
       ],
-      "Substance": [
-        "Disinfectant-Ozone"
-      ],
-      "Implementation": "future",
+      "Substance": null,
+      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Discharger may transition from chlorine disinfection to ozone disinfection",
+      "Sentence": "dechlorination with sodium bisulfite",
       "trigger_process": [
-        "Ozonation"
+        "Dechlorination"
       ]
     },
     {
@@ -229,7 +227,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "stored in a 3.8-million-gallon flow equalization pond for later treatment.",
+      "Sentence": "stored in a 3.8-million-gallon flow equalization pond for later treatment",
       "trigger_process": [
         "Equalization"
       ]
@@ -238,13 +236,12 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Storage",
-        "Posttreatment"
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Treated wastewater flows to a 2.7-million-gallon effluent storage pond prior to recycling or discharge to the Napa River.",
+      "Sentence": "Treated wastewater flows to a 2.7-million-gallon effluent storage pond",
       "trigger_process": [
         "Unspecified Lagoon"
       ]
@@ -262,7 +259,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The commingled sludge from these processes is then pumped to a Dissolved Air Flotation Thickener (DAFT)",
+      "Sentence": "pumped to a Dissolved Air Flotation Thickener (DAFT)",
       "trigger_process": [
         "Flotation",
         "Thickening"
@@ -288,10 +285,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -303,7 +299,7 @@
       "Location": "on-site",
       "Sentence": "applied to sludge drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -319,9 +315,28 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "Typically, fewer than 100 tons of dried biosolids are hauled annually to the Clover Flat Landfill for disposal.",
+      "Sentence": "dried biosolids are hauled annually to the Clover Flat Landfill for disposal",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "OzonationUnit",
+      "Process": [
+        "Ozonation",
+        "Disinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": [
+        "Disinfectant-Ozone"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "the Discharger may transition from chlorine disinfection to ozone disinfection",
+      "trigger_process": [
+        "Ozonation"
       ]
     }
   ]

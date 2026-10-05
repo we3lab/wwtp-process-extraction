@@ -11,7 +11,18 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Wastewater received at the headworks is screened at influent pump stations #1 and #2 and pumped to two circular primary clarifiers for removal of suspended solids..."
+      "Sentence": "Wastewater received at the headworks is screened at influent pump stations #1 and #2"
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "pumped to two circular primary clarifiers"
     },
     {
       "Equipment": "SedimentationTank",
@@ -21,10 +32,12 @@
       "Role": [
         "Primary"
       ],
-      "Substance": null,
+      "Substance": [
+        "Constituent-SuspendedSolids"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped to two circular primary clarifiers for removal of suspended solids and reduction of biochemical oxygen demand."
+      "Sentence": "pumped to two circular primary clarifiers for removal of suspended solids and reduction of biochemical oxygen demand"
     },
     {
       "Equipment": "AerationBasin",
@@ -40,7 +53,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant #1 provides extended aeration activated sludge biological treatment through three concrete-lined aeration basins fitted with surface aerators operated in parallel."
+      "Sentence": "Plant #1 provides extended aeration activated sludge biological treatment through three concrete-lined aeration basins fitted with surface aerators"
     },
     {
       "Equipment": "SedimentationTank",
@@ -48,12 +61,15 @@
         "Sedimentation"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Three circular secondary clarifiers remove solids after aeration."
+      "Sentence": "Three circular secondary clarifiers remove solids after aeration"
     },
     {
       "Equipment": "Pump",
@@ -61,12 +77,15 @@
         "Recirculation"
       ],
       "Role": [
-        "Secondary"
+        "Feed",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Sludge-MixedLiquor"
+      ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Return sludge from the clarifiers is directed to influent pump station #1 and combines with raw wastewater to maintain sufficient levels of biomass in the system."
+      "Sentence": "Return sludge from the clarifiers is directed to influent pump station #1 and combines with raw wastewater to maintain sufficient levels of biomass in the system"
     },
     {
       "Equipment": "Pond",
@@ -74,12 +93,13 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Plant #2 consists of a set of four aerated lagoons operated in series. Each treatment lagoon has an approximate volume of 3 million gallons and is equipped with floating aerators."
+      "Sentence": "Plant #2 consists of a set of four aerated lagoons operated in series ... equipped with floating aerators"
     },
     {
       "Equipment": "UltravioletLightUnit",
@@ -93,7 +113,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary effluent from both treatment systems is combined for disinfection by an ultraviolet (UV) disinfection system prior to discharge to the New River."
+      "Sentence": "Secondary effluent from both treatment systems is combined for disinfection by an ultraviolet (UV) disinfection system prior to discharge to the New River"
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -109,24 +129,7 @@
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The UV system was installed in 1995 and replaced a chlorine contact tank chamber that was constructed in 1967."
-    },
-    {
-      "Equipment": "AnaerobicDigester",
-      "Process": [
-        "AnaerobicDigestion",
-        "Digestion"
-      ],
-      "Role": [
-        "SolidsHandling",
-        "Stabilization"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge generated from the primary clarifiers is pumped to two 238,000-gallon anaerobic digesters that are normally operated in series."
+      "Sentence": "The UV system was installed in 1995 and replaced a chlorine contact tank chamber that was constructed in 1967"
     },
     {
       "Equipment": "DissolvedAirFlotationThickener",
@@ -141,23 +144,41 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Secondary sludge from Plant #1 is thickened by dissolved air flotation before being pumped to the digesters."
+      "Sentence": "Secondary sludge from Plant #1 is thickened by dissolved air flotation before being pumped to the digesters"
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "AnaerobicDigester",
       "Process": [
-        "Dewatering",
-        "Drying"
+        "AnaerobicDigestion"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Anaerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Digested sludge is dewatered using drying beds and is stored for a period of no more than two years..."
+      "Sentence": "Sludge generated from the primary clarifiers is pumped to two 238,000-gallon anaerobic digesters that are normally operated in series"
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "Dewatering",
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Storage"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Digested sludge is dewatered using drying beds and is stored for a period of no more than two years"
     },
     {
       "Equipment": null,
@@ -170,21 +191,9 @@
       "Substance": [
         "Fluid-Sludge"
       ],
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "off-site",
-      "Sentence": "is stored for a period of no more than two years before being hauled by contractor to Yuma, Arizona for land application of the Class B solids."
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed",
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Wastewater received at the headworks is screened at influent pump stations #1 and #2 and pumped to two circular primary clarifiers..."
+      "Sentence": "hauled by contractor to Yuma, Arizona for land application of the Class B solids"
     }
   ]
 }

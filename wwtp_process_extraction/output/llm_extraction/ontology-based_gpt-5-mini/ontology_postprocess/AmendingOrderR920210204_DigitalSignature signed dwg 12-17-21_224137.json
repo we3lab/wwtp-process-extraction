@@ -76,7 +76,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "followed by secondary clarification",
+      "Sentence": "secondary clarification",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -118,22 +118,52 @@
       "Equipment": "ChlorinationUnit",
       "Process": [
         "Chlorination",
-        "Disinfection",
-        "Dechlorination"
+        "Disinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": [
         "Disinfectant-Chlorine"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "chlorine disinfection. Dechlorination of chlorinated effluent is accomplished with sodium bisulfite",
+      "Sentence": "chlorine disinfection",
       "trigger_process": [
-        "Chlorination",
+        "Chlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
         "Dechlorination"
+      ],
+      "Role": [
+        "Tertiary",
+        "Posttreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Dechlorination of chlorinated effluent is accomplished with sodium bisulfite",
+      "trigger_process": [
+        "Dechlorination"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "Landfill"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "hauled to a local landfill for disposal",
+      "trigger_process": [
+        "Biosolids Landfill"
       ]
     },
     {
@@ -150,14 +180,15 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge from the secondary treatment processes at the Fallbrook WRP is aerobically digested",
+      "Sentence": "sludge from the secondary treatment processes ... is aerobically digested",
       "trigger_process": [
         "Aerobic Digestion"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": "CentrifugalDewateringUnit",
       "Process": [
+        "Centrifugation",
         "Dewatering"
       ],
       "Role": [
@@ -168,44 +199,79 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "then dewatered by a centrifuge",
+      "Sentence": "dewatered by a centrifuge",
       "trigger_process": [
+        "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "Drying"
+        "ThermalDrying"
       ],
       "Role": [
         "SolidsHandling",
         "Stabilization"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "Dewatered sludge is fed to a thermal dryer to meet Class A biosolids requirements",
       "trigger_process": [
-        "Drying"
+        "Heat Drying"
       ]
     },
     {
-      "Equipment": "Pond",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "LandApplication"
       ],
       "Role": [
         "SolidsHandling"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "dewatered sludge (Class B biosolids) is either sent to one of twelve drying beds for a minimum of three months",
+      "Location": "off-site",
+      "Sentence": "Class A biosolids are utilized as fertilizer by local farmers",
       "trigger_process": [
-        "Biosolids Lagoon",
-        "Drying",
-        "Unspecified Lagoon"
+        "Land Application"
+      ]
+    },
+    {
+      "Equipment": "DewateringUnit",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "sent to one of twelve drying beds for a minimum of three months",
+      "trigger_process": [
+        "Air Drying"
+      ]
+    },
+    {
+      "Equipment": null,
+      "Process": [
+        "LandApplication"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "contracts with Denali Solid Solutions for transporting Class B biosolids for land application in Yuma, Arizona",
+      "trigger_process": [
+        "Land Application"
       ]
     },
     {
@@ -218,7 +284,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a 1.2-million-gallon (MG) secondary effluent equalization basin is available for temporary storage",
+      "Sentence": "1.2-million-gallon (MG) secondary effluent equalization basin is available for temporary storage",
       "trigger_process": [
         "Equalization"
       ]
@@ -232,24 +298,8 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "the Fallbrook WRP has a 1.0-MG recycled water storage basin",
+      "Sentence": "the Fallbrook WRP has a 1.0-MG recycled water storage basin.",
       "trigger_process": []
-    },
-    {
-      "Equipment": null,
-      "Process": [
-        "LandApplication"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "The Discharger contracts with Denali Solid Solutions for transporting Class B biosolids for land application in Yuma, Arizona",
-      "trigger_process": [
-        "Land Application"
-      ]
     }
   ]
 }

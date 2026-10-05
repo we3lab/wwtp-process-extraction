@@ -3,7 +3,8 @@
     {
       "Equipment": "GritChamber",
       "Process": [
-        "Sedimentation"
+        "Sedimentation",
+        "Aeration"
       ],
       "Role": null,
       "Substance": null,
@@ -36,10 +37,12 @@
     {
       "Equipment": "OxidationDitch",
       "Process": [
-        "ActivatedSludge"
+        "ActivatedSludge",
+        "Aeration"
       ],
       "Role": [
-        "Secondary"
+        "Secondary",
+        "Aerobic"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -64,7 +67,9 @@
       "Process": [
         "RapidSandFiltration"
       ],
-      "Role": null,
+      "Role": [
+        "Tertiary"
+      ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -96,22 +101,12 @@
       "Sentence": "sulfur dioxide (SO2) gas dechlorination systems"
     },
     {
-      "Equipment": "Pond",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "the Facility’s five percolation ponds"
-    },
-    {
       "Equipment": "AerobicDigester",
       "Process": [
         "AerobicDigestion"
       ],
       "Role": [
-        "Aerobic",
-        "SolidsHandling"
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -133,16 +128,14 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "discharged to two gunite-lined sludge lagoons for storage and further decomposition"
+      "Sentence": "two gunite-lined sludge lagoons for storage and further decomposition"
     },
     {
       "Equipment": "DewateringUnit",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
-      "Role": [
-        "SolidsHandling"
-      ],
+      "Role": null,
       "Substance": [
         "Fluid-Sludge"
       ],
@@ -151,17 +144,46 @@
       "Sentence": "three sludge drying beds are used to dry biosolids pumped from the sludge lagoons"
     },
     {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "the Facility’s five percolation ponds"
+    },
+    {
       "Equipment": null,
       "Process": [
         "Landfill"
       ],
       "Role": null,
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
       "Sentence": "hauled to an offsite landfill"
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "proper rag removal"
+    },
+    {
+      "Equipment": "VariableFrequencyDrive",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "automated aeration in the oxidation ditch with variable frequency drive"
     }
   ]
 }

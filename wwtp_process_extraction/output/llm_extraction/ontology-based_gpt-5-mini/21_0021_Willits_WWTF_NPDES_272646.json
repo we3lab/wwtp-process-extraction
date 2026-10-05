@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "pumped through two screw conveyed the inclined screens"
+      "Sentence": "wastewater in the wet well is pumped through two screw conveyed inclined screens"
     },
     {
       "Equipment": "GritChamber",
@@ -21,19 +21,27 @@
       "Role": [
         "Pretreatment"
       ],
-      "Substance": [
-        "Constituent-Solids"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "directed to a grit removal and classification chamber. Solids from the grit removal process are collected in a bin"
+      "Sentence": "directed to a grit removal and classification chamber"
+    },
+    {
+      "Equipment": "Tank",
+      "Process": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "influent pump station wet well chamber below the first level of the headworks building"
     },
     {
       "Equipment": "Pump",
       "Process": null,
       "Role": [
-        "Primary",
-        "Pretreatment"
+        "Feed"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -46,48 +54,19 @@
         "Sedimentation"
       ],
       "Role": [
-        "Equalization"
-      ],
-      "Substance": [
-        "Constituent-SuspendedSolids"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The equalization ponds ... leaving behind any settleable solids as it skims the wastewater off the top"
-    },
-    {
-      "Equipment": "SeparationTank",
-      "Process": [
-        "Separation"
-      ],
-      "Role": [
-        "SolidsHandling"
+        "Equalization",
+        "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "septage haulers who discharge into a solids separator and diverted directly into the solids handing portion of the WWTF"
-    },
-    {
-      "Equipment": "AerobicDigester",
-      "Process": [
-        "AerobicDigestion"
-      ],
-      "Role": [
-        "Aerobic",
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Liquids separated from the processing of solids are held in the aerobic digester then returned for treatment to the headworks"
+      "Sentence": "The equalization ponds have a combined total capacity of approximately 16 million gallons"
     },
     {
       "Equipment": "AerationBasin",
       "Process": [
         "ActivatedSludge",
+        "Aeration",
         "Nitrification",
         "Denitrification"
       ],
@@ -97,14 +76,14 @@
         "Anoxic",
         "NutrientRemoval",
         "NitrogenRemoval",
-        "Stabilization"
+        "Extended"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The extended aeration system provides efficient biochemical oxygen demand (BOD) and nutrient removal"
+      "Sentence": "enhanced extended aeration activated sludge treatment process with nutrient removal"
     },
     {
       "Equipment": "SedimentationTank",
@@ -125,6 +104,7 @@
         "Recirculation"
       ],
       "Role": [
+        "Recirculation",
         "Secondary"
       ],
       "Substance": null,
@@ -134,23 +114,37 @@
     },
     {
       "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
+      "Process": null,
       "Role": [
         "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "A 4-inch pump conveys waste activated sludge (WAS) to the aerobic digester"
+    },
+    {
+      "Equipment": "AerobicDigester",
+      "Process": [
+        "AerobicDigestion"
+      ],
+      "Role": [
+        "SolidsHandling",
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "A 4-inch pump conveys waste activated sludge (WAS) to the aerobic digester"
+      "Sentence": "Liquids separated from the processing of solids are held in the aerobic digester then returned for treatment to the headworks"
     },
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary",
@@ -164,25 +158,18 @@
     {
       "Equipment": "Wetland",
       "Process": [
-        "BiologicallyActiveFiltration"
+        "Biofiltration",
+        "Sedimentation"
       ],
       "Role": [
+        "Tertiary",
         "Posttreatment",
         "Storage"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "followed by enhanced effluent treatment and storage within the enhancement wetlands"
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The irrigation pump station includes vertical turbine pumps located in a rectangular reinforced concrete wet well"
+      "Sentence": "effluent is discharged into an enhancement wetland for further treatment"
     },
     {
       "Equipment": "DewateringUnit",
@@ -203,12 +190,11 @@
     {
       "Equipment": null,
       "Process": [
-        "Mixing",
-        "Composting",
-        "Drying"
+        "Composting"
       ],
       "Role": [
-        "SolidsHandling"
+        "SolidsHandling",
+        "Storage"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -225,23 +211,28 @@
       "Role": [
         "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "The finished compost is then land applied on Field 4 ... as a Class B biosolid"
+      "Sentence": "The finished compost is then land applied on Field 4, an 18-acre agricultural parcel owned by the Permittee"
     },
     {
       "Equipment": null,
       "Process": [
-        "LandApplication"
+        "Separation"
       ],
       "Role": [
+        "Pretreatment",
         "SolidsHandling"
       ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "off-site",
-      "Sentence": "The Permittee has requested to expand their biosolids disposal area to include: Field 1, Field 2, and Field 3"
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Septage ... discharg[e] into a solids separator and diverted directly into the solids handing portion of the WWTF"
     }
   ]
 }

@@ -11,23 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of screening...",
-      "trigger_process": [
-        "Screening/Microstrainer"
-      ]
-    },
-    {
-      "Equipment": "Screen",
-      "Process": [
-        "Screening"
-      ],
-      "Role": [
-        "Pretreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Headworks Automatic Screening Rebuild: The Discharger plans to rebuild the headworks automatic screening mechanism.",
+      "Sentence": "The treatment system consists of screening, primary clarification, trickling filtration...",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -51,35 +35,20 @@
     {
       "Equipment": "TricklingFilter",
       "Process": [
-        "TricklingFiltration"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The treatment system consists of ... trickling filtration ...",
-      "trigger_process": [
-        "Trickling Filter"
-      ]
-    },
-    {
-      "Equipment": "TricklingFilter",
-      "Process": [
+        "TricklingFiltration",
         "Nitrification"
       ],
       "Role": [
+        "Secondary",
         "NitrogenRemoval",
-        "Aerobic",
-        "Secondary"
+        "Aerobic"
       ],
       "Substance": [
         "Constituent-Ammonia"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "ammonia removal nitrification (accomplished in a bio-tower)",
+      "Sentence": "trickling filtration, ammonia removal nitrification (accomplished in a bio-tower)",
       "trigger_process": [
         "Nitrification",
         "Trickling Filter",
@@ -97,7 +66,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of ... secondary sedimentation ...",
+      "Sentence": "secondary sedimentation",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -113,7 +82,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of ... sand filtration ...",
+      "Sentence": "sand filtration",
       "trigger_process": [
         "Media Filtration"
       ]
@@ -124,30 +93,12 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The treatment system consists of ... ultraviolet light (UV) disinfection.",
-      "trigger_process": [
-        "UV Disinfection"
-      ]
-    },
-    {
-      "Equipment": "UltravioletLightUnit",
-      "Process": [
-        "UVDisinfection"
-      ],
-      "Role": [
-        "Tertiary",
-        "Posttreatment"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "UV Disinfection Replacement: The Discharger plans to replace the existing UV disinfection system equipment and controls.",
+      "Sentence": "ultraviolet light (UV) disinfection",
       "trigger_process": [
         "UV Disinfection"
       ]
@@ -165,22 +116,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Following disinfection, the wastewater flows through a 21-acre constructed wetland (Moorhen Marsh) for \u201cpolishing\u201d treatment to remove ammonia and other pollutants...",
-      "trigger_process": [
-        "Unspecified Nutrient Removal",
-        "Wetland"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": null,
-      "Role": [
-        "NutrientRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "The Discharger plans to install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal.",
+      "Sentence": "flows through a 21-acre constructed wetland (Moorhen Marsh) for \u201cpolishing\u201d treatment to remove ammonia and other pollutants",
       "trigger_process": [
         "Unspecified Nutrient Removal",
         "Wetland"
@@ -199,7 +135,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is thickened...",
+      "Sentence": "Sludge is thickened",
       "trigger_process": [
         "Thickening"
       ]
@@ -219,7 +155,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Sludge is ... anaerobically digested ...",
+      "Sentence": "anaerobically digested",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -227,45 +163,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge",
-        "Constituent-Ammonia"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Sludge is ... dewatered in a centrifuge ... increased the amount of ammonia returned to the plant headworks in the centrate side stream.",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "CentrifugalDewateringUnit",
-      "Process": [
+        "Centrifugation",
         "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "Centrifuge Replacement: The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls.",
-      "trigger_process": [
-        "Centrifuge",
-        "Mechanical Dewatering"
-      ]
-    },
-    {
-      "Equipment": "Pond",
-      "Process": [
-        "Drying"
       ],
       "Role": [
         "SolidsHandling"
@@ -275,10 +174,29 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill.",
+      "Sentence": "dewatered in a centrifuge",
       "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "AirDrying"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Seasonally, sludge volume is further reduced in drying beds prior to placement in the landfill",
+      "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
@@ -293,19 +211,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks.",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": null,
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "past",
-      "Location": "on-site",
-      "Sentence": "Biotower Feed Pump Improvements: The Discharger replaced one pump, rehabilitated another, replaced all three pumps\u2019 guide rails...",
+      "Sentence": "Runoff from the drying beds is collected and pumped back to the headworks",
       "trigger_process": []
     },
     {
@@ -314,16 +220,80 @@
         "Landfill"
       ],
       "Role": [
-        "BiosolidsDisposal"
+        "BiosolidsDisposal",
+        "SolidsHandling"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "dewatered in a centrifuge, and placed as alternative daily cover at a landfill.",
+      "Sentence": "placed as alternative daily cover at a landfill",
       "trigger_process": [
         "Biosolids Landfill"
+      ]
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans to replace the existing UV disinfection system equipment and controls",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "CentrifugalDewateringUnit",
+      "Process": [
+        "Centrifugation",
+        "Dewatering"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans to replace the existing centrifuge equipment and controls with new sludge dewatering equipment and controls",
+      "trigger_process": [
+        "Centrifuge",
+        "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The Discharger plans to rebuild the headworks automatic screening mechanism",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": null,
+      "Role": [
+        "NutrientRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "install additional Floating Treatment IslandsTM in Moorhen Marsh to enhance nutrient removal",
+      "trigger_process": [
+        "Unspecified Nutrient Removal",
+        "Wetland"
       ]
     }
   ]

@@ -6,10 +6,23 @@ import requests
 import jsonschema
 
 BASE_URL = "https://aiapi-prod.stanford.edu/v1"
+API_KEY_PATH = Path("wwtp_process_extraction/API_key.txt")
+
+
+def require_api_key():
+    """Fail once up front rather than once per facility. Without this a missing key
+    produces an 'Error:' line and a FAILED usage row for every facility in the run."""
+    if not API_KEY_PATH.exists():
+        raise SystemExit(
+            f"{API_KEY_PATH} not found. Create it with your Stanford AI API key "
+            "(run from the repo root)."
+        )
+    if not API_KEY_PATH.read_text(encoding="utf-8").strip():
+        raise SystemExit(f"{API_KEY_PATH} is empty.")
 
 
 def get_headers():
-    api_key = Path("wwtp_process_extraction/API_key.txt").read_text(encoding="utf-8").strip()
+    api_key = API_KEY_PATH.read_text(encoding="utf-8").strip()
     if not api_key:
         raise ValueError("API_key.txt is empty.")
     return {

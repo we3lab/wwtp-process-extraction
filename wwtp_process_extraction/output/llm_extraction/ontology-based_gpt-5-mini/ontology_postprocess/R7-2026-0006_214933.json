@@ -11,7 +11,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "passes through a mechanical fine screen",
+      "Sentence": "the wastewater passes through a mechanical fine screen, and screenings are then removed, collected and disposed.",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -27,7 +27,7 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "backup auto mechanical bar-screen at the headworks",
+      "Sentence": "The current headworks configuration includes a single screen in the northern channel, a second channel for a future screen",
       "trigger_process": [
         "Screening/Microstrainer"
       ]
@@ -43,7 +43,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "packaged grit chamber (i.e., a cyclone grit removal type system)",
+      "Sentence": "After passing through the mechanical screen, raw wastewater flows into a packaged grit chamber (i.e., a cyclone grit removal type system).",
       "trigger_process": [
         "Grit Removal"
       ]
@@ -56,14 +56,15 @@
       ],
       "Role": [
         "Secondary",
-        "Aerobic"
+        "Aerobic",
+        "Stabilization"
       ],
       "Substance": [
         "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The activated sludge treatment system consists of two contact stabilization tanks (CSTs)",
+      "Sentence": "The activated sludge treatment system consists of two contact stabilization tanks (CSTs). Air from centrifugal blowers is delivered to the activated sludge by air diffusers installed on the floor of the contact tank, re-aeration tank, and digester.",
       "trigger_process": [
         "Unspecified AS"
       ]
@@ -76,12 +77,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "clarified effluent from the center clarifier flows through a Parshall flume",
+      "Sentence": "The CSTs process is characterized as an activated sludge process...clarification (clarifier)",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -89,28 +88,45 @@
     {
       "Equipment": "AerobicDigester",
       "Process": [
-        "AerobicDigestion"
+        "AerobicDigestion",
+        "Aeration"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization"
+        "Stabilization",
+        "Aerobic"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "sludge digestion (digester)",
+      "Sentence": "The circular tanks are compartmented ... and sludge digestion (digester). Air from centrifugal blowers is delivered ... to the ... digester.",
       "trigger_process": [
         "Aerobic Digestion"
       ]
+    },
+    {
+      "Equipment": "Pump",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Sludge removed from the CSTs digester is conveyed via sludge wasting pumps which pump the sludge to the drying beds on the south end of the plant.",
+      "trigger_process": []
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
         "Aeration",
-        "Nitrification",
         "Denitrification"
       ],
       "Role": [
@@ -125,11 +141,9 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The oxidation ditch (OD) treatment system ... includes a large aeration basin and a relatively smaller anoxic zone for denitrification",
+      "Sentence": "The OD process is characterized as a modified extended aeration activated sludge process with a relatively long sludge age...include a large aeration basin and a relatively smaller anoxic zone for denitrification.",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
-        "Nitrification",
         "Oxidation Ditch"
       ]
     },
@@ -141,12 +155,10 @@
       "Role": [
         "Secondary"
       ],
-      "Substance": [
-        "Sludge-MixedLiquor"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The two circular clarifiers settle and collect sludge",
+      "Sentence": "The two circular clarifiers settle and collect sludge.",
       "trigger_process": [
         "Secondary Clarification"
       ]
@@ -157,31 +169,15 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "continuously pumped back into the OD to maintain the mixed liquor concentration",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
         "SolidsHandling"
       ],
       "Substance": [
-        "Fluid-Sludge"
+        "Sludge-MixedLiquor"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "a portion of the settled sludge is removed ... via sludge wasting pumps which pump the sludge to the drying beds",
-      "trigger_process": [
-        "Mechanical Dewatering"
-      ]
+      "Sentence": "The settled sludge is pulled from the bottom of the clarifier and continuously pumped back into the OD to maintain the mixed liquor concentration.",
+      "trigger_process": []
     },
     {
       "Equipment": "ChlorinationUnit",
@@ -199,7 +195,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The clarified effluent from the CSTs and OD processes is disinfected using an automated chlorine delivery system",
+      "Sentence": "The clarified effluent from the CSTs and OD processes is disinfected using an automated chlorine delivery system... The chlorinated effluent travels through the serpentine contact chamber and overtops a weir where sodium bisulfite is added to remove any remaining residual chlorine.",
       "trigger_process": [
         "Chlorination",
         "Dechlorination"
@@ -223,49 +219,20 @@
       "Equipment": "DewateringUnit",
       "Process": [
         "Drying",
-        "Dewatering"
+        "AirDrying"
       ],
       "Role": [
-        "SolidsHandling",
-        "Stabilization"
+        "SolidsHandling"
       ],
       "Substance": [
         "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Solids are dried through a combination of evaporation and draw-off or decant of supernatant",
+      "Sentence": "Solids are dried through a combination of evaporation and draw-off or decant of supernatant, which is returned to the Facility\u2019s headworks.",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
-    },
-    {
-      "Equipment": "Compressor",
-      "Process": [
-        "Aeration"
-      ],
-      "Role": [
-        "Aerobic"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Air from centrifugal blowers is delivered to the activated sludge by air diffusers",
-      "trigger_process": []
-    },
-    {
-      "Equipment": "Pump",
-      "Process": [
-        "Recirculation"
-      ],
-      "Role": [
-        "Feed"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "raw wastewater lift station",
-      "trigger_process": []
     }
   ]
 }

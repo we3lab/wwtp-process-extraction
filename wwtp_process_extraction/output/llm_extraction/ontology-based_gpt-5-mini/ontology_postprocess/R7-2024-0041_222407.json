@@ -3,9 +3,7 @@
     {
       "Equipment": "Pump",
       "Process": null,
-      "Role": [
-        "Feed"
-      ],
+      "Role": null,
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
@@ -31,8 +29,8 @@
     {
       "Equipment": null,
       "Process": [
-        "Coagulation",
-        "ChemicalAddition"
+        "ChemicalAddition",
+        "Coagulation"
       ],
       "Role": [
         "Pretreatment"
@@ -43,7 +41,7 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals from the wastewater",
+      "Sentence": "Manual injection of ferric chloride and polymer is added to the process at the main lift station to remove metals",
       "trigger_process": [
         "Coagulation",
         "Ferric Chloride Addition",
@@ -73,8 +71,7 @@
         "Aeration"
       ],
       "Role": [
-        "Secondary",
-        "Aerobic"
+        "Secondary"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -106,15 +103,32 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary",
-        "Posttreatment"
+        "Tertiary"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged to Central Main Drain",
+      "Sentence": "The wastewater is then disinfected using ultraviolet (UV) light before being discharged",
       "trigger_process": [
         "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "GravityBeltThickener",
+      "Process": [
+        "Thickening"
+      ],
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Fluid-Sludge"
+      ],
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Secondary sludge generated from the secondary clarifiers is processed through a gravity belt thickener",
+      "trigger_process": [
+        "Thickening"
       ]
     },
     {
@@ -137,26 +151,7 @@
       ]
     },
     {
-      "Equipment": "GravityBeltThickener",
-      "Process": [
-        "Dewatering"
-      ],
-      "Role": [
-        "SolidsHandling"
-      ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "Secondary sludge generated from the secondary clarifiers is processed through a gravity belt thickener",
-      "trigger_process": [
-        "Mechanical Dewatering",
-        "Thickening"
-      ]
-    },
-    {
-      "Equipment": "DewateringUnit",
+      "Equipment": "BeltFilterPress",
       "Process": [
         "Dewatering"
       ],
@@ -174,9 +169,9 @@
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -188,7 +183,7 @@
       "Location": "on-site",
       "Sentence": "dried to approximately 90 percent solids in drying beds",
       "trigger_process": [
-        "Drying"
+        "Air Drying"
       ]
     },
     {
@@ -204,7 +199,7 @@
       ],
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "then land-applied at locations in Arizona",
+      "Sentence": "and then land-applied at locations in Arizona",
       "trigger_process": [
         "Land Application"
       ]
@@ -220,8 +215,72 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility maintains an emergency storage basin ... however, it is typically allowed to evaporate",
+      "Sentence": "The Facility maintains an emergency storage basin ... it is typically allowed to evaporate",
       "trigger_process": []
+    },
+    {
+      "Equipment": "UltravioletLightUnit",
+      "Process": [
+        "UVDisinfection"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "planned improvements ... replacement of UV units",
+      "trigger_process": [
+        "UV Disinfection"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "planned improvements ... replacement of secondary clarifiers",
+      "trigger_process": [
+        "Secondary Clarification"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "planned improvements ... primary treatment area improvements",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "Aeration"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "planned improvements ... replacement of aeration blowers",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
     }
   ]
 }

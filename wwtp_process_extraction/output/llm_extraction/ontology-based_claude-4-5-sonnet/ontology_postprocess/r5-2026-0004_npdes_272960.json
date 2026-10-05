@@ -46,28 +46,29 @@
       ]
     },
     {
-      "Equipment": null,
+      "Equipment": "Tank",
       "Process": [
+        "ChemicalAddition",
         "pHAdjustment"
       ],
       "Role": [
         "Pretreatment"
       ],
       "Substance": [
-        "pHAdjuster-Lime"
+        "pHAdjuster"
       ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "along with a magnesium hydroxide alkalinity control system",
       "trigger_process": [
-        "Lime Treatment"
+        "Neutralization"
       ]
     },
     {
       "Equipment": "OxidationDitch",
       "Process": [
         "ActivatedSludge",
-        "Nitrification",
+        "Aeration",
         "Denitrification"
       ],
       "Role": [
@@ -81,9 +82,7 @@
       "Location": "on-site",
       "Sentence": "The biological/secondary treatment consists of four 2 MG oxidation ditches using fine bubble diffusers, each with an anoxic zone for denitrification",
       "trigger_process": [
-        "AO (anoxic/oxic)",
         "Denitrification",
-        "Nitrification",
         "Oxidation Ditch"
       ]
     },
@@ -122,7 +121,8 @@
     {
       "Equipment": "UltravioletLightUnit",
       "Process": [
-        "UVDisinfection"
+        "UVDisinfection",
+        "Disinfection"
       ],
       "Role": [
         "Tertiary"
@@ -139,8 +139,8 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Containment",
-        "Storage"
+        "Storage",
+        "Containment"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -153,21 +153,17 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "AerobicDigestion"
+        "BiologicalProcess"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "functions as an algae production pond to assist with onsite sludge stabilization",
       "trigger_process": [
-        "Aerobic Digestion",
         "Biosolids Lagoon",
         "Stabilization Pond"
       ]
@@ -175,23 +171,34 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "AerobicDigestion"
+        "BiologicalProcess",
+        "Aeration"
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
         "Aerobic"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "These ponds are primarily used for algae production to assist with onsite sludge stabilization",
+      "Sentence": "Along with the Erskine Pond, the Algae Production Ponds serve multiple purposes...These ponds are primarily used for algae production to assist with onsite sludge stabilization",
       "trigger_process": [
-        "Aerobic Digestion",
         "Biosolids Lagoon",
-        "Stabilization Pond"
+        "Unspecified Lagoon"
+      ]
+    },
+    {
+      "Equipment": "Pond",
+      "Process": [
+        "Recirculation"
+      ],
+      "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The system allows wastewater to circulate among the ponds to maintain the water cap",
+      "trigger_process": [
+        "Unspecified Lagoon"
       ]
     },
     {
@@ -211,10 +218,11 @@
       ],
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons...with anaerobic digestion occurring in the sludge layer and aerobic activity near the surface",
+      "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons...Facultative lagoons allow solids to separate by density, with anaerobic digestion occurring in the sludge layer and aerobic activity near the surface",
       "trigger_process": [
         "Aerobic Digestion",
         "Anaerobic Digestion",
+        "Anaerobic Lagoon",
         "Biosolids Lagoon",
         "Facultative Lagoon",
         "Stabilization Pond"
@@ -223,7 +231,8 @@
     {
       "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "Dewatering",
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"
@@ -235,15 +244,14 @@
       "Location": "on-site",
       "Sentence": "The Sludge Stabilization Ponds function as sludge drying beds or facultative lagoons",
       "trigger_process": [
+        "Air Drying",
         "Biosolids Lagoon",
-        "Drying",
         "Unspecified Lagoon"
       ]
     },
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "Landfill"
       ],
       "Role": [
@@ -252,7 +260,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "and landfill disposal, land application, or other disposal off site",
+      "Sentence": "test for compliance with the EPA 503 sludge disposal regulations (to determine future suitability for land application and for landfill regulations), and landfill disposal, land application, or other disposal off site",
       "trigger_process": [
         "Biosolids Landfill"
       ]
@@ -260,7 +268,6 @@
     {
       "Equipment": null,
       "Process": [
-        "BiosolidsDisposal",
         "LandApplication"
       ],
       "Role": [
@@ -269,7 +276,7 @@
       "Substance": null,
       "Implementation": "present",
       "Location": "off-site",
-      "Sentence": "and landfill disposal, land application, or other disposal off site",
+      "Sentence": "test for compliance with the EPA 503 sludge disposal regulations (to determine future suitability for land application and for landfill regulations), and landfill disposal, land application, or other disposal off site",
       "trigger_process": [
         "Land Application"
       ]
@@ -278,13 +285,13 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Detention",
-        "Storage"
+        "Storage",
+        "Detention"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The Discharger is preparing to assess alternatives, design, secure funding, permit and construct improvements to the Erskine Pond that will convert it or portions of it into an emergency detention basin",
+      "Sentence": "The Discharger is preparing to assess alternatives, design, secure funding, permit and construct improvements to the Erskine Pond that will convert it or portions of it into an emergency detention basin and pump station located adjacent to the plant headworks",
       "trigger_process": []
     },
     {
@@ -301,7 +308,7 @@
       ],
       "Implementation": "past",
       "Location": "on-site",
-      "Sentence": "The former City of Woodland North Ponds (North Ponds) contained nine ponds that were used for sludge stabilization",
+      "Sentence": "The former City of Woodland North Ponds (North Ponds) contained nine ponds that were used for sludge stabilization...The Central Valley Water Board determined that the North Ponds were properly closed in a 12 April 2012 Approval of Closure Letter",
       "trigger_process": [
         "Anaerobic Digestion",
         "Biosolids Lagoon",

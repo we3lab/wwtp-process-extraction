@@ -35,10 +35,10 @@
       ],
       "Role": [
         "Secondary",
-        "NutrientRemoval",
-        "NitrogenRemoval",
         "Aerobic",
-        "Anoxic"
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -77,12 +77,13 @@
         "UVDisinfection"
       ],
       "Role": [
-        "Tertiary"
+        "Tertiary",
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "The Facility provides full nitrification and denitrification for nitrogen removal and uses ultraviolet light (UV) for disinfection."
+      "Sentence": "The Facility ... uses ultraviolet light (UV) for disinfection."
     },
     {
       "Equipment": "AerobicDigester",
@@ -91,8 +92,7 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Stabilization",
-        "Aerobic"
+        "Stabilization"
       ],
       "Substance": [
         "Fluid-Sludge"
@@ -105,9 +105,12 @@
       "Equipment": "Tank",
       "Process": null,
       "Role": [
-        "Storage"
+        "Storage",
+        "SolidsHandling"
       ],
-      "Substance": null,
+      "Substance": [
+        "Fluid-Sludge"
+      ],
       "Implementation": "present",
       "Location": "on-site",
       "Sentence": "A solids holding day tank;"
@@ -128,9 +131,9 @@
       "Sentence": "Three rotary presses;"
     },
     {
-      "Equipment": null,
+      "Equipment": "Pond",
       "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "Storage",
@@ -147,8 +150,7 @@
       "Equipment": "Pond",
       "Process": null,
       "Role": [
-        "Retention",
-        "Containment"
+        "Retention"
       ],
       "Substance": null,
       "Implementation": "present",
@@ -161,10 +163,11 @@
         "Recirculation"
       ],
       "Role": [
-        "Recirculation"
+        "SolidsHandling",
+        "Feed"
       ],
       "Substance": [
-        "Sludge-MixedLiquor"
+        "Fluid-Sludge"
       ],
       "Implementation": "present",
       "Location": "on-site",

@@ -1,16 +1,68 @@
 {
   "items": [
     {
-      "Equipment": "Reservoir",
-      "Process": null,
+      "Equipment": null,
+      "Process": [
+        "Screening"
+      ],
       "Role": [
-        "Storage"
+        "Pretreatment"
       ],
       "Substance": null,
       "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "recycled water from MWRP is discharged through DP-003, DP-004 and DP-007 to Rattlesnake Reservoir, Sand Canyon Reservoir, and Syphon Reservoir respectively, for storage and subsequent distribution.",
-      "trigger_process": []
+      "Location": "on-site",
+      "Sentence": "The Discharger owns and operates the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
+      "trigger_process": [
+        "Screening/Microstrainer"
+      ]
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Primary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger owns and operates the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
+      "trigger_process": [
+        "Primary Clarification"
+      ]
+    },
+    {
+      "Equipment": "AerationBasin",
+      "Process": [
+        "ActivatedSludge"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger owns and operates the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
+      "trigger_process": [
+        "Unspecified AS"
+      ]
+    },
+    {
+      "Equipment": "MediaFiltrationUnit",
+      "Process": [
+        "MediaFiltration"
+      ],
+      "Role": [
+        "Tertiary"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "The Discharger owns and operates the MWRP and its wastewater treatment systems consist of preliminary, primary, secondary, and tertiary treatment.",
+      "trigger_process": [
+        "Media Filtration"
+      ]
     },
     {
       "Equipment": null,
@@ -18,14 +70,30 @@
         "Dewatering"
       ],
       "Role": null,
-      "Substance": [
-        "Water-Freshwater"
-      ],
+      "Substance": null,
       "Implementation": "present",
       "Location": "on-site",
-      "Sentence": "Because of high groundwater elevation at the MWRP site, dewatering of the shallow groundwater zone is necessary... The area is dewatered through a network of shallow zone wells",
+      "Sentence": "Because of high groundwater elevation at the MWRP site, dewatering of the shallow groundwater zone is necessary to protect in-ground facilities.",
       "trigger_process": [
         "Mechanical Dewatering"
+      ]
+    },
+    {
+      "Equipment": "Wetland",
+      "Process": [
+        "BiologicallyActiveFiltration"
+      ],
+      "Role": [
+        "NitrogenRemoval",
+        "PhosphorusRemoval"
+      ],
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "off-site",
+      "Sentence": "IRWD operates a network of natural treatment wetlands in the San Diego Creek Watershed that remove nitrogen and phosphorus from San Diego Creek and its tributaries.",
+      "trigger_process": [
+        "Biologically Active Filtration",
+        "Wetland"
       ]
     },
     {
@@ -41,7 +109,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of sludge thickening equipment",
+      "Sentence": "IRWD is constructing a Biosolids Handling and Energy Recovery Facility at the MWRP site, which ... includes the construction and/or installation of sludge thickening equipment",
       "trigger_process": [
         "Thickening"
       ]
@@ -53,7 +121,6 @@
       ],
       "Role": [
         "SolidsHandling",
-        "Anaerobic",
         "Stabilization"
       ],
       "Substance": [
@@ -61,7 +128,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of... anaerobic digesters",
+      "Sentence": "IRWD is constructing a Biosolids Handling and Energy Recovery Facility at the MWRP site, which ... includes the construction and/or installation of ... anaerobic digesters",
       "trigger_process": [
         "Anaerobic Digestion"
       ]
@@ -69,8 +136,8 @@
     {
       "Equipment": "CentrifugalDewateringUnit",
       "Process": [
-        "Dewatering",
-        "Centrifugation"
+        "Centrifugation",
+        "Dewatering"
       ],
       "Role": [
         "SolidsHandling"
@@ -80,14 +147,14 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of... centrifuges for sludge dewatering",
+      "Sentence": "IRWD is constructing a Biosolids Handling and Energy Recovery Facility at the MWRP site, which ... includes the construction and/or installation of ... centrifuges for sludge dewatering",
       "trigger_process": [
         "Centrifuge",
         "Mechanical Dewatering"
       ]
     },
     {
-      "Equipment": "DewateringUnit",
+      "Equipment": null,
       "Process": [
         "Drying"
       ],
@@ -99,22 +166,7 @@
       ],
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of... sludge drying equipment",
-      "trigger_process": [
-        "Drying"
-      ]
-    },
-    {
-      "Equipment": "Tank",
-      "Process": null,
-      "Role": [
-        "Storage",
-        "SolidsHandling"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of an anaerobically digestable material receiving station",
+      "Sentence": "IRWD is constructing a Biosolids Handling and Energy Recovery Facility at the MWRP site, which ... includes the construction and/or installation of ... sludge drying equipment",
       "trigger_process": []
     },
     {
@@ -126,27 +178,10 @@
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "includes the construction and/or installation of... microturbines for generation of electricity and heat",
+      "Sentence": "IRWD is constructing a Biosolids Handling and Energy Recovery Facility at the MWRP site, which ... includes ... microturbines for generation of electricity and heat. The microturbines would operate with biogas produced in the anaerobic digesters.",
       "trigger_process": [
         "Cogeneration",
         "Heat Recovery"
-      ]
-    },
-    {
-      "Equipment": "Wetland",
-      "Process": [
-        "Biofiltration"
-      ],
-      "Role": [
-        "NitrogenRemoval",
-        "PhosphorusRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "off-site",
-      "Sentence": "IRWD operates a network of natural treatment wetlands in the San Diego Creek Watershed that remove nitrogen and phosphorus",
-      "trigger_process": [
-        "Wetland"
       ]
     }
   ]

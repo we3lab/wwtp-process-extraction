@@ -1,23 +1,55 @@
 {
   "items": [
     {
-      "Equipment": "Screen",
+      "Equipment": "Pond",
       "Process": [
-        "Screening"
+        "Aeration",
+        "Evaporation"
       ],
       "Role": null,
+      "Substance": null,
+      "Implementation": "present",
+      "Location": "on-site",
+      "Sentence": "Currently, all influent is first discharged into one of the ponds which serves as a treatment pond with aerators before going to the remaining evaporation/oxidation ponds."
+    },
+    {
+      "Equipment": "Pump",
+      "Process": null,
+      "Role": [
+        "Feed"
+      ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "The headworks consists of the influent pump station, bar screen, and a grit removal/classification system."
     },
     {
+      "Equipment": "Screen",
+      "Process": [
+        "Screening"
+      ],
+      "Role": [
+        "Pretreatment",
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "The bar screen is operated as a traveling chain-and-link system that removes large solids."
+    },
+    {
       "Equipment": "GritChamber",
       "Process": [
         "Sedimentation"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Influent is pumped through a vortex grit chamber at grade."
@@ -27,19 +59,38 @@
       "Process": [
         "Dewatering"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "SolidsHandling"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Grit slurry collected in the vortex grit chamber is pumped to a vortex grit separator and classifier for dewatering."
+    },
+    {
+      "Equipment": "Pond",
+      "Process": null,
+      "Role": [
+        "Storage"
+      ],
+      "Substance": null,
+      "Implementation": "past",
+      "Location": "on-site",
+      "Sentence": "Prior to Facility upgrades, septage was delivered to evaporation/oxidation Pond 11."
     },
     {
       "Equipment": "Screen",
       "Process": [
         "Screening"
       ],
-      "Role": null,
-      "Substance": null,
+      "Role": [
+        "Pretreatment"
+      ],
+      "Substance": [
+        "Constituent-Particles"
+      ],
       "Implementation": "future",
       "Location": "on-site",
       "Sentence": "Septage from the receiving station is passed through a coarse screen to remove large solids before proceeding to an 80-mil high density polyethylene (HDPE) lined septage holding pond."
@@ -52,100 +103,59 @@
       "Role": [
         "Storage"
       ],
-      "Substance": [
-        "Fluid-Sludge"
-      ],
+      "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "The aerated and mixed septage holding pond will contain approximately 90,000 gallons of septage waste..."
+      "Sentence": "The aerated and mixed septage holding pond will contain approximately 90,000 gallons of septage waste."
     },
     {
-      "Equipment": "Pond",
+      "Equipment": "AerationBasin",
       "Process": [
-        "Evaporation",
-        "Aeration"
+        "ActivatedSludge",
+        "Aeration",
+        "Denitrification",
+        "Nitrification"
       ],
-      "Role": null,
+      "Role": [
+        "Secondary",
+        "Aerobic",
+        "Anoxic",
+        "NutrientRemoval",
+        "NitrogenRemoval"
+      ],
       "Substance": null,
-      "Implementation": "present",
+      "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "Currently, all influent is first discharged into one of the ponds which serves as a treatment pond with aerators before going to the remaining evaporation/oxidation ponds."
+      "Sentence": "Proposed upgrades to the treatment plant will provide secondary treatment that feeds influent from the headworks into two Biolac aeration basins ... Biolac ... suspended aerators for extended aeration, activated sludge treatment. Denitrification is achieved by creating a series of oxic and anoxic zones within the basin."
+    },
+    {
+      "Equipment": "SedimentationTank",
+      "Process": [
+        "Sedimentation"
+      ],
+      "Role": [
+        "Secondary"
+      ],
+      "Substance": null,
+      "Implementation": "future",
+      "Location": "on-site",
+      "Sentence": "Proposed upgrades ... two secondary clarifiers ... existing secondary clarifier has a 45-foot diameter and a depth of 16 feet while the new secondary clarifier will have a 65-foot diameter and a depth of 16 feet."
     },
     {
       "Equipment": "Pond",
       "Process": null,
-      "Role": null,
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "convert the two newest oxidation/evaporation Ponds 15 and 17, located south of the treatment facility, into a series of percolation ponds for effluent disposal"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
-      ],
       "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The Discharger is re-adjusting the flow capacity of the existing Biolac basin to treat 0.35 MGD"
-    },
-    {
-      "Equipment": "AerationBasin",
-      "Process": [
-        "ActivatedSludge",
-        "Aeration",
-        "Denitrification"
-      ],
-      "Role": [
-        "Secondary",
-        "Aerobic",
-        "Anoxic",
-        "NitrogenRemoval"
+        "Posttreatment"
       ],
       "Substance": null,
       "Implementation": "future",
       "Location": "on-site",
-      "Sentence": "constructing a new Biolac basin to treat 0.92 MGD for a combined total design flow of 1.27 MGD."
+      "Sentence": "convert the two newest oxidation/evaporation Ponds 15 and 17 ... into a series of percolation ponds for effluent disposal."
     },
     {
-      "Equipment": "SedimentationTank",
+      "Equipment": null,
       "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "present",
-      "Location": "on-site",
-      "Sentence": "The existing secondary clarifier has a 45-foot diameter and a depth of 16 feet"
-    },
-    {
-      "Equipment": "SedimentationTank",
-      "Process": [
-        "Sedimentation"
-      ],
-      "Role": [
-        "Secondary"
-      ],
-      "Substance": null,
-      "Implementation": "future",
-      "Location": "on-site",
-      "Sentence": "the new secondary clarifier will have a 65-foot diameter and a depth of 16 feet."
-    },
-    {
-      "Equipment": "DewateringUnit",
-      "Process": [
-        "Drying"
+        "AirDrying"
       ],
       "Role": [
         "SolidsHandling"

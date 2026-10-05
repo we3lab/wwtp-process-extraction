@@ -139,7 +139,7 @@ def pad_cwns_id(x):
     return '0' + s if len(s) < 11 else s
 
 active_ups = uplist_eicodes[(uplist_eicodes['PRES_IND'] == 1) | (uplist_eicodes['PROJ_IND'] == 1)].copy()
-active_ups = (active_ups.sort_values('REPORT_YEAR')
+active_ups = (active_ups.sort_values('REPORT_YEAR', kind='stable')
               .drop_duplicates(subset=['CWNS_NUM', 'FINAL_UNIT_PROCESS_NAME'], keep='last'))
 active_ups = active_ups[active_ups['CWNS_NUM'].isin(set(wwtps['CWNS_NUM']))]
 

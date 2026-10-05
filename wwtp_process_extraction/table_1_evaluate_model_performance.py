@@ -1,7 +1,7 @@
-"""Evaluate LLM process-detection performance against truth labels.
+"""Evaluate LLM process-detection performance against manual labels.
 
 This script compares each (Method, Model) row in the workbook against the
-corresponding Truth row for the same PDF.
+corresponding Manual Read row for the same facility.
 
 It reports three families of metrics for this sparse multi-label setup:
 
@@ -10,8 +10,11 @@ It reports three families of metrics for this sparse multi-label setup:
 - Family F1: a relaxed score that collapses detailed process labels to their
   top-level ontology family from unitprocess_keywords.json. This gives partial
   credit when the model predicts a close subtype rather than the exact leaf.
-- Exact-state accuracy: among truth-positive cells only, the fraction where the
-  model predicts the correct state (PRESENT, FUTURE, PAST, OFFSITE).
+- Exact-state accuracy: among manual-positive cells only, the fraction where the
+  model predicts the correct state (PRESENT, FUTURE or OFFSITE).
+
+A cell is positive if its status is PRESENT, PRESENT_AND_FUTURE, FUTURE or OFFSITE; PAST
+counts as absent on both sides (helpers.utils.DETECTED_STATUSES).
 
 """
 
@@ -29,8 +32,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison
-from helpers.utils import get_leaf_names, precision_recall_f1, UNSCORED_STATUSES, select_json_per_place_id
+from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison, _norm_pdf
+from helpers.utils import get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, DETECTED_STATUSES
 
 
 DEFAULT_KEYWORDS = Path("wwtp_process_extraction/data/unitprocess_keywords.json")
@@ -87,11 +90,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_status(value: Any) -> str | None:
-    """Map workbook values to canonical states.
-
-    Any non-empty cell counts as a positive prediction/label. The exact string is
-    only used for state accuracy on truth-positive cells.
-    """
+    """Map workbook values to canonical states, for state accuracy on manual-positive cells."""
 
     if pd.isna(value):
         return None
@@ -145,52 +144,41 @@ def build_label_to_family_map(keywords: dict[str, Any]) -> dict[str, str]:
     return label_to_family
 
 
-def label_presence_counts(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[int, int, int]:
+def label_presence_counts(manual_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[int, int, int]:
     """Raw tp/fp/fn for one PDF. Split out so callers can pool counts for a micro average."""
 
     tp = fp = fn = 0
     for col in label_cols:
-        truth_state = normalize_status(truth_row[col])
-        if truth_state in UNSCORED_STATUSES:
-            continue
-        truth_positive = truth_state is not None
-        pred_positive = pd.notna(pred_row[col])
-        tp += int(truth_positive and pred_positive)
-        fp += int((not truth_positive) and pred_positive)
-        fn += int(truth_positive and (not pred_positive))
+        manual_positive = is_present(manual_row[col], DETECTED_STATUSES)
+        pred_positive = is_present(pred_row[col], DETECTED_STATUSES)
+        tp += int(manual_positive and pred_positive)
+        fp += int((not manual_positive) and pred_positive)
+        fn += int(manual_positive and (not pred_positive))
 
     return tp, fp, fn
 
 
-def label_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[float, float, float, float]:
-    """Compute label-presence precision/recall/F1/Jaccard for one PDF.
-    """
+def family_presence_f1(manual_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
+    """Compute presence metrics after collapsing labels to top-level ontology families."""
 
-    return precision_recall_f1(*label_presence_counts(truth_row, pred_row, label_cols))
-
-
-def family_presence_f1(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
-    """Compute presence metrics after collapsing labels to top-level ontology families.
-
-    Labels whose truth state is PAST/OFFSITE don't contribute to marking their
-    family truth-positive (same drop-the-cell rule as label_presence_f1).
-    """
-
-    truth_families = {
+    manual_families = {
         label_to_family.get(col, col) for col in label_cols
-        if normalize_status(truth_row[col]) not in UNSCORED_STATUSES | {None}
+        if is_present(manual_row[col], DETECTED_STATUSES)
     }
-    pred_families = {label_to_family.get(col, col) for col in label_cols if pd.notna(pred_row[col])}
+    pred_families = {
+        label_to_family.get(col, col) for col in label_cols
+        if is_present(pred_row[col], DETECTED_STATUSES)
+    }
 
-    tp = len(truth_families & pred_families)
-    fp = len(pred_families - truth_families)
-    fn = len(truth_families - pred_families)
+    tp = len(manual_families & pred_families)
+    fp = len(pred_families - manual_families)
+    fn = len(manual_families - pred_families)
 
     return precision_recall_f1(tp, fp, fn)
 
 
-def exact_state_accuracy(truth_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> float:
-    """Accuracy of the predicted state on truth-positive cells only.
+def exact_state_accuracy(manual_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> float:
+    """Accuracy of the predicted state on manual-positive cells only.
 
     This ignores all-truly-absent cells, which is important when most labels are
     absent. Otherwise a model can look good simply by predicting nothing.
@@ -199,12 +187,10 @@ def exact_state_accuracy(truth_row: pd.Series, pred_row: pd.Series, label_cols: 
     correct = 0
     total = 0
     for col in label_cols:
-        truth_state = normalize_status(truth_row[col])
-        if truth_state is None or truth_state in UNSCORED_STATUSES:
+        if not is_present(manual_row[col], DETECTED_STATUSES):
             continue
         total += 1
-        pred_state = normalize_status(pred_row[col])
-        correct += int(pred_state == truth_state)
+        correct += int(normalize_status(pred_row[col]) == normalize_status(manual_row[col]))
     return correct / total if total else float("nan")
 
 
@@ -266,7 +252,7 @@ def evaluate_workbook(comparison: pd.DataFrame, keywords_path: Path) -> pd.DataF
     return pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
 
 
-def load_price_per_pdf(benchmark_ids=None) -> pd.DataFrame:
+def load_price_per_pdf(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
     """Read token_usage_summary.csv from each model comparison dir.
 
     For web runs (cost_usd column present): uses reported cost directly.
@@ -313,8 +299,10 @@ def load_price_per_pdf(benchmark_ids=None) -> pd.DataFrame:
         if not usage_path.exists():
             continue
         usage_df = pd.read_csv(usage_path)
-        if benchmark_ids is not None:
-            usage_df = usage_df[usage_df["place_id"].astype(str).str.strip().isin(benchmark_ids)]
+        usage_df = usage_df[usage_df["place_id"].astype(str).str.strip().isin(benchmark_ids)]
+        if "extraction_file" in usage_df.columns:
+            pinned = {f.name for f in select_json_per_place_id(dir_path, benchmark_ids, pdf_stem_by_place_id).values()}
+            usage_df = usage_df[usage_df["extraction_file"].isna() | usage_df["extraction_file"].isin(pinned)]
         # If a precomputed cost column exists and has values, use it. Otherwise
         # compute cost from token counts using MODEL_COSTS_CSV.
         if "cost_usd" in usage_df.columns and usage_df["cost_usd"].notna().any():
@@ -329,7 +317,7 @@ def load_price_per_pdf(benchmark_ids=None) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
+def load_structured_output_rates(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
     """Fraction of raw model outputs that matched the schema before any coercion.
 
     The saved JSON is coerced to the {"items": [...]} shape before writing, so it
@@ -351,8 +339,10 @@ def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
         if not usage_path.exists():
             continue
         usage = pd.read_csv(usage_path, dtype=str).fillna("")
-        if benchmark_ids is not None:
-            usage = usage[usage["place_id"].str.strip().isin(benchmark_ids)]
+        usage = usage[usage["place_id"].str.strip().isin(benchmark_ids)]
+        if "extraction_file" in usage.columns:
+            pinned = {f.name for f in select_json_per_place_id(dir_path, benchmark_ids, pdf_stem_by_place_id).values()}
+            usage = usage[usage["extraction_file"].eq("") | usage["extraction_file"].isin(pinned)]
         if "structured_output" not in usage.columns:
             continue
         flags = usage["structured_output"].str.strip().str.lower()
@@ -370,7 +360,7 @@ def load_structured_output_rates(benchmark_ids=None) -> pd.DataFrame:
 def predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id=None):
     """Postprocess every JSON in run_dir into a {place_id -> {col: status}} frame over label_cols."""
     rows = {}
-    # Only the benchmark places are scored against the manual truth, and they are exactly the
+    # Only the benchmark places are scored against the manual labels, and they are exactly the
     # ones with a pinned document. Restricting here keeps the full CA set (whose co-current
     # attachments have no single right answer) out of the selection.
     place_filter = set(pdf_stem_by_place_id) if pdf_stem_by_place_id else None
@@ -395,15 +385,15 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols=None):
     label_f1, family_f1, state_acc = [], [], []
     micro_tp = micro_fp = micro_fn = 0
     for place_id in manual.index:
-        truth_row = manual.loc[place_id, label_cols]
+        manual_row = manual.loc[place_id, label_cols]
         pred_row = pred.loc[place_id, label_cols]
-        tp, fp, fn = label_presence_counts(truth_row, pred_row, unit_cols)
+        tp, fp, fn = label_presence_counts(manual_row, pred_row, unit_cols)
         micro_tp += tp; micro_fp += fp; micro_fn += fn
         _, _, f1, _ = precision_recall_f1(tp, fp, fn)
-        _, _, ff1, _ = family_presence_f1(truth_row, pred_row, label_cols, label_to_family)
+        _, _, ff1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
         label_f1.append(f1)
         family_f1.append(ff1)
-        state_acc.append(exact_state_accuracy(truth_row, pred_row, unit_cols))
+        state_acc.append(exact_state_accuracy(manual_row, pred_row, unit_cols))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
         "Micro Unit Process F1": precision_recall_f1(micro_tp, micro_fp, micro_fn)[2],
@@ -470,7 +460,7 @@ def main() -> None:
     # same manual facilities (same n=50 baseline).
     manual_ids = set(comparison.loc[comparison["Method"].eq("Manual Read"), "Place ID"].dropna().astype(str).str.strip())
     # Empty cells must stay NaN, not "". pd.notna("") is True, so fillna("") would
-    # treat every blank truth cell as a positive label: false positives become
+    # treat every blank manual cell as a positive label: false positives become
     # impossible and missed labels are massively overcounted. Match the LLM path.
     manual_full = pd.read_csv(MANUAL_PATH, dtype=str)
     manual_full["Place ID"] = manual_full["Place ID"].str.strip()
@@ -481,11 +471,17 @@ def main() -> None:
         .drop_duplicates("Place ID")
         .set_index("Place ID")
     )
+    pdf_stem_by_place_id = (
+        manual_full[["Place ID", "PDF_File"]].dropna(subset=["PDF_File"]).drop_duplicates("Place ID")
+        .set_index("Place ID")["PDF_File"].to_dict()
+    )
 
-    # Load keyword predictions and align
-    kw_path = Path("wwtp_process_extraction/output/unit_processes_by_facility_kw.csv")
+    # Load keyword predictions for the manually read document and align
+    kw_path = Path("wwtp_process_extraction/output/unit_processes_by_pdf_kw.csv")
     kw_df = pd.read_csv(kw_path, dtype=str).fillna("")
     kw_df["Place ID"] = kw_df["Place ID"].str.strip()
+    pinned_stem = kw_df["Place ID"].map({pid: _norm_pdf(Path(pdf).stem) for pid, pdf in pdf_stem_by_place_id.items()})
+    kw_df = kw_df[kw_df["PDF_File"].map(lambda pdf: _norm_pdf(Path(pdf).stem)) == pinned_stem]
     kw_df = kw_df.set_index("Place ID").reindex(manual.index)
     # empty strings -> NaN so absence counts as no prediction
     kw_df = kw_df.replace("", np.nan)
@@ -504,29 +500,29 @@ def main() -> None:
     }
     metrics = pd.concat([metrics, pd.DataFrame([kw_row])], ignore_index=True, sort=False)
 
-    # Spot-check the keyword and LLM ontology gpt-5 methods per process
+    # Spot-check the keyword and LLM ontology gpt-5-mini methods per process
     llm_df = pd.read_csv("wwtp_process_extraction/output/unit_processes_by_facility_llm.csv", dtype=str).fillna("")
     llm_df["Place ID"] = llm_df["Place ID"].str.strip()
     llm_df = llm_df.set_index("Place ID").reindex(manual.index)
     # empty strings -> NaN so absence counts as no prediction
     llm_df = llm_df.replace("", np.nan)
-    for method, model, df in [("Keyword", "NPDES Keyword", kw_df), ("Ontology", "gpt-5", llm_df)]:
+    for method, model, df in [("Keyword", "NPDES Keyword", kw_df), ("Ontology", "gpt-5-mini", llm_df)]:
         audit_rows = []
         for col in unit_cols:  # leaf-level only; unspecified catch-alls aren't scored in Unit Process F1
-            truth_pos = manual[col].notna()
-            pred_pos = df[col].notna()
-            fp = int((pred_pos & ~truth_pos).sum())
-            fn = int((truth_pos & ~pred_pos).sum())
-            tp = int((truth_pos & pred_pos).sum())
+            manual_pos = manual[col].map(lambda v: is_present(v, DETECTED_STATUSES))
+            pred_pos = df[col].map(lambda v: is_present(v, DETECTED_STATUSES))
+            fp = int((pred_pos & ~manual_pos).sum())
+            fn = int((manual_pos & ~pred_pos).sum())
+            tp = int((manual_pos & pred_pos).sum())
             if fp or fn:
                 audit_rows.append({"Process": col, "TP": tp, "FP": fp, "FN": fn, "Errors": fp + fn})
         audit = pd.DataFrame(audit_rows).sort_values(["Errors", "FP", "Process"], ascending=[False, False, True])
-        print(f"\n{method} spot-check: per-process disagreement with manual truth (n={len(manual)} facilities)")
+        print(f"\n{method} spot-check: per-process disagreement with manual labels (n={len(manual)} facilities)")
         print(audit.to_string(index=False))
 
     benchmark_ids = {str(x).strip() for x in manual_ids}
-    cost_df = load_price_per_pdf(benchmark_ids)
-    structured_df = load_structured_output_rates(benchmark_ids)
+    cost_df = load_price_per_pdf(benchmark_ids, pdf_stem_by_place_id)
+    structured_df = load_structured_output_rates(benchmark_ids, pdf_stem_by_place_id)
     metrics = metrics.merge(cost_df, on=["Method", "Model"], how="left")
     metrics = metrics.merge(structured_df, on=["Method", "Model"], how="left")
     metrics["Unit Process F1 / Price per PDF"] = np.where(
@@ -601,10 +597,10 @@ def main() -> None:
 
     rows = []
     for label, run_dir in run_dirs:
-        n = len(list(run_dir.glob("*.json")))
-        print(f"Scoring {label} ({run_dir}) — {n} json")
-        metrics = run_metrics(predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id), manual, label_cols, label_to_family, unit_cols)
-        rows.append({"run": label, "n_facilities": n, **metrics})
+        predictions = predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id)
+        print(f"Scoring {label} ({run_dir}) — {len(predictions)} facilities")
+        metrics = run_metrics(predictions, manual, label_cols, label_to_family, unit_cols)
+        rows.append({"run": label, "n_facilities": len(predictions), **metrics})
 
     df = pd.DataFrame(rows)
     desc = df[METRIC_COLS]
@@ -614,7 +610,8 @@ def main() -> None:
         {"run": "variance", **desc.var(ddof=1).to_dict()},
     ])
     out = pd.concat([df, summary], ignore_index=True)
-    out[METRIC_COLS] = out[METRIC_COLS].round(4)
+    not_variance = out["run"] != "variance"
+    out.loc[not_variance, METRIC_COLS] = out.loc[not_variance, METRIC_COLS].round(4)
 
     OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(OUTPUT_CSV, index=False)

@@ -374,17 +374,14 @@ def chat_completion_json(
         reasoning_tokens = completion_tokens_details.get("reasoning_tokens", 0)
 
         if finish_reason == "length":
-            raise RuntimeError(
-                "Generation stopped because token limit was reached "
-                f"(finish_reason='length', completion_tokens={completion_token}, "
+            raise ValueError(
+                f"Generation stopped (finish_reason='length', completion_tokens={completion_token}, "
                 f"max_tokens={max_tokens}, max_completion_tokens={effective_max_completion_tokens}). "
-                "Increase limits or reduce prompt/output size."
             )
 
         if not content.strip():
-            raise RuntimeError(
-                "Model returned empty/whitespace content. "
-                "Ensure the prompt explicitly requests JSON output and reduce requested output size if needed."
+            raise ValueError(
+                "Model returned empty/whitespace content."
             )
 
         parsed = json.loads(content)
@@ -409,7 +406,7 @@ def chat_completion_json(
 
         return parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output
 
-    except (requests.RequestException, ValueError, json.JSONDecodeError) as e:
+    except (requests.RequestException, ValueError, AttributeError) as e:
         err = RuntimeError(f"Failed to get valid JSON. Last error: {e}")
         if content:
             err.raw_output = content

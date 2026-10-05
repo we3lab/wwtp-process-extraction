@@ -7,13 +7,13 @@ import PyPDF2
 from pathlib import Path
 import unicodedata
 
-# Canonical status vocabulary: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, '' (absent)
+# Canonical status vocabulary; '' (or 0 / NaN) means absent
+STATUS_TOKENS = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
+# Figures compare currently installed (PRESENT, PRESENT_AND_FUTURE); everything else is absent
+# table_1 F1 also counts planned (FUTURE) and off-site (OFFSITE); only PAST is absent there.
+# table_1 state accuracy then checks the exact state on those detected cells.
 PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"})
-
-# States excluded entirely from accuracy/F1 scoring (neither a required positive nor a
-# false-positive trap if predicted) — a process that's decommissioned (PAST) or whose
-# equipment is physically elsewhere (OFFSITE) isn't a clean presence/absence signal.
-UNSCORED_STATUSES = frozenset({"PAST", "OFFSITE"})
+DETECTED_STATUSES = PRESENT_STATUSES | {"FUTURE", "OFFSITE"}
 
 PLACE_ID_RE = re.compile(r"_(\d+)\.json$")
 
@@ -51,8 +51,8 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
     facility with several permit documents (an original plus later modifications) gets one json
     per document, so a single one has to be chosen:
 
-      1. pdf_stem_by_place_id (the manual CSV's PDF_File) pins the exact document ground truth
-         was read from, so every caller scores the same source.
+      1. pdf_stem_by_place_id (the manual CSV's PDF_File) pins the exact document the manual labels
+         were read from, so every caller scores the same source.
       2. otherwise keep the most current document, by newest snapshot it appears in.
 
     Never resolve ties by filename order -- sorted() picked "12-9-25_IndianSprings..." over the
@@ -204,49 +204,31 @@ def normalize_text(text, lower=True):
     return text.lower() if lower else text
 
 def parse_status(val) -> str:
-    """Normalize any status cell to a canonical token.
+    """Canonical status token for a cell (see STATUS_TOKENS), or '' if blank.
 
-    Handles manual sheet values (messy text), LLM output (clean tokens), and CWNS values.
-    Returns: PRESENT, PRESENT_AND_FUTURE, FUTURE, PAST, OFFSITE, or ''.
+    Fails fast on any other value, so a typo can't silently count as absent.
     """
     if val is None or (isinstance(val, float) and val != val):
         return ""
-    s = str(val).strip()
-    if not s or s in ("0", "0.0"):
+    status = str(val).strip().upper()
+    if status in ("", "0", "0.0", "NAN", "NONE"):
         return ""
-    t = s.upper().replace("-", "_")
-    if t in ("NAN", "NONE"):
-        return ""
-    if "PRESENT" in t and "FUTURE" in t:
-        return "PRESENT_AND_FUTURE"
-    for keyword in ["PRESENT", "FUTURE", "PAST", "OFFSITE"]:
-        if keyword in t:
-            return keyword
-    return ""
+    if status not in STATUS_TOKENS:
+        raise ValueError(f"Unrecognized status {val!r}")
+    return status
 
 
-def is_present(val) -> bool:
-    """True if val indicates the process is currently installed (PRESENT or PRESENT_AND_FUTURE).
+def is_present(val, statuses=PRESENT_STATUSES) -> bool:
+    """True if val's status is in statuses (default: currently installed). Everything else is absent.
 
-    FUTURE is excluded — it means planned but not yet in service.
+    The single presence rule for all scoring. table_1 passes DETECTED_STATUSES.
     """
-    return parse_status(val) in PRESENT_STATUSES
+    return parse_status(val) in statuses
 
 
-def is_unscored(val) -> bool:
-    """True if val (PAST or OFFSITE) should be dropped entirely from accuracy/F1 scoring."""
-    return parse_status(val) in UNSCORED_STATUSES
+def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None):
+    """Per-column TP/FP/FN between a truth row and a prediction row, using is_present on both sides.
 
-
-def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None,
-                   truth_present_fn=is_present, pred_present_fn=is_present):
-    """Per-column TP/FP/FN between a truth row and a prediction row.
-
-    A column is dropped entirely (counted toward neither TP, FP, nor FN) if either
-    side's status is PAST/OFFSITE (see UNSCORED_STATUSES) — same rule used for the
-    table_1 F1 metrics, centralized here so every comparison applies it consistently.
-    truth_present_fn/pred_present_fn let callers swap in a different presence
-    definition per side (e.g. CWNS counts FUTURE/PAST as detected; is_present doesn't).
     Returns (tp, fp, fn, missed, extra) where missed/extra are sorted column-name lists.
     """
     truth_cols = truth_row.index if truth_cols is None else truth_cols
@@ -256,10 +238,8 @@ def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None,
     for col in cols:
         truth_val = truth_row.get(col, "") if col in truth_cols else ""
         pred_val = pred_row.get(col, "") if col in pred_cols else ""
-        if is_unscored(truth_val) or is_unscored(pred_val):
-            continue
-        truth_positive = truth_present_fn(truth_val)
-        pred_positive = pred_present_fn(pred_val)
+        truth_positive = is_present(truth_val)
+        pred_positive = is_present(pred_val)
         if truth_positive and pred_positive:
             tp += 1
         elif pred_positive:
@@ -269,19 +249,6 @@ def presence_diff(truth_row, pred_row, cols, truth_cols=None, pred_cols=None,
             fn += 1
             missed.append(col)
     return tp, fp, fn, sorted(missed), sorted(extra)
-
-
-CWNS_PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST"})
-
-
-def is_present_cwns(val) -> bool:
-    """Scalar counterpart to build_cwns_presence_mask, for use with presence_diff."""
-    return parse_status(val) in CWNS_PRESENT_STATUSES
-
-
-def build_cwns_presence_mask(series):
-    """Return boolean mask for CWNS presence values (any detectable status, including FUTURE/PAST)."""
-    return series.map(parse_status).isin(CWNS_PRESENT_STATUSES)
 
 
 def precision_recall_f1(tp, fp, fn, empty=float("nan")):
@@ -417,7 +384,7 @@ def merge_column_statuses(column) -> str:
     tokens = {parse_status(v) for v in column}
     if "PRESENT_AND_FUTURE" in tokens or ("PRESENT" in tokens and "FUTURE" in tokens):
         return "PRESENT_AND_FUTURE"
-    for token in ("PRESENT", "FUTURE", "PAST", "OFFSITE"):
+    for token in ("PRESENT", "FUTURE", "OFFSITE", "PAST"):
         if token in tokens:
             return token
     return ""
@@ -447,7 +414,7 @@ def collapse_facility_processes(
 
 
 def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
-    proc_cols = list({name for name, _, _ in extract_leaves(unitprocess_keywords)})
+    proc_cols = list(dict.fromkeys(name for name, _, _ in extract_leaves(unitprocess_keywords)))
     left = cwns_mapping[["Place ID", "WDID", "Facility Name", "CWNS_ID", "FACILITY_ID"]]
     if target_facilities is not None:
         left = left[left["Place ID"].isin(target_facilities)]

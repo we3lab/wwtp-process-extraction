@@ -8,24 +8,25 @@ from rdflib import RDF, RDFS
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
-from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask
+from helpers.utils import parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup, apply_secondary_category_backfill, add_county_and_sort, select_json_per_place_id, current_permit_mask, DATA_DIR, OUTPUT_DIR, KEYWORDS_JSON, SITE_DATA_RELEVANT_CSV
 
-LLM_EXTRACTION_DIR = Path("wwtp_process_extraction/output/llm_extraction")
+LLM_EXTRACTION_DIR = OUTPUT_DIR / "llm_extraction"
 
 ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
            "document_order_no"]
 
 # Any status that means the extractor found the process; a row with none of them is empty.
 PRESENT_LIKE = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
+STATUS_RANK = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
 
 input_dir = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini" # Full CA dataset run
-output_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_pdf_llm.csv")
-output_fac_csv = Path(f"wwtp_process_extraction/output/unit_processes_by_facility_llm.csv")
-site_data_csv = Path(f"wwtp_process_extraction/output/site_data_relevant.csv")
+output_csv = OUTPUT_DIR / "unit_processes_by_pdf_llm.csv"
+output_fac_csv = OUTPUT_DIR / "unit_processes_by_facility_llm.csv"
+site_data_csv = SITE_DATA_RELEVANT_CSV
 output_json_dir = input_dir / "ontology_postprocess" # postprocessed JSONs in nested subfolder
 output_json_dir.mkdir(parents=True, exist_ok=True)
 
-with open("wwtp_process_extraction/data/unitprocess_keywords.json") as f:
+with open(KEYWORDS_JSON) as f:
     keywords = json.load(f)
 
 leaves = []
@@ -126,10 +127,11 @@ def normalize_values(value):
 def apply_implementation(existing, impl_value, location=None):
     text = str(impl_value or "").strip().lower().replace("-", "_")
     loc = str(location or "").strip().lower().replace("-", "_")
-    # off-site is signaled only by the Location field, never by Implementation
     is_offsite = loc in {"off_site", "third_party", "offsite"}
 
-    if text == "present":
+    if text in {"off_site", "third_party", "offsite"}:
+        new = "OFFSITE"
+    elif text == "present":
         new = "OFFSITE" if is_offsite else "PRESENT"
     elif text == "future":
         new = "" if is_offsite else "FUTURE"
@@ -138,8 +140,7 @@ def apply_implementation(existing, impl_value, location=None):
     else:
         new = ""
 
-    rank = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
-    return new if rank.get(new, 0) > rank.get(existing, 0) else existing
+    return new if STATUS_RANK.get(new, 0) > STATUS_RANK.get(existing, 0) else existing
 
 
 def normalize_component_name(component_type, name):
@@ -319,7 +320,6 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
                 result[col] = apply_implementation(result.get(col, ""), impl_value, impl_location)
 
     # Full facility-scoped multi-matching rules aggregate the role counts across matching items
-    rank = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
     for col, rule in facility_multi_rules:
         if col not in result:
             continue
@@ -341,7 +341,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
             agg.get(r, 0) >= b.get("min", 0) and agg.get(r, 0) <= b.get("max", float("inf"))
             for r, b in rule.get("role_counts", {}).items()
         )
-        if ok and rank.get(status, 0) > rank.get(result.get(col, ""), 0):
+        if ok and STATUS_RANK.get(status, 0) > STATUS_RANK.get(result.get(col, ""), 0):
             result[col] = status
 
     if output_json_data is not None and output_json_path is not None:
@@ -430,7 +430,7 @@ def main():
         if c not in ID_COLS:
             df[c] = df[c].map(parse_status)
     df[cols].to_csv(output_csv, index=False)
-    print(f"Saved {len(results)} rows ({len(results) - len(unmatched_files)} matched, {len(unmatched_files)} unmatched)")
+    print(f"Saved {len(results)} matched rows ({len(unmatched_files)} unmatched files skipped)")
 
     raw_df = pd.read_csv(output_csv, dtype=str).fillna("")
     # Collapse only the current permit. Unioning across cycles reads a process out of a
@@ -443,7 +443,7 @@ def main():
     collapsed = collapse_facility_processes(
         raw_df[current],
         key_cols=["Place ID"],
-        meta_cols=["WDID", "Order_No", "NPDES No.", "Agency", "Facility Name"],
+        meta_cols=[c for c in ID_COLS if c != "Place ID"],
     )
     collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
     collapsed.to_csv(output_fac_csv, index=False)
@@ -460,7 +460,7 @@ def build_model_comparison():
 
     Benchmark facilities = the manual CSV's Place IDs; predictions are regenerated
     fresh from every model dir. Replaces the model_comparison_all.csv intermediate."""
-    wb_df = pd.read_csv("wwtp_process_extraction/data/unit_processes_by_facility_manual.csv", dtype=str)
+    wb_df = pd.read_csv(DATA_DIR / "unit_processes_by_facility_manual.csv", dtype=str)
     manual_rows = wb_df.copy()
     manual_rows["Method"] = "Manual Read"
     up_columns = [c for c in wb_df.columns if c not in {"Method", "Model", "PDF_File"}]
@@ -471,8 +471,8 @@ def build_model_comparison():
     # ontology-based_gpt-5-mini folder also holds the full CA set, so filter each model to these.
     benchmark_pids = set(manual_rows["Place ID"].astype(str).str.strip())
     # Some facilities have multiple permit-document JSONs (an original + later
-    # modifications) sharing one Place ID; pick the document the manual ground
-    # truth was actually read from (see select_json_per_place_id).
+    # modifications) sharing one Place ID; pick the document the manual labels
+    # were actually read from (see select_json_per_place_id).
     stem_df = manual_rows[["Place ID", "PDF_File"]].copy()
     stem_df["Place ID"] = stem_df["Place ID"].astype(str).str.strip()
     pdf_stem_by_place_id = (

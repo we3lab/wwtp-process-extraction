@@ -474,9 +474,6 @@ violin_path = f"{final_dir}/figure_s2.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
 draw_violin(ax_top, unit_process_metrics_df, "A.")
 draw_violin(ax_bottom, category_metrics_df, "B.")
-# subplot titles
-ax_top.set_title("Unit Process-Level Metrics", y=1.22, fontsize=14)
-ax_bottom.set_title("Category-Level Metrics", y=1.22, fontsize=14)
 fig.tight_layout(h_pad=3.5)
 save_and_close(fig, violin_path, dpi=300)
 print(f"Saved {os.path.basename(violin_path)}")

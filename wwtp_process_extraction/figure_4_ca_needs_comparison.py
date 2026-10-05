@@ -47,7 +47,7 @@ CATEGORY_LABELS = {
 DISPLAY_GROUP = {"add_disinfection": "new"}
 
 META_COLS = {"Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "County",
-             "PDF_File"}
+             "PDF_File", "document_order_no"}
 
 # One permit-extraction bar per snapshot. Only the yyyy-06-01 folders are comparable annual
 # scrapes; a same-day run (e.g. 2026-08-13) can be partial and would read as a real decline.
@@ -387,7 +387,7 @@ def plot(per_year, cwns_reported, n_cohort):
     for cat in stack_order:
         edges[cat] = (bottom, bottom + by_cat[cat][-1])
         bottom += by_cat[cat][-1]
-    total_last = bottom
+    peak_total = max(sum(by_cat[c][i] for c in stack_order) for i in range(len(years)))
     label_x = years[-1] - 0.12
 
     # The thick bands hold their label inside; ink is chosen for contrast against the
@@ -422,7 +422,7 @@ def plot(per_year, cwns_reported, n_cohort):
                   fontsize=LABEL_FONTSIZE)
     ax.set_xlabel("Permit extraction, as of 1 June", fontsize=LABEL_FONTSIZE)
     ax.set_xlim(years[0], years[-1])
-    ax.set_ylim(0, max(cwns_m, total_last) * 1.16)
+    ax.set_ylim(0, max(cwns_m, peak_total) * 1.16)
     set_thick_spines(ax, linewidth=SPINE_WIDTH)
     fig.tight_layout()
     save_and_close(fig, OUT / "final" / "figure_4", dpi=300)

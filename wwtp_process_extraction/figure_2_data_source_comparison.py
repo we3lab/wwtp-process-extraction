@@ -9,10 +9,7 @@ from matplotlib.colors import to_rgba
 
 from helpers.utils import (
     extract_leaves,
-    build_cwns_presence_mask,
     is_present,
-    is_present_cwns,
-    is_unscored,
     presence_diff,
     get_leaf_names,
     precision_recall_f1,
@@ -35,17 +32,12 @@ def build_category_facility_sets(
 ):
     """
     Aggregate facility-level sets per top-level category for GT, NPDES text, and CWNS.
-    Returns six defaultdict(set): sd_fac, npdes_fac, cwns_fac (present), and
-    sd_unscored, npdes_unscored, cwns_unscored (PAST/OFFSITE-only facilities for that
-    category — dropped from scoring downstream unless another leaf in the same
-    category is genuinely present).
+    Returns three defaultdict(set) of facilities where the category is present:
+    sd_fac, npdes_fac, cwns_fac.
     """
     sd_fac = defaultdict(set)
     npdes_fac = defaultdict(set)
     cwns_fac = defaultdict(set)
-    sd_unscored = defaultdict(set)
-    npdes_unscored = defaultdict(set)
-    cwns_unscored = defaultdict(set)
 
     for col in process_cols:
         category = leaf_to_category.get(col, col)
@@ -54,45 +46,29 @@ def build_category_facility_sets(
                 val = row.get(col, "")
                 if is_present(val):
                     sd_fac[category].add(row["Place ID"])
-                elif is_unscored(val):
-                    sd_unscored[category].add(row["Place ID"])
         if col in text_common.columns:
             for _, row in text_common.iterrows():
                 val = row.get(col, "")
                 if is_present(val):
                     npdes_fac[category].add(row["Place ID"])
-                elif is_unscored(val):
-                    npdes_unscored[category].add(row["Place ID"])
         if col in cwns_common.columns:
-            mask = build_cwns_presence_mask(cwns_common[col])
+            mask = cwns_common[col].map(is_present)
             for pid in cwns_common.loc[mask, "Place ID"]:
                 cwns_fac[category].add(pid)
-            # CWNS statuses never include OFFSITE (step1 never emits it), so no
-            # cwns_unscored tracking is needed here.
 
-    return sd_fac, npdes_fac, cwns_fac, sd_unscored, npdes_unscored, cwns_unscored
+    return sd_fac, npdes_fac, cwns_fac
 
 
-def build_sd_rows(sd_fac, npdes_fac, cwns_fac, sd_unscored, npdes_unscored, cwns_unscored, common_facilities):
-    """Build summary rows for ground-truth comparison plotting from per-category facility sets.
-
-    A facility is dropped from a given comparison's universe if either side is
-    PAST/OFFSITE-only for that category (and not genuinely present via another
-    leaf) — same drop-the-cell rule as table_1's F1 metrics.
-    """
+def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
+    """Build summary rows for ground-truth comparison plotting from per-category facility sets."""
     all_cats = sorted(set(list(sd_fac.keys()) + list(npdes_fac.keys()) + list(cwns_fac.keys())))
     rows = []
     for cat in all_cats:
-        sd_excl = (sd_unscored[cat] - sd_fac[cat]) & common_facilities
-        npdes_excl = (npdes_unscored[cat] - npdes_fac[cat]) & common_facilities
-        cwns_excl = (cwns_unscored[cat] - cwns_fac[cat]) & common_facilities
+        sd_p = sd_fac[cat] & common_facilities
+        npdes_p = npdes_fac[cat] & common_facilities
+        cwns_p = cwns_fac[cat] & common_facilities
 
-        sd_for_npdes = (sd_fac[cat] & common_facilities) - sd_excl - npdes_excl
-        sd_for_cwns = (sd_fac[cat] & common_facilities) - sd_excl - cwns_excl
-        npdes_p = (npdes_fac[cat] & common_facilities) - sd_excl - npdes_excl
-        cwns_p = (cwns_fac[cat] & common_facilities) - sd_excl - cwns_excl
-
-        supplemental_data = len((sd_fac[cat] & common_facilities) - sd_excl)
+        supplemental_data = len(sd_p)
         npdes = len(npdes_fac[cat])
         cwns = len(cwns_fac[cat])
         if supplemental_data == 0 and npdes == 0 and cwns == 0:
@@ -109,14 +85,14 @@ def build_sd_rows(sd_fac, npdes_fac, cwns_fac, sd_unscored, npdes_unscored, cwns
                 "GroundTruth": supplemental_data,
                 "NPDES": npdes,
                 "NPDES_vs_GT": npdes_str,
-                "NPDES_TP": len(npdes_p & sd_for_npdes),
-                "NPDES_FP": len(npdes_p - sd_for_npdes),
-                "NPDES_FN": len(sd_for_npdes - npdes_p),
+                "NPDES_TP": len(npdes_p & sd_p),
+                "NPDES_FP": len(npdes_p - sd_p),
+                "NPDES_FN": len(sd_p - npdes_p),
                 "CWNS": cwns,
                 "CWNS_vs_GT": cwns_str,
-                "CWNS_TP": len(cwns_p & sd_for_cwns),
-                "CWNS_FP": len(cwns_p - sd_for_cwns),
-                "CWNS_FN": len(sd_for_cwns - cwns_p),
+                "CWNS_TP": len(cwns_p & sd_p),
+                "CWNS_FP": len(cwns_p - sd_p),
+                "CWNS_FN": len(sd_p - cwns_p),
             }
         )
     return rows
@@ -192,7 +168,7 @@ def main(error_denominator="f1"):
             print(f"  {pid}: {name}")
     # remove 'Unspecified' columns for unit-process-level analysis
     cols_no_unspec = [col for col in all_sheet_process_cols if "Unspecified" not in col]
-    sd_cat, npdes_cat, cwns_cat, sd_cat_unscored, npdes_cat_unscored, cwns_cat_unscored = build_category_facility_sets(
+    sd_cat, npdes_cat, cwns_cat = build_category_facility_sets(
         all_sheet_process_cols,
         supplemental_data_common,
         text_common,
@@ -201,7 +177,7 @@ def main(error_denominator="f1"):
     )
 
     sd_simple_rows = build_sd_rows(
-        sd_cat, npdes_cat, cwns_cat, sd_cat_unscored, npdes_cat_unscored, cwns_cat_unscored, common_facilities
+        sd_cat, npdes_cat, cwns_cat, common_facilities
     )
 
     tick_fontsize = 12
@@ -234,12 +210,12 @@ def main(error_denominator="f1"):
 
     # Per-leaf (unit-process) rows for the printed GT=0 false-positive diagnostic below;
     # identity mapping keeps each leaf separate (panel B above stays category-level by design).
-    sd_leaf, npdes_leaf, cwns_leaf, sd_leaf_unscored, npdes_leaf_unscored, cwns_leaf_unscored = build_category_facility_sets(
+    sd_leaf, npdes_leaf, cwns_leaf = build_category_facility_sets(
         cols_no_unspec, supplemental_data_common, text_common, cwns_common,
         {leaf: leaf for leaf in cols_no_unspec},
     )
     leaf_rows = pd.DataFrame(build_sd_rows(
-        sd_leaf, npdes_leaf, cwns_leaf, sd_leaf_unscored, npdes_leaf_unscored, cwns_leaf_unscored, common_facilities
+        sd_leaf, npdes_leaf, cwns_leaf, common_facilities
     ))
     leaf_gt = leaf_rows[leaf_rows["GroundTruth"] > 0]
 
@@ -264,14 +240,13 @@ def main(error_denominator="f1"):
         )
 
         src_metrics = {}
-        for prefix, pred_row, pred_cols, pred_present_fn in [
-            ("NPDES", text_row, text_common.columns, is_present),
-            ("CWNS", cwns_row, cwns_common.columns, is_present_cwns),
+        for prefix, pred_row, pred_cols in [
+            ("NPDES", text_row, text_common.columns),
+            ("CWNS", cwns_row, cwns_common.columns),
         ]:
             tp, fp, fn, missed, extra = presence_diff(
                 supplemental_data_row, pred_row, cols_no_unspec,
                 truth_cols=supplemental_data_common.columns, pred_cols=pred_cols,
-                pred_present_fn=pred_present_fn,
             )
             p, r, f1, _ = precision_recall_f1(tp, fp, fn, empty=0)
             src_metrics[prefix] = dict(

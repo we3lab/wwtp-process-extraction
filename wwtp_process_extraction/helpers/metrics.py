@@ -111,24 +111,3 @@ def compute_facility_metric_rows(
         rows.append(row)
 
     return rows
-
-
-def summarize_metrics(metric_df: pd.DataFrame, level_name: str) -> pd.DataFrame:
-    rows = []
-    for source, subset in metric_df.groupby("Source", sort=False):
-        usable = subset[
-            subset[["Support_Manual", "Support_Pred", "TP", "FP", "FN"]].sum(axis=1) > 0
-        ]
-        rows.append(
-            {
-                "Level": level_name,
-                "Source": source,
-                "Macro_F1": usable["F1"].mean(),
-                "Macro_Accuracy": usable["Accuracy"].mean(),
-                "Macro_Missed_Rate": usable["Missed_Rate"].mean(),
-                "Macro_Hallucinated_Rate": usable["Hallucinated_Rate"].mean(),
-                "Macro_State_Accuracy": usable["State_Accuracy"].mean(),
-                "Label_Count": int(len(usable)),
-            }
-        )
-    return pd.DataFrame(rows)

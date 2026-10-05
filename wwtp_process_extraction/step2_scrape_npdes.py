@@ -810,6 +810,7 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=24):
     print("\n STEP 2: Visiting facility pages and downloading PDFs")
 
     reg_id_to_info = {}
+    addtl_reg_id_to_pdfs = {}
     lock = threading.Lock()
     permit_path = os.path.join(OUT, "permits")
     check_dirs = (pdfs_path, permit_path)
@@ -886,17 +887,20 @@ def download_facility_page_pdfs(facilities_by_place, max_workers=24):
                     continue
                 addtl_reg_id = parse_qs(urlparse(addtl_url).query).get("regMeasID", [None])[0]
                 with lock:
-                    cached = addtl_reg_id and addtl_reg_id in reg_id_to_info
-                if cached:
-                    extra_pdfs = reg_id_to_info[addtl_reg_id].get("pdfs", [])
-                else:
+                    if addtl_reg_id in addtl_reg_id_to_pdfs:
+                        extra_pdfs = addtl_reg_id_to_pdfs[addtl_reg_id]
+                    elif addtl_reg_id in reg_id_to_info:
+                        extra_pdfs = reg_id_to_info[addtl_reg_id].get("pdfs", [])
+                    else:
+                        extra_pdfs = None
+                if extra_pdfs is None:
                     extra_pdfs, extra_missed, _ = _download_and_move(
                         driver, addtl_url, worker_dir, main_window, check_dirs, pdfs_path
                     )
                     info["missed_pdfs"].extend(extra_missed)
                     with lock:
                         if addtl_reg_id:
-                            reg_id_to_info[addtl_reg_id] = {"pdfs": extra_pdfs}
+                            addtl_reg_id_to_pdfs[addtl_reg_id] = extra_pdfs
                 info["pdfs"].extend(extra_pdfs)
                 addtl_reg_ids.append(addtl_reg_id or "")
                 addtl_wdids.append(addtl_wdid or "")
@@ -1034,23 +1038,6 @@ def extract_pdf_text(pdf_path: str, max_pages=5, lowercase=True) -> str:
     raw = re.sub(r"[­​‌‍﻿]", "", raw)
     raw = re.sub(r"[  ᠎ -   　]", "", raw)
     return raw.lower() if lowercase else raw
-
-
-def detect_text_from_pdf(pdf_path: str, text_searched: str, max_pages=5):
-    """Detect if 'text_searched' is in the first 'max_pages' of the PDF at 'pdf_path'."""
-    # Use the combined normalized text from the first pages for more robust matching
-    combined = extract_pdf_text(pdf_path, max_pages)
-    if not combined:
-        return False
-    text_searched_normalized = normalize_text(text_searched)
-    if text_searched_normalized in combined:
-        return True
-    # try spaceless fallback
-    combined_nospace = re.sub(r"\s+", "", combined)
-    k_nospace = re.sub(r"\s+", "", text_searched_normalized)
-    if k_nospace and k_nospace in combined_nospace:
-        return True
-    return False
 
 
 def detect_npdes_pattern(pdf_path: str, max_pages=5) -> bool:

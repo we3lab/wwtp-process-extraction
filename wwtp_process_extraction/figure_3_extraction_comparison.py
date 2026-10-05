@@ -61,7 +61,7 @@ PLOT_GROUPS = {
     "Disinfection": ["Disinfection"],
     "Chemical Treatment": ["Coagulation", "Flocculation", "Chemical Addition"],
     "Advanced Treatment": ["Ion Exchange", "Activated Carbon", "UV-AOP", "Wetland"],
-    "Solids Processing": ["Anaerobic Digestion", "Aerobic Digestion"],
+    "Solids Processing": ["Solids Processing"],
 }
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
@@ -83,9 +83,9 @@ def get_facility_counts(df, leaf_cols):
     has_future = _any_flag(df, leaf_cols, {"FUTURE"})
     has_offsite = _any_flag(df, leaf_cols, {"OFFSITE"})
     present_count = int(has_present.sum())
-    past_count = int((has_past & ~has_present).sum())
     future_count = int((has_future & ~has_present).sum())
     offsite_count = int((has_offsite & ~has_present & ~has_future).sum())
+    past_count = int((has_past & ~has_present & ~has_future & ~has_offsite).sum())
     not_present_count = len(df) - (present_count + past_count + future_count + offsite_count)
     return {
         "PRESENT": present_count,
@@ -392,7 +392,7 @@ final_df = add_county_and_sort(final_df, "CIWQS Facility Name", place_id_col="CI
 final_path = f"{DATA_DIR}/unit_processes_by_facility.csv"
 final_df.to_csv(final_path, index=False)
 print(f"\nSaved merged unit processes ({len(final_df)} rows, "
-      f"{(final_df['source'] == 'cwns').sum()} cwns + {(final_df['source'] == 'ciwqs').sum()} ciwqs): {final_path}")
+      f"{(final_df['source'] == 'Clean Watershed Needs Survey').sum()} cwns + {(final_df['source'] == 'ciwqs').sum()} ciwqs): {final_path}")
 
 cwns_facilities_all = set(cwns_df["Place ID"])
 kw_df, llm_df = [df[df["Place ID"].isin(cwns_facilities_all)].copy() for df in [kw_df, llm_df]]
@@ -634,7 +634,7 @@ ciwqs.loc[needs_fac_id, "FACILITY_ID"] = ciwqs.loc[needs_fac_id, "CWNS_ID"].map(
 ciwqs = ciwqs.merge(site_lookup, on=["WDID", "Facility Name"], how="left", suffixes=("", "_site"))
 ciwqs = ciwqs.merge(ciwqs_lookup, on=["WDID", "Facility Name"], how="left")
 
-for dest, src in [("NPDES No.", "NPDES_No_site"), ("Region", "Region_site")]:
+for dest, src in [("NPDES No.", "NPDES No._site"), ("Region", "Region_site")]:
     if src in ciwqs.columns:
         ciwqs[dest] = ciwqs[dest] if dest in ciwqs.columns else ciwqs[src]
         ciwqs[dest] = coalesce_blank(ciwqs[dest], ciwqs[src])

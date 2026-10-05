@@ -169,12 +169,13 @@ def chat_completion_web(
         "claude", "-p", user_message,
         "--system-prompt", system_message,
         "--allowedTools", "WebSearch,WebFetch",
-        "--json-schema", json.dumps(schema),
         "--output-format", "json",
         "--model", model,
         "--effort", "medium",
         "--no-session-persistence",
     ]
+    if schema is not None:
+        cmd += ["--json-schema", json.dumps(schema)]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     if result.returncode != 0:
         err = RuntimeError(f"CLI failed: {result.stderr[:200]}")
@@ -283,24 +284,20 @@ def run_extraction(args, output_dir_override=None):
     # the JSON results, so the txt_file/extraction_file names aren't stored here.
     token_usage_csv_path = output_dir / "token_usage_summary.csv"
     token_usage_cols = [
-        "facility_name", "place_id", "structured_output",
+        "facility_name", "place_id", "extraction_file", "structured_output",
         "completion_token", "prompt_token", "total_token", "reasoning_token", "cost_usd",
     ]
 
     def append_row_csv(path, row, columns):
-        pd.DataFrame([row], columns=columns).to_csv(
-            path, mode="a", header=not path.exists(), index=False
-        )
-        # keep one row per facility_name: prefer the latest non-FAILED row, else the latest row
-        df = pd.read_csv(path)
-
-        def keep_row(group):
-            non_failed = group[group["structured_output"].astype(str).str.upper() != "FAILED"]
-            return non_failed.iloc[[-1]] if len(non_failed) else group.iloc[[-1]]
-
-        deduped = df.groupby("facility_name", sort=False).apply(keep_row).reset_index(drop=True)
-        if len(deduped) != len(df):
-            deduped.to_csv(path, index=False)
+        df = pd.DataFrame([row], columns=columns)
+        if path.exists():
+            df = pd.concat([pd.read_csv(path).reindex(columns=columns), df], ignore_index=True)
+        # keep one row per extraction: prefer the latest non-FAILED row, else the latest row
+        key = df["extraction_file"].fillna(df["facility_name"])
+        failed = df["structured_output"].astype(str).str.upper() == "FAILED"
+        ordered_keys = pd.concat([key[failed], key[~failed]])
+        keep_index = ordered_keys[~ordered_keys.duplicated(keep="last")].index
+        df.loc[sorted(keep_index)].to_csv(path, index=False)
 
     if args.max_facilities is not None:
         jobs = jobs[:args.max_facilities]
@@ -333,9 +330,8 @@ def run_extraction(args, output_dir_override=None):
         extraction_file_name = f"{txt_stem}_{file_id}.json"
         output_json_path = output_dir / extraction_file_name
 
-        existing = next(output_dir.glob(f"{txt_stem}_{file_id}.json"), None)
-        if existing:
-            print(f"Already processed: {existing.name}, skipping.")
+        if output_json_path.exists():
+            print(f"Already processed: {extraction_file_name}, skipping.")
             continue
 
         system_msg = render_system_message(
@@ -348,9 +344,10 @@ def run_extraction(args, output_dir_override=None):
         if args.web_search:
             system_msg = system_msg + _WEB_SYSTEM_SUFFIX
 
-        user_msg = f"""Find all the treatment processes explicitely used in the {facility_name} facility. Here is the permit extract:
-        {permit_extract}
-        """
+        user_msg = (
+            f"Find all the treatment processes explicitly used in the {facility_name} facility. "
+            f"Here is the permit extract:\n{permit_extract}\n"
+        )
         if args.waterrag_context:
             # Appended to the user message, never the system message, so the prompt template,
             # ontology dump and ICL example stay byte-identical to the no-retrieval control.
@@ -423,6 +420,7 @@ def run_extraction(args, output_dir_override=None):
                 {
                     "facility_name": facility_name,
                     "place_id": place_id,
+                    "extraction_file": extraction_file_name,
                     "structured_output": structured_output,
                     "completion_token": completion_token,
                     "prompt_token": prompt_token,
@@ -444,6 +442,7 @@ def run_extraction(args, output_dir_override=None):
                 {
                     "facility_name": facility_name,
                     "place_id": place_id,
+                    "extraction_file": extraction_file_name,
                     "structured_output": "FAILED",
                     "completion_token": 0,
                     "prompt_token": 0,
@@ -460,7 +459,7 @@ def run_extraction(args, output_dir_override=None):
 
 if __name__ == "__main__":
     args = parse_args()
-    if not args.web_search:
+    if args.repeat_runs or not args.web_search:
         require_api_key()
     ontology_to_txt()  # once per invocation, from the pinned Zenodo release
     if args.repeat_runs:

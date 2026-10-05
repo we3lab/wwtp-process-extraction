@@ -31,14 +31,13 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / 'wwtp_process_extraction'))
-from helpers.plotting import COLORS, save_and_close
+from helpers.plotting import save_and_close
 from helpers.utils import (build_cwns_facility_processes, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
                           PRESENT_STATUSES, current_permit_mask, collapse_facility_processes)
 # Only consulted if GitHub is unreachable. Defaults to a US_WWTP_GHG clone sitting beside this
 # repo; set GHG_ROOT to point elsewhere.
 GHG_ROOT = Path(os.environ.get('GHG_ROOT') or REPO_ROOT.parent / 'US_WWTP_GHG')
 MC_DIR = 'uncertainty_sensitivity_results/Monte_Carlo'
-GHG_INPUT = GHG_ROOT / 'GHG_accounting/input_data'
 # The 50th-percentile factors distilled from the ~180 MB of upstream Monte Carlo workbooks.
 # Cached because it is 49 rows of derived numbers; delete it to refetch and recompute.
 MC_EF_CSV = SCRIPT_DIR / 'data' / 'ghg_mc_emission_factors.csv'
@@ -131,7 +130,8 @@ def load_llm_facility_table():
         keep = current_permit_mask(raw, as_of=GHG_AS_OF, content=content)
         _llm_facility_cache = collapse_facility_processes(
             raw[keep], key_cols=['Place ID'],
-            meta_cols=['WDID', 'Order_No', 'NPDES No.', 'Agency', 'Facility Name'])
+            meta_cols=['WDID', 'Order_No', 'NPDES No.', 'Agency', 'Facility Name', 'County',
+                       'PDF_File', 'document_order_no'])
         print(f'  Permit basis {GHG_AS_OF}: {int(keep.sum())} of {len(raw)} documents '
               f'-> {len(_llm_facility_cache)} facilities')
     return _llm_facility_cache.copy()
@@ -926,7 +926,7 @@ def plot_comparison(results, output_dir):
         bottoms += vals
     ax.set_xticks(x)
     ax.set_xticklabels([src_labels[s] for s in sources], fontsize=10)
-    ax.set_ylabel(f'kt CO₂e / year\nn={r["n_facilities"]} facilities, {r["total_flow_MGD"]:.0f} MGD', fontsize=11)
+    ax.set_ylabel(f'kt CO₂e / year\nn={results[sources[0]]["n_facilities"]} facilities, {results[sources[0]]["total_flow_MGD"]:.0f} MGD', fontsize=11)
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles[::-1], labels[::-1], loc='upper left', fontsize=10, frameon=False,
               bbox_to_anchor=(1.01, 1), borderaxespad=0)

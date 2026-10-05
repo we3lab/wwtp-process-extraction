@@ -240,7 +240,6 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     retrieval, reranker = load_waterrag(args.waterrag_dir, args.rerank_model, args.no_rerank)
 
-    usage_rows = []
     for row_idx, txt_path, txt_file, facility_name in jobs:
         txt_path = Path(txt_path)
         description_text = txt_path.read_text(encoding="utf-8").split(SEP, 1)[0]
@@ -283,23 +282,22 @@ def main():
             "rerank_completion_token": _rerank_usage["completion"],
         }, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    usage_rows = []
+    for context_path in sorted(OUTPUT_DIR.glob("*.json")):
+        context = json.loads(context_path.read_text(encoding="utf-8"))
         usage_rows.append({
-            "facility_name": facility_name,
-            "place_id": place_id,
-            "n_queries": len(queries),
-            "n_chunks": len(chunks),
-            "rerank_model": None if args.no_rerank else args.rerank_model,
-            "prompt_token": _rerank_usage["prompt"],
-            "completion_token": _rerank_usage["completion"],
+            "facility_name": context["facility_name"],
+            "place_id": context["place_id"],
+            "context_file": context_path.name,
+            "n_queries": len(context["queries"]),
+            "n_chunks": len(context["chunks"]),
+            "rerank_model": context["rerank_model"],
+            "prompt_token": context["rerank_prompt_token"],
+            "completion_token": context["rerank_completion_token"],
         })
-
-    if usage_rows:
-        usage_path = OUTPUT_DIR / "token_usage_summary.csv"
-        combined = pd.DataFrame(usage_rows)
-        if usage_path.exists():
-            combined = pd.concat([pd.read_csv(usage_path), combined], ignore_index=True)
-        combined.drop_duplicates(subset="facility_name", keep="last").to_csv(usage_path, index=False)
-        print(f"\nRerank token usage: {usage_path}")
+    usage_path = OUTPUT_DIR / "token_usage_summary.csv"
+    pd.DataFrame(usage_rows).to_csv(usage_path, index=False)
+    print(f"\nRerank token usage: {usage_path}")
 
 
 if __name__ == "__main__":

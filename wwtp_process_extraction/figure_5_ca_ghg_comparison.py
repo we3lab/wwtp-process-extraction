@@ -29,7 +29,7 @@ from matplotlib.patches import Patch
 from pathlib import Path
 
 from helpers.plotting import make_grouped_legend, save_and_close
-from helpers.utils import (build_cwns_facility_processes, extract_leaves, unitprocess_keywords,
+from helpers.utils import (build_cwns_facility_processes, leaves,
                           CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV, DATA_DIR, OUTPUT_DIR,
                           FINAL_DIR, PRESENT_STATUSES, STATUS_TOKENS, current_permit_mask,
                           collapse_facility_processes)
@@ -211,7 +211,7 @@ def load_cwns_col_to_werf(automatic=False):
         csv_lookup = (werf_csv.groupby(werf_csv['FINAL_UNIT_PROCESS_NAME'].str.lower().str.strip())['WERF_CODE']
                       .apply(lambda s: sorted(set(s.dropna()))).to_dict())
     mapping = {}
-    for name, details, _ in extract_leaves(unitprocess_keywords):
+    for name, details, _ in leaves:
         codes = set()
         if automatic:
             for cwns_name in details.get('cwns_processes') or []:

@@ -7,8 +7,7 @@ import pandas as pd
 from helpers.ontology_to_txt import ontology_to_txt
 from helpers.utils import (
     build_txt_jobs,
-    extract_leaves,
-    unitprocess_keywords,
+    leaves,
     SEP,
     DATA_DIR,
     TXT_DIR,
@@ -395,7 +394,7 @@ if __name__ == "__main__":
     if "list-based" in methods:
         # list-based prompt reference: one "name: alt names" line per leaf process
         lines = []
-        for name, details, _ in extract_leaves(unitprocess_keywords):
+        for name, details, _ in leaves:
             alt_names = [a.strip() for a in details.get("alt_names", []) + details.get("alt_names_case_sensitive", []) if a.strip()]
             lines.append(f"{name}: {', '.join(dict.fromkeys(alt_names))}" if alt_names else f"{name}:")
         METHOD_PATHS["list-based"]["reference_path"].write_text("\n".join(lines) + "\n", encoding="utf-8")

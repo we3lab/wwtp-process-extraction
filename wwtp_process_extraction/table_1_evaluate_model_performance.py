@@ -29,7 +29,7 @@ import pandas as pd
 
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison, normalize_pdf_name, model_run_dirs
 from helpers.utils import (
-    get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, build_secondary_category_lookup,
+    get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, top_category_to_columns,
     DETECTED_STATUSES, DATA_DIR, OUTPUT_DIR, TXT_DIR, FINAL_DIR, LLM_EXTRACTION_DIR, WATERRAG_RETRIEVAL_DIR,
     MANUAL_CSV, SITE_DATA_RELEVANT_CSV, unitprocess_keywords,
 )
@@ -257,7 +257,6 @@ def main() -> None:
     manual = pd.read_csv(MANUAL_CSV, dtype=str).set_index("Place ID")
     pdf_stem_by_place_id = manual["PDF_File"].to_dict()
 
-    top_category_to_columns = build_secondary_category_lookup(unitprocess_keywords)[0]
     # relaxed Category F1 scores each detailed label as its top-level family
     label_to_family = {leaf: family for family, leaves in top_category_to_columns.items() for leaf in leaves}
     included = {leaf for cat, val in unitprocess_keywords.items() for leaf in get_leaf_names(cat, val)}

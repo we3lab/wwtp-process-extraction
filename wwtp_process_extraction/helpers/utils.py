@@ -55,14 +55,42 @@ with open(KEYWORDS_JSON, "r") as f:
     unitprocess_keywords = json.load(f)
 
 
+def extract_leaves(processes_dict, group_id=None, exclude_keys=()):
+    """Return list of (name, details_dict, group_id) for all leaf entries."""
+    leaves = []
+    for name, details in processes_dict.items():
+        if name in exclude_keys:
+            continue
+        if "alt_names" in details:
+            leaves.append((name, details, group_id))
+        else:
+            leaves.extend(extract_leaves(details, group_id=name, exclude_keys=exclude_keys))
+    return leaves
+
+
+# Leaf-process lookups from unitprocess_keywords, shared by steps 1, 4 and 6
+leaves = extract_leaves(unitprocess_keywords)
+leaf_names = [name for name, _, _ in leaves]
+column_priority = {name: details.get("priority", 1) for name, details, _ in leaves}
+# leaves sharing a parent group compete on priority
+group_to_columns = {}
+for name, _, group_id in leaves:
+    if group_id:
+        group_to_columns.setdefault(group_id, []).append(name)
+top_category_to_columns = {}
+column_secondary_categories = {}
+column_global_priority = {}
+for top_cat, cat_val in unitprocess_keywords.items():
+    for name, details, _ in extract_leaves({top_cat: cat_val}):
+        top_category_to_columns.setdefault(top_cat, []).append(name)
+        column_global_priority[name] = details.get("global_priority", 1)
+        if details.get("secondary_category"):
+            column_secondary_categories[name] = details["secondary_category"]
+
+
 @cache
 def document_recency():
-    """(place_id, pdf_stem) -> newest snapshot date that document appears in, '' if none.
-
-    step2 writes a dated site_data_relevant.csv per AS_OF run and unions them into
-    as_of_dates. The document a facility holds in the newest snapshot is its current permit;
-    one absent from every snapshot is a leftover from a superseded order.
-    """
+    """(place_id, pdf_stem) -> newest snapshot date (from as_of_dates) the document appears in."""
     recency = {}
     rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False)
     for _, row in rel.iterrows():
@@ -70,25 +98,17 @@ def document_recency():
         if not pdf:
             continue
         key = (row["Place ID"].strip(), Path(pdf).stem)
-        newest = max(row["as_of_dates"].split(";")) if row["as_of_dates"] else ""
-        recency[key] = max(recency.get(key, ""), newest)
+        recency[key] = max(recency.get(key, ""), max(row["as_of_dates"].split(";")))
     return recency
 
 
 def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_id=None):
     """Map place_id -> json Path for one model directory, one file per facility.
 
-    step5 encodes each output's Place ID and source PDF as a {pdf_stem}_{id}.json filename. A
-    facility with several permit documents (an original plus later modifications) gets one json
-    per document, so a single one has to be chosen:
-
-      1. pdf_stem_by_place_id (the manual CSV's PDF_File) pins the exact document the manual labels
-         were read from, so every caller scores the same source.
-      2. otherwise keep the most current document, by newest snapshot it appears in.
-
-    Never resolve ties by filename order -- sorted() picked "12-9-25_IndianSprings..." over the
-    current "2026-06-01_WDR_NOA_Revised_IndianSpringsWWTP...", silently scoring a superseded NOA.
-    A tie that recency cannot break raises rather than guessing.
+    step5 names each output {pdf_stem}_{place_id}.json, so a facility with several documents has
+    several files. pdf_stem_by_place_id (the manual CSV's PDF_File) pins the document the manual
+    labels were read from; otherwise keep the most current one (newest snapshot). A tie raises
+    rather than falling back to filename order, which once picked a superseded NOA.
     """
     candidates = {}
     for json_file in Path(json_dir).glob("*.json"):
@@ -107,9 +127,6 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
     recency = document_recency()
     selected = {}
     for place_id, files in candidates.items():
-        if len(files) == 1:
-            selected[place_id] = files[0]
-            continue
         file_recency = {f: recency.get((place_id, f.name[: -(len(place_id) + 6)]), "") for f in files}
         ranked = sorted(files, key=file_recency.get, reverse=True)
         best = file_recency[ranked[0]]
@@ -125,16 +142,13 @@ def select_json_per_place_id(json_dir, place_id_filter=None, pdf_stem_by_place_i
 
 
 def is_general_order(text):
-    """True if text opens as a statewide general order (e.g. 2014-0153-DWQ) rather than a
-    facility-specific permit. Must be content-based: an enrollee's order_no IS the general order number.
+    """True if text opens as a statewide general order (e.g. 2014-0153-DWQ), not a facility permit.
 
-    Three conditions, each ruling out a distinct look-alike:
-      - title phrase in the opening block, because a general order announces itself there
-      - issued by the State Water Resources Control Board, because a REGIONAL board titles
-        individual permits the same way ("General WDRs for the Top O'Topanga Community
-        Association WWTS at 3360 N Topanga Canyon Blvd"), as do enrollment cover letters
-      - no "Notice of Applicability" heading, because an enrollee's own NOA cites the general
-        order in its header and would otherwise match
+    Checked on content, since an enrollee's order number is the general order number. All three:
+      - "general waste discharge requirements" in the title block
+      - issued by the State Water Resources Control Board (regional boards title some
+        individual permits and enrollment letters the same way)
+      - no "Notice of Applicability" (an enrollee's own NOA cites the general order up top)
     """
     head = re.sub(r"===PAGE \d+===\n?|\[Page \d+\]\n?", "", text[:1800])
     if not re.search(r"general\s+waste\s+discharge\s+requirements", head[:300], re.IGNORECASE):
@@ -189,19 +203,6 @@ def precision_recall_f1(tp, fp, fn, empty=float("nan")):
     return precision, recall, f1, jaccard
 
 
-def extract_leaves(processes_dict, group_id=None, exclude_keys=()):
-    """Return list of (name, details_dict, group_id) for all leaf entries."""
-    leaves = []
-    for name, details in processes_dict.items():
-        if name in exclude_keys:
-            continue
-        if "alt_names" in details:
-            leaves.append((name, details, group_id))
-        else:
-            leaves.extend(extract_leaves(details, group_id=name, exclude_keys=exclude_keys))
-    return leaves
-
-
 def get_leaf_names(cat_name, cat_val, exclude_categories=("Disposal",), exclude_unspecified=False):
     """Return leaf process names for a category from the keywords hierarchy.
 
@@ -220,21 +221,6 @@ def get_leaf_names(cat_name, cat_val, exclude_categories=("Disposal",), exclude_
     return [name for name, _, _ in leaves]
 
 
-def build_secondary_category_lookup(keywords_dict):
-    """Return (top_category_to_columns, column_secondary_categories, column_global_priority)."""
-    top_category_to_columns = {}
-    column_secondary_categories = {}
-    column_global_priority = {}
-    for top_cat, cat_val in keywords_dict.items():
-        for name, details, _ in extract_leaves({top_cat: cat_val}):
-            top_category_to_columns.setdefault(top_cat, []).append(name)
-            column_global_priority[name] = details.get("global_priority", 1)
-            secondary_categories = details.get("secondary_category", [])
-            if secondary_categories:
-                column_secondary_categories[name] = secondary_categories
-    return top_category_to_columns, column_secondary_categories, column_global_priority
-
-
 def keep_best_priority(status_dict, cols, priority, cleared=""):
     """Among the present cols, clear every one ranked below the best (lowest) priority value."""
     present_cols = [c for c in cols if status_dict.get(c) in PRESENT_STATUSES]
@@ -246,15 +232,7 @@ def keep_best_priority(status_dict, cols, priority, cleared=""):
             status_dict[col] = cleared
 
 
-def apply_secondary_category_backfill(
-    status_dict,
-    column_secondary_categories,
-    top_category_to_columns,
-    column_global_priority,
-    column_priority,
-    ontology_resolve_fn=None,
-    excluded_cols=(),
-):
+def apply_secondary_category_backfill(status_dict, ontology_resolve_fn=None, excluded_cols=()):
     """Backfill secondary categories: if a PRESENT process requests a secondary category
     that has no PRESENT process, mark the best fallback (unspecified-first) as PRESENT.
 
@@ -327,7 +305,7 @@ def collapse_facility_processes(
 
 
 def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
-    proc_cols = list(dict.fromkeys(name for name, _, _ in extract_leaves(unitprocess_keywords)))
+    proc_cols = leaf_names
     left = cwns_mapping[["Place ID", "WDID", "Facility Name", "CWNS_ID", "FACILITY_ID"]]
     if target_facilities is not None:
         left = left[left["Place ID"].isin(target_facilities)]
@@ -341,20 +319,13 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
 
 @cache
 def orders_in_force(as_of=None):
-    """place_id -> set of Order_No values CIWQS listed for it as of a snapshot date.
+    """place_id -> set of Order_No values CIWQS listed for it on a snapshot date (default: newest).
 
-    step2 unions each dated scrape into site_data_relevant.csv's as_of_dates, so the orders
-    a facility held on a given date are the Order_No values on rows carrying that date. Read
-    from the union rather than output/site_data/<date>/ because as_of_dates carries dates that
-    have no snapshot directory.
-
-    as_of=None uses the newest date present. Pass an explicit date to reconstruct the fleet as
-    it stood then -- comparisons against CWNS 2022 want the 2022 permits, not today's.
+    Read from site_data_relevant's as_of_dates rather than site_data/<date>/, because some dates
+    have no snapshot folder. Pass as_of to get the permits as they stood then (e.g. 2022 for CWNS).
     """
     rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False)
-    dates = set()
-    for v in rel["as_of_dates"]:
-        dates |= {d for d in v.split(";") if d}
+    dates = {d for v in rel["as_of_dates"] for d in v.split(";") if d}
     target = as_of or max(dates)
     held = {}
     for _, row in rel.iterrows():

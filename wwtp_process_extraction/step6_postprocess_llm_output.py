@@ -8,9 +8,10 @@ from rdflib import RDF, RDFS
 
 from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
 from helpers.utils import (
-    parse_status, extract_leaves, collapse_facility_processes, build_secondary_category_lookup,
+    parse_status, collapse_facility_processes, leaves, leaf_names, group_to_columns, column_priority,
+    top_category_to_columns, column_global_priority,
     apply_secondary_category_backfill, keep_best_priority, add_county_and_sort, select_json_per_place_id,
-    current_permit_mask, unitprocess_keywords, OUTPUT_DIR, LLM_EXTRACTION_DIR, MANUAL_CSV,
+    current_permit_mask, OUTPUT_DIR, LLM_EXTRACTION_DIR, MANUAL_CSV,
     SITE_DATA_RELEVANT_CSV, STATUS_TOKENS, STATUS_RANK,
 )
 
@@ -24,10 +25,6 @@ POSTPROCESS_DIR_NAME = "ontology_postprocess"  # postprocessed JSONs, in a subfo
 RUN_DIR_PREFIXES = {"ontology-based_": "Ontology", "list-based_": "List"}
 OFFSITE_WORDS = {"off_site", "third_party", "offsite"}
 
-leaves = extract_leaves(unitprocess_keywords)
-columns = [name for name, _, _ in leaves]
-group_to_columns = {}
-column_priority = {}
 column_exclude_if_any = {}
 column_trigger_clauses = {}
 # ontology_triggers rules sorted by priority
@@ -36,13 +33,8 @@ trigger_rules = []
 # config split across separate basins still fires. List specific reactor classes (not generic
 # Reactor/Tank) so an AnaerobicDigester never matches and can't leak its Anaerobic role.
 facility_multi_rules = []
-top_category_to_columns, column_secondary_categories, column_global_priority = \
-    build_secondary_category_lookup(unitprocess_keywords)
 for name, details, group_id in leaves:
-    if group_id:
-        group_to_columns.setdefault(group_id, []).append(name)
-    priority = details.get("priority", 1)
-    column_priority[name] = priority
+    priority = column_priority[name]
     exclude_tokens = details.get("exclude_if_any", [])
     if exclude_tokens:
         column_exclude_if_any[name] = exclude_tokens
@@ -154,7 +146,7 @@ def resolve_secondary_by_ontology(components, excluded_cols, secondary_cols):
 
 def process_json_to_unit_process_dict(json_data, output_json_path=None):
     """Run ontology mapping on a single JSON extraction result. Returns {col: status} dict."""
-    result = {col: "" for col in columns}
+    result = {col: "" for col in leaf_names}
     records = json_data["items"]
     if output_json_path is not None:
         output_json_data = {"items": [dict(item) for item in records]}
@@ -195,7 +187,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         item_components.append((item_idx, components, item_role_counts, impl_value, impl_location))
 
     for item_idx, components, role_counts, impl_value, impl_location in item_components:
-        item_result = {col: "" for col in columns}
+        item_result = {col: "" for col in leaf_names}
 
         for proc in components["Process"]:
             if proc in item_result:
@@ -231,8 +223,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
 
         # Fill missing secondary categories: ontology triggers first, else the Unspecified fallback
         apply_secondary_category_backfill(
-            item_result, column_secondary_categories, top_category_to_columns,
-            column_global_priority, column_priority,
+            item_result,
             ontology_resolve_fn=partial(resolve_secondary_by_ontology, components, excluded_cols),
             excluded_cols=excluded_cols,
         )
@@ -281,7 +272,7 @@ def process_list_based_json(json_data):
     List-based items use Process names that are leaf keys from the unit process
     list, so no ontology trigger resolution is needed.
     """
-    result = {col: "" for col in columns}
+    result = {col: "" for col in leaf_names}
     for item in json_data["items"]:
         impl_value = item.get("Implementation")
         impl_location = item.get("Location")
@@ -336,14 +327,14 @@ def main():
         result.update(identity)
         results.append(result)
 
-    raw_df = pd.DataFrame(results)[ID_COLS + columns]
-    for c in columns:
+    raw_df = pd.DataFrame(results)[ID_COLS + leaf_names]
+    for c in leaf_names:
         raw_df[c] = raw_df[c].map(parse_status)
     print(f"Matched {len(results)} documents ({len(unmatched_files)} unmatched files skipped)")
 
     # Collapse only the current permit. Unioning across cycles reads a process out of a
     # superseded order as if the facility still ran it.
-    has_content = raw_df[columns].isin(STATUS_TOKENS).any(axis=1)
+    has_content = raw_df[leaf_names].isin(STATUS_TOKENS).any(axis=1)
     current = current_permit_mask(raw_df, content=has_content)
     print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
           f"({int((~current).sum())} superseded rows excluded from the facility collapse)")

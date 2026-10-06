@@ -30,11 +30,10 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from helpers.utils import (
     SEP,
     build_txt_jobs,
-    extract_leaves,
+    leaves,
     TXT_DIR,
     MANUAL_CSV,
     SITE_DATA_RELEVANT_CSV,
-    unitprocess_keywords,
     WATERRAG_RETRIEVAL_DIR,
 )
 from step4_keyword_extraction import search_processes_in_text
@@ -159,12 +158,12 @@ def build_queries(description_text):
     """
     hits = search_processes_in_text(description_text)
     # drop the 'Unspecified X' catch-alls (priority 1000), which make useless literature queries
-    leaves = [
-        name for name, details, _ in extract_leaves(unitprocess_keywords)
+    processes = [
+        name for name, details, _ in leaves
         if name in hits and details.get("priority") != 1000
     ]
 
-    queries = [f"{name} wastewater treatment" for name in leaves[:MAX_QUERY_TERMS]]
+    queries = [f"{name} wastewater treatment" for name in processes[:MAX_QUERY_TERMS]]
     opening = " ".join(description_text.split())[:OVERVIEW_QUERY_CHARS]
     if opening:
         queries.append(opening)

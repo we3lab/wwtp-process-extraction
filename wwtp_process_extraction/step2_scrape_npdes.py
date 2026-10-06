@@ -37,12 +37,14 @@ MAX_WORKERS = 24  # parallel Chrome sessions; raise if running on a server
 # Paths
 OTHER_PDFS_DIR = OUTPUT_DIR / "other_pdfs"
 PERMITS_DIR = OUTPUT_DIR / "permits"
-SIGNAL_CACHE_PATH = OUTPUT_DIR / "pdf_signal_cache.json" # Cache on size+mtime
 # Every run writes its outputs to output/site_data/<date>/
 SNAPSHOT_DATE = AS_OF or datetime.now().strftime("%Y-%m-%d")
 SNAPSHOT_DIR = OUTPUT_DIR / "site_data" / SNAPSHOT_DATE
+# PDF signal cache (keyed on size+mtime): read this run's copy if it exists, else the top-level one
+SIGNAL_CACHE_PATH = SNAPSHOT_DIR / "pdf_signal_cache.json"
+BASE_SIGNAL_CACHE_PATH = OUTPUT_DIR / "pdf_signal_cache.json"
 # The top-level files steps 3-6 read are a frozen base (2026-06-01 + 2026-08-13 snapshots).
-# True copies this run's facilities.json / site_data_all.csv to the top level and re-unions
+# True copies this run's facilities.json / site_data_all.csv / pdf_signal_cache.json to the top level and re-unions
 # site_data_relevant.csv from every dated folder (the 2026-08-13 folder is gone, so its rows would drop).
 UPDATE_TOP_LEVEL = False
 CHROME_BIN = Path.home() / "bin/chrome/chrome-linux64/chrome"
@@ -971,7 +973,7 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
         if len(entry.get("pdfs", [])) == 1
     }
 
-    with open(SIGNAL_CACHE_PATH) as f:
+    with open(SIGNAL_CACHE_PATH if SIGNAL_CACHE_PATH.exists() else BASE_SIGNAL_CACHE_PATH) as f:
         signal_cache = json.load(f)
 
     # Detect NPDES signals for every PDF in other_pdfs/, then move NPDES-positive files to permits/.
@@ -1166,7 +1168,7 @@ if __name__ == "__main__":
     npdes_pdfs = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs)
     if UPDATE_TOP_LEVEL:
-        for filename in ("facilities.json", "site_data_all.csv"):
+        for filename in ("facilities.json", "site_data_all.csv", "pdf_signal_cache.json"):
             if (SNAPSHOT_DIR / filename).exists():
                 shutil.copy2(SNAPSHOT_DIR / filename, OUTPUT_DIR / filename)
                 print(f"top-level {filename} updated from site_data/{SNAPSHOT_DATE}/")

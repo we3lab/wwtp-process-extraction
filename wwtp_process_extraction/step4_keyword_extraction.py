@@ -6,12 +6,13 @@ from helpers.utils import (
     OUTPUT_DIR,
     SITE_DATA_RELEVANT_CSV,
     STATUS_TOKENS,
-    unitprocess_keywords,
     normalize_text,
     build_txt_jobs,
-    extract_leaves,
+    leaves,
+    leaf_names,
+    group_to_columns,
+    column_priority,
     collapse_facility_processes,
-    build_secondary_category_lookup,
     apply_secondary_category_backfill,
     keep_best_priority,
     add_county_and_sort,
@@ -22,7 +23,6 @@ PDF_KW_CSV = OUTPUT_DIR / "unit_processes_by_pdf_kw.csv"
 FACILITY_KW_CSV = OUTPUT_DIR / "unit_processes_by_facility_kw.csv"
 METADATA_COLUMNS = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF",
                     "document_order_no"]
-LEAVES = extract_leaves(unitprocess_keywords)
 # (found in the description, found in planned changes) -> status
 STATUS_BY_FLAGS = {(True, True): "PRESENT_AND_FUTURE", (True, False): "PRESENT", (False, True): "FUTURE", (False, False): "0"}
 
@@ -47,7 +47,7 @@ def search_processes_in_text(text):
     """
     text_lower = text.lower()
     return {
-        name for name, details, _ in LEAVES
+        name for name, details, _ in leaves
         if any(alt.lower() in text_lower for alt in details["alt_names"])
         or any(case_sensitive_pattern(term).search(text) for term in details.get("alt_names_case_sensitive", []))
     }
@@ -55,16 +55,6 @@ def search_processes_in_text(text):
 
 def main():
     site_df = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
-
-    all_keys = [name for name, _, _ in LEAVES]
-    group_to_columns = {}
-    column_priority = {}
-    for name, details, group_id in LEAVES:
-        if group_id:
-            group_to_columns.setdefault(group_id, []).append(name)
-        column_priority[name] = details.get("priority", 1)
-    top_category_to_columns, column_secondary_categories, column_global_priority = \
-        build_secondary_category_lookup(unitprocess_keywords)
 
     jobs = build_txt_jobs(SITE_DATA_RELEVANT_CSV)
 
@@ -85,19 +75,16 @@ def main():
         if txt_cache[txt_path.stem] is None:
             continue
         present, future = txt_cache[txt_path.stem]
-        row_status = {key: STATUS_BY_FLAGS[(key in present, key in future)] for key in all_keys}
+        row_status = {key: STATUS_BY_FLAGS[(key in present, key in future)] for key in leaf_names}
         for sibling_cols in group_to_columns.values():
             keep_best_priority(row_status, sibling_cols, column_priority, cleared="0")
-        apply_secondary_category_backfill(
-            row_status, column_secondary_categories, top_category_to_columns,
-            column_global_priority, column_priority,
-        )
-        rows.append(site_df.iloc[row_idx][METADATA_COLUMNS].tolist() + [row_status[key] for key in all_keys])
+        apply_secondary_category_backfill(row_status)
+        rows.append(site_df.iloc[row_idx][METADATA_COLUMNS].tolist() + [row_status[key] for key in leaf_names])
 
-    raw_df = pd.DataFrame(rows, columns=METADATA_COLUMNS + all_keys)
+    raw_df = pd.DataFrame(rows, columns=METADATA_COLUMNS + leaf_names)
     # Same current-permit restriction step6 applies, so the keyword and LLM facility tables
     # are built from the same documents.
-    has_content = raw_df[all_keys].isin(STATUS_TOKENS).any(axis=1)
+    has_content = raw_df[leaf_names].isin(STATUS_TOKENS).any(axis=1)
     current = current_permit_mask(raw_df, content=has_content)
     print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
           f"({int((~current).sum())} superseded rows excluded from the facility collapse)")

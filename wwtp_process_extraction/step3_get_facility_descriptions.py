@@ -7,7 +7,7 @@ from collections import Counter
 from PyPDF2 import PdfReader
 from concurrent.futures import ProcessPoolExecutor
 from helpers.utils import (
-    extract_leaves, SEP, unitprocess_keywords, normalize_text, is_general_order, OUTPUT_DIR, TXT_DIR,
+    leaves, SEP, normalize_text, is_general_order, OUTPUT_DIR, TXT_DIR,
     SITE_DATA_RELEVANT_CSV,
 )
 
@@ -25,7 +25,7 @@ ORDER_HEAD_CHARS = 2500
 WASTEWATER_VOCAB_RE = re.compile(
     "|".join(
         re.escape(term)
-        for _, details, _ in extract_leaves(unitprocess_keywords)
+        for _, details, _ in leaves
         for term in details.get("alt_names", [])
         if term.strip()
     ),
@@ -112,14 +112,11 @@ def find_attachment_f_page(raw):
     return None
 
 
-def distinct_terms(cluster):
-    return len({hit.group().lower() for hit in cluster})
-
-
 def cluster_score(cluster, text_length):
     # unique-term diversity discounted by position — deprioritizes single-category clusters
     # (e.g. "chlorination × 5") and late sections over rich early descriptions
-    return distinct_terms(cluster) / (1 + cluster[0].start() / text_length)
+    start, _, n_terms = cluster
+    return n_terms / (1 + start / text_length)
 
 
 def find_desc_clusters(text, multi_facility=False):
@@ -131,30 +128,30 @@ def find_desc_clusters(text, multi_facility=False):
     hits = list(VOCAB_COMBINED_RE.finditer(text))
     if len(hits) < 2:
         return []
+    # runs of >= 2 hits with gaps <= CLUSTER_GAP, as (start, end, distinct terms), in text order
     clusters = []
-    current = [hits[0]]
-    for hit in hits[1:]:
-        if hit.start() - current[-1].end() <= CLUSTER_GAP:
-            current.append(hit)
-        else:
-            if len(current) >= 2:
-                clusters.append(current)
-            current = [hit]
-    if len(current) >= 2:
-        clusters.append(current)
+    run = [hits[0]]
+    for hit in hits[1:] + [None]:  # None closes the last run
+        if hit and hit.start() - run[-1].end() <= CLUSTER_GAP:
+            run.append(hit)
+            continue
+        if len(run) >= 2:
+            clusters.append((run[0].start(), run[-1].end(), len({h.group().lower() for h in run})))
+        run = [hit]
     if not clusters:
         return []
     # prefer clusters with a description signal; exclude clusters that look like
     # O&M/compliance boilerplate (>=2 boilerplate markers in the window)
     desc_clusters = []
     for cluster in clusters:
-        window = text[max(0, cluster[0].start() - LOOKBACK_HEADER):cluster[-1].end()]
+        start, end, n_terms = cluster
+        window = text[max(0, start - LOOKBACK_HEADER):end]
         # skip table-of-contents clusters (dot leaders like "......")
         if len(DOT_RE.findall(window)) >= 3:
             continue
         # Many distinct processes, or a "consists of" sentence, qualifies on its own: no description
         # signal needed, and nearby compliance language doesn't disqualify it
-        if distinct_terms(cluster) >= DIVERSITY_MIN or STRONG_DESC_RE.search(window):
+        if n_terms >= DIVERSITY_MIN or STRONG_DESC_RE.search(window):
             desc_clusters.append(cluster)
             continue
         # otherwise: require a description signal and reject compliance/O&M boilerplate. Admin
@@ -163,7 +160,7 @@ def find_desc_clusters(text, multi_facility=False):
             continue
         # extend boilerplate check past the cluster — compliance phrases often
         # follow the vocab hits in the same paragraph
-        boilerplate_window = text[max(0, cluster[0].start() - LOOKBACK_HEADER):cluster[-1].end() + LOOKBACK_HEADER]
+        boilerplate_window = text[max(0, start - LOOKBACK_HEADER):end + LOOKBACK_HEADER]
         if len(BOILERPLATE_RE.findall(boilerplate_window)) >= 2:
             continue
         desc_clusters.append(cluster)
@@ -172,25 +169,24 @@ def find_desc_clusters(text, multi_facility=False):
         # best first: extract_from_pdf anchors MAX_CLUSTER_DISTANCE on the first cluster
         desc_clusters.sort(key=lambda cluster: -cluster_score(cluster, text_length))
         if not multi_facility:
-            return [(cluster[0].start(), cluster[-1].end()) for cluster in desc_clusters]
+            return [(start, end) for start, end, _ in desc_clusters]
         # Multi-facility permits: absorb a low-diversity tail (disinfection/disposal sentences)
         # within FRAGMENT_GAP of a plant's paragraph, but never another qualifying cluster
-        desc_cluster_ids = {id(cluster) for cluster in desc_clusters}
-        clusters_by_start = sorted(clusters, key=lambda cluster: cluster[0].start())
+        qualifying = set(desc_clusters)
         spans = []
         for cluster in desc_clusters:
-            start, end = cluster[0].start(), cluster[-1].end()
-            next_index = clusters_by_start.index(cluster) + 1
-            while (next_index < len(clusters_by_start)
-                   and id(clusters_by_start[next_index]) not in desc_cluster_ids
-                   and clusters_by_start[next_index][0].start() - end <= FRAGMENT_GAP):
-                end = clusters_by_start[next_index][-1].end()
+            start, end, _ = cluster
+            next_index = clusters.index(cluster) + 1
+            while (next_index < len(clusters)
+                   and clusters[next_index] not in qualifying
+                   and clusters[next_index][0] - end <= FRAGMENT_GAP):
+                end = clusters[next_index][1]
                 next_index += 1
             spans.append((start, end))
         return spans
     # fallback: densest cluster by the same score
-    densest_cluster = max(clusters, key=lambda cluster: cluster_score(cluster, text_length))
-    return [(densest_cluster[0].start(), densest_cluster[-1].end())]
+    start, end, _ = max(clusters, key=lambda cluster: cluster_score(cluster, text_length))
+    return [(start, end)]
 
 
 def snap_back_to_header(text, cluster_start):

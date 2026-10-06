@@ -11,7 +11,7 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 2. Scrape permits and site metadata
     - [wwtp_process_extraction/step2_scrape_npdes.py](wwtp_process_extraction/step2_scrape_npdes.py): scrapes CIWQS, downloads permit PDFs into output/permits/, and writes facilities.json, site_data_all.csv and site_data_relevant.csv
         - set *AS_OF = "YYYY-MM-DD"* at the top of the script to select the permit in force at a past date instead of today's active one; each run snapshots its facilities.json and site_data_relevant.csv to output/site_data/<AS_OF>/
-        - every run writes facilities.json, site_data_all.csv and site_data_relevant.csv only to output/site_data/<date>/; the top-level files steps 3-6 read stay frozen unless *UPDATE_TOP_LEVEL = True*
+        - every run writes facilities.json, site_data_all.csv, site_data_relevant.csv and pdf_signal_cache.json only to output/site_data/<date>/; the top-level files steps 3-6 read stay frozen unless *UPDATE_TOP_LEVEL = True*
         - with *UPDATE_TOP_LEVEL = True*, unions all dated snapshots into the top-level site_data_relevant.csv, so steps 3-6 process each document once
 
 3. Extract permit text

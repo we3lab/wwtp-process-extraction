@@ -4,7 +4,7 @@
 
 import pandas as pd
 from helpers.utils import (
-    extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords,
+    leaves, leaf_names, apply_secondary_category_backfill,
     add_county_and_sort, DATA_DIR, FINAL_DIR, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
 )
 
@@ -127,12 +127,6 @@ uplist_recent = uplist_all.reset_index(drop = True)
 
 # WE3LAB NEW ADDITIONS
 
-leaves = extract_leaves(unitprocess_keywords)
-all_keys = [name for name, _, _ in leaves]
-column_priority = {name: details.get("priority", 1) for name, details, _ in leaves}
-top_category_to_columns, column_secondary_categories, column_global_priority = \
-    build_secondary_category_lookup(unitprocess_keywords)
-
 cwns_to_taxonomy = {}
 for process_name, details, _ in leaves:
     for cwns_name in details["cwns_processes"]:
@@ -159,7 +153,7 @@ unit_processes_df = (
 unit_processes_df.columns.name = None
 
 unit_processes_df = unit_processes_df.reindex(
-    columns=list(unit_processes_df.columns) + [k for k in all_keys if k not in unit_processes_df.columns],
+    columns=list(unit_processes_df.columns) + [k for k in leaf_names if k not in unit_processes_df.columns],
     fill_value='0',
 )
 
@@ -236,13 +230,10 @@ ca_consolidated = pd.concat(
 )
 print(f"Added {len(placeholder_rows)} CA CWNS placeholder rows")
 
-proc_cols_backfill = [c for c in ca_consolidated.columns if c in set(all_keys)]
+proc_cols_backfill = [c for c in ca_consolidated.columns if c in set(leaf_names)]
 for idx in ca_consolidated.index:
     status_dict = ca_consolidated.loc[idx, proc_cols_backfill].to_dict()
-    apply_secondary_category_backfill(
-        status_dict, column_secondary_categories, top_category_to_columns,
-        column_global_priority, column_priority,
-    )
+    apply_secondary_category_backfill(status_dict)
     ca_consolidated.loc[idx, proc_cols_backfill] = pd.Series(status_dict)
 
 cwns_phys = pd.read_csv(CWNS_DATA_DIR / '2022' / 'PHYSICAL_LOCATION.csv', dtype=str).fillna("")

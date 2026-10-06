@@ -1,289 +1,191 @@
+import io
+import urllib.request
+import zipfile
 from pathlib import Path
 from rdflib import Graph, Namespace, RDF, RDFS
 
-from helpers.utils import hasprocess_fragments
+# URL for water-ontology release v0.2.0 DOI 10.5281/zenodo.23087793
+ZENODO_URL = "https://zenodo.org/api/records/23087794/files/DataDrivenCPS/water-ontology-v0.2.0.zip/content"
 
-WATR = Namespace("urn:nawi-water-ontology#")
+# Defining the namespace variables
+WATR = Namespace("https://watermetadata.org/ontology/watr#")
+SH = Namespace("http://www.w3.org/ns/shacl#")
 
-# GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/main/water"
-GITHUB_BASE = "https://raw.githubusercontent.com/DataDrivenCPS/water-ontology/constance/ontology_to_txt/water"
+# Module names in ontology/ folder
+MODULES = ["watr", "equipment", "processtypes", "enumerationkinds", "substances"]
 
-ontology_txt_file = Path(__file__).resolve().parent.parent / "data" / "llm_extraction" / "input" / "ontology.txt"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+CACHE_DIR = DATA_DIR / "ontology_cache" / "water-ontology-v0.2.0"
+ONTOLOGY_TXT = DATA_DIR / "llm_extraction" / "input" / "ontology.txt"
 
-#list of equipment to skip : 
-skip_equip = [
-    "ElectromagneticFieldDevice","SolventExtractionSystem", "DMERecoverySystem",
+# Equipment to skip
+SKIP_EQUIPMENT = [
+    "ElectromagneticFieldDevice",
+    "SolventExtractionSystem",
+    "DMERecoverySystem",
     "StanderdizedFlowCell"
 ]
-skip_parent_suffixes = ["Sensor", "Valve", "Controller", "Electrode"]
+SKIP_PARENT_SUFFIXES = ("Sensor", "Valve", "Controller", "Electrode")
 
 
-SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
+def load_ontology(modules=MODULES):
+    """Downloads + unzips the .ttl files into CACHE_DIR."""
+    if not CACHE_DIR.exists():
+        CACHE_DIR.mkdir(parents=True)
+        with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(ZENODO_URL).read())) as z:
+            for name in z.namelist():
+                # zip root is DataDrivenCPS-water-ontology-<sha>/
+                parts = Path(name).parts
+                if len(parts) == 3 and parts[1] == "ontology" and name.endswith(".ttl"):
+                    (CACHE_DIR / parts[2]).write_bytes(z.read(name))
+    graph = Graph()
+
+    # Define manual fixes (on top of released version)
+    for module in modules:
+        ttl = (CACHE_DIR / f"{module}.ttl").read_text()
+        if module == "equipment":
+            # 1. Replace boiler hasProcess Process-Incineration with Process-Combustion
+            ttl = ttl.replace("watr:Process-Incineration", "watr:Process-Combustion")
+        if module == "processtypes":
+            # 2. unitprocess_keywords.json specifies split thermal vs air drying
+            DRYING_BLOCK_END = "rdfs:subClassOf watr:Process-Dewatering, watr:Process-Evaporation .\n"
+
+            PROCESSTYPES_ADDITIONS = """
+            watr:Process-ThermalDrying a watr:Class, watr:Process-ThermalDrying ;
+                rdfs:label "ThermalDrying" ;
+                rdfs:comment "Drying of biosolids using applied heat from a fuel-fired or waste-heat dryer." ;
+                rdfs:subClassOf watr:Process-Drying .
+
+            watr:Process-AirDrying a watr:Class, watr:Process-AirDrying ;
+                rdfs:label "AirDrying" ;
+                rdfs:comment "Passive drying of biosolids by evaporation in open beds, lagoons or greenhouses, with no applied heat." ;
+                rdfs:subClassOf watr:Process-Drying .
+            """
+            ttl = ttl.replace(DRYING_BLOCK_END, DRYING_BLOCK_END + PROCESSTYPES_ADDITIONS)
+        graph.parse(data=ttl, format="turtle")
+    return graph
+
+
+def hasprocess_fragments(graph, cls):
+    """Returns the names of the processes the ontology says each equipment performs."""
+    fragments = set()
+    for prop in graph.objects(cls, SH.property):
+        # skip rules about other things (connection points, roles)
+        if (prop, SH.path, WATR.hasProcess) not in graph:
+            continue
+        # format 1: sh:hasValue watr:Process-X
+        for process in graph.objects(prop, SH.hasValue):
+            fragments.add(process.fragment)
+        # format 2: sh:qualifiedValueShape [ sh:class watr:Process-X ]
+        for shape in graph.objects(prop, SH.qualifiedValueShape):
+            for process in graph.objects(shape, SH["class"]):
+                fragments.add(process.fragment)
+    return fragments
 
 
 def normalize(name):
-    if not isinstance(name, str):
-        return name
-    if name.startswith("Process-"):
-        return name[len("Process-"):]
-    if name.startswith("Role-"):
-        return name[len("Role-"):]
-    return name
+    return name.removeprefix("Process-").removeprefix("Role-")
 
-def equipment_to_txt (equipment_file):
-    # Load ontology
-    g = Graph()
-    g.parse(GITHUB_BASE + "/" + equipment_file, format="turtle", publicID=equipment_file)
-
-
-    # Namespaces
-    WATR = Namespace("urn:nawi-water-ontology#")
-    SH = Namespace("http://www.w3.org/ns/shacl#")
-
-    def local_name(uri):
-        return uri.split("#")[-1]
-
-    equipment = []
-
-    for cls in g.subjects(RDF.type, WATR.Class):
-        cls_name = local_name(str(cls))
-
-        # check for equipment to skip:
-        if cls_name in skip_equip:
-            continue
-
-        # definition
-        definition = None
-        for c in g.objects(cls, RDFS.comment):
-            definition = str(c)
-            break
-
-        # subclasses (ignore UnitProcess, Equipment, and s223 namespace items)
-        sub_equips = []
-        has_parent_suffix = False
-        
-        for parent in g.objects(cls, RDFS.subClassOf):
-            parent_uri = str(parent)
-            parent_name = local_name(parent_uri)
-            # Check if any parent name ends with suffix to skip:
-            for suffix in skip_parent_suffixes:
-                if parent_name.endswith(suffix):
-                    has_parent_suffix = True
-                    break
-            # Only include watr namespace items, exclude s223 namespace
-            if (parent_name != "UnitProcess" and 
-                parent_name != "Equipment" and
-                not parent_uri.startswith("http://data.ashrae.org/standard223#")):
-                sub_equips.append(parent_name)
-
-        # Skip this equipment if it has a Sensor parent
-        if has_parent_suffix :
-            continue
-
-        # unit processes implied by this equipment's own SHACL hasProcess shape(s)
-        unit_processes = sorted(hasprocess_fragments(g, cls, WATR, SH))
-
-        equipment.append({
-            "id": cls_name,
-            "def": definition,
-            "SubEquipmentOf": sub_equips if sub_equips else None,
-            "UnitProcess": unit_processes if unit_processes else None
-        })
-    return equipment
-
-def processtypes_to_txt(process_file):
-    # Load ontology
-    g = Graph()
-    g.parse(GITHUB_BASE + "/" + process_file, format="turtle", publicID=process_file)
-
-    # Namespaces
-    WATR = Namespace("urn:nawi-water-ontology#")
-
-    def local_name(uri):
-        return uri.split("#")[-1]
-
-    processes = []
-
-    for cls in g.subjects(RDF.type, WATR.Class):
-        cls_name = local_name(str(cls))
-
-        # definition (using skos:definition)
-        definition = None
-        for c in g.objects(cls, SKOS.definition):
-            definition = str(c)
-            break
-
-        # parent processes (ignore ProcessType and Process)
-        sub_process_of = []
-        for parent in g.objects(cls, RDFS.subClassOf):
-            parent_name = local_name(str(parent))
-            if parent_name != "ProcessType" and parent_name != "Process":
-                sub_process_of.append(parent_name)
-
-        processes.append({
-            "id": cls_name,
-            "def": definition,
-            "subProcessOf": sub_process_of if sub_process_of else None
-        })
-    return processes
-
-def roles_to_txt(enumerationkinds_file):
-    # Load ontology
-    g = Graph()
-    g.parse(GITHUB_BASE + "/" + enumerationkinds_file, format="turtle", publicID=enumerationkinds_file)
-
-    # Namespaces
-    WATR = Namespace("urn:nawi-water-ontology#")
-    S223 = Namespace("http://data.ashrae.org/standard223#")
-
-    def local_name(uri):
-        return uri.split("#")[-1]
-
-    roles = []
-
-    for cls in g.subjects(RDF.type, WATR.Class):
-        cls_name = local_name(str(cls))
-        
-        # Only process Role-* items
-        if not cls_name.startswith("Role-"):
-            continue
-
-        # parent roles (ignore EnumerationKind-Role)
-        sub_role_of = []
-        for parent in g.objects(cls, RDFS.subClassOf):
-            parent_name = local_name(str(parent))
-            if parent_name != "EnumerationKind-Role":
-                sub_role_of.append(parent_name)
-
-        roles.append({
-            "id": cls_name,
-            "SubRoleOf": sub_role_of if sub_role_of else None
-        })
-    return roles
-
-def substances_to_txt(substances_file):
-    # Load ontology
-    g = Graph()
-    g.parse(GITHUB_BASE + "/" + substances_file, format="turtle", publicID=substances_file)
-
-    # Namespaces
-    WATR = Namespace("urn:nawi-water-ontology#")
-
-    def local_name(uri):
-        return uri.split("#")[-1]
-
-    # Helper function to check if a class has "Constituent-Salt" in its parent hierarchy
-    def has_constituent_salt_ancestor(cls_uri, visited=None):
-        if visited is None:
-            visited = set()
-        
-        # Avoid infinite loops
-        if cls_uri in visited:
-            return False
-        visited.add(cls_uri)
-        
-        # Check all parents
-        for parent in g.objects(cls_uri, RDFS.subClassOf):
-            parent_name = local_name(str(parent))
-            
-            # If this parent is Constituent-Salt, return True
-            if parent_name == "Constituent-Salt":
-                return True
-            
-            # Recursively check parent's ancestors
-            if has_constituent_salt_ancestor(parent, visited):
-                return True
-        
-        return False
-
-    substances = []
-
-    for cls in g.subjects(RDF.type, WATR.Class):
-        cls_name = local_name(str(cls))
-
-        # Skip Constituent-Salt itself
-        if cls_name == "Constituent-Salt":
-            continue
-
-        # Skip anything with "Brine" in the name
-        if "Brine" in cls_name:
-            continue
-
-        # Skip if this substance has Constituent-Salt in its ancestry
-        if has_constituent_salt_ancestor(cls):
-            continue
-
-        # definition (using rdfs:comment)
-        definition = None
-        subsubstanceOf = []
-        for c in g.objects(cls, RDFS.comment):
-            definition = str(c)
-            break
-        for parent in g.objects(cls, RDFS.subClassOf):
-            parent_name = local_name(str(parent))
-            if parent_name != "Substance":
-                subsubstanceOf.append(parent_name)
-
-        substances.append({
-            "id": cls_name,
-            "def": definition,
-            "SubsubstanceOf": subsubstanceOf if subsubstanceOf else None
-        })
-    return substances
 
 def ontology_to_txt():
-    equipment = equipment_to_txt("equipment.ttl")
-    print(f"Equipment count: {len(equipment)}")
-    processes = processtypes_to_txt("processtypes.ttl")
-    print(f"Process type count: {len(processes)}")
-    roles = roles_to_txt("enumerationkinds.ttl")
-    print(f"Role count: {len(roles)}")
-    substances = substances_to_txt("substances.ttl")
-    print(f"Substance count: {len(substances)}")
+    """Saves .ttl files to txt file for LLM prompt"""
+    equipment_graph = load_ontology(["equipment"])
+    equipment_lines = []
+    for cls in equipment_graph.subjects(RDF.type, WATR.Class):
+        # check for equipment to skip:
+        if cls.fragment in SKIP_EQUIPMENT:
+            continue
 
-    # create the output directory if it doesn't exist
-    output_dir = Path(ontology_txt_file).parent
-    output_dir.mkdir(parents=True, exist_ok=True)
+        parents = list(equipment_graph.objects(cls, RDFS.subClassOf))
+        # Skip sensors, valves, controllers and electrodes
+        if any(parent.fragment.endswith(SKIP_PARENT_SUFFIXES) for parent in parents):
+            continue
+        # parent equipment
+        sub_equip_of = [
+            parent.fragment for parent in parents
+            if parent.fragment not in ("UnitProcess", "Equipment") # ignore top-level classes
+            and not str(parent).startswith("http://data.ashrae.org/standard223#") # ignore s223 namespace
+        ]
+
+        parts = [cls.fragment]
+        definition = equipment_graph.value(cls, RDFS.comment)
+        if definition:
+            parts.append(str(definition))
+        if sub_equip_of:
+            parts.append(f"SubEquipOf: {', '.join(sub_equip_of)}")
+        # unit processes implied by this equipment's own SHACL hasProcess shape(s)
+        unit_processes = sorted(hasprocess_fragments(equipment_graph, cls))
+        if unit_processes:
+            parts.append(f"Process: {', '.join(unit_processes)}")
+        equipment_lines.append(" | ".join(parts))
+    print(f"Equipment count: {len(equipment_lines)}")
+
+    process_graph = load_ontology(["processtypes"])
+    process_lines = []
+    for cls in process_graph.subjects(RDF.type, WATR.Class):
+        parts = [normalize(cls.fragment)]
+        definition = process_graph.value(cls, RDFS.comment)
+        if definition:
+            parts.append(str(definition))
+        # parent processes (ignore ProcessType and Process)
+        sub_process_of = [
+            normalize(parent.fragment) for parent in process_graph.objects(cls, RDFS.subClassOf)
+            if parent.fragment not in ("ProcessType", "Process")
+        ]
+        if sub_process_of:
+            parts.append(f"SubProcessOf: {', '.join(sub_process_of)}")
+        process_lines.append(" | ".join(parts))
+    print(f"Process type count: {len(process_lines)}")
+
+    role_graph = load_ontology(["enumerationkinds"])
+    role_lines = []
+    for cls in role_graph.subjects(RDF.type, WATR.Class):
+        # Only process Role-* items
+        if not cls.fragment.startswith("Role-"):
+            continue
+        parts = [normalize(cls.fragment)]
+        # parent roles (ignore EnumerationKind-Role)
+        sub_role_of = [
+            normalize(parent.fragment) for parent in role_graph.objects(cls, RDFS.subClassOf)
+            if parent.fragment != "EnumerationKind-Role"
+        ]
+        if sub_role_of:
+            parts.append(f"SubRoleOf: {', '.join(sub_role_of)}")
+        role_lines.append(" | ".join(parts))
+    print(f"Role count: {len(role_lines)}")
+
+    substance_graph = load_ontology(["substances"])
+    substance_lines = []
+    for cls in substance_graph.subjects(RDF.type, WATR.Class):
+        # Skip anything with "Brine" in the name
+        if "Brine" in cls.fragment:
+            continue
+        # Skip Constituent-Salt itself and anything with it in its ancestry
+        if any(ancestor.fragment == "Constituent-Salt"
+               for ancestor in substance_graph.transitive_objects(cls, RDFS.subClassOf)):
+            continue
+        parts = [normalize(cls.fragment)]
+        definition = substance_graph.value(cls, RDFS.comment)
+        if definition:
+            parts.append(str(definition))
+        sub_substance_of = [
+            normalize(parent.fragment) for parent in substance_graph.objects(cls, RDFS.subClassOf)
+            if parent.fragment != "Substance"
+        ]
+        if sub_substance_of:
+            parts.append(f"SubSubstanceOf: {', '.join(sub_substance_of)}")
+        substance_lines.append(" | ".join(parts))
+    print(f"Substance count: {len(substance_lines)}")
+
     # Save to text file in compact format
-    with open(ontology_txt_file, "w") as f:
-        f.write("EQUIPMENTS:\n")
-        for eq in equipment:
-            parts = [eq['id']]
-            if eq.get('def'):
-                parts.append(eq['def'])
-            if eq.get('SubEquipmentOf'):
-                parts.append(f"SubEquipOf: {', '.join(name for name in eq['SubEquipmentOf'])}")
-            if eq.get('UnitProcess'):
-                parts.append(f"Process: {', '.join(name for name in eq['UnitProcess'])}")
-            f.write(" | ".join(parts) + "\n")
-        
-        f.write("\n########################\n")
-        f.write("PROCESSES:\n")
-        for proc in processes:
-            parts = [normalize(proc['id'])]
-            if proc.get('def'):
-                parts.append(proc['def'])
-            if proc.get('subProcessOf'):
-                parts.append(f"SubProcessOf: {', '.join(normalize(name) for name in proc['subProcessOf'])}")
-            f.write(" | ".join(parts) + "\n")
-        
-        f.write("\n########################\n")
-        f.write("ROLES:\n")
-        for role in roles:
-            parts = [normalize(role['id'])]
-            if role.get('SubRoleOf'):
-                parts.append(f"SubRoleOf: {', '.join(normalize(name) for name in role['SubRoleOf'])}")
-            f.write(" | ".join(parts) + "\n")
+    sections = [
+        ("EQUIPMENTS", equipment_lines),
+        ("PROCESSES", process_lines),
+        ("ROLES", role_lines),
+        ("SUBSTANCES", substance_lines),
+    ]
+    ONTOLOGY_TXT.write_text("\n########################\n".join(
+        f"{header}:\n" + "".join(line + "\n" for line in lines) for header, lines in sections
+    ))
 
-        f.write("\n########################\n")
-        f.write("SUBSTANCES:\n")
-        for sub in substances:
-            parts = [normalize(sub['id'])]
-            if sub.get('def'):
-                parts.append(sub['def'])
-            if sub.get('SubsubstanceOf'):
-                parts.append(f"SubSubstanceOf: {', '.join(normalize(name) for name in sub['SubsubstanceOf'])}")
-            f.write(" | ".join(parts) + "\n")
-
-    print(f"\nOutput saved to {ontology_txt_file}")
-
+    print(f"\nOutput saved to {ONTOLOGY_TXT}")

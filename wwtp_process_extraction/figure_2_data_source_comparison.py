@@ -15,7 +15,7 @@ from helpers.utils import (
     CWNS_TABLE_CSV,
     DATA_DIR,
     OUTPUT_DIR,
-    FINAL_DIR,
+    FIGURES_DIR,
     MANUAL_CSV,
 )
 from helpers.plotting import COLORS
@@ -354,7 +354,7 @@ def main(error_denominator="f1"):
 
     plt.subplots_adjust(hspace=0.35, bottom=0.33, top=0.90)
     filename = "figure_2" if error_denominator == "f1" else "figure_s1"
-    save_and_close(fig, FINAL_DIR / f"{filename}.png", dpi=300)
+    save_and_close(fig, FIGURES_DIR / f"{filename}.png", dpi=300)
 
     # Mean facility-level F1 error rate (unit-process granularity) — matches panel A's Error Rate box.
     err_by_src = fac_metrics_df.groupby("Source")["Error Rate"].mean() * 100

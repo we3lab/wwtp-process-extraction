@@ -12,7 +12,7 @@ import pandas as pd
 
 from helpers.utils import (
     extract_leaves, parse_status, PRESENT_STATUSES, cwns_mapping, unitprocess_keywords,
-    DATA_DIR, OUTPUT_DIR, FINAL_DIR, SITE_DATA_ALL_CSV,
+    DATA_DIR, OUTPUT_DIR, FIGURES_DIR, SITE_DATA_ALL_CSV,
 )
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
@@ -314,7 +314,7 @@ def main():
 
     plot(per_year, cwns_reported, len(cohort))
     print(f"\nwrote {NEEDS_DIR/'ca_needs_summary.csv'}, {NEEDS_DIR/'ca_needs_by_year.csv'} "
-          f"and {FINAL_DIR/'figure_4'}.png/.tiff")
+          f"and {FIGURES_DIR/'figure_4'}.png/.tiff")
 
 
 def plot(per_year, cwns_reported, n_cohort):
@@ -401,7 +401,7 @@ def plot(per_year, cwns_reported, n_cohort):
     ax.set_ylim(0, max(cwns_m, peak_total) * 1.16)
     set_thick_spines(ax, linewidth=SPINE_WIDTH)
     fig.tight_layout()
-    save_and_close(fig, FINAL_DIR / "figure_4", dpi=300)
+    save_and_close(fig, FIGURES_DIR / "figure_4", dpi=300)
 
 
 if __name__ == "__main__":

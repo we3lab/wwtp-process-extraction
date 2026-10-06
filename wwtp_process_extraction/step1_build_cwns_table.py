@@ -5,7 +5,7 @@
 import pandas as pd
 from helpers.utils import (
     leaves, leaf_names, apply_secondary_category_backfill,
-    add_county_and_sort, DATA_DIR, FINAL_DIR, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
+    add_county_and_sort, DATA_DIR, FIGURES_DIR, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
 )
 
 # Use local input data from el_abbadi/input_data directory
@@ -297,5 +297,5 @@ for label, ids in [('CA', ca_ids), ('US-wide', us_ids)]:
         table_rows.append({'Region': label, 'Metric': metric, **{str(y): counts[y] for y in YEARS}})
 
 table_s1 = pd.DataFrame(table_rows, dtype=object)
-table_s1.to_csv(FINAL_DIR / 'table_s1.csv', index=False)
+table_s1.to_csv(FIGURES_DIR / 'table_s1.csv', index=False)
 print(f"Saved table_s1.csv (CA n={len(ca_ids)}, US n={len(us_ids)})")

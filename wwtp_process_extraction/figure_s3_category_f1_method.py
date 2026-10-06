@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 from step6_postprocess_llm_output import build_model_comparison
 from helpers.metrics import build_metric_inputs, aggregate_to_category_states, compute_metrics
-from helpers.utils import get_leaf_names, unitprocess_keywords, FINAL_DIR, MANUAL_CSV
+from helpers.utils import get_leaf_names, unitprocess_keywords, FIGURES_DIR, MANUAL_CSV
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
 MODEL = "gpt-5-mini"
@@ -69,7 +69,7 @@ def main():
     ax.grid(False)
     ax.legend(loc="lower right", fontsize=11, frameon=False, bbox_to_anchor=(1.02, 1.02))
     set_thick_spines(ax, linewidth=1.6)
-    fig_path = FINAL_DIR / "figure_s3.png"
+    fig_path = FIGURES_DIR / "figure_s3.png"
     save_and_close(fig, fig_path, dpi=300)
     print(f"Saved {os.path.relpath(fig_path)}")
 

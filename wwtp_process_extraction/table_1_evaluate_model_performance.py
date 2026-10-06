@@ -30,21 +30,21 @@ import pandas as pd
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison, normalize_pdf_name, model_run_dirs
 from helpers.utils import (
     get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, top_category_to_columns,
-    DETECTED_STATUSES, DATA_DIR, OUTPUT_DIR, TXT_DIR, FINAL_DIR, LLM_EXTRACTION_DIR, WATERRAG_RETRIEVAL_DIR,
+    DETECTED_STATUSES, DATA_DIR, OUTPUT_DIR, TXT_DIR, FIGURES_DIR, LLM_EXTRACTION_DIR, WATERRAG_RETRIEVAL_DIR,
     MANUAL_CSV, SITE_DATA_RELEVANT_CSV, unitprocess_keywords,
 )
 
 
-TABLE_1_CSV = FINAL_DIR / "table_1.csv"
+TABLE_1_CSV = FIGURES_DIR / "table_1.csv"
 MODEL_COSTS_CSV = DATA_DIR / "model_costs.csv"
 MAIN_DIR = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini"
 ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
-TABLE_S5_CSV = FINAL_DIR / "table_s5.csv"
+TABLE_S5_CSV = FIGURES_DIR / "table_s5.csv"
 METRIC_COLS = ["Macro Unit Process F1", "Micro Unit Process F1", "Macro Category F1", "State Accuracy"]
 META_COLS = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
 
 # table_s3: how the labeled sets compare to the full CA dataset on region, size and permit structure
-REPRESENTATIVENESS_CSV = FINAL_DIR / "table_s3.csv"
+REPRESENTATIVENESS_CSV = FIGURES_DIR / "table_s3.csv"
 SUPPLEMENTAL_PATH = DATA_DIR / "unit_processes_by_facility_supplemental_data.csv"
 # figure_2 restricts the 17 supplemental facilities to those also present in the NPDES text and
 # CWNS mappings; its per-facility output is the definitive list of the 15 that survive.

@@ -36,8 +36,8 @@ from helpers.utils import (
     add_county_and_sort,
     unitprocess_keywords as keywords,
     OUTPUT_DIR,
-    FINAL_DIR,
     FIGURES_DIR,
+    BY_CATEGORY_DIR,
     SITE_DATA_RELEVANT_CSV,
     SITE_DATA_ALL_CSV,
     CWNS_TABLE_CSV,
@@ -390,7 +390,7 @@ for group_title, json_cats in PLOT_GROUPS.items():
             )
     ax.set_ylim(ylim)
     plt.tight_layout()
-    save_and_close(fig, FIGURES_DIR / f"{group_title.replace(' ', '_')}_source_comparison.png", dpi=300)
+    save_and_close(fig, BY_CATEGORY_DIR / f"{group_title.replace(' ', '_')}_source_comparison.png", dpi=300)
 
 
 # 2. Major-categories plot
@@ -440,7 +440,7 @@ for comparison_type in ["llm", "kw"]:
         bar_width=BAR_WIDTH if not include_kw else 0.24,
     )
     plt.tight_layout()
-    save_and_close(fig, FINAL_DIR / f"{filename}.png", dpi=300)
+    save_and_close(fig, FIGURES_DIR / f"{filename}.png", dpi=300)
     print(f"    Saved {filename}.png")
 
 

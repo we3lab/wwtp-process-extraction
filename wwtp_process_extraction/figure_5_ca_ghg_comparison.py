@@ -31,7 +31,7 @@ from pathlib import Path
 from helpers.plotting import make_grouped_legend, save_and_close
 from helpers.utils import (build_cwns_facility_processes, leaves,
                           CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV, DATA_DIR, OUTPUT_DIR,
-                          FINAL_DIR, PRESENT_STATUSES, STATUS_TOKENS, current_permit_mask,
+                          FIGURES_DIR, PRESENT_STATUSES, STATUS_TOKENS, current_permit_mask,
                           collapse_facility_processes)
 
 # Local copies of the El Abbadi US_WWTP_GHG files, downloaded from GitHub (gitignored)
@@ -798,7 +798,7 @@ def plot_comparison(results):
               bbox_to_anchor=(1.01, 1), borderaxespad=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    save_and_close(fig, FINAL_DIR / 'figure_5', dpi=300)
+    save_and_close(fig, FIGURES_DIR / 'figure_5', dpi=300)
 
 
 # N2O breakdown by secondary treatment

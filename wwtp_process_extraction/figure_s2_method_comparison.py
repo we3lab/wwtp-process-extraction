@@ -11,18 +11,14 @@ from helpers.metrics import (
     compute_facility_metric_rows,
 )
 from helpers.utils import (
-    is_present,
     get_leaf_names,
     unitprocess_keywords,
     OUTPUT_DIR,
-    FINAL_DIR,
     FIGURES_DIR,
     MANUAL_CSV,
 )
 from helpers.plotting import (
     COLORS,
-    HATCH_PATTERNS,
-    make_grouped_legend,
     save_and_close,
     set_thick_spines,
 )
@@ -36,96 +32,6 @@ VIOLIN_PALETTE = {
     "GPT-5": COLORS["gpt-5"],
     "GPT-5 mini": COLORS["gpt-5-mini"],
 }
-
-
-def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df, category_name, save_path):
-    """Plot LLM and keyword deviations from manual readings (above y=0: extra; below: missed)."""
-    manual_facilities = set(manual_df["Place ID"].dropna())
-    llm_common = manual_facilities & set(llm_df["Place ID"].dropna())
-    kw_common = manual_facilities & set(keyword_df["Place ID"].dropna())
-
-    rows = []
-    for process in process_names:
-        manual_proc = set(manual_df.loc[manual_df[process].map(is_present), "Place ID"])
-        row = {"Process": process, "Manual_Count": len(manual_proc)}
-        for name, df, common in (("LLM", llm_df, llm_common), ("KW", keyword_df, kw_common)):
-            sub = df[df["Place ID"].isin(common)]
-            found = set(sub.loc[sub[process].map(is_present), "Place ID"])
-            m = manual_proc & common
-            row[f"{name}_FP"], row[f"{name}_FN"] = len(found - m), len(m - found)
-        if any(v for k, v in row.items() if k != "Process"):
-            rows.append(row)
-
-    if not rows:
-        print(f"No deviation data for '{category_name}'")
-        return
-
-    df = pd.DataFrame(rows).sort_values("Manual_Count", ascending=False).reset_index(drop=True)
-    fig, ax = plt.subplots(figsize=(12, 5))
-    w = 0.18
-
-    for idx, row in df.iterrows():
-        for x_off, fp, fn, color in [
-            (-w, row["KW_FP"], row["KW_FN"], COLORS["npdes_kw"]),
-            (+w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
-        ]:
-            x = idx + x_off
-            if fp:
-                ax.bar(
-                    x,
-                    fp,
-                    w * 2,
-                    bottom=0,
-                    color=color,
-                    edgecolor="black",
-                    linewidth=1.2,
-                )
-            if fn:
-                ax.bar(
-                    x,
-                    -fn,
-                    w * 2,
-                    bottom=0,
-                    color=color,
-                    hatch=HATCH_PATTERNS["FUTURE"],
-                    edgecolor="black",
-                    linewidth=1.2,
-                )
-
-    ax.axhline(0, color="black", linewidth=0.8)
-    ax.set_xticks(range(len(df)))
-    ax.set_xticklabels(df["Process"], rotation=45, ha="right", fontsize=12)
-    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    ax.set_ylabel("WWTP Count vs Manual Reading", fontsize=14)
-    set_thick_spines(ax, linewidth=1.6)
-    make_grouped_legend(
-        ax,
-        groups=[
-            {
-                "header": "Method",
-                "items": [
-                    ("  NPDES Keyword", {"facecolor": COLORS["npdes_kw"]}),
-                    ("  NPDES - LLM Extraction", {"facecolor": COLORS["npdes_llm"]}),
-                ],
-            },
-            {
-                "header": "vs Manual Reading",
-                "items": [
-                    ("  Extra (above)", {"facecolor": "gray"}),
-                    (
-                        "  Missed (below)",
-                        {"facecolor": "gray", "hatch": HATCH_PATTERNS["FUTURE"]},
-                    ),
-                ],
-            },
-        ],
-        loc="upper left",
-        bbox_to_anchor=(1.01, 1),
-        fontsize=11,
-    )
-
-    plt.subplots_adjust(bottom=0.25)
-    save_and_close(fig, save_path, dpi=300)
 
 
 def draw_violin(ax, facility_metrics_df, panel_label):
@@ -196,14 +102,11 @@ print(
     f"keyword only: {len(kw_facilities - llm_facilities)})"
 )
 
-# Load manual readings (train + test) as the deviation baseline
+# Load manual readings (train + test) as the baseline
 manual = pd.read_csv(MANUAL_CSV, dtype=str).fillna("")
 
 # The manual CSV is exactly the benchmark (manually-read) facility set.
 manual_facilities = set(manual["Place ID"])
-
-llm_results_manual = llm_results_both[llm_results_both["Place ID"].isin(manual_facilities)].copy()
-keyword_results_manual = keyword_results_both[keyword_results_both["Place ID"].isin(manual_facilities)].copy()
 
 print(
     f"Manual baseline: {len(manual)} facilities "
@@ -211,24 +114,8 @@ print(
     f"{len(manual_facilities & set(llm_results_both['Place ID']))} matched to LLM)"
 )
 
-for category in categories_to_plot:
-    print(f"\nProcessing category: {category}")
 
-    process_names = get_leaf_names(category, unitprocess_keywords[category], exclude_unspecified=True)
-
-    # Method vs manual reading: deviation bars (FP above zero, FN below)
-    create_method_deviation_plot(
-        process_names,
-        manual,
-        llm_results_manual,
-        keyword_results_manual,
-        category,
-        save_path=FIGURES_DIR / f"{category}_method_comparison_deviation.png",
-    )
-    print(f"  Saved {category}_method_comparison_deviation.png")
-
-
-# ── Method comparison metrics ─────────────────────────────────────────────────
+# Method comparison metrics
 all_process_list = [
     p for cat in categories_to_plot for p in get_leaf_names(cat, unitprocess_keywords[cat])
 ]
@@ -301,7 +188,7 @@ kw_hallucinated = (
 print("\nTop hallucinated unit processes (Keyword):")
 print(kw_hallucinated.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
 
-violin_path = FINAL_DIR / "figure_s2.png"
+violin_path = FIGURES_DIR / "figure_s2.png"
 fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(10, 6))
 draw_violin(ax_top, unit_process_metrics_df, "A.")
 draw_violin(ax_bottom, category_metrics_df, "B.")

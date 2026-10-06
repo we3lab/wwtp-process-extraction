@@ -10,8 +10,8 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 
 2. Scrape permits and site metadata
     - [wwtp_process_extraction/step2_scrape_npdes.py](wwtp_process_extraction/step2_scrape_npdes.py): scrapes CIWQS, downloads permit PDFs into output/permits/, and writes facilities.json, site_data_all.csv and site_data_relevant.csv
-        - set *AS_OF=YYYY-MM-DD* to select the permit in force at a past date instead of today's active one; each run snapshots its facilities.json and site_data_relevant.csv to output/site_data/<AS_OF>/
-        - the top-level facilities.json is always restored to the base snapshot (2026-06-01, override with *BASE_SNAPSHOT_DATE*) when a run finishes, so a retrospective year never masquerades as current
+        - set *AS_OF = "YYYY-MM-DD"* at the top of the script to select the permit in force at a past date instead of today's active one; each run snapshots its facilities.json and site_data_relevant.csv to output/site_data/<AS_OF>/
+        - an AS_OF run writes facilities.json only to its dated folder, so the top-level facilities.json (the starting list for the next run) stays today's
         - unions all dated snapshots into site_data_relevant.csv, so steps 3-6 process each document once
 
 3. Extract permit text
@@ -54,10 +54,9 @@ Executing from the repository root directory:
 ```bash
 python wwtp_process_extraction/step1_build_cwns_table.py
 python wwtp_process_extraction/step2_scrape_npdes.py
-# YEAR-OVER-YEAR: re-select the permit in force at each past date and fetch any orders not
-# already held. PDFs and LLM outputs stay in the shared folders -- a document's extraction
-# does not change between years -- so only genuinely new orders cost anything.
-for y in 2026 2025 2024 2023 2022 2021; do AS_OF=$y-06-01 python wwtp_process_extraction/step2_scrape_npdes.py; done
+# YEAR-OVER-YEAR: set AS_OF in step2 to each past date (2026-06-01 ... 2021-06-01) and rerun.
+# PDFs and LLM outputs stay in the shared folders -- a document's extraction does not change
+# between years -- so only genuinely new orders cost anything.
 python wwtp_process_extraction/step3_get_facility_descriptions.py
 python wwtp_process_extraction/step4_keyword_extraction.py
 # MODEL COMPARISON (manually-read facilities)

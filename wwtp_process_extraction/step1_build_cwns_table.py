@@ -3,7 +3,6 @@
 # Modified by WE3Lab for California-specific analysis
 
 import pandas as pd
-# WE3Lab additions
 from helpers.utils import (
     extract_leaves, build_secondary_category_lookup, apply_secondary_category_backfill, unitprocess_keywords,
     add_county_and_sort, DATA_DIR, FINAL_DIR, CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV,
@@ -35,13 +34,6 @@ def get_status(row):
         # only flag a future change if an actual change is recorded; otherwise just present
         return 'PRESENT_AND_FUTURE' if has_change else 'PRESENT'
     return 'PRESENT' if row['PRES_IND'] == 1 else 'FUTURE'
-
-
-def cwns_from_facility_file(path, cwns_col, state_col, state_val=None):
-    df = pd.read_csv(path, dtype=str, encoding='latin1')
-    if state_val is not None:
-        df = df[df[state_col].str.strip() == state_val]
-    return set(df[cwns_col].apply(pad_cwns_id))
 
 
 def percent_of(value, total):
@@ -166,9 +158,10 @@ unit_processes_df = (
 )
 unit_processes_df.columns.name = None
 
-for proc in all_keys:
-    if proc not in unit_processes_df.columns:
-        unit_processes_df[proc] = '0'
+unit_processes_df = unit_processes_df.reindex(
+    columns=list(unit_processes_df.columns) + [k for k in all_keys if k not in unit_processes_df.columns],
+    fill_value='0',
+)
 
 facility_permit = pd.read_csv(CWNS_DATA_DIR / '2022' / 'FACILITY_PERMIT.csv', dtype={'CWNS_ID': str, 'STATE_CODE': str})
 facility_permit['CWNS_ID'] = facility_permit['CWNS_ID'].apply(pad_cwns_id)
@@ -199,70 +192,49 @@ ca_consolidated = ca_only.groupby('CWNS_ID', dropna=False, sort=False).first().r
 
 meta_cols = {'CWNS_ID', 'PERMIT_NUMBER', 'STATE_CODE', 'FACILITY_NAME', 'NPDES_PERMIT', 'FACILITY_ID'}
 process_columns = [c for c in ca_consolidated.columns if c not in meta_cols]
-ids_in_export = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
 
+# CA facilities with an NPDES permit (excluding stormwater CAS permits) or a CIWQS match get a
+# placeholder row even when CWNS lists no unit processes for them
 ca_permits = facility_permit[
-    (facility_permit['STATE_CODE'].astype(str).str.strip() == 'CA')
+    (facility_permit['STATE_CODE'].str.strip() == 'CA')
     & (facility_permit['PERMIT_SOURCE'] == 'NPDES')
     & (~facility_permit['PERMIT_NUMBER'].astype(str).str.upper().str.startswith('CAS'))
-]
-required_ids = set(ca_permits['CWNS_ID'].astype(str).str.strip())
+].drop_duplicates('CWNS_ID')
+permit_by_cwns = dict(zip(ca_permits['CWNS_ID'], ca_permits['PERMIT_NUMBER'].astype(str).str.strip()))
 
 ciwqs_mapping = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str).fillna('')
-stripped_cwns = ciwqs_mapping['CWNS_ID'].astype(str).str.strip()
-ciwqs_rows = ciwqs_mapping.loc[stripped_cwns.ne('') & stripped_cwns.str.upper().ne('NA')].copy()
-ciwqs_rows['padded_cwns_id'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
-required_ids |= set(ciwqs_rows['padded_cwns_id'])
+mapped_cwns = ciwqs_mapping['CWNS_ID'].str.strip()
+ciwqs_rows = ciwqs_mapping[mapped_cwns.ne('') & mapped_cwns.str.upper().ne('NA')].copy()
+ciwqs_rows['CWNS_ID'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
+ciwqs_by_cwns = (ciwqs_rows.drop_duplicates('CWNS_ID').set_index('CWNS_ID')
+                 [['NPDES No.', 'CWNS Facility Name', 'Facility Name']].to_dict('index'))
 
-missing_ids = sorted(required_ids - ids_in_export)
-if missing_ids:
-    allowed_cwns_ids = set(wwtps['CWNS_NUM'].astype(str).str.strip())
-    missing_ids = [cid for cid in missing_ids if cid in allowed_cwns_ids]
+fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
+fac_id_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_ID'].to_dict()
 
-    permits_by_cwns = (
-        ca_permits.drop_duplicates('CWNS_ID', keep='first')
-        .assign(cwns_key=lambda d: d['CWNS_ID'].astype(str).str.strip())
-        .set_index('cwns_key')
-    )
-
-    ciwqs_by_cwns = ciwqs_rows.drop_duplicates('padded_cwns_id', keep='first').set_index('padded_cwns_id')
-
-    fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
-    fac_id_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_ID'].to_dict()
-
-    placeholder_rows = []
-    for cwns_id in missing_ids:
-        row = {col: '0' for col in process_columns}
-        row['CWNS_ID'] = cwns_id
-        row['STATE_CODE'] = 'CA'
-        row['NPDES_PERMIT'] = ''
-        row['PERMIT_NUMBER'] = ''
-        row['FACILITY_ID'] = fac_id_map_2022.get(cwns_id, '')
-        row['FACILITY_NAME'] = fac_name_map_2022.get(cwns_id) or fac12_map.get(cwns_id, '')
-
-        if cwns_id in permits_by_cwns.index:
-            permit = str(permits_by_cwns.loc[cwns_id, 'PERMIT_NUMBER']).strip()
-            row['PERMIT_NUMBER'] = permit
-            row['NPDES_PERMIT'] = permit
-
-        if cwns_id in ciwqs_by_cwns.index:
-            mapping_row = ciwqs_by_cwns.loc[cwns_id]
-            if not row['NPDES_PERMIT']:
-                row['NPDES_PERMIT'] = str(mapping_row.get("NPDES No.", '')).strip()
-            row['FACILITY_NAME'] = (row['FACILITY_NAME']
-                                    or str(mapping_row.get('CWNS Facility Name', '')).strip()
-                                    or str(mapping_row.get('Facility Name', '')).strip())
-
-        if not row['PERMIT_NUMBER']:
-            row['PERMIT_NUMBER'] = row['NPDES_PERMIT']
-
-        placeholder_rows.append(row)
-
-    ca_consolidated = pd.concat(
-        [ca_consolidated, pd.DataFrame(placeholder_rows).reindex(columns=ca_consolidated.columns)],
-        ignore_index=True,
-    )
-    print(f"Added {len(placeholder_rows)} CA CWNS placeholder rows")
+required_ids = set(permit_by_cwns) | set(ciwqs_by_cwns)
+missing_ids = sorted((required_ids - set(ca_consolidated['CWNS_ID'])) & set(wwtps['CWNS_NUM']))
+placeholder_rows = []
+for cwns_id in missing_ids:
+    mapping_row = ciwqs_by_cwns.get(cwns_id, {})
+    permit = permit_by_cwns.get(cwns_id, '')
+    npdes = permit or mapping_row.get('NPDES No.', '').strip()
+    placeholder_rows.append({
+        **{col: '0' for col in process_columns},
+        'CWNS_ID': cwns_id,
+        'STATE_CODE': 'CA',
+        'NPDES_PERMIT': npdes,
+        'PERMIT_NUMBER': permit or npdes,
+        'FACILITY_ID': fac_id_map_2022.get(cwns_id, ''),
+        'FACILITY_NAME': (fac_name_map_2022.get(cwns_id) or fac12_map.get(cwns_id, '')
+                          or mapping_row.get('CWNS Facility Name', '').strip()
+                          or mapping_row.get('Facility Name', '').strip()),
+    })
+ca_consolidated = pd.concat(
+    [ca_consolidated, pd.DataFrame(placeholder_rows).reindex(columns=ca_consolidated.columns)],
+    ignore_index=True,
+)
+print(f"Added {len(placeholder_rows)} CA CWNS placeholder rows")
 
 proc_cols_backfill = [c for c in ca_consolidated.columns if c in set(all_keys)]
 for idx in ca_consolidated.index:
@@ -282,52 +254,35 @@ ca_consolidated = add_county_and_sort(ca_consolidated, "FACILITY_NAME", cwns_id_
 ca_consolidated.to_csv(CWNS_TABLE_CSV, index=False)
 print(f"Saved CA consolidated CWNS: {len(ca_consolidated)} facilities")
 
-# Track CA facilities and unit process changes across CWNS survey years
-ca_ids = set(ca_consolidated['CWNS_ID'].astype(str).str.strip())
-ca_up_check = up_old_raw[up_old_raw['CWNS_NUM'].astype(str).str.strip().isin(ca_ids)]
-ca_up_2022 = up2022[up2022['CWNS_NUM'].astype(str).str.strip().isin(ca_ids)]
-
-fac_2004 = set(ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]['CWNS_NUM'].astype(str).str.strip()) & ca_ids
-fac_2008 = cwns_from_facility_file(CWNS_DATA_DIR / '2008' / 'Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
-fac_2012 = cwns_from_facility_file(CWNS_DATA_DIR / '2012' / 'Facility_Details.csv', 'CWNS Number', 'State', 'CA') & ca_ids
-fac_2022 = set(facilities_2022[facilities_2022['STATE_CODE'].str.strip() == 'CA']['CWNS_ID'].apply(pad_cwns_id)) & ca_ids
-
-# US-wide equivalents of the per-year facility sets, over all contiguous US treatment plants
-us_ids = set(wwtps['CWNS_NUM'].astype(str).str.strip())
-usfac_2004 = set(up_old_raw[up_old_raw['REPORT_YEAR'] == 2004]['CWNS_NUM'].astype(str).str.strip()) & us_ids
-usfac_2008 = cwns_from_facility_file(CWNS_DATA_DIR / '2008' / 'Facility_Details.csv', 'CWNS Number', 'State') & us_ids
-usfac_2012 = cwns_from_facility_file(CWNS_DATA_DIR / '2012' / 'Facility_Details.csv', 'CWNS Number', 'State') & us_ids
-usfac_2022 = set(facilities_2022['CWNS_ID'].apply(pad_cwns_id)) & us_ids
+# CWNS survey years: facilities listed, and unit process records, for each year
+YEARS = [2004, 2008, 2012, 2022]
+us_ids = set(wwtps['CWNS_NUM'])
+ca_ids = set(ca_consolidated['CWNS_ID'])
+facilities_by_year = {
+    2004: set(up_old_raw.loc[up_old_raw['REPORT_YEAR'] == 2004, 'CWNS_NUM']),
+    2008: set(pd.read_csv(CWNS_DATA_DIR / '2008' / 'Facility_Details.csv', dtype=str, encoding='latin1')
+              ['CWNS Number'].apply(pad_cwns_id)),
+    2012: set(fac12['CWNS Number']),
+    2022: set(facilities_2022['CWNS_ID'].apply(pad_cwns_id)),
+}
+ups_by_year = {y: up_old_raw[up_old_raw['REPORT_YEAR'] == y] for y in YEARS[:3]} | {2022: up2022}
 
 # Most recent CWNS survey year with unit process records; 0 = never reported
 up2022_active = up2022[(up2022['PRES_IND'] == 1) | (up2022['PROJ_IND'] == 1)]
 up_years = pd.concat([up_old_raw[['CWNS_NUM', 'REPORT_YEAR']], up2022_active[['CWNS_NUM', 'REPORT_YEAR']]])
-up_years['CWNS_NUM'] = up_years['CWNS_NUM'].astype(str).str.strip()
 latest_year = up_years.groupby('CWNS_NUM')['REPORT_YEAR'].max()
-
-us = pd.Series(sorted(us_ids)).map(latest_year).fillna(0).astype(int).value_counts()
-ca_rec = pd.Series(sorted(ca_ids)).map(latest_year).fillna(0).astype(int).value_counts()
-
-us_up_check = up_old_raw[up_old_raw['CWNS_NUM'].astype(str).str.strip().isin(us_ids)]
-us_up_2022 = up2022[up2022['CWNS_NUM'].astype(str).str.strip().isin(us_ids)]
 
 # Table S1: CWNS survey coverage by report year, CA vs. US-wide
 # all percentages are of the 2022 cumulative facility count (CA 389, US 16201)
 table_rows = []
-for label, year_data, rec in [
-    ('CA', [(2004, fac_2004, ca_up_check[ca_up_check['REPORT_YEAR'] == 2004]),
-            (2008, fac_2008, ca_up_check[ca_up_check['REPORT_YEAR'] == 2008]),
-            (2012, fac_2012, ca_up_check[ca_up_check['REPORT_YEAR'] == 2012]),
-            (2022, fac_2022, ca_up_2022)], ca_rec),
-    ('US-wide', [(2004, usfac_2004, us_up_check[us_up_check['REPORT_YEAR'] == 2004]),
-                 (2008, usfac_2008, us_up_check[us_up_check['REPORT_YEAR'] == 2008]),
-                 (2012, usfac_2012, us_up_check[us_up_check['REPORT_YEAR'] == 2012]),
-                 (2022, usfac_2022, us_up_2022)], us),
-]:
+for label, ids in [('CA', ca_ids), ('US-wide', us_ids)]:
+    rec = pd.Series(sorted(ids)).map(latest_year).fillna(0).astype(int).value_counts()
     cum = set()
     procs_prev = None
     n_new, n_upd, n_recent = {}, {}, {}
-    for year, facs, up_data in year_data:
+    for year in YEARS:
+        facs = facilities_by_year[year] & ids
+        up_data = ups_by_year[year][ups_by_year[year]['CWNS_NUM'].isin(ids)]
         n_new[year] = len(facs - cum)
         cum |= facs
         procs = up_data.groupby('CWNS_NUM')['FINAL_UNIT_PROCESS_NAME'].apply(set)
@@ -339,17 +294,16 @@ for label, year_data, rec in [
         n_recent[year] = int(rec.get(year, 0))
         procs_prev = procs
 
-    years = [y for y, _, _ in year_data]
     total = len(cum)
     for metric, counts in [
         ('New facilities added (#)', n_new),
-        ('New facilities added (% of 2022 cumulative)', {y: percent_of(n_new[y], total) for y in years}),
+        ('New facilities added (% of 2022 cumulative)', {y: percent_of(n_new[y], total) for y in YEARS}),
         ('Facilities with process updates (#)', n_upd),
-        ('Facilities with process updates (% of 2022 cumulative)', {y: percent_of(n_upd[y], total) for y in years}),
+        ('Facilities with process updates (% of 2022 cumulative)', {y: percent_of(n_upd[y], total) for y in YEARS}),
         ('Facilities with most recent update in this year (#)', n_recent),
-        ('Facilities with most recent update in this year (% of 2022 cumulative)', {y: percent_of(n_recent[y], total) for y in years}),
+        ('Facilities with most recent update in this year (% of 2022 cumulative)', {y: percent_of(n_recent[y], total) for y in YEARS}),
     ]:
-        table_rows.append({'Region': label, 'Metric': metric, **{str(y): counts[y] for y in years}})
+        table_rows.append({'Region': label, 'Metric': metric, **{str(y): counts[y] for y in YEARS}})
 
 table_s1 = pd.DataFrame(table_rows, dtype=object)
 table_s1.to_csv(FINAL_DIR / 'table_s1.csv', index=False)

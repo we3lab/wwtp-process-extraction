@@ -15,10 +15,10 @@
 #     so only flow-size bins differentiate: <2,2-4,4-7,7-16,16-46,46-100,≥100 MGD).
 #   - Fallback is applied to every source using the within-source assigned pool.
 
+import ast
 import io
-import os
+import json
 import urllib.request
-import urllib.error
 from functools import cache
 import numpy as np
 import pandas as pd
@@ -30,13 +30,12 @@ from pathlib import Path
 
 from helpers.plotting import make_grouped_legend, save_and_close
 from helpers.utils import (build_cwns_facility_processes, extract_leaves, unitprocess_keywords,
-                          CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV, PACKAGE_DIR, DATA_DIR, OUTPUT_DIR,
+                          CWNS_TABLE_CSV, CIWQS_TO_CWNS_CSV, DATA_DIR, OUTPUT_DIR,
                           FINAL_DIR, PRESENT_STATUSES, STATUS_TOKENS, current_permit_mask,
                           collapse_facility_processes)
 
-# Only consulted if GitHub is unreachable. Defaults to a US_WWTP_GHG clone sitting beside this
-# repo; set GHG_ROOT to point elsewhere.
-GHG_ROOT = Path(os.environ.get('GHG_ROOT') or PACKAGE_DIR.parent / 'US_WWTP_GHG')
+# Local copies of the El Abbadi US_WWTP_GHG files, downloaded from GitHub (gitignored)
+GHG_CACHE_DIR = DATA_DIR / 'ghg_cache'
 MC_DIR = 'uncertainty_sensitivity_results/Monte_Carlo'
 # The 50th-percentile factors distilled from the ~180 MB of upstream Monte Carlo workbooks.
 # Cached because it is 49 rows of derived numbers; delete it to refetch and recompute.
@@ -45,28 +44,46 @@ WERF_CODES_CSV = DATA_DIR / 'el_abbadi' / 'UNIT_PROCESS_EI_CODES_WERF_modified.c
 LLM_PERDOC_CSV = OUTPUT_DIR / 'unit_processes_by_pdf_llm.csv'
 GHG_OUTPUT_DIR = OUTPUT_DIR / 'ghg'
 
-GHG_GITHUB = 'https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/main'
+# Pinned upstream commit, so cached files and the treatment-train code can't drift
+GHG_COMMIT = '7679ed497df02bfef3438706de0d1fac92d953bd'
+GHG_GITHUB = f'https://raw.githubusercontent.com/jiananf2/US_WWTP_GHG/{GHG_COMMIT}'
 
 MG_2_m3 = 3785.412  # m³/MG
 kWh_2_MJ = 3.6
 KG_PER_DAY_TO_KT_PER_YEAR = 365 / 1e6
 
-# Treatment train codes (Tarallo et al. 2015 trains under their internal codes)
-# From WWTP_GHG_accounting.py lines 71-120
-ALL_TT = [
-    'B1', 'B1E', 'B2', 'B3', 'B4',
-    'B5', 'B6', 'C1', 'C1E', 'C2',
-    'C3', 'C5', 'C6', 'D1', 'D1E',
-    'D2', 'D3', 'D5', 'D6', 'E2',
-    'E2P', 'F1', 'F1E', 'G1', 'G1E',
-    'G2', 'G3', 'G5', 'G6',
-    'H1', 'H1E', 'I1', 'I1E',
-    'I2', 'I3', 'I5', 'I6',
-    'LAGOON_AER', 'LAGOON_ANAER', 'LAGOON_FAC',
-    'LAGOON_UNCATEGORIZED', 'N1', 'N1E',
-    'N2', 'O1', 'O1E', 'O2',
-    'O3', 'O5', 'O6',
-]
+
+def fetch_ghg_file(rel_path: str) -> io.BytesIO:
+    """Read a US_WWTP_GHG file as BytesIO, downloading it into GHG_CACHE_DIR the first time."""
+    local = GHG_CACHE_DIR / rel_path
+    if not local.exists():
+        with urllib.request.urlopen(f'{GHG_GITHUB}/{rel_path}', timeout=15) as r:
+            data = r.read()
+        local.parent.mkdir(parents=True, exist_ok=True)
+        local.write_bytes(data)
+    return io.BytesIO(local.read_bytes())
+
+
+# Upstream's treatment_train_werf() (tt_assignment_2022.ipynb), run as-is by assign_treatment_trains
+TRAIN_NOTEBOOK = json.load(fetch_ghg_file('treatment_train_assignment/tt_assignment_2022.ipynb'))
+TRAIN_SOURCE = next(''.join(cell['source']) for cell in TRAIN_NOTEBOOK['cells']
+                    if 'def treatment_train_werf' in ''.join(cell['source']))
+TRAIN_NAMESPACE = {}
+exec(TRAIN_SOURCE, TRAIN_NAMESPACE)
+treatment_train_werf = TRAIN_NAMESPACE['treatment_train_werf']
+
+# What each Tarallo train requires: the check list of each assign() call in treatment_train_werf
+# (minus the BIOGAS_EL flag). Lagoons are assigned directly from their unit process.
+# Used by the fallback to pick a train compatible with whatever unit processes a facility
+# *did* report, rather than the bin's most common train outright.
+TT_REQUIRES = {
+    call.args[0].value: {e.value for e in call.args[1].elts if isinstance(e, ast.Constant)}
+    for call in ast.walk(ast.parse(TRAIN_SOURCE))
+    if isinstance(call, ast.Call) and getattr(call.func, 'id', None) == 'assign'
+} | {lagoon: set() for lagoon in ('LAGOON_AER', 'LAGOON_ANAER', 'LAGOON_FAC', 'LAGOON_UNCATEGORIZED')}
+ALL_TT = sorted(TT_REQUIRES)
+# E-train → non-E equivalent (fallback rule 2: biogas electricity is never imputed)
+E_TO_BASE = {tt: tt[:-1] for tt in ALL_TT if tt.endswith('E')}
 
 # Trains with no Monte Carlo workbook upstream, verified 404 rather than assumed: N1 is the
 # only one of the 50, because El Abbadi's national assignment never produces it (0 of 15,863
@@ -75,12 +92,6 @@ ALL_TT = [
 # the runtime warning in calc_ghg rather than a silent zero.
 EXPECTED_ABSENT_TT = frozenset({'N1'})
 
-# E-train → non-E equivalent (fallback rule 2: biogas electricity is never imputed)
-E_TO_BASE = {
-    'B1E': 'B1', 'C1E': 'C1', 'D1E': 'D1', 'F1E': 'F1',
-    'G1E': 'G1', 'H1E': 'H1', 'I1E': 'I1', 'N1E': 'N1', 'O1E': 'O1',
-}
-
 # Every CWNS-based source here describes the 2022 fleet: CWNS 2022 is a 2022 snapshot and
 # El Abbadi's assignments are built from it. So the permit source is collapsed to the permits
 # in force in 2022 rather than today's, and figure_5 does its own collapse instead of reading
@@ -88,31 +99,6 @@ E_TO_BASE = {
 # basis the same pipeline reads +22.0% N2O against their published total, on a 2022 basis
 # +10.1%, and the total moves from +1.0% to -1.6%.
 GHG_AS_OF = '2022-06-01'
-
-# What each Tarallo train requires, transcribed from the assign_train() calls in
-# assign_treatment_trains. Used by the fallback to pick a train compatible with whatever
-# unit processes a facility *did* report, rather than the bin's most common train outright.
-TT_REQUIRES = {
-    'N1E': {'MBR-BNR', 'AND'},          'N1':  {'MBR-BNR', 'AND'},        'N2':  {'MBR-BNR', 'AED'},
-    'H1E': {'AS_BNR_P', 'AND', 'CHEM-P'}, 'H1': {'AS_BNR_P', 'AND', 'CHEM-P'},
-    'G6':  {'AS_BNR_P', 'FBI'},         'G5':  {'AS_BNR_P', 'MHI'},       'G3':  {'AS_BNR_P', 'LIME'},
-    'G2':  {'AS_BNR_P', 'AED'},         'G1E': {'AS_BNR_P', 'AND'},       'G1':  {'AS_BNR_P', 'AND'},
-    'I6':  {'AS_BNR_N', 'FBI'},         'I5':  {'AS_BNR_N', 'MHI'},       'I3':  {'AS_BNR_N', 'LIME'},
-    'I2':  {'AS_BNR_N', 'AED'},         'I1E': {'AS_BNR_N', 'AND'},       'I1':  {'AS_BNR_N', 'AND'},
-    'F1E': {'BASIC_AS', 'AND', 'NIT'},  'F1':  {'BASIC_AS', 'AND', 'NIT'},
-    'E2P': {'BASIC_AS', 'AED', 'NIT', 'PRIMARY'}, 'E2': {'BASIC_AS', 'AED', 'NIT'},
-    'O5':  {'AS-PUREO', 'MHI'},         'O6':  {'AS-PUREO', 'FBI'},       'O3':  {'AS-PUREO', 'LIME'},
-    'O2':  {'AS-PUREO', 'AED'},         'O1E': {'AS-PUREO', 'AND'},       'O1':  {'AS-PUREO', 'AND'},
-    'D5':  {'TF_ALL', 'MHI'},           'D6':  {'TF_ALL', 'FBI'},         'D3':  {'TF_ALL', 'LIME'},
-    'D2':  {'TF_ALL', 'AED'},           'D1E': {'TF_ALL', 'AND'},         'D1':  {'TF_ALL', 'AND'},
-    'B6':  {'BASIC_AS', 'FBI', 'PRIMARY'},  'B5': {'BASIC_AS', 'MHI', 'PRIMARY'},
-    'B4':  {'BASIC_AS', 'AND', 'BIODRY', 'PRIMARY'}, 'B3': {'BASIC_AS', 'LIME', 'PRIMARY'},
-    'B2':  {'BASIC_AS', 'AED', 'PRIMARY'},  'B1E': {'BASIC_AS', 'AND', 'PRIMARY'},
-    'B1':  {'BASIC_AS', 'AND', 'PRIMARY'},
-    'C5':  {'BASIC_AS', 'MHI'},         'C6':  {'BASIC_AS', 'FBI'},       'C3':  {'BASIC_AS', 'LIME'},
-    'C2':  {'BASIC_AS', 'AED'},         'C1E': {'BASIC_AS', 'AND'},       'C1':  {'BASIC_AS', 'AND'},
-    'LAGOON_AER': set(), 'LAGOON_ANAER': set(), 'LAGOON_FAC': set(), 'LAGOON_UNCATEGORIZED': set(),
-}
 
 # Nitrification is the N2O lever: trains needing one of these carry N2O factors around
 # 0.24-0.27, the rest around 0.044 -- a ~6x cliff. Assigning across it by accident is the
@@ -194,30 +180,6 @@ N2O_PALETTE = ['#FADA99', '#F5B560', '#E08030', '#C05820', '#8B3410', '#84B07A']
 CATEGORY_COLORS = dict(zip(SECONDARY_ORDER, N2O_PALETTE))
 
 
-def fetch_ghg_file(rel_path: str) -> io.BytesIO:
-    """Fetch a file as BytesIO: GitHub first, local GHG_ROOT fallback.
-
-    Raises FileNotFoundError when the file does not exist (404)
-    """
-    url = f'{GHG_GITHUB}/{rel_path}'
-    missing = False
-    try:
-        with urllib.request.urlopen(url, timeout=15) as r:
-            return io.BytesIO(r.read())
-    except urllib.error.HTTPError as e:
-        if e.code != 404:
-            raise
-        missing = True
-    except Exception:
-        pass
-    local = GHG_ROOT / rel_path
-    if local.exists():
-        return io.BytesIO(local.read_bytes())
-    if missing:
-        raise FileNotFoundError(f'{rel_path} does not exist upstream (404) or at {local}')
-    raise ConnectionError(f'Could not reach {url} and no local copy at {local}')
-
-
 @cache
 def load_llm_facility_table():
     """Permit-derived processes collapsed per facility, as of GHG_AS_OF."""
@@ -268,23 +230,18 @@ def load_mc_ef():
     which is kWh / MGD as per the original WWTP_GHG_accounting.py usage).
 
     Reads the cached CSV if present. Otherwise pulls each treatment train's Monte Carlo
-    workbook through fetch_ghg_file (GitHub, falling back to a local GHG_ROOT clone), reduces it to
-    its median, and writes the cache -- the workbooks are ~3.6 MB each and only their
+    workbook through fetch_ghg_file (skipping EXPECTED_ABSENT_TT, which upstream never published),
+    reduces it to its median, and writes the cache -- the workbooks are ~3.6 MB each and only their
     quantiles are ever used.
     """
     if MC_EF_CSV.exists():
         return pd.read_csv(MC_EF_CSV, index_col=0)
 
     records = {}
-    absent = []
     for tt in ALL_TT:
-        try:
-            mc = pd.read_excel(fetch_ghg_file(f'{MC_DIR}/{tt}_MC.xlsx'))
-        except FileNotFoundError:
-            # Genuinely not published upstream
-            # Might be N1 (MBR-BNR + AnDig, no gas recovery) since El Abbadi never assign it
-            absent.append(tt)
+        if tt in EXPECTED_ABSENT_TT:
             continue
+        mc = pd.read_excel(fetch_ghg_file(f'{MC_DIR}/{tt}_MC.xlsx'))
         records[tt] = {
             'CH4_50':     mc['CH4'].quantile(0.5),
             'N2O_50':     mc['N2O'].quantile(0.5),
@@ -294,16 +251,6 @@ def load_mc_ef():
             'NG_up_50':   mc['NG_upstream'].quantile(0.5),
             'solids_50':  mc['solids'].quantile(0.5),
         }
-    if not records:
-        raise FileNotFoundError(
-            f'No Monte Carlo workbooks reachable: neither {GHG_GITHUB}/{MC_DIR}/ nor '
-            f'{GHG_ROOT / MC_DIR}. Set GHG_ROOT to a US_WWTP_GHG clone, or restore network '
-            f'access. (Without this, ef comes back empty and the failure surfaces much later '
-            f'as KeyError: CH4_50.)')
-    unexpected = [tt for tt in absent if tt not in EXPECTED_ABSENT_TT]
-    if unexpected:
-        raise FileNotFoundError(
-            f'Emission factors missing for {unexpected}.')
     ef = pd.DataFrame(records).T
     ef.to_csv(MC_EF_CSV)
     print(f'  cached {len(ef)} treatment-train emission factors → {MC_EF_CSV.name}')
@@ -345,20 +292,12 @@ def load_grid_carbon():
     return ba_wwtp.set_index('CWNS_NUM')['kg_CO2_kWh']
 
 
-def assign_train(d, name, check, exceptions=()):
-    """Set train column name to 1 where every check column is 1 and no exception train is."""
-    d[name] = sum(d[c] for c in check)
-    d.loc[d[name] != len(check), name] = 0
-    d.loc[d[name] == len(check), name] = 1
-    for exc in exceptions:
-        d.loc[d[exc] == 1, name] = 0
-
-
 def assign_treatment_trains(df):
     """
     Assign Tarallo et al. 2015 treatment train codes from binary WERF-code columns.
-    Directly adapted from treatment_train_werf() in tt_assignment_2022.ipynb (cell 20).
-    BIOGAS_EL (the E-train flag) must already be set by the caller.
+    Builds the grouped flags from unit_process_pivot() (tt_assignment_2022.ipynb cell 19), then
+    runs upstream's own treatment_train_werf() (cell 20). BIOGAS_EL (the E-train flag) must
+    already be set by the caller.
     Input df: one row per facility, binary columns for WERF codes.
     Returns df with added TT columns and TT_IDENTIFIED count.
     """
@@ -384,67 +323,10 @@ def assign_treatment_trains(df):
     # BIOGAS_EL comes from the caller: WEF/DOE (Sources 1, 4), the AND + cogen proxy
     # (Sources 3, 4), or 0 (Source 2).
 
-    assign_train(d, 'N1E', ['MBR-BNR', 'AND', 'BIOGAS_EL'])
-    assign_train(d, 'N1',  ['MBR-BNR', 'AND'],                   ['N1E'])
-    assign_train(d, 'N2',  ['MBR-BNR', 'AED'])
-    assign_train(d, 'H1E', ['AS_BNR_P', 'AND', 'CHEM-P', 'BIOGAS_EL'])
-    assign_train(d, 'H1',  ['AS_BNR_P', 'AND', 'CHEM-P'],        ['H1E'])
-    assign_train(d, 'G6',  ['AS_BNR_P', 'FBI'])
-    assign_train(d, 'G5',  ['AS_BNR_P', 'MHI'])
-    assign_train(d, 'G3',  ['AS_BNR_P', 'LIME'])
-    assign_train(d, 'G2',  ['AS_BNR_P', 'AED'])
-    assign_train(d, 'G1E', ['AS_BNR_P', 'AND', 'BIOGAS_EL'],     ['H1E', 'H1'])
-    assign_train(d, 'G1',  ['AS_BNR_P', 'AND'],                  ['G1E', 'H1E', 'H1'])
-    assign_train(d, 'I6',  ['AS_BNR_N', 'FBI'],                  ['G6'])
-    assign_train(d, 'I5',  ['AS_BNR_N', 'MHI'],                  ['G5'])
-    assign_train(d, 'I3',  ['AS_BNR_N', 'LIME'],                 ['G3'])
-    assign_train(d, 'I2',  ['AS_BNR_N', 'AED'],                  ['G2'])
-    assign_train(d, 'I1E', ['AS_BNR_N', 'AND', 'BIOGAS_EL'],     ['H1', 'H1E', 'G1', 'G1E'])
-    assign_train(d, 'I1',  ['AS_BNR_N', 'AND'],                  ['I1E', 'H1', 'H1E', 'G1', 'G1E'])
-    assign_train(d, 'F1E', ['BASIC_AS', 'AND', 'NIT', 'BIOGAS_EL'],
-                                                                ['AS_BNR_N', 'G1', 'G1E', 'H1', 'H1E', 'I1', 'I1E'])
-    assign_train(d, 'F1',  ['BASIC_AS', 'AND', 'NIT'],            ['AS_BNR_N', 'F1E', 'G1', 'G1E', 'H1', 'H1E', 'I1', 'I1E'])
-    assign_train(d, 'E2P', ['BASIC_AS', 'AED', 'NIT', 'PRIMARY'], ['AS_BNR_N', 'G2', 'I2'])
-    assign_train(d, 'E2',  ['BASIC_AS', 'AED', 'NIT'],            ['AS_BNR_N', 'G2', 'I2', 'E2P'])
-    assign_train(d, 'O5',  ['AS-PUREO', 'MHI'],                  ['G5', 'I5'])
-    assign_train(d, 'O6',  ['AS-PUREO', 'FBI'],                  ['G6', 'I6'])
-    assign_train(d, 'O3',  ['AS-PUREO', 'LIME'],                 ['G3', 'I3'])
-    assign_train(d, 'O2',  ['AS-PUREO', 'AED'],                  ['G2', 'I2', 'E2', 'E2P'])
-    assign_train(d, 'O1E', ['AS-PUREO', 'AND', 'BIOGAS_EL'],     ['F1', 'F1E', 'G1E', 'G1', 'I1', 'I1E', 'H1', 'H1E'])
-    assign_train(d, 'O1',  ['AS-PUREO', 'AND'],                  ['F1', 'F1E', 'O1E', 'G1E', 'G1', 'I1', 'I1E', 'H1', 'H1E'])
-    assign_train(d, 'D5',  ['TF_ALL', 'MHI'])
-    assign_train(d, 'D6',  ['TF_ALL', 'FBI'])
-    assign_train(d, 'D3',  ['TF_ALL', 'LIME'])
-    assign_train(d, 'D2',  ['TF_ALL', 'AED'])
-    assign_train(d, 'D1E', ['TF_ALL', 'AND', 'BIOGAS_EL'])
-    assign_train(d, 'D1',  ['TF_ALL', 'AND'],                    ['D1E'])
-    assign_train(d, 'B6',  ['BASIC_AS', 'FBI', 'PRIMARY'],        ['G6', 'I6', 'O6'])
-    assign_train(d, 'B5',  ['BASIC_AS', 'MHI', 'PRIMARY'],        ['AS-PUREO', 'G5', 'I5', 'O5'])
-    assign_train(d, 'B4',  ['BASIC_AS', 'AND', 'BIODRY', 'PRIMARY'])
-    assign_train(d, 'B3',  ['BASIC_AS', 'LIME', 'PRIMARY'],       ['G3', 'I3', 'O3'])
-    assign_train(d, 'B2',  ['BASIC_AS', 'AED', 'PRIMARY'],        ['E2', 'E2P', 'G2', 'I2', 'N2', 'O2'])
-    assign_train(d, 'B1E', ['BASIC_AS', 'AND', 'PRIMARY', 'BIOGAS_EL'],
-                                                                ['AS_BNR_N', 'AS-PUREO', 'B4', 'F1', 'F1E',
-                                                                 'G1', 'G1E', 'H1', 'H1E', 'I1', 'I1E', 'N1', 'N1E', 'O1', 'O1E'])
-    assign_train(d, 'B1',  ['BASIC_AS', 'AND', 'PRIMARY'],        ['AS_BNR_N', 'AS-PUREO', 'B1E', 'B4', 'F1', 'F1E',
-                                                                 'G1', 'G1E', 'H1', 'H1E', 'I1', 'I1E', 'N1', 'N1E', 'O1', 'O1E'])
-    assign_train(d, 'C5',  ['BASIC_AS', 'MHI'],                  ['B5', 'G5', 'I5', 'O5'])
-    assign_train(d, 'C6',  ['BASIC_AS', 'FBI'],                  ['B6', 'G6', 'I6', 'O6'])
-    assign_train(d, 'C3',  ['BASIC_AS', 'LIME'],                 ['B3', 'G3', 'I3', 'O3'])
-    assign_train(d, 'C2',  ['BASIC_AS', 'AED'],                  ['B2', 'E2', 'E2P', 'G2', 'I2', 'N2', 'O2'])
-    assign_train(d, 'C1E', ['BASIC_AS', 'AND', 'BIOGAS_EL'],     ['B1', 'B1E', 'B4', 'F1', 'F1E',
-                                                                 'G1', 'G1E', 'H1', 'H1E', 'I1E', 'I1', 'N1E', 'N1', 'O1', 'O1E'])
-    assign_train(d, 'C1',  ['BASIC_AS', 'AND'],                  ['B1', 'B1E', 'B4', 'C1E', 'F1', 'F1E',
-                                                                 'G1', 'G1E', 'H1', 'H1E', 'I1', 'I1E', 'N1', 'N1E', 'O1', 'O1E'])
-    d['TT_IDENTIFIED'] = sum(
-        d[tt] for tt in ('LAGOON', 'LAGOON_AER', 'LAGOON_ANAER', 'LAGOON_FAC',
-                         'STBL_POND', 'I1E', 'G6', 'I6', 'O5', 'O6', 'O3', 'O1E',
-                         'G5', 'I5', 'C5', 'C6', 'O2', 'O1', 'N1', 'N1E', 'N2',
-                         'I3', 'I2', 'I1', 'H1', 'H1E', 'G3', 'G2', 'G1', 'G1E',
-                         'F1', 'F1E', 'E2', 'E2P', 'D5', 'D6', 'D1', 'D1E', 'D3',
-                         'D2', 'C3', 'C2', 'C1', 'C1E', 'B6', 'B5', 'B4', 'B3',
-                         'B1E', 'B1', 'B2'))
-    return d
+    # upstream names the flag BIOGAS_EL_<year> and adds a TT_ASSIGN_NOTE column we don't use
+    d['BIOGAS_EL_0'] = d['BIOGAS_EL']
+    d = treatment_train_werf(d, 0)
+    return d.drop(columns=['BIOGAS_EL_0', 'TT_ASSIGN_NOTE'])
 
 
 def calc_ghg(wwtp_df, ef, grid_carbon, source_label):
@@ -1096,6 +978,5 @@ if __name__ == '__main__':
         print(f'  {label}: N2O {n2o_d:+.1f}% vs manual,  Total {tot_d:+.1f}% vs manual  '
               f'(Total={r["total_ktyr"]:.1f}, N2O={r["N2O_ktyr"]:.1f})')
 
-    print('\nGenerating plots...')
     plot_comparison(results)
     plot_n2o_breakdown(ghg, ef)

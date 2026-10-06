@@ -21,26 +21,8 @@ from helpers.utils import (
 from helpers.plotting import COLORS
 from helpers.plotting import save_and_close, set_thick_spines
 
-
-def presence_diff(truth_row, pred_row, cols):
-    """Per-column TP/FP/FN between a truth row and a prediction row, using is_present on both sides.
-
-    Returns (tp, fp, fn, missed, extra) where missed/extra are sorted column-name lists.
-    """
-    tp = fp = fn = 0
-    missed, extra = [], []
-    for col in cols:
-        truth_positive = is_present(truth_row.get(col, ""))
-        pred_positive = is_present(pred_row.get(col, ""))
-        if truth_positive and pred_positive:
-            tp += 1
-        elif pred_positive:
-            fp += 1
-            extra.append(col)
-        elif truth_positive:
-            fn += 1
-            missed.append(col)
-    return tp, fp, fn, sorted(missed), sorted(extra)
+SOURCE_COLORS = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["Clean Watershed Needs Survey"]}
+SOURCE_LABELS = {"NPDES": "Facility Permit", "CWNS": "CWNS"}
 
 
 def f1_error_parts(tp, fp, fn):
@@ -71,25 +53,16 @@ def build_category_facility_sets(
 
     for col in process_cols:
         category = leaf_to_category.get(col, col)
-        if col in sd_common.columns:
-            for _, row in sd_common.iterrows():
-                if is_present(row[col]):
-                    sd_fac[category].add(row["Place ID"])
-        if col in text_common.columns:
-            for _, row in text_common.iterrows():
-                if is_present(row[col]):
-                    npdes_fac[category].add(row["Place ID"])
-        if col in cwns_common.columns:
-            mask = cwns_common[col].map(is_present)
-            for pid in cwns_common.loc[mask, "Place ID"]:
-                cwns_fac[category].add(pid)
+        for df, fac in ((sd_common, sd_fac), (text_common, npdes_fac), (cwns_common, cwns_fac)):
+            if col in df.columns:
+                fac[category].update(df.loc[df[col].map(is_present), "Place ID"])
 
     return sd_fac, npdes_fac, cwns_fac
 
 
 def build_sd_rows(sd_fac, npdes_fac, cwns_fac, common_facilities):
     """Build summary rows for ground-truth comparison plotting from per-category facility sets."""
-    all_cats = sorted(set(list(sd_fac.keys()) + list(npdes_fac.keys()) + list(cwns_fac.keys())))
+    all_cats = sorted(set(sd_fac) | set(npdes_fac) | set(cwns_fac))
     rows = []
     for cat in all_cats:
         sd_p = sd_fac[cat] & common_facilities
@@ -126,11 +99,9 @@ def main(error_denominator="f1"):
     }
 
     # remove facilities with no data in CWNS
-    print(
-        "Total CWNS facilities excluded due to lack of data:",
-        sum((ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1))
-    )
-    ca_cwns_data = ca_cwns_data[~(ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1)]
+    no_data = (ca_cwns_data[leaf_to_category.keys()] == '0').all(axis=1)
+    print("Total CWNS facilities excluded due to lack of data:", sum(no_data))
+    ca_cwns_data = ca_cwns_data[~no_data]
 
     # Load Google Sheets
     supplemental_data_df = pd.read_csv(DATA_DIR / "unit_processes_by_facility_supplemental_data.csv", dtype=str).fillna("")
@@ -193,7 +164,6 @@ def main(error_denominator="f1"):
     sd_plot_df = sd_plot_df[sd_plot_df["GroundTruth"] > 0].copy()
     sd_plot_df = sd_plot_df.sort_values("GroundTruth", ascending=False).reset_index(drop=True)
 
-    n_facilities = len(common_facilities)
     for source in ("NPDES", "CWNS"):
         tp_col, fp_col, fn_col = f"{source}_TP", f"{source}_FP", f"{source}_FN"
         if error_denominator == "f1":
@@ -231,38 +201,23 @@ def main(error_denominator="f1"):
         supplemental_data_row = supplemental_data_common[supplemental_data_common["Place ID"] == fac].iloc[0]
         text_row = text_common[text_common["Place ID"] == fac].iloc[0]
         cwns_row = cwns_common[cwns_common["Place ID"] == fac].iloc[0]
-        npdes = supplemental_data_row["NPDES No."]
-        facility_name = supplemental_data_row["Facility Name"]
-
-        sd_count = sum(
-            1 for col in cols_no_unspec
-            if is_present(supplemental_data_row.get(col, ""))
-        )
-
-        src_metrics = {}
+        truth_pos = {c for c in cols_no_unspec if is_present(supplemental_data_row.get(c, ""))}
+        row = {
+            "NPDES No.": supplemental_data_row["NPDES No."],
+            "Facility Name": supplemental_data_row["Facility Name"],
+            "Supplemental_Data_Count": len(truth_pos),
+        }
         for prefix, pred_row in [("NPDES", text_row), ("CWNS", cwns_row)]:
-            tp, fp, fn, missed, extra = presence_diff(supplemental_data_row, pred_row, cols_no_unspec)
+            pred_pos = {c for c in cols_no_unspec if is_present(pred_row.get(c, ""))}
+            tp, fp, fn = len(truth_pos & pred_pos), len(pred_pos - truth_pos), len(truth_pos - pred_pos)
             p, r, f1, _ = precision_recall_f1(tp, fp, fn, empty=0)
-            src_metrics[prefix] = dict(
-                TP=tp, FP=fp, FN=fn, Precision=p, Recall=r,
-                F1=f1,
-                Missed="|".join(missed),
-                Extra="|".join(extra),
-            )
-        nm, cm = src_metrics["NPDES"], src_metrics["CWNS"]
-        facility_rows.append(
-            {
-                "NPDES No.": npdes,
-                "Facility Name": facility_name,
-                "Supplemental_Data_Count": sd_count,
-                "NPDES_TP": nm["TP"], "NPDES_FP": nm["FP"], "NPDES_FN": nm["FN"],
-                "NPDES_Precision": nm["Precision"], "NPDES_Recall": nm["Recall"], "NPDES_F1": nm["F1"],
-                "NPDES_Missed": nm["Missed"], "NPDES_Extra": nm["Extra"],
-                "CWNS_TP": cm["TP"], "CWNS_FP": cm["FP"], "CWNS_FN": cm["FN"],
-                "CWNS_Precision": cm["Precision"], "CWNS_Recall": cm["Recall"], "CWNS_F1": cm["F1"],
-                "CWNS_Missed": cm["Missed"], "CWNS_Extra": cm["Extra"],
-            }
-        )
+            row.update({
+                f"{prefix}_TP": tp, f"{prefix}_FP": fp, f"{prefix}_FN": fn,
+                f"{prefix}_Precision": p, f"{prefix}_Recall": r, f"{prefix}_F1": f1,
+                f"{prefix}_Missed": "|".join(sorted(truth_pos - pred_pos)),
+                f"{prefix}_Extra": "|".join(sorted(pred_pos - truth_pos)),
+            })
+        facility_rows.append(row)
 
     sd_comparison_df = pd.DataFrame(facility_rows)
     sd_comparison_df.to_csv(OUTPUT_DIR / "supplemental_data_comparison_by_facility.csv", index=False)
@@ -307,13 +262,12 @@ def main(error_denominator="f1"):
     plot_df = (
         fac_metrics_df.melt(id_vars=["Source", "Key"], value_vars=boxplot_cols, var_name="Metric", value_name="Value")
     )
-    palette = {"NPDES": COLORS["npdes_kw"], "CWNS": COLORS["Clean Watershed Needs Survey"]}
     sns.boxplot(
         data=plot_df,
         x="Metric",
         y="Value",
         hue="Source",
-        palette=palette,
+        palette=SOURCE_COLORS,
         dodge=True,
         width=0.6,
         linewidth=1.0,
@@ -336,8 +290,8 @@ def main(error_denominator="f1"):
     axA.tick_params(axis="y", labelsize=12)
     axA.legend(
         handles=[
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"]), edgecolor="black", label="Facility Permit"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"]), edgecolor="black", label="CWNS"),
+            Patch(facecolor=to_rgba(SOURCE_COLORS[src]), edgecolor="black", label=SOURCE_LABELS[src])
+            for src in SOURCE_COLORS
         ],
         loc="upper right", 
         bbox_to_anchor=(1.02, 1.18), 
@@ -351,35 +305,20 @@ def main(error_denominator="f1"):
     # Panel B: category-level stacked FP (extra) and FN (missed) rates for NPDES and CWNS (percent)
     w = 0.35
     for i, row in sd_plot_df.iterrows():
-        npdes_x = i - w / 2
-        cwns_x = i + w / 2
-        # Missed (FN) and extra (FP) shares of 1 - F1 (same definition as panel A)
-        npdes_fn_rate = row["NPDES_Missed_Rate"]
-        npdes_fp_rate = row["NPDES_Extra_Rate"]
-        cwns_fn_rate = row["CWNS_Missed_Rate"]
-        cwns_fp_rate = row["CWNS_Extra_Rate"]
-        axB.bar(
-            npdes_x,
-            npdes_fn_rate,
-            w,
-            color=to_rgba(COLORS["npdes_kw"], 0.9),
-            edgecolor="black",
-            linewidth=1.2,
-            hatch="....",
-            zorder=2,
-        )
-        axB.bar(npdes_x, npdes_fp_rate, w, bottom=npdes_fn_rate, color=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
-        axB.bar(
-            cwns_x,
-            cwns_fn_rate,
-            w,
-            color=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9),
-            edgecolor="black",
-            linewidth=1.2,
-            hatch="....",
-            zorder=2,
-        )
-        axB.bar(cwns_x, cwns_fp_rate, w, bottom=cwns_fn_rate, color=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
+        # Missed (FN) and extra (FP) shares of 1 - F1 (same definition as panel A), NPDES left of CWNS
+        for src, x in (("NPDES", i - w / 2), ("CWNS", i + w / 2)):
+            fn_rate = row[f"{src}_Missed_Rate"]
+            axB.bar(
+                x,
+                fn_rate,
+                w,
+                color=to_rgba(SOURCE_COLORS[src], 0.9),
+                edgecolor="black",
+                linewidth=1.2,
+                hatch="....",
+                zorder=2,
+            )
+            axB.bar(x, row[f"{src}_Extra_Rate"], w, bottom=fn_rate, color=to_rgba(SOURCE_COLORS[src], 0.45), edgecolor="black", linewidth=1.2, zorder=2)
 
     axB.set_xticks(range(len(sd_plot_df)))
     axB.set_xticklabels(
@@ -400,10 +339,9 @@ def main(error_denominator="f1"):
 
     axB.legend(
         handles=[
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.45), edgecolor="black", label="Facility Permit FP"),
-            Patch(facecolor=to_rgba(COLORS["npdes_kw"], 0.9), edgecolor="black", hatch="....", label="Facility Permit FN"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.45), edgecolor="black", label="CWNS FP"),
-            Patch(facecolor=to_rgba(COLORS["Clean Watershed Needs Survey"], 0.9), edgecolor="black", hatch="....", label="CWNS FN"),
+            Patch(facecolor=to_rgba(SOURCE_COLORS[src], alpha), edgecolor="black", hatch=hatch, label=f"{SOURCE_LABELS[src]} {kind}")
+            for src in SOURCE_COLORS
+            for kind, alpha, hatch in (("FP", 0.45, None), ("FN", 0.9, "...."))
         ],
         loc="upper center",
         bbox_to_anchor=(0.59, 1.18),
@@ -420,10 +358,8 @@ def main(error_denominator="f1"):
 
     # Mean facility-level F1 error rate (unit-process granularity) — matches panel A's Error Rate box.
     err_by_src = fac_metrics_df.groupby("Source")["Error Rate"].mean() * 100
-    npdes_avg = float(err_by_src["NPDES"])
-    cwns_avg = float(err_by_src["CWNS"])
     print(
-        f"\n[{error_denominator}] Mean facility-level error rate (unit processes): Facility Permit = {npdes_avg:.1f}%, CWNS = {cwns_avg:.1f}%"
+        f"\n[{error_denominator}] Mean facility-level error rate (unit processes): Facility Permit = {err_by_src['NPDES']:.1f}%, CWNS = {err_by_src['CWNS']:.1f}%"
     )
     for _, r in leaf_rows.iterrows():
         if r["GroundTruth"] == 0 and r["CWNS_FP"] > 0:

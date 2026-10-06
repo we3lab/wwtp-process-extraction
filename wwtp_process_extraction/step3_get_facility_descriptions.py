@@ -7,18 +7,17 @@ from collections import Counter
 from PyPDF2 import PdfReader
 from concurrent.futures import ProcessPoolExecutor
 from helpers.utils import (
-    extract_leaves, SEP, unitprocess_keywords, normalize_text, is_general_order, OUTPUT_DIR, SITE_DATA_RELEVANT_CSV,
+    extract_leaves, SEP, unitprocess_keywords, normalize_text, is_general_order, OUTPUT_DIR, TXT_DIR,
+    SITE_DATA_RELEVANT_CSV,
 )
 
 
 DOT_RE = re.compile(r"\.{5,}")
 ATTACHMENT_F_RE = re.compile(r"ATTACHMENT\s+F\s*[-–—‐]\s*FACT\s+SHEET", re.IGNORECASE)
-PAGE_MARKER_RE = re.compile(r"\[Page (\d+)\]")
-PAGE_MARKER_LINE_RE = re.compile(r"\[Page (\d+)\]\n?")
+PAGE_MARKER_RE = re.compile(r"\[Page (\d+)\]\n?")
 RAW_PAGE_MARKER_RE = re.compile(r"===PAGE (\d+)===\n?")
-# A document's own order number, read from its title block.
-# Anchor on the "ORDER NO." label: lifts accuracy from 68 to 90% on documents with order no in filename
-# the residual misses are scanned title pages.
+# A document's own order number from its title block. Anchoring on the "ORDER NO." label lifts
+# accuracy from 68% to 90%; the remaining misses are scanned title pages
 ORDER_NUM = r"(?:R\d{1,2}[A-Z]?[-\s])?(?:WQ[-\s])?(?:20\d{2}|9\d)[-\s]\d{3,4}(?:[-\s](?:DWQ|EXEC))?"
 ORDER_LABELLED_RE = re.compile(r"ORDER\s*(?:NO\.?|NUMBER)?\s*[:\s]\s*(" + ORDER_NUM + r")", re.IGNORECASE)
 ORDER_ANY_RE = re.compile(r"\b(" + ORDER_NUM + r")\b", re.IGNORECASE)
@@ -45,13 +44,11 @@ BOILERPLATE_RE = re.compile(
     r"|133\.10|Construction, Operation, and Maintenance Specifications",
     re.IGNORECASE,
 )
-# strong structural description signals: a sentence enumerating what a system "consists of" is a
-# real description even when enrollment/compliance boilerplate follows it (common in small General
-# Order permits, e.g. "the community system consists of septic tanks ... a community leachfield").
+# "consists of"-style sentences mark a real description even when boilerplate follows
+# (common in small general-order permits)
 STRONG_DESC_RE = re.compile(r"consists? of|consisting of|comprised of|comprising", re.IGNORECASE)
-# "pond" is a search-only clustering term (not a keyword-match alt_name — it was removed from
-# Unspecified Lagoon). Pond-heavy paragraphs (e.g. capacity/freeboard tables) otherwise have no
-# vocab hits, creating a gap that truncates the description before solids/biosolids sections.
+# "pond" is a clustering-only term (not an alt_name): without it, pond-heavy paragraphs have no
+# vocab hits and cut the description off before its solids sections
 VOCAB_COMBINED_RE = re.compile(
     WASTEWATER_VOCAB_RE.pattern + "|" + DESC_PRIORITY_RE.pattern + r"|\bponds?\b",
     re.IGNORECASE,
@@ -59,10 +56,8 @@ VOCAB_COMBINED_RE = re.compile(
 # section headers: uppercase or digit start, ≤80 chars (lowercase starts match sentence wraps too often)
 RAW_HEADER_RE = re.compile(r"(?:^|\n)([A-Z\d][^\n]{2,79})(?=\n)", re.MULTILINE)
 SECTION_NUM_RE = re.compile(r"(?:^|\n)((?:\d+|[IVX]{2,5})\.\s+[A-Z])", re.MULTILINE)
-# recurring CA fact-sheet regulatory section headers — everything after one of these is
-# compliance boilerplate (40 CFR, TBELs, 303(d), Ocean Plan), not facility description. Keyed on
-# the section header, not inline phrases like "secondary treatment standards" which appear in real
-# descriptions (e.g. r5-2024-0009's biosolids/percolation-pond text).
+# Fact-sheet regulatory section headers; everything after one is compliance boilerplate. Keyed on
+# headers, not phrases like "secondary treatment standards" that real descriptions also use
 REG_HEADER_RE = re.compile(
     r"applicable plans,?\s+policies"
     r"|other plans,?\s+policies\s+and\s+regulations"
@@ -80,6 +75,7 @@ CHANGES_RE = re.compile("|".join(phrase.replace(" ", r"\s+") for phrase in CHANG
 FULL_DOCUMENT_TYPES = {"ENROLLEE - NPDES", "ENROLLEE - WDR", "WDR", "INDIVIDUAL MONITORING REQUIREM"}
 
 PERMITS_DIR = OUTPUT_DIR / "permits"
+MAX_WORKERS = 24
 
 CLUSTER_GAP = 500          # max chars between two vocab hits to count as clustered
 CLUSTER_TRAIL = 400        # chars after last cluster hit to capture trailing sentence/paragraph
@@ -90,28 +86,6 @@ MAX_CLUSTER_DISTANCE = 10000  # max chars from first cluster; cuts off distant g
 CONTIG_GAP = 2500          # max gap between consecutive qualifying clusters to treat as one description
 DIVERSITY_MIN = 6          # a cluster naming >= this many distinct processes qualifies as a description
 FRAGMENT_GAP = 1000        # absorb a low-diversity raw cluster trailing a qualifying one if this close
-
-
-def package_sub_readers(reader):
-    """For a PDF Package/Portfolio, yield a PdfReader for each embedded PDF sub-file."""
-    try:
-        root = reader.trailer['/Root'].get_object()
-        names_obj = root['/Names'].get_object()
-        emb_node = names_obj.get('/EmbeddedFiles')
-        if not emb_node:
-            return
-        emb_names = emb_node.get_object()['/Names']
-        for i in range(0, len(emb_names), 2):
-            try:
-                fspec = emb_names[i + 1].get_object()
-                ef = fspec.get('/EF', {}).get_object()
-                fstream = ef.get('/F') or ef.get('/UF')
-                if fstream:
-                    yield PdfReader(io.BytesIO(fstream.get_object().get_data()))
-            except Exception:
-                continue
-    except Exception:
-        return
 
 
 def clean_excerpt(text):
@@ -138,11 +112,14 @@ def find_attachment_f_page(raw):
     return None
 
 
+def distinct_terms(cluster):
+    return len({hit.group().lower() for hit in cluster})
+
+
 def cluster_score(cluster, text_length):
     # unique-term diversity discounted by position — deprioritizes single-category clusters
     # (e.g. "chlorination × 5") and late sections over rich early descriptions
-    diversity = len(set(hit.group().lower() for hit in cluster))
-    return diversity / (1 + cluster[0].start() / text_length)
+    return distinct_terms(cluster) / (1 + cluster[0].start() / text_length)
 
 
 def find_desc_clusters(text, multi_facility=False):
@@ -175,13 +152,9 @@ def find_desc_clusters(text, multi_facility=False):
         # skip table-of-contents clusters (dot leaders like "......")
         if len(DOT_RE.findall(window)) >= 3:
             continue
-        # A process-dense cluster (many distinct processes) is a description regardless of nearby
-        # phrasing — it qualifies even without a description signal in the lookback window (header
-        # across a page break) and even if compliance language trips the boilerplate filter (a
-        # real treatment description that also references a Cease and Desist Order, etc.). A strong
-        # structural signal ("consists of") qualifies the same way: it marks a real description even
-        # when enrollment boilerplate follows, which would otherwise trip the boilerplate filter.
-        if len(set(hit.group().lower() for hit in cluster)) >= DIVERSITY_MIN or STRONG_DESC_RE.search(window):
+        # Many distinct processes, or a "consists of" sentence, qualifies on its own: no description
+        # signal needed, and nearby compliance language doesn't disqualify it
+        if distinct_terms(cluster) >= DIVERSITY_MIN or STRONG_DESC_RE.search(window):
             desc_clusters.append(cluster)
             continue
         # otherwise: require a description signal and reject compliance/O&M boilerplate. Admin
@@ -196,17 +169,12 @@ def find_desc_clusters(text, multi_facility=False):
         desc_clusters.append(cluster)
     text_length = len(text)
     if desc_clusters:
-        # sort best-first by cluster_score — extract_from_pdf processes the best cluster first;
-        # its start_pos anchors MAX_CLUSTER_DISTANCE, so nearby multi-facility clusters are
-        # still included in order.
+        # best first: extract_from_pdf anchors MAX_CLUSTER_DISTANCE on the first cluster
         desc_clusters.sort(key=lambda cluster: -cluster_score(cluster, text_length))
         if not multi_facility:
             return [(cluster[0].start(), cluster[-1].end()) for cluster in desc_clusters]
-        # multi-facility permits describe each plant in a single dense paragraph that often
-        # has a low-diversity tail (disinfection/disposal-routing sentences) which individually
-        # falls below DIVERSITY_MIN — absorb a trailing raw cluster within FRAGMENT_GAP rather
-        # than drop it, but never swallow another already-qualifying cluster (that one gets its
-        # own section, or merges via the normal CONTIG_GAP path in extract_from_pdf).
+        # Multi-facility permits: absorb a low-diversity tail (disinfection/disposal sentences)
+        # within FRAGMENT_GAP of a plant's paragraph, but never another qualifying cluster
         desc_cluster_ids = {id(cluster) for cluster in desc_clusters}
         clusters_by_start = sorted(clusters, key=lambda cluster: cluster[0].start())
         spans = []
@@ -254,8 +222,7 @@ def find_changes_start(text, search_start, search_end):
         if re.search(r'\bno\s+$', preceding):
             continue
         # must start on a new line or after sentence punctuation, not mid-sentence
-        preceding_two = text[max(0, match.start() - 2):match.start()]
-        if preceding_two and not re.search(r'[\n.:( ]$', preceding_two):
+        if match.start() > 0 and text[match.start() - 1] not in "\n.:( ":
             continue
         window = text[match.start():match.start() + 1000]
         if len(VOCAB_COMBINED_RE.findall(window)) >= MIN_CHANGES_VOCAB:
@@ -314,11 +281,8 @@ def extract_section(text, start, cluster_end, end_cap=None):
         "txt_section": description,
         "txt_changes": changes_text,
         "full_text": text,
-        "metadata": {
-            "start_pos": start,
-            "end_pos": end,
-            "changes_start_phrase": changes_start_text,
-        },
+        "end_pos": end,
+        "changes_start_phrase": changes_start_text,
     }
 
 
@@ -328,12 +292,14 @@ def extract_from_pdf(pdf_path, is_npdes, multi_facility):
 
     # PDFs with no extractable text (scanned images, no text layer) will produce
     # empty page strings throughout — main flags these as "unreadable".
-    reader = PdfReader(pdf_path)
-    root = reader.trailer['/Root'].get_object()
-    is_portfolio = '/Collection' in root
+    root = PdfReader(pdf_path).trailer['/Root'].get_object()
     page_parts = []
-    if is_portfolio:
-        for sub_reader in package_sub_readers(reader):
+    if '/Collection' in root:
+        # PDF Portfolio: read each embedded PDF (page numbers restart in each)
+        embedded = root['/Names'].get_object()['/EmbeddedFiles'].get_object()['/Names']
+        for file_spec in embedded[1::2]:
+            streams = file_spec.get_object()['/EF'].get_object()
+            sub_reader = PdfReader(io.BytesIO((streams.get('/F') or streams['/UF']).get_object().get_data()))
             for page_num, page in enumerate(sub_reader.pages):
                 page_parts.append(f"===PAGE {page_num}===")
                 page_parts.append(page.extract_text() or "")
@@ -344,10 +310,8 @@ def extract_from_pdf(pdf_path, is_npdes, multi_facility):
                 page_parts.append(page.extract_text() or "")
     raw = "\n".join(page_parts)
 
-    # OCR fallback for scanned PDFs with no text layer (105 documents, ~6000 pages). Left off:
-    # step3 re-extracts every PDF on each run, so enabling it without the cache below would
-    # re-OCR everything every time. Cache raw text (not sections) so section-logic changes
-    # don't force re-OCR. 300 dpi is the verified-legible setting.
+    # OCR fallback for scanned PDFs (105 documents, ~6000 pages), left off. It caches raw text so
+    # reruns don't re-OCR; 300 dpi is the verified-legible setting.
     # if len(re.sub(r"===PAGE \d+===\n?", "", raw).strip()) < 100:
     #     ocr_cache = Path(pdf_path).parent / "ocr" / f"{Path(pdf_path).stem}.txt"
     #     if ocr_cache.exists():
@@ -371,48 +335,37 @@ def extract_from_pdf(pdf_path, is_npdes, multi_facility):
     if is_general_order(raw):
         return {"general_order": True}
 
-    # Build the single text region to search. NPDES: the Attachment F fact sheet.
-    # NOA/WDR: the full document.
+    # Search region: the Attachment F fact sheet for NPDES permits, the full document for NOA/WDR
 
-    # The order number printed in the document's own title block, or ''.
+    # The order number printed in the document's own title block, or ''
     head = RAW_PAGE_MARKER_RE.sub("", raw[:ORDER_HEAD_CHARS])
     order_match = ORDER_LABELLED_RE.search(head) or ORDER_ANY_RE.search(head)
     doc_order = order_match.group(1).upper().replace(" ", "-") if order_match else ""
 
+    # No Attachment F reference anywhere (44 documents, mostly pre-dating the fact-sheet
+    # convention) leaves the full document, as for NOA/WDR.
+    search_text = raw
     if is_npdes:
         attachment_pos = find_attachment_f_page(raw)
         first_attachment_match = ATTACHMENT_F_RE.search(raw)
-        if first_attachment_match and first_attachment_match.start() < 500:
-            attachment_pos = 0
-        elif attachment_pos is None and first_attachment_match:
+        if first_attachment_match and (first_attachment_match.start() < 500 or attachment_pos is None):
             attachment_pos = 0
         if attachment_pos is not None:
-            attachment_text = raw[attachment_pos:]
+            search_text = raw[attachment_pos:]
             if attachment_pos > 0:
-                dot_leader_hits = list(DOT_RE.finditer(attachment_text[:20000]))
-                if len(dot_leader_hits) >= 2 and not DOT_RE.search(attachment_text[dot_leader_hits[-1].end():dot_leader_hits[-1].end() + 500]):
-                    attachment_text = attachment_text[dot_leader_hits[-1].end():]
-                elif (toc_restart := attachment_text.lower().find("attachment f", 1000)) != -1:
-                    attachment_text = attachment_text[toc_restart:]
-            text = clean_excerpt(attachment_text)
-        else:
-            # No Attachment F reference anywhere (44 documents, mostly pre-dating the fact-sheet
-            # convention) — the full document is all there is. Only reachable when the scoped
-            # path found nothing, so it cannot change a document that already extracts.
-            text = clean_excerpt(raw)
-    else:
-        text = clean_excerpt(raw)
+                # skip past a table of contents (dot leaders) to the fact sheet itself
+                dot_leader_hits = list(DOT_RE.finditer(search_text[:20000]))
+                if len(dot_leader_hits) >= 2 and not DOT_RE.search(search_text[dot_leader_hits[-1].end():dot_leader_hits[-1].end() + 500]):
+                    search_text = search_text[dot_leader_hits[-1].end():]
+                elif (toc_restart := search_text.lower().find("attachment f", 1000)) != -1:
+                    search_text = search_text[toc_restart:]
+    text = clean_excerpt(search_text)
 
     clusters = find_desc_clusters(text, multi_facility=multi_facility)
     if clusters:
-        # clusters are score-sorted; anchor on the best, then take a run of qualifying clusters
-        # around it (document order). Asymmetric: extend BACKWARD only through contiguous clusters
-        # (gap <= CONTIG_GAP) so a split description starts at its earliest part (e.g. SJSC's
-        # headworks before the higher-scoring filters) while NOT pulling in a preceding
-        # "PERMIT INFORMATION" admin table sitting across a page gap. Extend FORWARD to all
-        # qualifying clusters within MAX_CLUSTER_DISTANCE of the anchor, capturing trailing
-        # solids / advanced-treatment sections (e.g. Palo Alto's MBR/RO); non-description tables
-        # (effluent limits, monitoring) lack a desc signal so they never qualify and aren't reached.
+        # Anchor on the best cluster. Extend backward only through contiguous clusters (keeps an
+        # earlier part of a split description, not a preceding admin table); extend forward to
+        # every qualifying cluster within MAX_CLUSTER_DISTANCE (trailing solids/advanced sections)
         clusters_by_position = sorted(clusters, key=lambda cluster: cluster[0])
         if multi_facility:
             # A multi-facility permit describes several plants in separate regions, so
@@ -430,9 +383,8 @@ def extract_from_pdf(pdf_path, is_npdes, multi_facility):
                 last_index += 1
             ordered = clusters_by_position[first_index:last_index + 1]
             reference_start = anchor[0]
-        # Stop at the first regulatory-section header after the description start — everything
-        # after it is compliance boilerplate (40 CFR, TBELs, 303(d)), not facility description.
-        # Search past reference_start so the anchor itself is never dropped.
+        # Stop at the first regulatory-section header after the description start (past it so the
+        # anchor itself is never dropped)
         reg_match = REG_HEADER_RE.search(text, reference_start + 1)
         reg_stop = reg_match.start() if reg_match else len(text)
         ordered = [(cluster_start, cluster_end) for cluster_start, cluster_end in ordered if cluster_start < reg_stop]
@@ -453,14 +405,14 @@ def extract_from_pdf(pdf_path, is_npdes, multi_facility):
             start = snap_back_to_header(text, cluster_start)
             section = extract_section(text, start, cluster_end, end_cap=reg_stop)
             sections.append(section)
-            prev_end = section["metadata"]["end_pos"]
+            prev_end = section["end_pos"]
         combined_txt = "\n\n".join(section["txt_section"] for section in sections if section["txt_section"])
         changes = next((section["txt_changes"] for section in sections if section["txt_changes"]), "")
         return {**sections[0], "txt_section": combined_txt, "txt_changes": changes,
                 "document_order_no": doc_order}
 
     # no vocab clusters found — likely image-only or no treatment description text
-    return {"txt_section": "", "txt_changes": "", "full_text": text, "metadata": {},
+    return {"txt_section": "", "txt_changes": "", "full_text": text, "changes_start_phrase": None,
             "document_order_no": doc_order}
 
 
@@ -468,7 +420,7 @@ def extract_one(args):
     pdf_file, is_npdes, multi_facility = args
     pdf_path = PERMITS_DIR / pdf_file
     out = extract_from_pdf(str(pdf_path), is_npdes, multi_facility)
-    cache = PERMITS_DIR / "text" / f"{pdf_path.stem}.txt"
+    cache = TXT_DIR / f"{pdf_path.stem}.txt"
     if out and out.get("general_order"):
         cache.unlink(missing_ok=True)  # drop text left by an earlier run, before this was caught
     elif out:
@@ -478,7 +430,6 @@ def extract_one(args):
 
 def main():
     site_data = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
-    pdfs = site_data["PDF_File"].tolist()
 
     # Breakdown by Reg_Measure_Type (NPDES vs WDR) over facilities with ≥1 PDF
     has_pdf = site_data[site_data["PDF_File"] != ""]["Place ID"].unique()
@@ -488,10 +439,8 @@ def main():
     for rmt, count in df_pdf["Reg_Measure_Type"].value_counts(dropna=False).items():
         print(f"    {rmt}: {count} ({count / len(df_pdf):.1%})")
 
-    unique_pdfs = list(dict.fromkeys(p for p in pdfs if p))
     args = []
-    for pdf_file in unique_pdfs:
-        pdf_rows = site_data[site_data["PDF_File"] == pdf_file]
+    for pdf_file, pdf_rows in site_data[site_data["PDF_File"] != ""].groupby("PDF_File", sort=False):
         # First matching row's type decides
         is_npdes = pdf_rows["Reg_Measure_Type"].iloc[0].strip().upper() not in FULL_DOCUMENT_TYPES
         # Multi-facility permit: one PDF covering several distinct Place IDs (e.g. OCSD, IEUA).
@@ -502,7 +451,7 @@ def main():
     doc_orders = {}
     phrase_counts = Counter()
 
-    with ProcessPoolExecutor(max_workers=24) as executor:
+    with ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
         for pdf_file, result in executor.map(extract_one, args):
             print(f"Processed {pdf_file}")
             if result is None:
@@ -513,15 +462,14 @@ def main():
             txt = result["txt_section"]
             # flag as unreadable if no description AND very little non-marker text
             # (these are scanned image PDFs with no text layer — needs OCR)
-            if not txt and len(PAGE_MARKER_LINE_RE.sub("", result["full_text"]).strip()) < 100:
+            if not txt and len(PAGE_MARKER_RE.sub("", result["full_text"]).strip()) < 100:
                 flag_counts["unreadable"] += 1
             elif not txt:
                 # readable document that still yielded no description
                 flag_counts["no_desc_in_attachment"] += 1
             doc_orders[pdf_file] = result["document_order_no"]
-            changes_start_phrase = result["metadata"].get("changes_start_phrase")
-            if changes_start_phrase:
-                phrase_counts[normalize_text(changes_start_phrase)] += 1
+            if result["changes_start_phrase"]:
+                phrase_counts[normalize_text(result["changes_start_phrase"])] += 1
 
     # Each document's own order number, to distinguish superseded order PDFs 
     site_data["document_order_no"] = site_data["PDF_File"].map(doc_orders).fillna("")
@@ -530,22 +478,14 @@ def main():
     print(f"Non-machine-readable PDFs: {flag_counts['unreadable']}")
     print(f"Statewide general orders skipped: {flag_counts['general_order']}")
     print(f"Readable but no description found: {flag_counts['no_desc_in_attachment']}")
-    print()
-    counts = Counter({normalize_text(t): 0 for t in CHANGES_PHRASES})
-    counts.update(phrase_counts)
     print("Planned changes start:")
-    for term in sorted(CHANGES_PHRASES, key=lambda t: -counts[normalize_text(t)]):
-        print(f"  {counts[normalize_text(term)]:4d}  {term!r}")
+    for term in sorted(CHANGES_PHRASES, key=lambda t: -phrase_counts[normalize_text(t)]):
+        print(f"  {phrase_counts[normalize_text(term)]:4d}  {term!r}")
     print()
 
-    txt_dir = PERMITS_DIR / "text"
-    txt_files = list(txt_dir.glob("*.txt"))
-    if txt_files:
-        sizes = [(f, f.stat().st_size) for f in txt_files]
-        sizes.sort(key=lambda x: x[1], reverse=True)
-        print(f"\nTop text cache files in {txt_dir}:")
-        for f, size in sizes[:10]:
-            print(f"  {f.name}: {size} bytes")
+    print(f"\nTop text cache files in {TXT_DIR}:")
+    for f in sorted(TXT_DIR.glob("*.txt"), key=lambda f: f.stat().st_size, reverse=True)[:10]:
+        print(f"  {f.name}: {f.stat().st_size} bytes")
 
     site_data["Total_PDFs_Available"] = pd.to_numeric(
         site_data["Total_PDFs_Available"], errors="coerce"

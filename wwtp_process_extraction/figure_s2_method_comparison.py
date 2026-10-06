@@ -1,10 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import os
-import sys
 import seaborn as sns
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import build_model_comparison
 from helpers.metrics import (
     METRIC_SCORE_COLUMNS,
@@ -14,9 +11,7 @@ from helpers.metrics import (
     compute_facility_metric_rows,
 )
 from helpers.utils import (
-    parse_status,
     is_present,
-    PRESENT_STATUSES,
     get_leaf_names,
     unitprocess_keywords,
     OUTPUT_DIR,
@@ -52,32 +47,14 @@ def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df, c
     rows = []
     for process in process_names:
         manual_proc = set(manual_df.loc[manual_df[process].map(is_present), "Place ID"])
-        manual_count = len(manual_proc)
-
-        sub = llm_df[llm_df["Place ID"].isin(llm_common)]
-        mask = sub[process].map(parse_status).isin(PRESENT_STATUSES)
-        llm_proc = set(sub.loc[mask, "Place ID"])
-        m = manual_proc & llm_common
-        llm_fp, llm_fn = len(llm_proc - m), len(m - llm_proc)
-
-        sub = keyword_df[keyword_df["Place ID"].isin(kw_common)]
-        mask = sub[process].map(parse_status).isin(PRESENT_STATUSES)
-        kw_proc = set(sub.loc[mask, "Place ID"])
-        m = manual_proc & kw_common
-        kw_fp, kw_fn = len(kw_proc - m), len(m - kw_proc)
-
-        if not any([llm_fp, llm_fn, kw_fp, kw_fn, manual_count]):
-            continue
-        rows.append(
-            {
-                "Process": process,
-                "Manual_Count": manual_count,
-                "LLM_FP": llm_fp,
-                "LLM_FN": llm_fn,
-                "KW_FP": kw_fp,
-                "KW_FN": kw_fn,
-            }
-        )
+        row = {"Process": process, "Manual_Count": len(manual_proc)}
+        for name, df, common in (("LLM", llm_df, llm_common), ("KW", keyword_df, kw_common)):
+            sub = df[df["Place ID"].isin(common)]
+            found = set(sub.loc[sub[process].map(is_present), "Place ID"])
+            m = manual_proc & common
+            row[f"{name}_FP"], row[f"{name}_FN"] = len(found - m), len(m - found)
+        if any(v for k, v in row.items() if k != "Process"):
+            rows.append(row)
 
     if not rows:
         print(f"No deviation data for '{category_name}'")
@@ -93,23 +70,21 @@ def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df, c
             (+w, row["LLM_FP"], row["LLM_FN"], COLORS["npdes_llm"]),
         ]:
             x = idx + x_off
-            width = w * 2
             if fp:
                 ax.bar(
                     x,
                     fp,
-                    width,
+                    w * 2,
                     bottom=0,
                     color=color,
                     edgecolor="black",
                     linewidth=1.2,
                 )
             if fn:
-                y = -fn
                 ax.bar(
                     x,
-                    y,
-                    width,
+                    -fn,
+                    w * 2,
                     bottom=0,
                     color=color,
                     hatch=HATCH_PATTERNS["FUTURE"],
@@ -154,7 +129,7 @@ def create_method_deviation_plot(process_names, manual_df, llm_df, keyword_df, c
 
 
 def draw_violin(ax, facility_metrics_df, panel_label):
-    score_cols = [c for c in VIOLIN_METRIC_COLUMNS if c in facility_metrics_df.columns]
+    score_cols = list(VIOLIN_METRIC_COLUMNS)
     plot_df = (
         facility_metrics_df[facility_metrics_df["Source"].isin(VIOLIN_SOURCES)]
         .melt(
@@ -197,6 +172,7 @@ def draw_violin(ax, facility_metrics_df, panel_label):
     ax.text(-0.15, 1.05, panel_label, transform=ax.transAxes, ha="left", va="top", fontsize=16)
     set_thick_spines(ax, linewidth=1.6)
 
+
 categories_to_plot = list(unitprocess_keywords.keys())
 print(f"Categories: {categories_to_plot}")
 
@@ -237,7 +213,6 @@ print(
 
 for category in categories_to_plot:
     print(f"\nProcessing category: {category}")
-    safe_category = category.replace("/", "_").replace(os.sep, "_")
 
     process_names = get_leaf_names(category, unitprocess_keywords[category], exclude_unspecified=True)
 
@@ -248,9 +223,9 @@ for category in categories_to_plot:
         llm_results_manual,
         keyword_results_manual,
         category,
-        save_path=FIGURES_DIR / f"{safe_category}_method_comparison_deviation.png",
+        save_path=FIGURES_DIR / f"{category}_method_comparison_deviation.png",
     )
-    print(f"  Saved {safe_category}_method_comparison_deviation.png")
+    print(f"  Saved {category}_method_comparison_deviation.png")
 
 
 # ── Method comparison metrics ─────────────────────────────────────────────────
@@ -275,8 +250,13 @@ metric_inputs = {
     for source_name, pred_df in prediction_sources
 }
 
+# Category-level metrics collapse leaf states to category states
+category_to_leaves = {
+    cat: get_leaf_names(cat, unitprocess_keywords[cat]) for cat in categories_to_plot
+}
 metrics_frames = []
 facility_metric_rows = []
+category_metric_rows = []
 for source_name, (manual_metric, pred_metric) in metric_inputs.items():
     source_metrics = compute_metrics(manual_metric, pred_metric, unit_process_list, source_name)
     metrics_frames.append(
@@ -285,14 +265,6 @@ for source_name, (manual_metric, pred_metric) in metric_inputs.items():
     facility_metric_rows.extend(
         compute_facility_metric_rows(manual_metric, pred_metric, unit_process_list, source_name)
     )
-unit_process_metrics_df = pd.DataFrame(facility_metric_rows)
-
-# Build category-level facility metrics by collapsing leaf states to category states.
-category_to_leaves = {
-    cat: get_leaf_names(cat, unitprocess_keywords[cat]) for cat in categories_to_plot
-}
-category_metric_rows = []
-for source_name, (manual_metric, pred_metric) in metric_inputs.items():
     manual_cat = aggregate_to_category_states(manual_metric, category_to_leaves)
     pred_cat = aggregate_to_category_states(pred_metric, category_to_leaves)
     cat_metrics = compute_metrics(manual_cat, pred_cat, categories_to_plot, source_name)
@@ -302,6 +274,7 @@ for source_name, (manual_metric, pred_metric) in metric_inputs.items():
     category_metric_rows.extend(
         compute_facility_metric_rows(manual_cat, pred_cat, categories_to_plot, source_name)
     )
+unit_process_metrics_df = pd.DataFrame(facility_metric_rows)
 category_metrics_df = pd.DataFrame(category_metric_rows)
 
 metrics_df = pd.concat(metrics_frames, ignore_index=True)
@@ -338,12 +311,11 @@ print(f"Saved {violin_path.name}")
 
 # Overall status summary
 total_present = total_present_and_future = total_future = 0
-for category in categories_to_plot:
-    for process_name in get_leaf_names(category, unitprocess_keywords[category]):
-        s = keyword_results[process_name].str.upper()
-        total_present += int((s == "PRESENT").sum())
-        total_present_and_future += int((s == "PRESENT_AND_FUTURE").sum())
-        total_future += int((s == "FUTURE").sum())
+for process_name in all_process_list:
+    s = keyword_results[process_name].str.upper()
+    total_present += int((s == "PRESENT").sum())
+    total_present_and_future += int((s == "PRESENT_AND_FUTURE").sum())
+    total_future += int((s == "FUTURE").sum())
 
 print(f"Total process instances marked as 'PRESENT': {total_present}")
 print(f"Total process instances marked as 'PRESENT_AND_FUTURE': {total_present_and_future}")

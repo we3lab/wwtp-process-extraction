@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional, List, Tuple
 
 import requests
 import jsonschema
@@ -29,62 +28,7 @@ def get_headers():
     }
 
 
-def get_models():
-    """GET available models"""
-    url = f"{BASE_URL}/models"
-    resp = requests.get(url, headers=get_headers())
-    resp.raise_for_status()
-    return resp.json()
-
-
-def load_icl_examples(num_examples: int, examples_dir: Path) -> str:
-    examples = []
-    for idx in range(1, num_examples + 1):
-        example_content = (examples_dir / f"example{idx}.txt").read_text(encoding="utf-8").strip()
-        examples.append(f"Example {idx}:\n{example_content}")
-
-    return "\n\n".join(examples)
-
-
-def collect_process_entries(
-    data: Dict[str, Any],
-    entries: Optional[List[Tuple[str, List[str]]]] = None,
-) -> List[Tuple[str, List[str]]]:
-    if entries is None:
-        entries = []
-
-    for process_name, value in data.items():
-        if not isinstance(value, dict):
-            continue
-
-        if "alt_names" in value or "alt_names_case_sensitive" in value:
-            all_alt_names = value.get("alt_names", []) + value.get("alt_names_case_sensitive", [])
-            all_alt_names = [str(item).strip() for item in all_alt_names if str(item).strip()]
-            dedup_alt_names = list(dict.fromkeys(all_alt_names))
-            entries.append((process_name, dedup_alt_names))
-
-        collect_process_entries(value, entries)
-
-    return entries
-
-
-def init_unit_process_list_from_json(keywords_json_path: Path, output_txt_path: Path) -> Path:
-    data = json.loads(Path(keywords_json_path).read_text(encoding="utf-8"))
-    entries = collect_process_entries(data)
-
-    lines = []
-    for process_name, alt_names in entries:
-        if alt_names:
-            lines.append(f"{process_name}: {', '.join(alt_names)}")
-        else:
-            lines.append(f"{process_name}:")
-
-    output_path = Path(output_txt_path)
-    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return output_path
-
-
-def build_example_schema(method: str, web: bool = False) -> Dict[str, Any]:
+def build_example_schema(method, web=False):
     if method == "list-based":
         props = {
             "Process": {
@@ -225,27 +169,17 @@ def coerce_extraction_json(parsed):
     return parsed
 
 
-def chat_completion_json(
-    model: str,
-    system_message: str,
-    user_message: str,
-    max_tokens: int,
-    schema: Dict,
-) -> Tuple:
+def chat_completion_json(model, system_message, user_message, max_tokens, schema):
     """
     Request a JSON object from the model. Returns (parsed_json, completion_tokens,
     prompt_tokens, total_tokens, reasoning_tokens, structured_output).
     """
-    url = f"{BASE_URL}/chat/completions"
-
-    messages = [
-        {"role": "system", "content": system_message},
-        {"role": "user", "content": user_message},
-    ]
-
     payload = {
         "model": model,
-        "messages": messages,
+        "messages": [
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message},
+        ],
         "temperature": 0.0,
         "response_format": {"type": "json_object"},
         "max_tokens": max_tokens,
@@ -254,7 +188,7 @@ def chat_completion_json(
 
     content = None
     try:
-        resp = requests.post(url, headers=get_headers(), json=payload, timeout=600)
+        resp = requests.post(f"{BASE_URL}/chat/completions", headers=get_headers(), json=payload, timeout=600)
         if not resp.ok:
             print(f"API error {resp.status_code}: {resp.text[:500]}")
         resp.raise_for_status()
@@ -272,8 +206,7 @@ def chat_completion_json(
         completion_token = usage.get("completion_tokens", 0)
         prompt_token = usage.get("prompt_tokens", 0)
         total_token = usage.get("total_tokens", 0)
-        completion_tokens_details = usage.get("completion_tokens_details", {})
-        reasoning_tokens = completion_tokens_details.get("reasoning_tokens", 0)
+        reasoning_tokens = usage.get("completion_tokens_details", {}).get("reasoning_tokens", 0)
 
         if finish_reason == "length":
             raise ValueError(
@@ -282,9 +215,7 @@ def chat_completion_json(
             )
 
         if not content.strip():
-            raise ValueError(
-                "Model returned empty/whitespace content."
-            )
+            raise ValueError("Model returned empty/whitespace content.")
 
         parsed = json.loads(content)
 

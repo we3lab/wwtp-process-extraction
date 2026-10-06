@@ -17,6 +17,8 @@ DETECTED_STATUSES = PRESENT_STATUSES | {"FUTURE", "OFFSITE"}
 STATUS_RANK = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
 
 SEP = "\n\n===PLANNED CHANGES===\n\n"
+# Soft hyphen and zero-width characters, deleted by normalize_text
+ZERO_WIDTH_CHARS = dict.fromkeys(map(ord, "\u00ad\u200b\u200c\u200d\ufeff"))
 
 # Project paths, resolved from this file so scripts work from any directory
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
@@ -147,11 +149,9 @@ def normalize_text(text, lower=True):
 
     lower=False keeps original case, for acronym keywords that must match case-sensitively.
     """
-    if not text:
-        return ""
     text = unicodedata.normalize("NFKC", text)
-    text = re.sub(r"[­​‌‍﻿]", "", text)  # zero-width chars
-    text = re.sub(r"\s+", " ", text).strip()
+    text = text.translate(ZERO_WIDTH_CHARS)
+    text = " ".join(text.split())
     return text.lower() if lower else text
 
 
@@ -160,8 +160,6 @@ def parse_status(val) -> str:
 
     Fails fast on any other value, so a typo can't silently count as absent.
     """
-    if val is None or (isinstance(val, float) and val != val):
-        return ""
     status = str(val).strip().upper()
     if status in ("", "0", "0.0", "NAN", "NONE"):
         return ""
@@ -210,15 +208,15 @@ def get_leaf_names(cat_name, cat_val, exclude_categories=("Disposal",), exclude_
     exclude_unspecified drops catch-all 'Unspecified X' leaves (priority 1000) — use for
     leaf-level comparisons where matching a catch-all exactly would be unfair.
     """
-    if exclude_categories and cat_name in exclude_categories:
+    if cat_name in exclude_categories:
         return []
-    if isinstance(cat_val, dict) and "alt_names" in cat_val:
+    if "alt_names" in cat_val:
         return [cat_name]
     leaves = extract_leaves(cat_val, exclude_keys=exclude_categories)
     if exclude_unspecified:
         # 'Unspecified X' catch-alls are nested leaves, never top-level categories
         leaves = [(n, d, g) for n, d, g in leaves
-                  if not (str(n).lower().startswith("unspecified") and d.get("priority") == 1000)]
+                  if not (n.lower().startswith("unspecified") and d.get("priority") == 1000)]
     return [name for name, _, _ in leaves]
 
 
@@ -270,7 +268,7 @@ def apply_secondary_category_backfill(
     for source_col in present_cols:
         for sec_cat in column_secondary_categories.get(source_col, []):
             sec_cols = top_category_to_columns.get(sec_cat, [])
-            if not sec_cols or any(status_dict.get(c) in PRESENT_STATUSES for c in sec_cols):
+            if any(status_dict.get(c) in PRESENT_STATUSES for c in sec_cols):
                 continue
             available = [c for c in sec_cols if c in status_dict and c not in excluded_cols]
             if not available:
@@ -279,11 +277,8 @@ def apply_secondary_category_backfill(
             if chosen is None:
                 # Prefer the category-level catch-all (e.g., "Unspecified Filtration")
                 # before nested catch-alls (e.g., "Unspecified FFR").
-                target_unspecified = f"Unspecified {sec_cat}".strip().lower()
-                exact_unspecified = [
-                    c for c in available
-                    if str(c).strip().lower() == target_unspecified
-                ]
+                target_unspecified = f"Unspecified {sec_cat}".lower()
+                exact_unspecified = [c for c in available if c.lower() == target_unspecified]
                 unspecified = [c for c in available if "Unspecified" in c]
                 pool = exact_unspecified or unspecified or available
                 chosen = min(pool, key=lambda c: (column_priority.get(c, 1), column_global_priority.get(c, 1), c))
@@ -337,32 +332,11 @@ def build_cwns_facility_processes(ca_cwns_df, target_facilities=None):
     if target_facilities is not None:
         left = left[left["Place ID"].isin(target_facilities)]
     right = collapse_facility_processes(ca_cwns_df[["CWNS_ID"] + proc_cols], ["CWNS_ID"], [])
-    merged = left.merge(right, on="CWNS_ID", how="inner", indicator="_cwns_merge")
+    merged = left.merge(right, on="CWNS_ID", how="inner")
     cwns_by_facility = collapse_facility_processes(
-        merged, ["Place ID"], ["WDID", "Facility Name", "CWNS_ID", "FACILITY_ID", "_cwns_merge"]
-    ).drop(columns=["CWNS_ID", "FACILITY_ID", "_cwns_merge"], errors="ignore").fillna("")
+        merged, ["Place ID"], ["WDID", "Facility Name", "CWNS_ID", "FACILITY_ID"]
+    ).drop(columns=["CWNS_ID", "FACILITY_ID"]).fillna("")
     return cwns_by_facility, merged
-
-
-def same_order_no(a, b):
-    """Whether two order numbers name the same order. None if either is missing.
-
-    Containment, not equality, because the two sides are written at different levels of
-    detail: a document's title block prints "2007-0090" where CIWQS carries the region
-    ("R5-2007-0090"), and a general order enrollee's CIWQS order appends the enrollee number
-    ("2014-0153-DWQ-R5348") to the order the document itself prints ("WQ-2014-0153-DWQ").
-    Requiring equality called 28 such pairs superseded and left 13 facilities with no
-    document at all.
-    """
-    if not a or not b:
-        return None
-    # "R5-2007-0090", "r5 2007 0090" and "WQ 2007-0090" are one order written three ways
-    normalized = []
-    for value in (a, b):
-        text = re.sub(r"[^0-9A-Za-z]", "", str(value)).upper()
-        normalized.append(re.sub(r"^(R\d{1,2}[A-Z]?)?WQ", "", text) or text)
-    a, b = normalized
-    return a in b or b in a
 
 
 @cache
@@ -380,69 +354,35 @@ def orders_in_force(as_of=None):
     rel = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str, keep_default_na=False)
     dates = set()
     for v in rel["as_of_dates"]:
-        dates |= {d for d in str(v).split(";") if d}
-    target = as_of or (max(dates) if dates else "")
+        dates |= {d for d in v.split(";") if d}
+    target = as_of or max(dates)
     held = {}
     for _, row in rel.iterrows():
-        if target and target not in str(row["as_of_dates"]).split(";"):
+        if target not in row["as_of_dates"].split(";"):
             continue
-        order = str(row["Order_No"]).strip()
+        order = row["Order_No"].strip()
         if order:
             held.setdefault(normalize_id(row["Place ID"]), set()).add(order)
     return held
 
 
-def order_year(order):
-    """Adoption year of an order number, 0 if unreadable.
-
-    Handles "R5-2017-0085", "2014-0153-DWQ", "97-10-DWQ" (two-digit year), "05-025" and the
-    old region-prefixed "5-00-080" form. Match the four-digit year first: a naive scan finds
-    "92" inside "R9-2020-0191" and reads it as 1992.
-    """
-    t = re.sub(r"\s+", "", str(order).strip().upper())
-    t = re.sub(r"^R\d{1,2}[A-Z]?[-\s]?", "", t)
-    m = re.search(r"(?:19|20)\d{2}", t)
-    if m:
-        return int(m.group(0))
-    t = re.sub(r"^\d[-\s]", "", t)          # bare region prefix, e.g. "5-00-080"
-    m = re.match(r"(\d{2})\D", t + "-")
-    if m:
-        y = int(m.group(1))
-        return 1900 + y if y >= 90 else 2000 + y
-    return 0
-
-
 def current_permit_mask(df, order_col="Order_No", doc_order_col="document_order_no", as_of=None,
                         content=None):
-    """Per facility, keep only the documents belonging to the permits then in force.
+    """Per facility, keep only the documents from the permits in force as of `as_of`.
 
-    A facility accumulates documents across permit cycles -- CIWQS attaches superseded orders
-    to the current order's page, and earlier snapshots contribute their own. Ranked preference
-    rather than a hard filter, so a facility is never left with nothing:
-
-      0. the document's own order number is one the facility held as of `as_of`
+    Each document gets a tier, and each facility keeps only its best tier, so it is never
+    left with nothing:
+      0. the document's order number is one the facility held (from orders_in_force)
       1. no order number could be read from the document
       2. the order number is not one it held (superseded)
 
-    Each facility keeps only its best available tier.
+    Compare to the snapshot's order set, not the row's own `order_col`: site_data_relevant has
+    a row per (facility, order), so an old permit would match its own old Order_No. `order_col`
+    is only the fallback for facilities missing from the snapshot. A set also keeps concurrent
+    permits (e.g. a plant's own order plus a joint-authority order).
 
-    The order set comes from orders_in_force(), NOT from each row's own `order_col`. Comparing
-    a document to the Order_No sitting on its own row let 186 of 618 facilities keep documents
-    from more than one order cycle (223 superseded documents): site_data_relevant carries a row
-    per (facility, order), so a 2018 permit paired with its own 2018 Order_No scored tier 0
-    against a facility whose current order is from 2024. Ukiah's 2018 "solar drying bed" was
-    reaching a facility whose permit no longer mentions it. `order_col` is now only the
-    fallback for facilities absent from the snapshot.
-
-    Comparing to a set also preserves genuinely concurrent permits -- a plant covered by both
-    its own order and a joint-authority order keeps both, because the snapshot lists both.
-
-    `content`, when given, is a boolean Series marking rows that actually yielded processes.
-    A document that extracted nothing carries no information, so it must not outrank an
-    informative superseded one: JWPCP (260 MGD) and EchoWater (115 MGD) were being represented
-    by a current permit with zero extracted processes while their superseded documents held
-    14-25 each, leaving both facilities empty and pushed onto the regional fallback. Contentless
-    rows are demoted below every informative tier and used only if nothing else exists.
+    `content` (optional boolean Series) marks rows that yielded processes. Rows without content
+    drop below every tier, so an empty current permit can't hide an informative superseded one.
     """
     held = orders_in_force(as_of)
     tiers = []
@@ -452,19 +392,41 @@ def current_permit_mask(df, order_col="Order_No", doc_order_col="document_order_
             tiers.append(1)
             continue
         current = held.get(normalize_id(row["Place ID"])) or {str(row.get(order_col, "")).strip()}
-        tiers.append(0 if any(same_order_no(doc, o) for o in current if o) else 2)
+        # "R5-2007-0090", "r5 2007 0090" and "WQ 2007-0090" are one order written three ways:
+        # keep letters/digits only and drop a leading region/WQ prefix
+        normalized = []
+        for value in [doc] + [o for o in current if o]:
+            text = "".join(ch for ch in value if ch.isascii() and ch.isalnum()).upper()
+            normalized.append(re.sub(r"^(R\d{1,2}[A-Z]?)?WQ", "", text) or text)
+        doc_order, *held_orders = normalized
+        # containment, not equality: CIWQS adds the region ("R5-2007-0090" vs "2007-0090")
+        # or an enrollee suffix ("2014-0153-DWQ-R5348" vs "WQ-2014-0153-DWQ")
+        tiers.append(0 if any(doc_order in o or o in doc_order for o in held_orders) else 2)
     tiers = pd.Series(tiers, index=df.index)
     if content is not None:
         tiers = tiers + (~content.reindex(df.index).fillna(False)).astype(int) * 3
     best = tiers.groupby(df["Place ID"]).transform("min")
     keep = tiers == best
-    # Where every document is superseded (tier 2), the fallback would otherwise keep the whole
-    # history. Facilities enrolled under a general order hit this routinely: CIWQS lists the
-    # current general order, which no individual permit document prints. Keep only the newest
-    # order's documents -- the best available proxy when nothing matches.
+    # A facility whose documents are all superseded would keep its whole history. This is
+    # common under general orders (no document prints the general order number), so keep
+    # only the newest order's documents.
     fallback = keep & (tiers % 3 == 2)
     if fallback.any():
-        years = df.loc[fallback, doc_order_col].map(order_year)
+        # Adoption year, 0 if unreadable. Try a four-digit year first ("R9-2020-0191" holds "92"),
+        # then a leading two-digit one ("97-10-DWQ", "05-025", "5-00-080")
+        years = []
+        for order in df.loc[fallback, doc_order_col]:
+            text = re.sub(r"^R\d{1,2}[A-Z]?-?", "", "".join(str(order).split()).upper())
+            four_digit = re.search(r"(?:19|20)\d{2}", text)
+            two_digit = re.match(r"(?:\d-)?(\d{2})(?:\D|$)", text)
+            if four_digit:
+                years.append(int(four_digit.group(0)))
+            elif two_digit:
+                year = int(two_digit.group(1))
+                years.append(1900 + year if year >= 90 else 2000 + year)
+            else:
+                years.append(0)
+        years = pd.Series(years, index=df.index[fallback])
         newest = years.groupby(df.loc[fallback, "Place ID"]).transform("max")
         keep.loc[fallback] = years == newest
     return keep
@@ -477,36 +439,35 @@ def normalize_id(value):
 
 
 def add_county_and_sort(df, name_col, place_id_col=None, wdid_col=None, cwns_id_col=None):
-    """Insert a 'County' column (right after name_col) and sort by (County, name_col).
+    """Insert a 'County' column after name_col and sort by (County, name_col); blanks sort last.
 
-    County comes from site_data_all (keyed on WDID); mapping_df bridges WDID to
-    Place ID and CWNS_ID so any of the three keys can resolve a county. Rows with no
-    county sort last.
+    County comes from site_data_all by WDID; mapping_df links WDID to Place ID and CWNS_ID,
+    so any of the three keys can find it. The first non-blank county per key wins.
     """
     site = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str, keep_default_na=False)
-    county_by_wdid = {}
-    for wdid, county in zip(site["WDID"].str.strip(), site["County"].str.strip()):
-        if wdid and county and wdid not in county_by_wdid:
-            county_by_wdid[wdid] = county
+    site = pd.DataFrame({"WDID": site["WDID"].str.strip(), "County": site["County"].str.strip()})
+    site = site[site["WDID"].ne("") & site["County"].ne("")].drop_duplicates("WDID")
+    county_by_wdid = dict(zip(site["WDID"], site["County"]))
 
-    county_by_place_id, county_by_cwns_id = {}, {}
-    for _, row in mapping_df.iterrows():
-        county = county_by_wdid.get(row["WDID"], "")
-        place_id, cwns_id = normalize_id(row["Place ID"]), normalize_id(row["CWNS_ID"])
-        if county and place_id:
-            county_by_place_id.setdefault(place_id, county)
-        if county and cwns_id:
-            county_by_cwns_id.setdefault(cwns_id, county)
+    mapped = pd.DataFrame({
+        "Place ID": mapping_df["Place ID"].map(normalize_id),
+        "CWNS_ID": mapping_df["CWNS_ID"].map(normalize_id),
+        "County": mapping_df["WDID"].map(county_by_wdid),
+    }).dropna(subset=["County"])
+    county_by = {}
+    for key in ("Place ID", "CWNS_ID"):
+        first = mapped[mapped[key].ne("")].drop_duplicates(key)
+        county_by[key] = dict(zip(first[key], first["County"]))
 
     county = pd.Series(pd.NA, index=df.index, dtype=object)
     if place_id_col:
-        county = county.fillna(df[place_id_col].map(normalize_id).map(county_by_place_id))
+        county = county.fillna(df[place_id_col].map(normalize_id).map(county_by["Place ID"]))
     if wdid_col:
         county = county.fillna(df[wdid_col].str.strip().map(county_by_wdid))
     if cwns_id_col:
-        county = county.fillna(df[cwns_id_col].map(normalize_id).map(county_by_cwns_id))
+        county = county.fillna(df[cwns_id_col].map(normalize_id).map(county_by["CWNS_ID"]))
     df.insert(df.columns.get_loc(name_col) + 1, "County", county.fillna(""))
-    n_missing = (df["County"].str.strip() == "").sum()
+    n_missing = df["County"].eq("").sum()
     print(f"  add_county_and_sort: {len(df) - n_missing}/{len(df)} rows got a county ({n_missing} blank)")
     return df.sort_values(
         by=["County", name_col],
@@ -519,8 +480,8 @@ def build_txt_jobs(facilities_information):
 
     jobs = []
     for row_idx, row in facilities_df.iterrows():
-        facility_name = str(row["Facility Name"]).strip()
-        pdf_file_value = str(row["PDF_File"]).strip()
+        facility_name = row["Facility Name"].strip()
+        pdf_file_value = row["PDF_File"].strip()
         if not facility_name or not pdf_file_value:
             continue
 

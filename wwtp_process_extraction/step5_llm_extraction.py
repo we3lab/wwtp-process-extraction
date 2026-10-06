@@ -1,6 +1,5 @@
 import argparse
 import json
-import re
 import subprocess
 
 import pandas as pd
@@ -8,19 +7,18 @@ import pandas as pd
 from helpers.ontology_to_txt import ontology_to_txt
 from helpers.utils import (
     build_txt_jobs,
+    extract_leaves,
+    unitprocess_keywords,
     SEP,
     DATA_DIR,
     TXT_DIR,
     MANUAL_CSV,
     SITE_DATA_RELEVANT_CSV,
-    KEYWORDS_JSON,
     WATERRAG_RETRIEVAL_DIR,
     LLM_EXTRACTION_DIR,
 )
 from helpers.api_llm_search import (
     chat_completion_json,
-    load_icl_examples,
-    init_unit_process_list_from_json,
     build_example_schema,
     require_api_key,
 )
@@ -191,10 +189,10 @@ def chat_completion_web(
         if not raw.strip():
             diag = {k: output.get(k) for k in ("subtype", "num_turns", "duration_ms", "total_cost_usd", "stop_reason")}
             raise_with_raw_output(f"Model returned empty result (no final JSON emitted). CLI result meta: {diag}", stdout)
-        match = re.search(r'\{.*\}', raw, re.DOTALL)
-        if not match:
+        start, end = raw.find("{"), raw.rfind("}")
+        if start == -1 or end < start:
             raise_with_raw_output(f"No JSON found in result: {raw[:100]}", stdout)
-        parsed = json.loads(match.group())
+        parsed = json.loads(raw[start:end + 1])
     return parsed, float(output.get("total_cost_usd") or 0.0)
 
 
@@ -212,7 +210,6 @@ def append_row_csv(path, row):
 
 def run_extraction(args, output_dir_override=None):
     method_paths = METHOD_PATHS[args.method]
-    reference_path = method_paths["reference_path"]
     # Default: the manually-read facilities (model comparison). --all_facilities switches to the full CA set.
     facilities_info = SITE_DATA_RELEVANT_CSV if args.all_facilities else MANUAL_CSV
     output_dir = output_dir_override or resolve_output_dir(
@@ -229,10 +226,10 @@ def run_extraction(args, output_dir_override=None):
         )
         return
 
-    reference_text = reference_path.read_text(encoding="utf-8")
-    prompt_examples = load_icl_examples(
-        num_examples=NUM_ICL_EXAMPLES,
-        examples_dir=method_paths["examples_dir"],
+    reference_text = method_paths["reference_path"].read_text(encoding="utf-8")
+    prompt_examples = "\n\n".join(
+        f"Example {idx}:\n" + (method_paths["examples_dir"] / f"example{idx}.txt").read_text(encoding="utf-8").strip()
+        for idx in range(1, NUM_ICL_EXAMPLES + 1)
     )
     system_prompt_template = method_paths["prompt_path"].read_text(encoding="utf-8")
     example_schema = build_example_schema(args.method, web=args.web_search)
@@ -260,6 +257,7 @@ def run_extraction(args, output_dir_override=None):
         if output_json_path.exists():
             print(f"Already processed: {extraction_file_name}, skipping.")
             continue
+        usage_row = {"facility_name": facility_name, "place_id": place_id, "extraction_file": extraction_file_name}
 
         system_msg = (
             system_prompt_template
@@ -269,7 +267,7 @@ def run_extraction(args, output_dir_override=None):
             .replace("__PROMPT_EXAMPLES__", prompt_examples)
         )
         if args.web_search:
-            system_msg = system_msg + WEB_PROMPT_SUFFIX_PATH.read_text(encoding="utf-8")
+            system_msg += WEB_PROMPT_SUFFIX_PATH.read_text(encoding="utf-8")
 
         user_msg = (
             f"Find all the treatment processes explicitly used in the {facility_name} facility. "
@@ -341,9 +339,7 @@ def run_extraction(args, output_dir_override=None):
             append_row_csv(
                 token_usage_csv_path,
                 {
-                    "facility_name": facility_name,
-                    "place_id": place_id,
-                    "extraction_file": extraction_file_name,
+                    **usage_row,
                     "structured_output": structured_output,
                     "completion_token": completion_token,
                     "prompt_token": prompt_token,
@@ -362,9 +358,7 @@ def run_extraction(args, output_dir_override=None):
             append_row_csv(
                 token_usage_csv_path,
                 {
-                    "facility_name": facility_name,
-                    "place_id": place_id,
-                    "extraction_file": extraction_file_name,
+                    **usage_row,
                     "structured_output": "FAILED",
                     "completion_token": 0,
                     "prompt_token": 0,
@@ -399,10 +393,12 @@ if __name__ == "__main__":
     models = ALL_MODELS if args.all_models else [args.model]
 
     if "list-based" in methods:
-        init_unit_process_list_from_json(
-            keywords_json_path=KEYWORDS_JSON,
-            output_txt_path=METHOD_PATHS["list-based"]["reference_path"],
-        )
+        # list-based prompt reference: one "name: alt names" line per leaf process
+        lines = []
+        for name, details, _ in extract_leaves(unitprocess_keywords):
+            alt_names = [a.strip() for a in details.get("alt_names", []) + details.get("alt_names_case_sensitive", []) if a.strip()]
+            lines.append(f"{name}: {', '.join(dict.fromkeys(alt_names))}" if alt_names else f"{name}:")
+        METHOD_PATHS["list-based"]["reference_path"].write_text("\n".join(lines) + "\n", encoding="utf-8")
     for method in methods:
         for model in models:
             print(f"\n{'='*80}\nRunning method={method} model={model}\n{'='*80}\n")

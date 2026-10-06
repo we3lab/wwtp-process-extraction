@@ -14,18 +14,18 @@ SH = Namespace("http://www.w3.org/ns/shacl#")
 # Module names in ontology/ folder
 MODULES = ["watr", "equipment", "processtypes", "enumerationkinds", "substances"]
 
-CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "ontology_cache" / "water-ontology-v0.2.0"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+CACHE_DIR = DATA_DIR / "ontology_cache" / "water-ontology-v0.2.0"
+ONTOLOGY_TXT = DATA_DIR / "llm_extraction" / "input" / "ontology.txt"
 
-ontology_txt_file = Path(__file__).resolve().parent.parent / "data" / "llm_extraction" / "input" / "ontology.txt"
-
-#list of equipment to skip :
-skip_equip = [
+# Equipment to skip
+SKIP_EQUIPMENT = [
     "ElectromagneticFieldDevice",
     "SolventExtractionSystem",
     "DMERecoverySystem",
     "StanderdizedFlowCell"
 ]
-skip_parent_suffixes = ("Sensor", "Valve", "Controller", "Electrode")
+SKIP_PARENT_SUFFIXES = ("Sensor", "Valve", "Controller", "Electrode")
 
 
 def load_ontology(modules=MODULES):
@@ -93,12 +93,12 @@ def ontology_to_txt():
     equipment_lines = []
     for cls in equipment_graph.subjects(RDF.type, WATR.Class):
         # check for equipment to skip:
-        if cls.fragment in skip_equip:
+        if cls.fragment in SKIP_EQUIPMENT:
             continue
 
         parents = list(equipment_graph.objects(cls, RDFS.subClassOf))
         # Skip sensors, valves, controllers and electrodes
-        if any(parent.fragment.endswith(skip_parent_suffixes) for parent in parents):
+        if any(parent.fragment.endswith(SKIP_PARENT_SUFFIXES) for parent in parents):
             continue
         # parent equipment
         sub_equip_of = [
@@ -184,12 +184,8 @@ def ontology_to_txt():
         ("ROLES", role_lines),
         ("SUBSTANCES", substance_lines),
     ]
-    with open(ontology_txt_file, "w") as f:
-        for i, (header, lines) in enumerate(sections):
-            if i > 0:
-                f.write("\n########################\n")
-            f.write(f"{header}:\n")
-            for line in lines:
-                f.write(line + "\n")
+    ONTOLOGY_TXT.write_text("\n########################\n".join(
+        f"{header}:\n" + "".join(line + "\n" for line in lines) for header, lines in sections
+    ))
 
-    print(f"\nOutput saved to {ontology_txt_file}")
+    print(f"\nOutput saved to {ONTOLOGY_TXT}")

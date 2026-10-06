@@ -20,18 +20,13 @@ counts as absent on both sides (helpers.utils.DETECTED_STATUSES).
 
 """
 
-from __future__ import annotations
-
 import json
 from pathlib import Path
-from typing import Any
 import os
 import re
-import sys
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison, normalize_pdf_name, model_run_dirs
 from helpers.utils import (
     get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, build_secondary_category_lookup,
@@ -86,7 +81,7 @@ DESIRED_ORDER = [
 ]
 
 
-def normalize_status(value: Any) -> str | None:
+def normalize_status(value):
     """Map status values to canonical states, for state accuracy on manual-positive cells."""
 
     if pd.isna(value):
@@ -99,67 +94,6 @@ def normalize_status(value: Any) -> str | None:
     if "OFFSITE" in text:
         return "OFFSITE"
     return text
-
-
-def label_presence_counts(manual_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> tuple[int, int, int]:
-    """Raw tp/fp/fn for one PDF. Split out so callers can pool counts for a micro average."""
-
-    tp = fp = fn = 0
-    for col in label_cols:
-        manual_positive = is_present(manual_row[col], DETECTED_STATUSES)
-        pred_positive = is_present(pred_row[col], DETECTED_STATUSES)
-        tp += int(manual_positive and pred_positive)
-        fp += int((not manual_positive) and pred_positive)
-        fn += int(manual_positive and (not pred_positive))
-
-    return tp, fp, fn
-
-
-def family_presence_f1(manual_row: pd.Series, pred_row: pd.Series, label_cols: list[str], label_to_family: dict[str, str]) -> tuple[float, float, float, float]:
-    """Compute presence metrics after collapsing labels to top-level ontology families."""
-
-    manual_families = {
-        label_to_family.get(col, col) for col in label_cols
-        if is_present(manual_row[col], DETECTED_STATUSES)
-    }
-    pred_families = {
-        label_to_family.get(col, col) for col in label_cols
-        if is_present(pred_row[col], DETECTED_STATUSES)
-    }
-
-    tp = len(manual_families & pred_families)
-    fp = len(pred_families - manual_families)
-    fn = len(manual_families - pred_families)
-
-    return precision_recall_f1(tp, fp, fn)
-
-
-def exact_state_accuracy(manual_row: pd.Series, pred_row: pd.Series, label_cols: list[str]) -> float:
-    """Accuracy of the predicted state on manual-positive cells only.
-
-    This ignores all-truly-absent cells, which is important when most labels are
-    absent. Otherwise a model can look good simply by predicting nothing.
-    """
-
-    correct = 0
-    total = 0
-    for col in label_cols:
-        if not is_present(manual_row[col], DETECTED_STATUSES):
-            continue
-        total += 1
-        correct += int(normalize_status(pred_row[col]) == normalize_status(manual_row[col]))
-    return correct / total if total else float("nan")
-
-
-def evaluate_models(comparison: pd.DataFrame, manual: pd.DataFrame, label_cols, unit_cols, label_to_family) -> pd.DataFrame:
-    """Score every (Method, Model) run in the comparison table against the manual labels."""
-    results: list[dict[str, Any]] = []
-    predictions = comparison[comparison["Method"].ne("Manual Read")]
-    for (method, model), subset in predictions.groupby(["Method", "Model"], sort=True):
-        scores = run_metrics(subset.set_index("Place ID"), manual, label_cols, label_to_family, unit_cols)
-        results.append({"Method": method, "Model": model, **scores})
-
-    return pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
 
 
 def token_cost(usage_df, costs_df, cost_name):
@@ -194,7 +128,7 @@ def load_run_usage(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
     rerank_usage = pd.read_csv(WATERRAG_RETRIEVAL_DIR / "token_usage_summary.csv")
     rerank_usage = rerank_usage[rerank_usage["place_id"].astype(str).str.strip().isin(benchmark_ids)]
     rerank_model = rerank_usage["rerank_model"].dropna().unique()[0]
-    rerank_cost = token_cost(rerank_usage, costs_df, MODEL_COST_MAP.get(rerank_model))
+    rerank_cost = token_cost(rerank_usage, costs_df, MODEL_COST_MAP[rerank_model])
 
     rows = []
     for dir_path, method_label, model_label in model_run_dirs():
@@ -208,7 +142,7 @@ def load_run_usage(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
         if usage_df["cost_usd"].notna().any():
             cost = usage_df["cost_usd"].astype(float).mean()
         else:
-            cost = token_cost(usage_df, costs_df, MODEL_COST_MAP.get(model_label))
+            cost = token_cost(usage_df, costs_df, MODEL_COST_MAP[model_label])
         if model_label.endswith("-waterrag"):
             cost += rerank_cost
         flags = usage_df["structured_output"].astype(str).str.strip().str.lower()
@@ -220,20 +154,6 @@ def load_run_usage(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
             "Fraction Structured Output": flags.eq("true").mean(),
         })
     return pd.DataFrame(rows)
-
-
-def predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id):
-    """Postprocess every JSON in run_dir into a {place_id -> {col: status}} frame over label_cols."""
-    rows = {}
-    # Only the benchmark places are scored against the manual labels, and they are exactly the
-    # ones with a pinned document. Restricting here keeps the full CA set (whose co-current
-    # attachments have no single right answer) out of the selection.
-    for place_id, json_file in select_json_per_place_id(run_dir, set(pdf_stem_by_place_id), pdf_stem_by_place_id).items():
-        with open(json_file) as f:
-            data = json.load(f)
-        result = process_json_to_unit_process_dict(data)
-        rows[place_id] = {c: (result.get(c) or np.nan) for c in label_cols}
-    return pd.DataFrame.from_dict(rows, orient="index").reindex(columns=label_cols)
 
 
 def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols):
@@ -248,15 +168,28 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols):
     # pooled over every facility x label pair, so one-label facilities can't swing the score
     micro_tp = micro_fp = micro_fn = 0
     for place_id in manual.index:
-        manual_row = manual.loc[place_id, label_cols]
-        pred_row = pred.loc[place_id, label_cols]
-        tp, fp, fn = label_presence_counts(manual_row, pred_row, unit_cols)
+        manual_row = manual.loc[place_id]
+        pred_row = pred.loc[place_id]
+        manual_pos = {c for c in label_cols if is_present(manual_row[c], DETECTED_STATUSES)}
+        pred_pos = {c for c in label_cols if is_present(pred_row[c], DETECTED_STATUSES)}
+        manual_units = manual_pos & set(unit_cols)
+        pred_units = pred_pos & set(unit_cols)
+        tp = len(manual_units & pred_units)
+        fp = len(pred_units - manual_units)
+        fn = len(manual_units - pred_units)
         micro_tp += tp; micro_fp += fp; micro_fn += fn
-        _, _, f1, _ = precision_recall_f1(tp, fp, fn)
-        _, _, ff1, _ = family_presence_f1(manual_row, pred_row, label_cols, label_to_family)
-        label_f1.append(f1)
-        family_f1.append(ff1)
-        state_acc.append(exact_state_accuracy(manual_row, pred_row, unit_cols))
+        label_f1.append(precision_recall_f1(tp, fp, fn)[2])
+        # relaxed: collapse labels to their top-level family before comparing
+        manual_families = {label_to_family.get(c, c) for c in manual_pos}
+        pred_families = {label_to_family.get(c, c) for c in pred_pos}
+        family_f1.append(precision_recall_f1(
+            len(manual_families & pred_families),
+            len(pred_families - manual_families),
+            len(manual_families - pred_families),
+        )[2])
+        # state accuracy only on manual-positive cells, so predicting nothing can't look good
+        correct = sum(normalize_status(pred_row[c]) == normalize_status(manual_row[c]) for c in manual_units)
+        state_acc.append(correct / len(manual_units) if manual_units else float("nan"))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
         "Micro Unit Process F1": precision_recall_f1(micro_tp, micro_fp, micro_fn)[2],
@@ -315,7 +248,6 @@ def build_representativeness_table(evaluation_ids) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-
 def main() -> None:
     comparison = build_model_comparison()
 
@@ -333,7 +265,12 @@ def main() -> None:
     label_cols = [c for c in manual.columns if c not in META_COLS and c in included]
     unit_cols = [c for c in label_cols if c in unit_included]
 
-    table = evaluate_models(comparison, manual, label_cols, unit_cols, label_to_family)
+    results = []
+    predictions = comparison[comparison["Method"].ne("Manual Read")]
+    for (method, model), subset in predictions.groupby(["Method", "Model"], sort=True):
+        scores = run_metrics(subset.set_index("Place ID"), manual, label_cols, label_to_family, unit_cols)
+        results.append({"Method": method, "Model": model, **scores})
+    table = pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
 
     # Add keyword-search baseline metrics (NPDES keyword method) on same facilities
     # Load keyword predictions for the manually read document and align
@@ -342,11 +279,7 @@ def main() -> None:
     kw_df = kw_df[kw_df["PDF_File"].map(lambda pdf: normalize_pdf_name(Path(pdf).stem)) == pinned_stem]
     kw_df = kw_df.set_index("Place ID").reindex(manual.index)
     kw_scores = run_metrics(kw_df[label_cols], manual, label_cols, label_to_family, unit_cols)
-    kw_row = {
-        "Method": "Keyword",
-        "Model": "NPDES Keyword",
-        **kw_scores,
-    }
+    kw_row = {"Method": "Keyword", "Model": "NPDES Keyword", **kw_scores}
     table = pd.concat([table, pd.DataFrame([kw_row])], ignore_index=True, sort=False)
 
     # Spot-check the keyword and LLM ontology gpt-5-mini methods per process
@@ -368,11 +301,8 @@ def main() -> None:
 
     usage_df = load_run_usage(set(manual.index), pdf_stem_by_place_id)
     table = table.merge(usage_df, on=["Method", "Model"], how="left")
-    table["Unit Process F1 / Price per PDF"] = np.where(
-        pd.to_numeric(table["Price per PDF"], errors="coerce") > 0,
-        pd.to_numeric(table["Macro Unit Process F1"], errors="coerce") / pd.to_numeric(table["Price per PDF"], errors="coerce"),
-        np.nan,
-    ).round(2)
+    price = table["Price per PDF"].where(table["Price per PDF"] > 0)
+    table["Unit Process F1 / Price per PDF"] = (table["Macro Unit Process F1"] / price).round(2)
     table = table.round(3)
 
     ordered_rows = []
@@ -382,10 +312,7 @@ def main() -> None:
         if not match.empty:
             ordered_rows.append(match.iloc[0].to_dict())
         else:
-            row = {c: "" for c in cols}
-            row["Method"] = method
-            row["Model"] = model
-            ordered_rows.append(row)
+            ordered_rows.append({c: "" for c in cols} | {"Method": method, "Model": model})
 
     table = pd.DataFrame(ordered_rows)[cols]
 
@@ -398,7 +325,14 @@ def main() -> None:
 
     rows = []
     for label, run_dir in run_dirs:
-        predictions = predictions_for_run(run_dir, label_cols, pdf_stem_by_place_id)
+        # Only the benchmark places are scored, and they are exactly the ones with a pinned
+        # document, so the full CA set stays out of the selection.
+        predictions = {}
+        for place_id, json_file in select_json_per_place_id(run_dir, set(pdf_stem_by_place_id), pdf_stem_by_place_id).items():
+            with open(json_file) as f:
+                result = process_json_to_unit_process_dict(json.load(f))
+            predictions[place_id] = {c: (result.get(c) or np.nan) for c in label_cols}
+        predictions = pd.DataFrame.from_dict(predictions, orient="index").reindex(columns=label_cols)
         print(f"Scoring {label} ({os.path.relpath(run_dir)}) — {len(predictions)} facilities")
         scores = run_metrics(predictions, manual, label_cols, label_to_family, unit_cols)
         rows.append({"run": label, "n_facilities": len(predictions), **scores})
@@ -419,6 +353,7 @@ def main() -> None:
     representativeness = build_representativeness_table(set(manual.index))
     representativeness.to_csv(REPRESENTATIVENESS_CSV, index=False)
     print(representativeness.to_string(index=False))
+
 
 if __name__ == "__main__":
     main()

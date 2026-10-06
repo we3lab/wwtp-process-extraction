@@ -23,6 +23,9 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+import torch
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 from helpers.utils import (
     SEP,
@@ -39,7 +42,7 @@ from step4_keyword_extraction import search_processes_in_text
 # WATERRAG_RETRIEVAL_DIR is deliberately outside output/llm_extraction/: these are retrieved
 # literature chunks fed into step5's prompt, not extraction results. The schema-conformant
 # items land in output/llm_extraction/ontology-based_<model>-waterrag/.
-WATERRAG_DIR = os.getenv("WATERRAG_DIR", str(Path.home() / "waterrag"))
+WATERRAG_DIR = Path.home() / "waterrag"
 
 MAX_QUERY_TERMS = 8
 MAX_CHUNKS = 12
@@ -72,11 +75,6 @@ def parse_args():
 # Their _load_indexes wraps FAISS and BM25 in one try, so a stale BM25 pickle takes the
 # whole system down. Load them independently and degrade to vector-only if BM25 fails.
 def load_indexes_independently(self):
-    import torch
-    from langchain_community.vectorstores import FAISS
-    from langchain_community.embeddings import HuggingFaceEmbeddings
-
-    self.faiss_index = None
     self.bm25_retriever = None
 
     faiss_path = os.path.join(self.index_path, "faiss_index")
@@ -123,20 +121,19 @@ def call_api_with_usage(self, messages, api_model):
 
 def load_waterrag():
     """Import WaterRAG from its clone and return (retrieval_system, reranker)."""
-    waterrag_path = Path(WATERRAG_DIR)
-    if not (waterrag_path / "retrieval_simplified.py").exists():
+    if not (WATERRAG_DIR / "retrieval_simplified.py").exists():
         raise SystemExit(
-            f"WaterRAG not found at {waterrag_path}. Clone it with:\n"
+            f"WaterRAG not found at {WATERRAG_DIR}. Clone it with:\n"
             "  git lfs install && git clone https://github.com/Mudi12138/WaterRAG.git ~/waterrag"
         )
-    sys.path.insert(0, str(waterrag_path))
+    sys.path.insert(0, str(WATERRAG_DIR))
 
     from retrieval_simplified import RetrievalSystem
     from rag_llm_reranker_simplified import LLMReranker
 
     RetrievalSystem._load_indexes = load_indexes_independently
 
-    index_path = str(waterrag_path / "0520_256")
+    index_path = str(WATERRAG_DIR / "0520_256")
     key_path = Path("wwtp_process_extraction/API_key.txt")
     if not key_path.exists():
         raise SystemExit(f"{key_path} not found; needed for the reranker.")
@@ -154,23 +151,21 @@ def load_waterrag():
     return retrieval, reranker
 
 
-def build_queries(description_text, keywords):
+def build_queries(description_text):
     """One query per unit process the keyword matcher finds, plus one from the description opening.
 
     Querying with the whole extract does not work: it is mostly legal boilerplate, and
     bge-large truncates at 512 tokens anyway.
     """
-    hits = {}
-    search_processes_in_text(description_text, keywords, hits)
-    # search_processes_in_text also flags parent categories; keep leaves, and drop the
-    # 'Unspecified X' catch-alls (priority 1000), which make useless literature queries
+    hits = search_processes_in_text(description_text)
+    # drop the 'Unspecified X' catch-alls (priority 1000), which make useless literature queries
     leaves = [
-        name for name, details, _ in extract_leaves(keywords)
-        if hits.get(name) == 1 and details.get("priority") != 1000
+        name for name, details, _ in extract_leaves(unitprocess_keywords)
+        if name in hits and details.get("priority") != 1000
     ]
 
     queries = [f"{name} wastewater treatment" for name in leaves[:MAX_QUERY_TERMS]]
-    opening = " ".join(description_text.split())[:OVERVIEW_QUERY_CHARS].strip()
+    opening = " ".join(description_text.split())[:OVERVIEW_QUERY_CHARS]
     if opening:
         queries.append(opening)
     return queries
@@ -233,7 +228,7 @@ def main():
             continue
 
         print(f"\nProcessing {txt_path.name} for {facility_name}...")
-        queries = build_queries(description_text, unitprocess_keywords)
+        queries = build_queries(description_text)
         print(f"  {len(queries)} queries: {[q[:40] for q in queries]}")
 
         rerank_usage["prompt"] = rerank_usage["completion"] = 0

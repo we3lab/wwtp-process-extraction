@@ -99,13 +99,6 @@ def infer_construction(present, future, cur_mgd, fut_mgd, lookup):
     return "rehabilitation", None
 
 
-def snapshot_documents(as_of):
-    """(Place ID, PDF_File) pairs a facility held at one as-of date."""
-    rel = pd.read_csv(OUTPUT_DIR / "site_data" / as_of / "site_data_relevant.csv", dtype=str).fillna("")
-    rel = rel[rel["PDF_File"].str.strip().ne("")]
-    return set(zip(rel["Place ID"].str.strip(), rel["PDF_File"].str.strip()))
-
-
 def facilities_as_of(perdoc, process_cols, doc_pairs):
     """Per-facility PRESENT/FUTURE process sets, unioned over that snapshot's documents only.
 
@@ -120,7 +113,7 @@ def facilities_as_of(perdoc, process_cols, doc_pairs):
     """
     by_place = {}
     for _, row in perdoc.iterrows():
-        key = (str(row["Place ID"]).strip(), str(row["PDF_File"]).strip())
+        key = (row["Place ID"].strip(), row["PDF_File"].strip())
         if key not in doc_pairs:
             continue
         fac = by_place.setdefault(key[0], {
@@ -156,7 +149,7 @@ def cost_facilities(facilities, curves, lookup, pid_to_cwns, flow, ciwqs_flow):
         if pd.isna(cur_mgd):
             # no CWNS match; CIWQS gives one permitted design flow and no future value,
             # so expansion can't be inferred for these facilities
-            cur_mgd = ciwqs_flow.get(str(fac["WDID"]).strip())
+            cur_mgd = ciwqs_flow.get(fac["WDID"].strip())
             fut_mgd = None
             flow_source = "" if pd.isna(cur_mgd) else "CIWQS"
 
@@ -193,7 +186,7 @@ def main():
 
     top_of, group_of = {}, {}
     for top, val in unitprocess_keywords.items():
-        for name, _details, group_id in extract_leaves({top: val}):
+        for name, _, group_id in extract_leaves({top: val}):
             top_of[name] = top
             group_of[name] = group_id
 
@@ -235,7 +228,12 @@ def main():
 
     snapshots = sorted(p.name for p in (OUTPUT_DIR / "site_data").glob(SNAPSHOT_GLOB))
 
-    docs_by_year = {as_of: snapshot_documents(as_of) for as_of in snapshots}
+    # (Place ID, PDF_File) pairs each facility held at each as-of date
+    docs_by_year = {}
+    for as_of in snapshots:
+        rel = pd.read_csv(OUTPUT_DIR / "site_data" / as_of / "site_data_relevant.csv", dtype=str).fillna("")
+        rel = rel[rel["PDF_File"].str.strip().ne("")]
+        docs_by_year[as_of] = set(zip(rel["Place ID"].str.strip(), rel["PDF_File"].str.strip()))
     facs_by_year = {as_of: facilities_as_of(perdoc, process_cols, docs)
                     for as_of, docs in docs_by_year.items()}
 
@@ -331,8 +329,8 @@ def plot(per_year, cwns_reported, n_cohort):
     change types per (facility, facility type) with no link between them, so a matching
     composition would be invented.
     """
-    years = [int(y[:4]) for y in sorted(per_year)]
     keys = sorted(per_year)
+    years = [int(k[:4]) for k in keys]
     fig, ax = plt.subplots(figsize=(6, 5))
 
     # bottom-to-top: biggest, steadiest category first so the thin ones ride on a flat base
@@ -340,16 +338,13 @@ def plot(per_year, cwns_reported, n_cohort):
     shades = {"rehabilitation": "#8fabd2", "treatment_upgrade": "#5c82b8",
               "system_expansion": "#305993", "new": "#1f3b63", UNMATCHED: "#b3b9c0"}
 
+    # CWNS_ID is "" for facilities with no CWNS match
+    matched = [per_year[k][per_year[k]["CWNS_ID"].ne("")].replace({"construction_type": DISPLAY_GROUP}) for k in keys]
     by_cat, n_cat = {}, {}
     for cat in order:
-        sums, counts = [], []
-        for k in keys:
-            # CWNS_ID is set from pid_to_cwns.get(..., "") upstream, so absence is just an empty string
-            m = per_year[k][per_year[k]["CWNS_ID"].ne("")].replace({"construction_type": DISPLAY_GROUP})
-            grp = m[m["construction_type"] == cat]
-            sums.append(grp["cost_2022usd"].sum() / 1e6)
-            counts.append(len(grp))
-        by_cat[cat], n_cat[cat] = sums, counts
+        groups = [m[m["construction_type"] == cat] for m in matched]
+        by_cat[cat] = [g["cost_2022usd"].sum() / 1e6 for g in groups]
+        n_cat[cat] = [len(g) for g in groups]
     unmatched_rows = [per_year[k][per_year[k]["CWNS_ID"].eq("")] for k in keys]
     by_cat[UNMATCHED] = [r["cost_2022usd"].sum() / 1e6 for r in unmatched_rows]
     n_cat[UNMATCHED] = [len(r) for r in unmatched_rows]

@@ -27,8 +27,9 @@ counts, and rewrites ciwqs_to_cwns.csv with name-matched rows and coordinates.
 import pandas as pd
 import matplotlib.pyplot as plt
 from geopy.distance import geodesic
-from helpers.utils import get_leaf_names, PRESENT_STATUSES
 from helpers.utils import (
+    get_leaf_names,
+    PRESENT_STATUSES,
     cwns_mapping,
     no_cwns_pids,
     build_cwns_facility_processes,
@@ -234,20 +235,15 @@ print(", ".join(cwns_only_facs))
 
 cwns_df, merged_map = build_cwns_facility_processes(ca_cwns, target_facilities=llm_facilities | kw_facilities)
 
-n_attach = int((merged_map["_cwns_merge"] == "both").sum())
-print(f"\n  CIWQS mapping rows with CWNS survey attach: {n_attach} / {len(merged_map)}")
+print(f"\n  CIWQS mapping rows with CWNS survey attach: {len(merged_map)}")
 
 # Save facilities with no CWNS match
 pid_to_name = {}
 site_facs = set(site["Place ID"]) - {""}
-for _, r in site.iterrows():
-    pid = r["Place ID"]
-    if pid:
-        pid_to_name.setdefault(pid, r["Facility Name"])
-for _, r in kw_df.iterrows():
-    pid = r["Place ID"]
-    if pid:
-        pid_to_name.setdefault(pid, r["Facility Name"])
+for df in (site, kw_df):
+    for pid, name in zip(df["Place ID"], df["Facility Name"]):
+        if pid:
+            pid_to_name.setdefault(pid, name)
 candidate_facs = (kw_facilities | site_facs) - {""}
 
 unmatched_pids = [
@@ -265,9 +261,8 @@ unmatched_df = pd.DataFrame({
 }).sort_values("has_kw_unit_process_data", ascending=True, key=lambda s: s.map({"yes": 0, "no": 1}))
 unmatched_df.to_csv(OUTPUT_DIR / "unmatched_kw_no_cwns.csv", index=False)
 print(f"  Unmatched KW/site_data (no CWNS): {len(unmatched_pids)} → unmatched_kw_no_cwns.csv")
-facility_names = unmatched_df['FACILITY_NAME'].tolist()
 # print plain text, comma-separated around strings
-print(', '.join(facility_names))
+print(', '.join(unmatched_df['FACILITY_NAME']))
 
 # CWNS rows with no declared match in ciwqs_to_cwns (by CWNS_ID)
 cwns_unmatched_df = ca_cwns.fillna("")
@@ -276,7 +271,7 @@ mapped_cwns_ids = {
     for cw in ciwqs["CWNS_ID"]
     if cw.strip() and cw.strip().upper() != "NA"
 }
-cwns_ids = cwns_unmatched_df["CWNS_ID"].str.strip()
+cwns_ids = cwns_unmatched_df["CWNS_ID"]
 unmatched_cwns_no_kw = cwns_unmatched_df[
     cwns_ids.ne("") & cwns_ids.str.upper().ne("NA") & ~cwns_ids.isin(mapped_cwns_ids)
 ][["CWNS_ID", "FACILITY_ID", "FACILITY_NAME"]].drop_duplicates()
@@ -295,13 +290,13 @@ final_rows = []
 for source_name, src_df in [("Clean Watershed Needs Survey", cwns_df), ("ciwqs", llm_df)]:
     for _, r in src_df.iterrows():
         pid = r["Place ID"]
-        m = mapping_by_pid.loc[pid] if pid in mapping_by_pid.index else None
+        m = mapping_by_pid.loc[pid] if pid in mapping_by_pid.index else {}
         row = {
             "source": source_name,
-            "CWNS FACILITY_ID": m["FACILITY_ID"] if m is not None else "",
-            "CWNS FACILITY_NAME": m["CWNS Facility Name"] if m is not None else "",
+            "CWNS FACILITY_ID": m.get("FACILITY_ID", ""),
+            "CWNS FACILITY_NAME": m.get("CWNS Facility Name", ""),
             "CIWQS PLACE_ID": pid,
-            "CIWQS Facility Name": llm_name_by_pid.get(pid) or (m["Facility Name"] if m is not None else ""),
+            "CIWQS Facility Name": llm_name_by_pid.get(pid) or m.get("Facility Name", ""),
         }
         for c in proc_cols:
             row[c] = r[c]
@@ -364,7 +359,6 @@ for group_title, json_cats in PLOT_GROUPS.items():
     # Figure width based on number of bar groups (positions span)
     x_span = positions[-1] - positions[0] + 1
     fig_w = max(7, x_span * 0.85)
-    safe = group_title.replace("/", "_").replace(" ", "_")
     fig, ax = plt.subplots(figsize=(fig_w, 5))
     render_source_plot(
         ax=ax,
@@ -378,17 +372,12 @@ for group_title, json_cats in PLOT_GROUPS.items():
     )
     cat_spans = {}
     for item, pos in zip(items, positions):
-        cat = item["cat"]
-        if cat not in cat_spans:
-            cat_spans[cat] = [pos, pos]
-        else:
-            cat_spans[cat][1] = pos
+        cat_spans.setdefault(item["cat"], [pos, pos])[1] = pos
     ylim = ax.get_ylim()
-    first = True
-    for cat, (span_start, span_end) in cat_spans.items():
-        if not first:
+    for idx, (cat, (span_start, span_end)) in enumerate(cat_spans.items()):
+        if idx:
             ax.axvline(span_start - 0.5, color="#999999", lw=0.8, linestyle="--", zorder=1)
-        if len([it for it in items if it["cat"] == cat]) > 1:
+        if sum(it["cat"] == cat for it in items) > 1:
             ax.text(
                 (span_start + span_end) / 2,
                 ylim[1] * 0.97,
@@ -399,10 +388,9 @@ for group_title, json_cats in PLOT_GROUPS.items():
                 color="#444444",
                 style="italic",
             )
-        first = False
     ax.set_ylim(ylim)
     plt.tight_layout()
-    save_and_close(fig, FIGURES_DIR / f"{safe}_source_comparison.png", dpi=300)
+    save_and_close(fig, FIGURES_DIR / f"{group_title.replace(' ', '_')}_source_comparison.png", dpi=300)
 
 
 # 2. Major-categories plot
@@ -457,7 +445,7 @@ for comparison_type in ["llm", "kw"]:
 
 
 # Rewrite ciwqs_to_cwns.csv: fill FACILITY_ID, NPDES, Region and coordinates, add name matches
-cwns_fac_tp = ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME", "STATE_CODE", "LATITUDE", "LONGITUDE"]].rename(columns={"FACILITY_NAME": "CWNS Facility Name"}).copy()
+cwns_fac_tp = ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME", "STATE_CODE", "LATITUDE", "LONGITUDE"]].rename(columns={"FACILITY_NAME": "CWNS Facility Name"})
 cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]] = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].apply(lambda c: c.str.strip())
 
 cwns_loc_map = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].drop_duplicates().merge(
@@ -470,20 +458,18 @@ cwns_loc_map = cwns_fac_tp[["CWNS_ID", "FACILITY_ID", "CWNS Facility Name"]].dro
 # CWNS_ID → FACILITY_ID lookup for populating existing mapping rows
 cwns_id_to_fac_id = cwns_fac_tp.drop_duplicates("CWNS_ID").set_index("CWNS_ID")["FACILITY_ID"].to_dict()
 
-for col in ["WDID", "Facility Name", "NPDES No.", "Region", "Place ID"]:
-    site[col] = site[col].str.strip()
 site_lookup_cols = ["WDID", "Facility Name", "NPDES No.", "Region", "Place ID"]
+site[site_lookup_cols] = site[site_lookup_cols].apply(lambda c: c.str.strip())
 site_lookup = site[site_lookup_cols].drop_duplicates()
 
-for col in ["WDID", "Facility Name"]:
-    all_npdes[col] = all_npdes[col].str.strip()
+all_npdes[["WDID", "Facility Name"]] = all_npdes[["WDID", "Facility Name"]].apply(lambda c: c.str.strip())
 ciwqs_lookup = all_npdes[["WDID", "Facility Name", "Latitude_CIWQS_from_npdes", "Longitude_CIWQS_from_npdes"]].drop_duplicates()
 
 site = site.merge(ciwqs_lookup, on=["WDID", "Facility Name"], how="left")
 
-ciwqs[["WDID", "Facility Name"]] = ciwqs[["WDID", "Facility Name"]].apply(lambda c: c.str.strip())
-# ensure CWNS keys are normalized for merges
-ciwqs[["CWNS_ID", "CWNS Facility Name", "FACILITY_ID"]] = ciwqs[["CWNS_ID", "CWNS Facility Name", "FACILITY_ID"]].apply(lambda c: c.str.strip())
+# ensure merge keys are normalized
+ciwqs_key_cols = ["WDID", "Facility Name", "CWNS_ID", "CWNS Facility Name", "FACILITY_ID"]
+ciwqs[ciwqs_key_cols] = ciwqs[ciwqs_key_cols].apply(lambda c: c.str.strip())
 
 # Populate FACILITY_ID for rows that have a CWNS_ID but none yet
 needs_fac_id = ciwqs["FACILITY_ID"].eq("") & ciwqs["CWNS_ID"].ne("") & ciwqs["CWNS_ID"].str.upper().ne("NA")
@@ -574,10 +560,10 @@ for col in coord_cols:
     geo[col] = pd.to_numeric(geo[col], errors="coerce")
 geo = geo.dropna(subset=coord_cols)
 
-geo["_dist_miles"] = geo.apply(
+geo["dist_miles"] = geo.apply(
     lambda r: geodesic((r["Latitude_CIWQS"], r["Longitude_CIWQS"]), (r["Latitude_CWNS"], r["Longitude_CWNS"])).miles,
     axis=1,
 )
-far = geo[geo["_dist_miles"] > 2].sort_values("_dist_miles", ascending=False)
+far = geo[geo["dist_miles"] > 2].sort_values("dist_miles", ascending=False)
 print(f"\nRows where CWNS and CIWQS coords are >2 miles apart: {len(far)}")
-print(far[["Facility Name", "NPDES No.", "CWNS_ID", "FACILITY_ID", "_dist_miles"]].to_string(index=False))
+print(far[["Facility Name", "NPDES No.", "CWNS_ID", "FACILITY_ID", "dist_miles"]].to_string(index=False))

@@ -1,11 +1,9 @@
 """SI figure: category-level F1 for gpt-5-mini, ontology vs list method."""
 
 import os
-import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from step6_postprocess_llm_output import build_model_comparison
 from helpers.metrics import build_metric_inputs, aggregate_to_category_states, compute_metrics
 from helpers.utils import get_leaf_names, unitprocess_keywords, FINAL_DIR, MANUAL_CSV
@@ -41,16 +39,14 @@ def main():
 
     # keep categories with at least one manual-positive facility (F1 otherwise undefined)
     support = per_method["Ontology"]["Support_Manual"]
-    keep = [c for c in categories if support.get(c, 0) > 0]
-    keep = sorted(keep, key=lambda c: per_method["Ontology"].loc[c, "F1"])  # ascending → best on top
+    keep = sorted((c for c in categories if support.get(c, 0) > 0), key=lambda c: per_method["Ontology"].loc[c, "F1"])  # ascending → best on top
 
     # Per-category F1 by method; flag categories driving the methods apart (|diff| > 0.05)
     print("\nCategory-level F1 (gpt-5-mini): Ontology vs List")
     print(f"{'Category':25s} {'Ontology':>9s} {'List':>7s} {'Diff':>7s}")
-    by_diff = sorted(keep, key=lambda c: float(per_method["Ontology"].loc[c, "F1"]) - float(per_method["List"].loc[c, "F1"]))
-    for c in by_diff:
-        ontology_f1 = float(per_method["Ontology"].loc[c, "F1"])
-        list_f1 = float(per_method["List"].loc[c, "F1"])
+    f1 = {method: per_method[method]["F1"] for method, _ in METHODS}
+    for c in sorted(keep, key=lambda c: f1["Ontology"][c] - f1["List"][c]):
+        ontology_f1, list_f1 = f1["Ontology"][c], f1["List"][c]
         diff = ontology_f1 - list_f1
         flag = "  <-- driving (ontology higher)" if diff > 0.05 else "  <-- driving (list higher)" if diff < -0.05 else ""
         print(f"{c:25s} {ontology_f1:9.3f} {list_f1:7.3f} {diff:+7.3f}{flag}")
@@ -61,7 +57,7 @@ def main():
     fig, ax = plt.subplots(figsize=(8, max(5, 0.42 * len(keep))))
     for i, (method, label) in enumerate(METHODS):
         offset = (0.5 - i) * h
-        vals = [float(per_method[method].loc[c, "F1"]) for c in keep]
+        vals = [f1[method][c] for c in keep]
         ax.barh(
             [yy + offset for yy in y], vals, height=h, color=METHOD_COLORS[method],
             edgecolor="black", linewidth=1.2, label=label,

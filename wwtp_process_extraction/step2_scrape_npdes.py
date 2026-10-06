@@ -26,7 +26,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException
-from helpers.utils import normalize_text, is_general_order, OUTPUT_DIR, SITE_DATA_RELEVANT_CSV
+from helpers.utils import normalize_text, is_general_order, OUTPUT_DIR, SITE_DATA_RELEVANT_CSV, ZERO_WIDTH_CHARS
 # Modified using Claude 4.5
 
 # Run settings
@@ -38,9 +38,13 @@ MAX_WORKERS = 24  # parallel Chrome sessions; raise if running on a server
 OTHER_PDFS_DIR = OUTPUT_DIR / "other_pdfs"
 PERMITS_DIR = OUTPUT_DIR / "permits"
 SIGNAL_CACHE_PATH = OUTPUT_DIR / "pdf_signal_cache.json" # Cache on size+mtime
-# Dated copy of each run's outputs; AS_OF runs leave the top-level facilities.json as today's
+# Every run writes its outputs to output/site_data/<date>/
 SNAPSHOT_DATE = AS_OF or datetime.now().strftime("%Y-%m-%d")
 SNAPSHOT_DIR = OUTPUT_DIR / "site_data" / SNAPSHOT_DATE
+# The top-level files steps 3-6 read are a frozen base (2026-06-01 + 2026-08-13 snapshots).
+# True copies this run's facilities.json / site_data_all.csv to the top level and re-unions
+# site_data_relevant.csv from every dated folder (the 2026-08-13 folder is gone, so its rows would drop).
+UPDATE_TOP_LEVEL = False
 CHROME_BIN = Path.home() / "bin/chrome/chrome-linux64/chrome"
 CHROMEDRIVER_BIN = Path.home() / "bin/chrome/chromedriver-linux64/chromedriver"
 
@@ -127,22 +131,11 @@ SNAPSHOT_UNION_KEY = ["Place ID", "order_key", "PDF_File"]
 worker_log = threading.local()
 
 
-def snapshot(filename):
-    """Copy a just-written top-level output into the dated snapshot folder."""
-    os.makedirs(SNAPSHOT_DIR, exist_ok=True)
-    shutil.copy2(OUTPUT_DIR / filename, SNAPSHOT_DIR / filename)
-    print(f"  snapshot -> site_data/{SNAPSHOT_DATE}/{filename}")
-
-
 def save_facilities(facilities_by_place):
-    """Write facilities.json to the dated folder, and to the top level unless AS_OF is set."""
     os.makedirs(SNAPSHOT_DIR, exist_ok=True)
-    paths = [SNAPSHOT_DIR / "facilities.json"] + ([] if AS_OF else [OUTPUT_DIR / "facilities.json"])
-    for path in paths:
-        with open(path, "w") as f:
-            json.dump(facilities_by_place, f, indent=2, default=str)
-    print(f"Checkpoint saved: {len(facilities_by_place)} facilities -> site_data/{SNAPSHOT_DATE}/facilities.json"
-          + ("" if AS_OF else " and facilities.json"))
+    with open(SNAPSHOT_DIR / "facilities.json", "w") as f:
+        json.dump(facilities_by_place, f, indent=2, default=str)
+    print(f"Checkpoint saved: {len(facilities_by_place)} facilities -> site_data/{SNAPSHOT_DATE}/facilities.json")
 
 
 def say(msg):
@@ -612,9 +605,9 @@ def run_ciwqs_search():
         print("Duplicates removed:")
         print(duplicates_removed[["Facility Name", "WDID", "NPDES No."]].to_string(index=False))
 
-    df_deduplicated.to_csv(OUTPUT_DIR / "site_data_all.csv", index=False)
-    print(f"Saved {len(df_deduplicated)} rows to site_data_all.csv")
-    snapshot("site_data_all.csv")
+    os.makedirs(SNAPSHOT_DIR, exist_ok=True)
+    df_deduplicated.to_csv(SNAPSHOT_DIR / "site_data_all.csv", index=False)
+    print(f"Saved {len(df_deduplicated)} rows to site_data/{SNAPSHOT_DATE}/site_data_all.csv")
 
     driver.quit()
     return program_urls
@@ -682,7 +675,7 @@ def collect_facility_page_urls(program_urls):
         driver.quit()
 
     # Reconcile against site_data_all.csv to catch any facilities missed by per-program scrapes
-    npdes_df = pd.read_csv(OUTPUT_DIR / "site_data_all.csv", dtype=str).fillna("")
+    npdes_df = pd.read_csv(SNAPSHOT_DIR / "site_data_all.csv", dtype=str).fillna("")
     scraped_names = {
         f["Facility Name"]
         for entry in facilities_by_place.values()
@@ -887,7 +880,7 @@ def extract_pdf_text(pdf_path: str) -> str:
 
     raw = " ".join(parts)
     raw = unicodedata.normalize("NFKC", raw)
-    raw = re.sub(r"[­​‌‍﻿]", "", raw)
+    raw = raw.translate(ZERO_WIDTH_CHARS)
     raw = re.sub(r"[  ᠎ -   　]", "", raw)
     return raw
 
@@ -902,9 +895,9 @@ def length_of_pdf(pdf_path: str) -> int:
 
 def rule_matches(rule, text, raw_text):
     """True if a RULES entry matches. text is the lowercased raw_text."""
-    text_nospace = re.sub(r"\s+", "", text)
+    text_nospace = "".join(text.split())
     pattern_hit = any(
-        (normalize_text(p) in text) or (re.sub(r"\s+", "", normalize_text(p)) in text_nospace)
+        (normalize_text(p) in text) or (normalize_text(p).replace(" ", "") in text_nospace)
         for p in rule.get("patterns", [])
     )
     if not pattern_hit and rule.get("patterns_case_sensitive"):
@@ -1031,9 +1024,13 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
 def create_site_data_csv(facilities_by_place, npdes_pdfs):
     print("\n STEP 4: Creating site_data_relevant with relevant NPDES/WDR/NOA documents only")
 
-    # (WDID, Facility Name) -> metadata from site_data_all.csv; scraped order_no overrides Order_No
+    # (WDID, Facility Name) -> metadata from site_data_all.csv; scraped order_no overrides Order_No.
+    # This run's export if it ran the CIWQS search, else the base one.
     meta_keys = ["Agency", "Region", "Major/Minor", "Order_No", "NPDES No."]
-    site_all = pd.read_csv(OUTPUT_DIR / "site_data_all.csv", dtype=str, encoding="latin-1",
+    site_all_path = SNAPSHOT_DIR / "site_data_all.csv"
+    if not site_all_path.exists():
+        site_all_path = OUTPUT_DIR / "site_data_all.csv"
+    site_all = pd.read_csv(site_all_path, dtype=str, encoding="latin-1",
                            on_bad_lines="warn").fillna("").rename(columns={"Order No.": "Order_No"})
     site_all["WDID"] = site_all["WDID"].str.strip()
     site_all["Facility Name"] = site_all["Facility Name"].str.strip()
@@ -1079,7 +1076,8 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs):
             )
 
     df_out = pd.DataFrame(rows)
-    df_out.to_csv(SITE_DATA_RELEVANT_CSV, index=False)
+    os.makedirs(SNAPSHOT_DIR, exist_ok=True)
+    df_out.to_csv(SNAPSHOT_DIR / "site_data_relevant.csv", index=False)
 
     # Reg_Measure_Type counts, one row per facility
     df_fac = df_out.drop_duplicates(subset="Place ID")
@@ -1093,8 +1091,7 @@ def create_site_data_csv(facilities_by_place, npdes_pdfs):
     print(f"  Enrichment lookup: {len(enrich)} entries from site_data_all.csv")
     if skipped_collective:
         print(f"  Collective-permittee places dropped: {', '.join(skipped_collective)}")
-    print(f"Wrote {len(rows)} rows to site_data_relevant.csv")
-    snapshot("site_data_relevant.csv")
+    print(f"Wrote {len(rows)} rows to site_data/{SNAPSHOT_DATE}/site_data_relevant.csv")
     print(f"\n  Reg_Measure_Type by facility (n={len(df_fac)}, {has_pdf.sum()} with a PDF):")
     print(breakdown.to_string())
     print(f"  Total_PDFs_Available (sum across facilities): {int(total_pdfs)}")
@@ -1146,7 +1143,7 @@ def union_site_data_snapshots():
         print(f"collective-permittee places dropped: {len(dropped)}")
         print(dropped.to_string(index=False))
     print(f"wrote site_data_relevant.csv: {len(union)} rows, {union['PDF_File'].nunique()} distinct PDFs, "
-          f"{union['Place ID'].nunique()} facilities ({len(new_pdfs)} PDFs not in this run's snapshot)")
+          f"{union['Place ID'].nunique()} facilities ({len(new_pdfs)} PDFs new vs the previous file)")
     print("documents by number of snapshots they appear in:")
     print(provenance["n_snapshots"].value_counts().sort_index().rename("documents").to_string())
     if missing:
@@ -1168,4 +1165,11 @@ if __name__ == "__main__":
     facilities = download_facility_page_pdfs(facilities)
     npdes_pdfs = detect_and_move_npdes_pdfs(facilities)
     create_site_data_csv(facilities, npdes_pdfs)
-    union_site_data_snapshots()
+    if UPDATE_TOP_LEVEL:
+        for filename in ("facilities.json", "site_data_all.csv"):
+            if (SNAPSHOT_DIR / filename).exists():
+                shutil.copy2(SNAPSHOT_DIR / filename, OUTPUT_DIR / filename)
+                print(f"top-level {filename} updated from site_data/{SNAPSHOT_DATE}/")
+        union_site_data_snapshots()
+    else:
+        print(f"\nTop-level files unchanged (UPDATE_TOP_LEVEL = False); this run is in site_data/{SNAPSHOT_DATE}/")

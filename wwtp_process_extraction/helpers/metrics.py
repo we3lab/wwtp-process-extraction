@@ -13,28 +13,8 @@ METRIC_SCORE_COLUMNS = (
 )
 
 
-def score_from_counts(
-    tp: int, fp: int, fn: int, tn: int, state_correct: int, state_total: int
-) -> dict:
-    """Compute scalar metrics from confusion counts and state-match counts."""
-    precision, recall, f1, _ = precision_recall_f1(tp, fp, fn)
-    accuracy = (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float("nan")
-    missed_rate = fn / (tp + fn) if (tp + fn) else float("nan")
-    hallucinated_rate = fp / (tp + fp) if (tp + fp) else float("nan")
-    state_accuracy = state_correct / state_total if state_total else float("nan")
-    return {
-        "Precision": precision,
-        "Recall": recall,
-        "F1": f1,
-        "Accuracy": accuracy,
-        "Missed_Rate": missed_rate,
-        "Hallucinated_Rate": hallucinated_rate,
-        "State_Accuracy": state_accuracy,
-    }
-
-
-def confusion_and_state_counts(manual_states, pred_states) -> tuple:
-    """Return (tp, fp, fn, tn, state_correct, state_total) over paired statuses."""
+def confusion_scores(manual_states, pred_states):
+    """Confusion counts (tp, fp, fn, tn) and the scalar metrics over paired statuses."""
     tp = fp = fn = tn = 0
     state_correct = state_total = 0
 
@@ -51,32 +31,28 @@ def confusion_and_state_counts(manual_states, pred_states) -> tuple:
             state_total += 1
             state_correct += int(manual_state == pred_state)
 
-    return tp, fp, fn, tn, state_correct, state_total
+    precision, recall, f1, _ = precision_recall_f1(tp, fp, fn)
+    scores = {
+        "Precision": precision,
+        "Recall": recall,
+        "F1": f1,
+        "Accuracy": (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else float("nan"),
+        "Missed_Rate": fn / (tp + fn) if (tp + fn) else float("nan"),
+        "Hallucinated_Rate": fp / (tp + fp) if (tp + fp) else float("nan"),
+        "State_Accuracy": state_correct / state_total if state_total else float("nan"),
+    }
+    return tp, fp, fn, tn, scores
 
 
 def build_metric_inputs(process_names, manual_df, pred_df):
     """Build key-aligned manual/pred status dataframes (one row per shared Place ID) for compute_metrics."""
     common_keys = sorted(set(manual_df["Place ID"].dropna()) & set(pred_df["Place ID"].dropna()))
 
-    manual_sub = (
-        manual_df[manual_df["Place ID"].isin(common_keys)]
-        .drop_duplicates(subset="Place ID")
-        .set_index("Place ID")
-    )
-    pred_sub = (
-        pred_df[pred_df["Place ID"].isin(common_keys)].drop_duplicates(subset="Place ID").set_index("Place ID")
-    )
-
-    manual_metric_df = pd.DataFrame({"key": common_keys})
-    pred_metric_df = pd.DataFrame({"key": common_keys})
-
-    for process in process_names:
-        manual_metric_df[process] = (
-            manual_sub.reindex(common_keys)[process].map(parse_status).values
-        )
-        pred_metric_df[process] = pred_sub.reindex(common_keys)[process].map(parse_status).values
-
-    return manual_metric_df, pred_metric_df
+    metric_dfs = []
+    for df in (manual_df, pred_df):
+        sub = df.drop_duplicates(subset="Place ID").set_index("Place ID").reindex(common_keys)
+        metric_dfs.append(pd.DataFrame({"key": common_keys, **{p: sub[p].map(parse_status).values for p in process_names}}))
+    return tuple(metric_dfs)
 
 
 def aggregate_to_category_states(metric_df, category_to_leaves):
@@ -98,11 +74,7 @@ def compute_metrics(
     for label in label_cols:
         manual_states = manual_indexed.loc[keys, label]
         pred_states = pred_indexed.loc[keys, label]
-        tp, fp, fn, tn, state_correct, state_total = confusion_and_state_counts(
-            manual_states, pred_states
-        )
-        scores = score_from_counts(tp, fp, fn, tn, state_correct, state_total)
-
+        tp, fp, fn, tn, scores = confusion_scores(manual_states, pred_states)
         rows.append(
             {
                 "Source": source_name,
@@ -131,14 +103,7 @@ def compute_facility_metric_rows(
     for key in manual_indexed.index:
         manual_states = manual_indexed.loc[key, label_cols]
         pred_states = pred_indexed.loc[key, label_cols]
-        tp, fp, fn, tn, state_correct, state_total = confusion_and_state_counts(
-            manual_states, pred_states
-        )
-        scores = score_from_counts(tp, fp, fn, tn, state_correct, state_total)
-
-        row = {"Source": source_name, "key": key}
-        for col in METRIC_SCORE_COLUMNS:
-            row[col] = scores[col]
-        rows.append(row)
+        scores = confusion_scores(manual_states, pred_states)[-1]
+        rows.append({"Source": source_name, "key": key, **{col: scores[col] for col in METRIC_SCORE_COLUMNS}})
 
     return rows

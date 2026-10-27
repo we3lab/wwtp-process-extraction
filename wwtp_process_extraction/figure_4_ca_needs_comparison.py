@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from helpers.utils import (
-    extract_leaves, parse_status, PRESENT_STATUSES, cwns_mapping, unitprocess_keywords,
-    DATA_DIR, OUTPUT_DIR, FIGURES_DIR, SITE_DATA_ALL_CSV,
+    extract_leaves, parse_status, current_permit_mask, PRESENT_STATUSES, STATUS_TOKENS, cwns_mapping,
+    unitprocess_keywords, DATA_DIR, OUTPUT_DIR, FIGURES_DIR, SITE_DATA_ALL_CSV,
 )
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
@@ -49,6 +49,8 @@ META_COLS = {"Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Na
 # One permit-extraction bar per snapshot. Only the yyyy-06-01 folders are comparable annual
 # scrapes; a same-day run (e.g. 2026-08-13) can be partial and would read as a real decline.
 SNAPSHOT_GLOB = "20??-06-01"
+# CWNS 2022 is one survey, so its marker is compared to the permits in force that year
+CWNS_SNAPSHOT = "2022-06-01"
 
 # Leaves whose taxonomy group would misclassify them. Nitrification sits under Activated
 # Sludge but is ammonia removal (EPA Category II); Denitrification Filter sits under
@@ -99,25 +101,21 @@ def infer_construction(present, future, cur_mgd, fut_mgd, lookup):
     return "rehabilitation", None
 
 
-def facilities_as_of(perdoc, process_cols, doc_pairs):
-    """Per-facility PRESENT/FUTURE process sets, unioned over that snapshot's documents only.
+def facilities_as_of(docs, process_cols):
+    """Per-facility PRESENT/FUTURE process sets, unioned over one snapshot's documents in force.
 
     A document's extraction never changes between years, so the year-over-year signal comes
     entirely from which documents were in force -- a permit renewal replacing an older order.
 
-    A facility's order page often carries superseded orders as attachments, and those plan
-    projects that later orders report as built: Pinole's 2018 order plans nitrification/MLE
-    that its 2023 order lists as PRESENT. So a plain FUTURE is dropped when any sibling
-    document reports the same process as present -- 27% of FUTURE claims at multi-document
-    facilities. PRESENT_AND_FUTURE survives, being an expansion of something already there.
+    A plain FUTURE is dropped when a sibling document reports the same process as present
+    (e.g. a concurrent permit that lists the project as built). PRESENT_AND_FUTURE survives,
+    being an expansion of something already there.
     """
     by_place = {}
-    for _, row in perdoc.iterrows():
-        key = (row["Place ID"].strip(), row["PDF_File"].strip())
-        if key not in doc_pairs:
-            continue
-        fac = by_place.setdefault(key[0], {
-            "Place ID": key[0], "WDID": row["WDID"], "Facility Name": row["Facility Name"],
+    for _, row in docs.iterrows():
+        place_id = row["Place ID"].strip()
+        fac = by_place.setdefault(place_id, {
+            "Place ID": place_id, "WDID": row["WDID"], "Facility Name": row["Facility Name"],
             "present": set(), "expansion": set(), "planned": set(),
         })
         for col in process_cols:
@@ -203,6 +201,7 @@ def main():
 
     perdoc = pd.read_csv(PERDOC_CSV, dtype=str).fillna("")
     process_cols = [c for c in perdoc.columns if c not in META_COLS]
+    has_content = perdoc[process_cols].isin(STATUS_TOKENS).any(axis=1)
 
     # cwns_mapping is already ciwqs_to_cwns.csv filtered to rows with a real CWNS_ID
     pid_to_cwns = cwns_mapping.drop_duplicates("Place ID").set_index("Place ID")["CWNS_ID"]
@@ -228,13 +227,17 @@ def main():
 
     snapshots = sorted(p.name for p in (OUTPUT_DIR / "site_data").glob(SNAPSHOT_GLOB))
 
-    # (Place ID, PDF_File) pairs each facility held at each as-of date
+    # Extracted documents each facility held at each as-of date, cut to the permits in force
+    # then (superseded orders stay attached to a facility's CIWQS page), as in step6 and figure_5
     docs_by_year = {}
     for as_of in snapshots:
         rel = pd.read_csv(OUTPUT_DIR / "site_data" / as_of / "site_data_relevant.csv", dtype=str).fillna("")
         rel = rel[rel["PDF_File"].str.strip().ne("")]
-        docs_by_year[as_of] = set(zip(rel["Place ID"].str.strip(), rel["PDF_File"].str.strip()))
-    facs_by_year = {as_of: facilities_as_of(perdoc, process_cols, docs)
+        pairs = set(zip(rel["Place ID"].str.strip(), rel["PDF_File"].str.strip()))
+        held = [(p.strip(), f.strip()) in pairs for p, f in zip(perdoc["Place ID"], perdoc["PDF_File"])]
+        docs = perdoc[held]
+        docs_by_year[as_of] = docs[current_permit_mask(docs, as_of=as_of, content=has_content)]
+    facs_by_year = {as_of: facilities_as_of(docs, process_cols)
                     for as_of, docs in docs_by_year.items()}
 
     # Balanced cohort: only facilities with an extracted document in EVERY snapshot. Without it
@@ -281,13 +284,16 @@ def main():
               f"facilities with planned changes, {len(scored_y):3} costed, "
               f"${scored_y['cost_2022usd'].sum()/1e6:,.0f}M")
 
-    # The newest snapshot is the headline estimate and the like-for-like cohort for CWNS
-    latest = snapshots[-1]
-    est, scored = est_by_year[latest], per_year[latest]
+    # The newest snapshot is the headline estimate
+    est = est_by_year[snapshots[-1]]
 
-    # CWNS reported need over the same facilities we costed, so the bars are like-for-like
-    cohort = set(scored.loc[scored["CWNS_ID"].ne(""), "CWNS_ID"])
+    # CWNS reported need over the same facilities we costed in the CWNS year, so the marker is like-for-like
+    cwns_scored = per_year[CWNS_SNAPSHOT]
+    cohort = set(cwns_scored.loc[cwns_scored["CWNS_ID"].ne(""), "CWNS_ID"])
     cwns_reported = needs_by_id.reindex(sorted(cohort)).fillna(0).sum()
+    print(f"CWNS {CWNS_SNAPSHOT[:4]}: {len(cohort)} matched facilities, ours "
+          f"${cwns_scored.loc[cwns_scored['CWNS_ID'].ne(''), 'cost_2022usd'].sum()/1e6:,.0f}M "
+          f"vs CWNS reported ${cwns_reported/1e6:,.0f}M")
 
     est["cwns_reported_I_II_2022usd"] = est["CWNS_ID"].map(needs_by_id)
     est["cwns_has_advanced_need"] = est["CWNS_ID"].isin(has_advanced)
@@ -354,10 +360,11 @@ def plot(per_year, cwns_reported, n_cohort):
                  colors=[shades[c] for c in stack_order], edgecolor="white", linewidth=1.2)
 
     cwns_m = cwns_reported / 1e6
-    ax.plot(2022, cwns_m, marker="o", markersize=11, zorder=5,
+    cwns_year = int(CWNS_SNAPSHOT[:4])
+    ax.plot(cwns_year, cwns_m, marker="o", markersize=11, zorder=5,
             color=COLORS["Clean Watershed Needs Survey"],
             markeredgecolor="white", markeredgewidth=1.4)
-    ax.annotate(f"CWNS reported  ${cwns_m:,.0f}M (n = {n_cohort})", xy=(2022, cwns_m),
+    ax.annotate(f"CWNS reported  ${cwns_m:,.0f}M (n = {n_cohort})", xy=(cwns_year, cwns_m),
                 xytext=(8, 6), textcoords="offset points", ha="left", va="bottom",
                 fontsize=LEGEND_FONTSIZE, color=COLORS["Clean Watershed Needs Survey"])
 
@@ -394,7 +401,7 @@ def plot(per_year, cwns_reported, n_cohort):
     # the grey band adds the unmatched ones, so a single n would describe neither.
     ax.set_ylabel(f"Estimated Investment Need\n"
                   f"for CA WWTPs below {MAX_MGD:.0f} MGD"
-                  f"\nUSD 2022",
+                  f"\n(Million USD, 2022)",
                   fontsize=LABEL_FONTSIZE)
     ax.set_xlabel("Permit extraction, as of 1 June", fontsize=LABEL_FONTSIZE)
     ax.set_xlim(years[0], years[-1])

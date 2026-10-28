@@ -36,7 +36,7 @@ The CSV columns come from these items through the `ontology_triggers` rules in
 
 We used WaTr (Water Treatment ontology) v0.2.0: https://doi.org/10.5281/zenodo.23087793
 
-We made two changes to it before running the extraction:
+We made two small changes to it before running the extraction:
 
 1. In `equipment.ttl`, boilers point to `watr:Process-Combustion` instead of `watr:Process-Incineration`.
 2. In `processtypes.ttl`, we split drying into heat drying and air drying:

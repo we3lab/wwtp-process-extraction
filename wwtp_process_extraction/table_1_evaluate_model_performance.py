@@ -317,6 +317,9 @@ def main() -> None:
 
     print(table.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
 
+    # fixed 3 decimals
+    metric_cols = [c for c in cols if c not in ("Method", "Model", "Unit Process F1 / Price per PDF")]
+    table[metric_cols] = table[metric_cols].map(lambda x: f"{x:.3f}" if isinstance(x, float) and x == x else x)
     table.to_csv(TABLE_1_CSV, index=False)
 
     # ADDITIONAL RUNS VARIANCE

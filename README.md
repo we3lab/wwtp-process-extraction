@@ -82,6 +82,13 @@ python wwtp_process_extraction/figure_s2_method_comparison.py
 python wwtp_process_extraction/figure_s3_category_f1_method.py
 ```
 
+## Citation
+
+If you use this code or data, please cite (see [CITATION.cff](CITATION.cff)):
+
+- Paper: Wettermark D, Rouffet C, Chapin FT, Ramirez AC, Mauter MS. Ontologies and LLMs Enable Wastewater Unit Process Data Synthesis from Unstructured Permit Documents for Improved Sector-Level Cost and Emissions Analysis. *Environmental Engineering Science*. 2026. https://doi.org/10.1177/15579018261504213
+- Dataset: Stanford Digital Repository. https://doi.org/10.25740/nk282rk7079
+
 ## Contact 
 
 Daly Wettermark - dalyw@stanford.edu

@@ -1,11 +1,7 @@
-import re
-from functools import lru_cache
 import pandas as pd
+from helpers.paths import *
 from helpers.utils import (
     SEP,
-    OUTPUT_DIR,
-    SITE_DATA_RELEVANT_CSV,
-    STATUS_TOKENS,
     normalize_text,
     build_txt_jobs,
     leaves,
@@ -19,38 +15,34 @@ from helpers.utils import (
     current_permit_mask,
 )
 
-PDF_KW_CSV = OUTPUT_DIR / "unit_processes_by_pdf_kw.csv"
-FACILITY_KW_CSV = OUTPUT_DIR / "unit_processes_by_facility_kw.csv"
 METADATA_COLUMNS = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF",
                     "document_order_no"]
 # (found in the description, found in planned changes) -> status
 STATUS_BY_FLAGS = {(True, True): "PRESENT_AND_FUTURE", (True, False): "PRESENT", (False, True): "FUTURE", (False, False): "0"}
 
 
-@lru_cache(maxsize=None)
-def case_sensitive_pattern(term):
-    # Bare acronyms match case-sensitively on token boundaries (optional plural s), so TF
-    # doesn't hit WWTF, AD doesn't hit SCADA, and CAS doesn't hit permit number CAS000001.
-    # Anything else (prefix stems like "Aerobic Digest", mixed case like FeCl3) stays a
-    # plain substring so it still matches "Aerobic Digesters".
-    core = term.strip()
-    if core.isalnum() and core.isupper():
-        return re.compile(r"(?<![A-Za-z0-9])" + re.escape(core) + r"s?(?![A-Za-z0-9])")
-    return re.compile(re.escape(core))
-
-
 def search_processes_in_text(text):
-    """Names of the unit processes mentioned in text.
-
-    alt_names match case-insensitively as substrings; alt_names_case_sensitive (acronyms) match
-    the original case via case_sensitive_pattern.
-    """
+    # Names of the unit processes mentioned in text: alt_names match in any case,
+    # alt_names_case_sensitive (acronyms) only in their own case
     text_lower = text.lower()
-    return {
-        name for name, details, _ in leaves
-        if any(alt.lower() in text_lower for alt in details["alt_names"])
-        or any(case_sensitive_pattern(term).search(text) for term in details.get("alt_names_case_sensitive", []))
-    }
+    # Bare acronyms match whole ASCII-alphanumeric tokens (optional plural s), so TF doesn't hit WWTF,
+    # AD doesn't hit SCADA, and CAS doesn't hit permit number CAS000001. Anything else (prefix stems
+    # like "Aerobic Digest", mixed case like FeCl3) stays a plain substring so it still matches
+    # "Aerobic Digesters".
+    tokens = set("".join(c if c.isascii() and c.isalnum() else " " for c in text).split())
+    found = set()
+    for name, details, _ in leaves:
+        if any(alt.lower() in text_lower for alt in details["alt_names"]):
+            found.add(name)
+        for term in details["alt_names_case_sensitive"]:
+            core = term.strip()
+            if core.isalnum() and core.isupper():
+                hit = core in tokens or core + "s" in tokens
+            else:
+                hit = core in text
+            if hit:
+                found.add(name)
+    return found
 
 
 def main():
@@ -58,20 +50,17 @@ def main():
 
     jobs = build_txt_jobs(SITE_DATA_RELEVANT_CSV)
 
-    # Keyword matches per unique txt file: (description matches, planned-changes matches)
+    # Keyword matches per unique txt file: (description matches, planned-changes matches), or None
+    # when the description is empty
     txt_cache = {}
-    for _, txt_path, *_ in jobs:
-        if txt_path.stem in txt_cache:
-            continue
-        section, _, changes = txt_path.read_text(encoding="utf-8").partition(SEP)
-        section, changes = normalize_text(section, lower=False), normalize_text(changes, lower=False)
-        txt_cache[txt_path.stem] = (
-            (search_processes_in_text(section), search_processes_in_text(changes) if changes else set())
-            if section else None
-        )
-
     rows = []
     for row_idx, txt_path, *_ in jobs:
+        if txt_path.stem not in txt_cache:
+            section, _, changes = txt_path.read_text(encoding="utf-8").partition(SEP)
+            section, changes = normalize_text(section, lower=False), normalize_text(changes, lower=False)
+            txt_cache[txt_path.stem] = (
+                (search_processes_in_text(section), search_processes_in_text(changes)) if section else None
+            )
         if txt_cache[txt_path.stem] is None:
             continue
         present, future = txt_cache[txt_path.stem]
@@ -84,8 +73,7 @@ def main():
     raw_df = pd.DataFrame(rows, columns=METADATA_COLUMNS + leaf_names)
     # Same current-permit restriction step6 applies, so the keyword and LLM facility tables
     # are built from the same documents.
-    has_content = raw_df[leaf_names].isin(STATUS_TOKENS).any(axis=1)
-    current = current_permit_mask(raw_df, content=has_content)
+    current = current_permit_mask(raw_df)
     print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
           f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
     collapsed = collapse_facility_processes(

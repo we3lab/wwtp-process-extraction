@@ -4,6 +4,8 @@ import zipfile
 from pathlib import Path
 from rdflib import Graph, Namespace, RDF, RDFS
 
+from helpers.paths import *
+
 # URL for water-ontology release v0.2.0 DOI 10.5281/zenodo.23087793
 ZENODO_URL = "https://zenodo.org/api/records/23087794/files/DataDrivenCPS/water-ontology-v0.2.0.zip/content"
 
@@ -14,9 +16,7 @@ SH = Namespace("http://www.w3.org/ns/shacl#")
 # Module names in ontology/ folder
 MODULES = ["watr", "equipment", "processtypes", "enumerationkinds", "substances"]
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 CACHE_DIR = DATA_DIR / "ontology_cache" / "water-ontology-v0.2.0"
-ONTOLOGY_TXT = DATA_DIR / "llm_extraction" / "input" / "ontology.txt"
 
 # Equipment to skip
 SKIP_EQUIPMENT = [
@@ -29,7 +29,7 @@ SKIP_PARENT_SUFFIXES = ("Sensor", "Valve", "Controller", "Electrode")
 
 
 def load_ontology(modules=MODULES):
-    """Downloads + unzips the .ttl files into CACHE_DIR."""
+    """Parse the WaTr modules (downloaded into CACHE_DIR on first use) with our two local fixes."""
     if not CACHE_DIR.exists():
         CACHE_DIR.mkdir(parents=True)
         with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(ZENODO_URL).read())) as z:
@@ -87,6 +87,18 @@ def normalize(name):
     return name.removeprefix("Process-").removeprefix("Role-")
 
 
+def class_line(graph, cls, sub_label, ignored_parents, with_definition=True):
+    # "name | definition | SubXOf: parents" line for the LLM prompt
+    parts = [normalize(cls.fragment)]
+    definition = graph.value(cls, RDFS.comment)
+    if with_definition and definition:
+        parts.append(str(definition))
+    parents = [normalize(p.fragment) for p in graph.objects(cls, RDFS.subClassOf) if p.fragment not in ignored_parents]
+    if parents:
+        parts.append(f"{sub_label}: {', '.join(parents)}")
+    return " | ".join(parts)
+
+
 def ontology_to_txt():
     """Saves .ttl files to txt file for LLM prompt"""
     equipment_graph = load_ontology(["equipment"])
@@ -121,60 +133,29 @@ def ontology_to_txt():
     print(f"Equipment count: {len(equipment_lines)}")
 
     process_graph = load_ontology(["processtypes"])
-    process_lines = []
-    for cls in process_graph.subjects(RDF.type, WATR.Class):
-        parts = [normalize(cls.fragment)]
-        definition = process_graph.value(cls, RDFS.comment)
-        if definition:
-            parts.append(str(definition))
-        # parent processes (ignore ProcessType and Process)
-        sub_process_of = [
-            normalize(parent.fragment) for parent in process_graph.objects(cls, RDFS.subClassOf)
-            if parent.fragment not in ("ProcessType", "Process")
-        ]
-        if sub_process_of:
-            parts.append(f"SubProcessOf: {', '.join(sub_process_of)}")
-        process_lines.append(" | ".join(parts))
+    process_lines = [
+        class_line(process_graph, cls, "SubProcessOf", ("ProcessType", "Process"))
+        for cls in process_graph.subjects(RDF.type, WATR.Class)
+    ]
     print(f"Process type count: {len(process_lines)}")
 
+    # Role-* classes only, without definitions
     role_graph = load_ontology(["enumerationkinds"])
-    role_lines = []
-    for cls in role_graph.subjects(RDF.type, WATR.Class):
-        # Only process Role-* items
-        if not cls.fragment.startswith("Role-"):
-            continue
-        parts = [normalize(cls.fragment)]
-        # parent roles (ignore EnumerationKind-Role)
-        sub_role_of = [
-            normalize(parent.fragment) for parent in role_graph.objects(cls, RDFS.subClassOf)
-            if parent.fragment != "EnumerationKind-Role"
-        ]
-        if sub_role_of:
-            parts.append(f"SubRoleOf: {', '.join(sub_role_of)}")
-        role_lines.append(" | ".join(parts))
+    role_lines = [
+        class_line(role_graph, cls, "SubRoleOf", ("EnumerationKind-Role",), with_definition=False)
+        for cls in role_graph.subjects(RDF.type, WATR.Class)
+        if cls.fragment.startswith("Role-")
+    ]
     print(f"Role count: {len(role_lines)}")
 
+    # Skip brines and Constituent-Salt (itself or in the ancestry)
     substance_graph = load_ontology(["substances"])
-    substance_lines = []
-    for cls in substance_graph.subjects(RDF.type, WATR.Class):
-        # Skip anything with "Brine" in the name
-        if "Brine" in cls.fragment:
-            continue
-        # Skip Constituent-Salt itself and anything with it in its ancestry
-        if any(ancestor.fragment == "Constituent-Salt"
-               for ancestor in substance_graph.transitive_objects(cls, RDFS.subClassOf)):
-            continue
-        parts = [normalize(cls.fragment)]
-        definition = substance_graph.value(cls, RDFS.comment)
-        if definition:
-            parts.append(str(definition))
-        sub_substance_of = [
-            normalize(parent.fragment) for parent in substance_graph.objects(cls, RDFS.subClassOf)
-            if parent.fragment != "Substance"
-        ]
-        if sub_substance_of:
-            parts.append(f"SubSubstanceOf: {', '.join(sub_substance_of)}")
-        substance_lines.append(" | ".join(parts))
+    substance_lines = [
+        class_line(substance_graph, cls, "SubSubstanceOf", ("Substance",))
+        for cls in substance_graph.subjects(RDF.type, WATR.Class)
+        if "Brine" not in cls.fragment
+        and not any(a.fragment == "Constituent-Salt" for a in substance_graph.transitive_objects(cls, RDFS.subClassOf))
+    ]
     print(f"Substance count: {len(substance_lines)}")
 
     # Save to text file in compact format

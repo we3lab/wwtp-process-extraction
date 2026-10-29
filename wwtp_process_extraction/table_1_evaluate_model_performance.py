@@ -1,54 +1,35 @@
-"""Evaluate LLM process-detection performance against manual labels.
+"""Score each (Method, Model) run and the NPDES keyword baseline against the manual labels (table_1).
 
-This script scores each (Method, Model) run, rebuilt from the raw extraction JSONs by
-step6's build_model_comparison, against the Manual Read labels for the same facility,
-plus the NPDES keyword baseline.
-
-It reports four metrics for this sparse multi-label setup:
-
-- Macro Unit Process F1: label-presence F1 computed separately for each facility,
-  then averaged over facilities so every facility counts equally.
-- Micro Unit Process F1: the same F1 pooled over every facility x label pair.
-- Macro Category F1: a relaxed score that collapses detailed process labels to their
-  top-level ontology family from unitprocess_keywords.json. This gives partial
-  credit when the model predicts a close subtype rather than the exact leaf.
-- State Accuracy: among manual-positive cells only, the fraction where the
-  model predicts the correct state (PRESENT, FUTURE or OFFSITE).
-
-A cell is positive if its status is PRESENT, PRESENT_AND_FUTURE, FUTURE or OFFSITE; PAST
-counts as absent on both sides (helpers.utils.DETECTED_STATUSES).
-
+Runs are rebuilt from the raw extraction JSONs by step6's build_model_comparison. Macro / Micro Unit
+Process F1 average per facility / pool every facility x label pair; Macro Category F1 collapses labels
+to their top-level category, so a close subtype gets partial credit; State Accuracy is the share of
+manual-positive cells with the right state (PRESENT, FUTURE or OFFSITE). PAST counts as absent
+(DETECTED_STATUSES). Also writes the run variance (table_s5) and set representativeness (table_s3).
 """
 
 import json
 from pathlib import Path
 import os
 import re
-import numpy as np
 import pandas as pd
 
-from step6_postprocess_llm_output import process_json_to_unit_process_dict, build_model_comparison, normalize_pdf_name, model_run_dirs
+from step6_postprocess_llm_output import (
+    process_json_to_unit_process_dict, build_model_comparison, normalize_pdf_name, model_run_dirs,
+)
+from helpers.paths import *
 from helpers.utils import (
-    get_leaf_names, precision_recall_f1, select_json_per_place_id, is_present, top_category_to_columns,
-    DETECTED_STATUSES, DATA_DIR, OUTPUT_DIR, TXT_DIR, FIGURES_DIR, LLM_EXTRACTION_DIR, WATERRAG_RETRIEVAL_DIR,
-    MANUAL_CSV, SITE_DATA_RELEVANT_CSV, unitprocess_keywords,
+    get_leaf_names, parse_status, precision_recall_f1, select_json_per_place_id, is_present,
+    column_top_category, category_leaf_names, unitprocess_keywords, DETECTED_STATUSES,
 )
 
 
 TABLE_1_CSV = FIGURES_DIR / "table_1.csv"
-MODEL_COSTS_CSV = DATA_DIR / "model_costs.csv"
-MAIN_DIR = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini"
-ADDITIONAL_DIR = MAIN_DIR / "additional_runs"
 TABLE_S5_CSV = FIGURES_DIR / "table_s5.csv"
-METRIC_COLS = ["Macro Unit Process F1", "Micro Unit Process F1", "Macro Category F1", "State Accuracy"]
-META_COLS = {"Method", "Model", "PDF_File", "Place ID", "Agency", "Facility Name", "NPDES No."}
-
 # table_s3: how the labeled sets compare to the full CA dataset on region, size and permit structure
 REPRESENTATIVENESS_CSV = FIGURES_DIR / "table_s3.csv"
-SUPPLEMENTAL_PATH = DATA_DIR / "unit_processes_by_facility_supplemental_data.csv"
-# figure_2 restricts the 17 supplemental facilities to those also present in the NPDES text and
-# CWNS mappings; its per-facility output is the definitive list of the 15 that survive.
-SUPPLEMENTAL_COMPARISON_PATH = OUTPUT_DIR / "supplemental_data_comparison_by_facility.csv"
+MODEL_COSTS_CSV = DATA_DIR / "model_costs.csv"
+ADDITIONAL_DIR = MAIN_RUN_DIR / "additional_runs"
+METRIC_COLS = ["Macro Unit Process F1", "Micro Unit Process F1", "Macro Category F1", "State Accuracy"]
 REGION_COLS = ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "Unspecified"]
 MULTI_PERMIT_MIN_DOCS = 2
 
@@ -62,7 +43,7 @@ MODEL_COST_MAP = {
     "claude-3-haiku": "Claude 3 Haiku",
 }
 
-# Display order of table_1 rows; a run with no results gets a blank placeholder row
+# Display order of table_1 rows; every run must exist
 DESIRED_ORDER = [
     ("Keyword", "NPDES Keyword"),
     ("Ontology", "gpt-5-mini"),
@@ -82,18 +63,9 @@ DESIRED_ORDER = [
 
 
 def normalize_status(value):
-    """Map status values to canonical states, for state accuracy on manual-positive cells."""
-
-    if pd.isna(value):
-        return None
-    text = str(value).strip().upper()
-    if text.startswith("PRESENT"):
-        return "PRESENT"
-    if text.startswith("FUTURE"):
-        return "FUTURE"
-    if "OFFSITE" in text:
-        return "OFFSITE"
-    return text
+    # State for state accuracy: PRESENT_AND_FUTURE counts as PRESENT
+    status = parse_status(value)
+    return "PRESENT" if status == "PRESENT_AND_FUTURE" else status
 
 
 def token_cost(usage_df, costs_df, cost_name):
@@ -101,23 +73,16 @@ def token_cost(usage_df, costs_df, cost_name):
     cost_row = costs_df[costs_df["model_name"] == cost_name]
     input_per_m = cost_row["input_per_m"].iloc[0]
     output_per_m = cost_row["output_per_m"].iloc[0]
-    prompt_vals = pd.to_numeric(usage_df["prompt_token"], errors="coerce")
-    comp_vals = pd.to_numeric(usage_df["completion_token"], errors="coerce")
-    return ((prompt_vals / 1_000_000 * input_per_m) + (comp_vals / 1_000_000 * output_per_m)).mean()
+    prompt_cost = usage_df["prompt_token"] / 1_000_000 * input_per_m
+    completion_cost = usage_df["completion_token"] / 1_000_000 * output_per_m
+    return (prompt_cost + completion_cost).mean()
 
 
 def load_run_usage(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
-    """Price per PDF and structured-output rate from each run dir's token_usage_summary.csv.
+    """Price per PDF and structured-output rate per run, from each run dir's token_usage_summary.csv.
 
-    For web runs (cost_usd column present): uses reported cost directly.
-    For API Playground runs: computes cost from prompt/completion tokens using model_costs.csv.
-    Restricted to benchmark_ids (the manual-read facilities) so a model like gpt-5-mini that
-    accumulates every CA facility isn't averaged over its full set.
-
-    The saved JSON is coerced to the {"items": [...]} shape before writing, so schema
-    conformance can't be re-checked here. step5 records the raw-output conformance per
-    extraction in the "structured_output" column; average that.
-    Returns Method, Model, Price per PDF, Fraction Structured Output.
+    Web runs report cost_usd; API runs are priced from token counts at model_costs.csv rates. Only the
+    benchmark facilities count, so a run covering every CA facility isn't averaged over its full set.
     """
     costs_df = pd.read_csv(MODEL_COSTS_CSV, skiprows=1)
     costs_df.columns = ["model_name", "input_per_m", "output_per_m"]
@@ -135,16 +100,15 @@ def load_run_usage(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
         usage_df = pd.read_csv(dir_path / "token_usage_summary.csv")
         usage_df = usage_df[usage_df["place_id"].astype(str).str.strip().isin(benchmark_ids)]
         if "extraction_file" in usage_df.columns:
-            pinned = {f.name for f in select_json_per_place_id(dir_path, benchmark_ids, pdf_stem_by_place_id).values()}
+            pinned = {f.name for f in select_json_per_place_id(dir_path, pdf_stem_by_place_id).values()}
             usage_df = usage_df[usage_df["extraction_file"].isna() | usage_df["extraction_file"].isin(pinned)]
-        # If a precomputed cost column exists and has values, use it. Otherwise
-        # compute cost from token counts using MODEL_COSTS_CSV.
         if usage_df["cost_usd"].notna().any():
-            cost = usage_df["cost_usd"].astype(float).mean()
+            cost = usage_df["cost_usd"].mean()
         else:
             cost = token_cost(usage_df, costs_df, MODEL_COST_MAP[model_label])
         if model_label.endswith("-waterrag"):
             cost += rerank_cost
+        # saved JSONs are already coerced to the schema, so use step5's record of the raw output
         flags = usage_df["structured_output"].astype(str).str.strip().str.lower()
         flags = flags[flags.isin(["true", "false"])]
         rows.append({
@@ -156,14 +120,14 @@ def load_run_usage(benchmark_ids, pdf_stem_by_place_id) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols):
+def run_metrics(pred_df, manual, label_cols, unit_cols):
     """Macro-average the table_1 metrics over the manual facilities for one run.
 
-    unit_cols is the leaf-level column set for Unit Process F1 and State Accuracy — the
-    unspecified-excluded list keeps catch-all leaves out of those leaf-level metrics while
-    Category F1 still scores over the full label_cols.
+    Unit Process F1 and State Accuracy score unit_cols (no "Unspecified" catch-alls);
+    Category F1 uses all label_cols.
     """
     pred = pred_df.reindex(manual.index)  # missing facilities -> all-NaN (counts as no prediction)
+    unit_set = set(unit_cols)
     label_f1, family_f1, state_acc = [], [], []
     # pooled over every facility x label pair, so one-label facilities can't swing the score
     micro_tp = micro_fp = micro_fn = 0
@@ -172,16 +136,18 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols):
         pred_row = pred.loc[place_id]
         manual_pos = {c for c in label_cols if is_present(manual_row[c], DETECTED_STATUSES)}
         pred_pos = {c for c in label_cols if is_present(pred_row[c], DETECTED_STATUSES)}
-        manual_units = manual_pos & set(unit_cols)
-        pred_units = pred_pos & set(unit_cols)
+        manual_units = manual_pos & unit_set
+        pred_units = pred_pos & unit_set
         tp = len(manual_units & pred_units)
         fp = len(pred_units - manual_units)
         fn = len(manual_units - pred_units)
-        micro_tp += tp; micro_fp += fp; micro_fn += fn
+        micro_tp += tp
+        micro_fp += fp
+        micro_fn += fn
         label_f1.append(precision_recall_f1(tp, fp, fn)[2])
-        # relaxed: collapse labels to their top-level family before comparing
-        manual_families = {label_to_family.get(c, c) for c in manual_pos}
-        pred_families = {label_to_family.get(c, c) for c in pred_pos}
+        # relaxed: collapse labels to their top-level category before comparing
+        manual_families = {column_top_category[c] for c in manual_pos}
+        pred_families = {column_top_category[c] for c in pred_pos}
         family_f1.append(precision_recall_f1(
             len(manual_families & pred_families),
             len(pred_families - manual_families),
@@ -189,7 +155,7 @@ def run_metrics(pred_df, manual, label_cols, label_to_family, unit_cols):
         )[2])
         # state accuracy only on manual-positive cells, so predicting nothing can't look good
         correct = sum(normalize_status(pred_row[c]) == normalize_status(manual_row[c]) for c in manual_units)
-        state_acc.append(correct / len(manual_units) if manual_units else float("nan"))
+        state_acc.append(correct / len(manual_units))
     return {
         "Macro Unit Process F1": pd.Series(label_f1).mean(),
         "Micro Unit Process F1": precision_recall_f1(micro_tp, micro_fp, micro_fn)[2],
@@ -219,9 +185,11 @@ def build_representativeness_table(evaluation_ids) -> pd.DataFrame:
     site_df = site_df.drop_duplicates("Place ID").set_index("Place ID")
 
     txt_stems = {p.stem for p in TXT_DIR.glob("*.txt")}
-    has_text = site_df["PDF_File"].str.replace(r"\.(pdf|txt)$", "", regex=True, case=False).isin(txt_stems)
-    scored_names = set(pd.read_csv(SUPPLEMENTAL_COMPARISON_PATH, dtype=str)["Facility Name"])
-    supplemental_df = pd.read_csv(SUPPLEMENTAL_PATH, dtype=str).fillna("")
+    pdf_stems = site_df["PDF_File"].map(lambda f: f[:-4] if f.lower().endswith((".pdf", ".txt")) else f)
+    has_text = pdf_stems.isin(txt_stems)
+    # figure_2's per-facility output is the definitive list of the supplemental facilities it scores
+    scored_names = set(pd.read_csv(SUPPLEMENTAL_COMPARISON_CSV, dtype=str)["Facility Name"])
+    supplemental_df = pd.read_csv(SUPPLEMENTAL_CSV, dtype=str).fillna("")
     benchmark_df = supplemental_df[supplemental_df["Facility Name"].isin(scored_names)]
 
     populations = [
@@ -232,7 +200,7 @@ def build_representativeness_table(evaluation_ids) -> pd.DataFrame:
 
     rows = []
     for label, place_ids in populations:
-        subset = site_df.loc[[pid for pid in place_ids if pid in site_df.index]]
+        subset = site_df.loc[list(place_ids)]
         region_share = subset["Region"].value_counts(normalize=True).mul(100)
         # Major/Minor is blank for most non-POTW rows, so that share covers classified rows only
         is_major = subset["Major/Minor"].replace("", pd.NA).dropna().str.startswith("Major")
@@ -250,40 +218,35 @@ def build_representativeness_table(evaluation_ids) -> pd.DataFrame:
 
 def main() -> None:
     comparison = build_model_comparison()
-
-    # Empty cells must stay NaN, not "". pd.notna("") is True, so fillna("") would
-    # treat every blank manual cell as a positive label: false positives become
-    # impossible and missed labels are massively overcounted. Match the LLM path.
     manual = pd.read_csv(MANUAL_CSV, dtype=str).set_index("Place ID")
     pdf_stem_by_place_id = manual["PDF_File"].to_dict()
 
-    # relaxed Category F1 scores each detailed label as its top-level family
-    label_to_family = {leaf: family for family, leaves in top_category_to_columns.items() for leaf in leaves}
-    included = {leaf for cat, val in unitprocess_keywords.items() for leaf in get_leaf_names(cat, val)}
-    unit_included = {leaf for cat, val in unitprocess_keywords.items() for leaf in get_leaf_names(cat, val, exclude_unspecified=True)}
-    label_cols = [c for c in manual.columns if c not in META_COLS and c in included]
+    included = {leaf for leaves in category_leaf_names.values() for leaf in leaves}
+    unit_included = {
+        leaf for cat, val in unitprocess_keywords.items()
+        for leaf in get_leaf_names(cat, val, exclude_unspecified=True)
+    }
+    label_cols = [c for c in manual.columns if c in included]
     unit_cols = [c for c in label_cols if c in unit_included]
 
     results = []
     predictions = comparison[comparison["Method"].ne("Manual Read")]
-    for (method, model), subset in predictions.groupby(["Method", "Model"], sort=True):
-        scores = run_metrics(subset.set_index("Place ID"), manual, label_cols, label_to_family, unit_cols)
+    for (method, model), subset in predictions.groupby(["Method", "Model"]):
+        scores = run_metrics(subset.set_index("Place ID"), manual, label_cols, unit_cols)
         results.append({"Method": method, "Model": model, **scores})
-    table = pd.DataFrame(results).sort_values(["Method", "Macro Unit Process F1", "Model"], ascending=[True, False, True])
 
-    # Add keyword-search baseline metrics (NPDES keyword method) on same facilities
-    # Load keyword predictions for the manually read document and align
-    kw_df = pd.read_csv(OUTPUT_DIR / "unit_processes_by_pdf_kw.csv", dtype=str)
-    pinned_stem = kw_df["Place ID"].map({pid: normalize_pdf_name(Path(pdf).stem) for pid, pdf in pdf_stem_by_place_id.items()})
-    kw_df = kw_df[kw_df["PDF_File"].map(lambda pdf: normalize_pdf_name(Path(pdf).stem)) == pinned_stem]
+    # NPDES keyword baseline, scored on the document each facility's manual labels were read from
+    kw_df = pd.read_csv(PDF_KW_CSV, dtype=str)
+    pinned_stems = {pid: normalize_pdf_name(Path(pdf).stem) for pid, pdf in pdf_stem_by_place_id.items()}
+    kw_stems = kw_df["PDF_File"].map(lambda pdf: normalize_pdf_name(Path(pdf).stem))
+    kw_df = kw_df[kw_stems == kw_df["Place ID"].map(pinned_stems)]
     kw_df = kw_df.set_index("Place ID").reindex(manual.index)
-    kw_scores = run_metrics(kw_df[label_cols], manual, label_cols, label_to_family, unit_cols)
-    kw_row = {"Method": "Keyword", "Model": "NPDES Keyword", **kw_scores}
-    table = pd.concat([table, pd.DataFrame([kw_row])], ignore_index=True, sort=False)
+    kw_scores = run_metrics(kw_df[label_cols], manual, label_cols, unit_cols)
+    results.append({"Method": "Keyword", "Model": "NPDES Keyword", **kw_scores})
+    table = pd.DataFrame(results)
 
     # Spot-check the keyword and LLM ontology gpt-5-mini methods per process
-    llm_df = pd.read_csv(OUTPUT_DIR / "unit_processes_by_facility_llm.csv", dtype=str)
-    llm_df = llm_df.set_index("Place ID").reindex(manual.index)
+    llm_df = pd.read_csv(FACILITY_LLM_CSV, dtype=str).set_index("Place ID").reindex(manual.index)
     for method, model, df in [("Keyword", "NPDES Keyword", kw_df), ("Ontology", "gpt-5-mini", llm_df)]:
         audit_rows = []
         for col in unit_cols:  # leaf-level only; unspecified catch-alls aren't scored in Unit Process F1
@@ -303,48 +266,35 @@ def main() -> None:
     price = table["Price per PDF"].where(table["Price per PDF"] > 0)
     table["Unit Process F1 / Price per PDF"] = (table["Macro Unit Process F1"] / price).round(2)
     table = table.round(3)
-
-    ordered_rows = []
-    cols = list(table.columns)
-    for method, model in DESIRED_ORDER:
-        match = table[(table["Method"] == method) & (table["Model"] == model)]
-        if not match.empty:
-            ordered_rows.append(match.iloc[0].to_dict())
-        else:
-            ordered_rows.append({c: "" for c in cols} | {"Method": method, "Model": model})
-
-    table = pd.DataFrame(ordered_rows)[cols]
-
+    table = table.set_index(["Method", "Model"]).loc[DESIRED_ORDER].reset_index()
     print(table.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
 
     # fixed 3 decimals
-    metric_cols = [c for c in cols if c not in ("Method", "Model", "Unit Process F1 / Price per PDF")]
+    metric_cols = [c for c in table.columns if c not in ("Method", "Model", "Unit Process F1 / Price per PDF")]
     table[metric_cols] = table[metric_cols].map(lambda x: f"{x:.3f}" if isinstance(x, float) and x == x else x)
     table.to_csv(TABLE_1_CSV, index=False)
 
     # ADDITIONAL RUNS VARIANCE
-    run_dirs = [("main", MAIN_DIR)] + [(rd.name, rd) for rd in sorted(ADDITIONAL_DIR.glob("run_*"))]
+    run_dirs = [("main", MAIN_RUN_DIR)] + [(rd.name, rd) for rd in sorted(ADDITIONAL_DIR.glob("run_*"))]
 
     rows = []
     for label, run_dir in run_dirs:
-        # Only the benchmark places are scored, and they are exactly the ones with a pinned
-        # document, so the full CA set stays out of the selection.
+        # only the benchmark places have a pinned document, so the full CA set stays out
         predictions = {}
-        for place_id, json_file in select_json_per_place_id(run_dir, set(pdf_stem_by_place_id), pdf_stem_by_place_id).items():
+        for place_id, json_file in select_json_per_place_id(run_dir, pdf_stem_by_place_id).items():
             with open(json_file) as f:
-                result = process_json_to_unit_process_dict(json.load(f))
-            predictions[place_id] = {c: (result.get(c) or np.nan) for c in label_cols}
-        predictions = pd.DataFrame.from_dict(predictions, orient="index").reindex(columns=label_cols)
+                predictions[place_id] = process_json_to_unit_process_dict(json.load(f))
+        predictions = pd.DataFrame.from_dict(predictions, orient="index")[label_cols]
         print(f"Scoring {label} ({os.path.relpath(run_dir)}) — {len(predictions)} facilities")
-        scores = run_metrics(predictions, manual, label_cols, label_to_family, unit_cols)
+        scores = run_metrics(predictions, manual, label_cols, unit_cols)
         rows.append({"run": label, "n_facilities": len(predictions), **scores})
 
     df = pd.DataFrame(rows)
     desc = df[METRIC_COLS]
     summary = pd.DataFrame([
         {"run": "mean", **desc.mean().to_dict()},
-        {"run": "std", **desc.std(ddof=1).to_dict()},
-        {"run": "variance", **desc.var(ddof=1).to_dict()},
+        {"run": "std", **desc.std().to_dict()},
+        {"run": "variance", **desc.var().to_dict()},
     ])
     out = pd.concat([df, summary], ignore_index=True)
     not_variance = out["run"] != "variance"

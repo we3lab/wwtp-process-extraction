@@ -23,9 +23,9 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
 5. Detect treatment processes with LLM extraction
     - [wwtp_process_extraction/step5_llm_extraction.py](wwtp_process_extraction/step5_llm_extraction.py): runs LLM extraction on permit text
         - default: ontology-based gpt-5-mini on the manually-read facilities; *--all_facilities* runs the full CA set
-        - *--method* / *--model* pick one config; *--all_methods* / *--all_models* loop over all of them
+        - *--all_methods* / *--all_models* loop over all methods / models
         - the ontology-based prompt uses data/llm_extraction/input/ontology.txt, regenerated each run from the pinned Zenodo water ontology release (cached in data/ontology_cache/)
-        - *--web_search* uses the claude CLI with web search; *--waterrag_context* adds literature context from step5b; *--repeat_runs N* repeats the benchmark for run-to-run variance
+        - *--web_search* uses the claude CLI with web search (claude-sonnet-4-6); *--waterrag_context* adds literature context from step5b; *--repeat_runs N* repeats the benchmark for run-to-run variance
         - needs a Stanford AI API key in wwtp_process_extraction/API_key.txt (except *--web_search*)
         - results saved as JSON under output/llm_extraction/<method>_<model>/
     - [wwtp_process_extraction/step5b_waterrag_retrieval.py](wwtp_process_extraction/step5b_waterrag_retrieval.py): retrieves and reranks WaterRAG literature chunks per facility into output/waterrag_retrieval/ (separate Python 3.11 env)
@@ -62,7 +62,7 @@ python wwtp_process_extraction/step4_keyword_extraction.py
 # MODEL COMPARISON (manually-read facilities)
 python wwtp_process_extraction/step5_llm_extraction.py --all_models --all_methods
 # WEB SEARCH (claude-sonnet-4-6)
-python wwtp_process_extraction/step5_llm_extraction.py --model claude-sonnet-4-6 --web_search --all_methods
+python wwtp_process_extraction/step5_llm_extraction.py --web_search --all_methods
 # WATERRAG (gpt-5-mini)
 # step5b runs in a SEPARATE Python 3.11 env with torch/langchain/faiss (no torch for 3.12)
 # cached contexts in output/waterrag_retrieval/ are skipped; delete them to redo
@@ -81,6 +81,13 @@ python wwtp_process_extraction/figure_5_ca_ghg_comparison.py
 python wwtp_process_extraction/figure_s2_method_comparison.py
 python wwtp_process_extraction/figure_s3_category_f1_method.py
 ```
+
+## Citation
+
+If you use this code or data, please cite (see [CITATION.cff](CITATION.cff)):
+
+- Paper: Wettermark D, Rouffet C, Chapin FT, Ramirez AC, Mauter MS. Ontologies and LLMs Enable Wastewater Unit Process Data Synthesis from Unstructured Permit Documents for Improved Sector-Level Cost and Emissions Analysis. *Environmental Engineering Science*. 2026. https://doi.org/10.1177/15579018261504213
+- Dataset: Stanford Digital Repository. https://doi.org/10.25740/nk282rk7079
 
 ## Contact 
 

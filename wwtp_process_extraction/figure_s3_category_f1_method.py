@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 from step6_postprocess_llm_output import build_model_comparison
 from helpers.metrics import build_metric_inputs, aggregate_to_category_states, compute_metrics
-from helpers.utils import get_leaf_names, unitprocess_keywords, FIGURES_DIR, MANUAL_CSV
+from helpers.paths import *
+from helpers.utils import category_leaf_names
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
 MODEL = "gpt-5-mini"
@@ -15,9 +16,8 @@ MODEL = "gpt-5-mini"
 METHODS = [("Ontology", "Ontology-based prompt"), ("List", "List-based prompt")]
 METHOD_COLORS = {"Ontology": COLORS["npdes_llm"], "List": COLORS["Clean Watershed Needs Survey"]}
 
-categories = list(unitprocess_keywords.keys())
-category_to_leaves = {c: get_leaf_names(c, unitprocess_keywords[c]) for c in categories}
-all_leaves = [p for leaves in category_to_leaves.values() for p in leaves]
+categories = list(category_leaf_names)
+all_leaves = [p for leaves in category_leaf_names.values() for p in leaves]
 
 
 def main():
@@ -30,31 +30,36 @@ def main():
         pred = model_comparison[(model_comparison["Method"] == method) & (model_comparison["Model"] == MODEL)]
         manual_df, pred_df = build_metric_inputs(all_leaves, manual, pred)
         cat_metrics = compute_metrics(
-            aggregate_to_category_states(manual_df, category_to_leaves),
-            aggregate_to_category_states(pred_df, category_to_leaves),
+            aggregate_to_category_states(manual_df, category_leaf_names),
+            aggregate_to_category_states(pred_df, category_leaf_names),
             categories,
             method,
         )
         per_method[method] = cat_metrics.set_index("Label")
+    f1 = {method: per_method[method]["F1"] for method, _ in METHODS}
 
-    # keep categories with at least one manual-positive facility (F1 otherwise undefined)
+    # keep categories with at least one manual-positive facility (F1 otherwise undefined);
+    # ascending F1 puts the best on top
     support = per_method["Ontology"]["Support_Manual"]
-    keep = sorted((c for c in categories if support.get(c, 0) > 0), key=lambda c: per_method["Ontology"].loc[c, "F1"])  # ascending → best on top
+    keep = sorted((c for c in categories if support[c] > 0), key=lambda c: f1["Ontology"][c])
 
     # Per-category F1 by method; flag categories driving the methods apart (|diff| > 0.05)
     print("\nCategory-level F1 (gpt-5-mini): Ontology vs List")
     print(f"{'Category':25s} {'Ontology':>9s} {'List':>7s} {'Diff':>7s}")
-    f1 = {method: per_method[method]["F1"] for method, _ in METHODS}
     for c in sorted(keep, key=lambda c: f1["Ontology"][c] - f1["List"][c]):
         ontology_f1, list_f1 = f1["Ontology"][c], f1["List"][c]
         diff = ontology_f1 - list_f1
-        flag = "  <-- driving (ontology higher)" if diff > 0.05 else "  <-- driving (list higher)" if diff < -0.05 else ""
+        flag = ""
+        if diff > 0.05:
+            flag = "  <-- driving (ontology higher)"
+        elif diff < -0.05:
+            flag = "  <-- driving (list higher)"
         print(f"{c:25s} {ontology_f1:9.3f} {list_f1:7.3f} {diff:+7.3f}{flag}")
 
     # grouped horizontal bars
     y = range(len(keep))
     h = 0.38
-    fig, ax = plt.subplots(figsize=(8, max(5, 0.42 * len(keep))))
+    fig, ax = plt.subplots(figsize=(8, 0.42 * len(keep)))
     for i, (method, label) in enumerate(METHODS):
         offset = (0.5 - i) * h
         vals = [f1[method][c] for c in keep]
@@ -66,11 +71,10 @@ def main():
     ax.set_yticklabels([f"{c}  (n={int(support[c])})" for c in keep], fontsize=11)
     ax.set_xlim(0, 1)
     ax.set_xlabel("Category-level F1 (gpt-5-mini)", fontsize=13)
-    ax.grid(False)
     ax.legend(loc="lower right", fontsize=11, frameon=False, bbox_to_anchor=(1.02, 1.02))
-    set_thick_spines(ax, linewidth=1.6)
+    set_thick_spines(ax)
     fig_path = FIGURES_DIR / "figure_s3.png"
-    save_and_close(fig, fig_path, dpi=300)
+    save_and_close(fig, fig_path)
     print(f"Saved {os.path.relpath(fig_path)}")
 
 

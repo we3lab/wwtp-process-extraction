@@ -5,22 +5,19 @@
 
 import json
 
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from helpers.paths import *
 from helpers.utils import (
-    extract_leaves, parse_status, current_permit_mask, PRESENT_STATUSES, STATUS_TOKENS, cwns_mapping,
-    unitprocess_keywords, DATA_DIR, OUTPUT_DIR, FIGURES_DIR, SITE_DATA_ALL_CSV,
+    parse_status, current_permit_mask, PRESENT_STATUSES, cwns_mapping, leaves, leaf_names,
+    column_top_category,
 )
 from helpers.plotting import COLORS, save_and_close, set_thick_spines
 
 CURVES_JSON = DATA_DIR / "cwns_cost_curves.json"
 FLOW_CSV = DATA_DIR / "cwns/2022/FLOW.csv"
 NEEDS_CSV = DATA_DIR / "cwns/2022/NEEDS_COST_BY_CATEGORY.csv"
-# per-document, so a snapshot's document set can be costed on its own
-PERDOC_CSV = OUTPUT_DIR / "unit_processes_by_pdf_llm.csv"
 NEEDS_DIR = OUTPUT_DIR / "needs"
 
 TREATMENT_CATEGORIES = ["I", "II"]  # secondary + advanced treatment
@@ -31,20 +28,20 @@ DISINFECTION = {"Chlorination", "UV Disinfection"}
 # a facility takes the highest tier it contains
 TIERS = ["lagoon", "aerated_lagoon", "secondary_mechanical", "advanced"]
 
+# Facilities without a CWNS_ID, stacked as one grey band
+UNMATCHED = "no_cwns_match"
+
 CATEGORY_LABELS = {
     "new": "New facility",
     "system_expansion": "Existing facility expansion",
     "treatment_upgrade": "Existing facility upgrade",
     "rehabilitation": "Existing facility rehabilitation",
-    "add_disinfection": "New facility (disinfection)",
+    UNMATCHED: "No CWNS match",
 }
 
 # add_disinfection is costed off its own EPA curve (UV via CAFCom, chlorine via Capdet) but is
 # still a new-unit build, so the figure folds it into New. ca_needs_summary.csv keeps the split.
 DISPLAY_GROUP = {"add_disinfection": "new"}
-
-META_COLS = {"Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "County",
-             "PDF_File", "document_order_no"}
 
 # One permit-extraction bar per snapshot. Only the yyyy-06-01 folders are comparable annual
 # scrapes; a same-day run (e.g. 2026-08-13) can be partial and would read as a real decline.
@@ -61,28 +58,15 @@ SECONDARY_MECH_EXTRA = {
     "Membrane Aerated Biofilm Reactor", "Unspecified FFR", "Biologically Active Filtration",
 }
 
-# Facilities without a CWNS_ID, stacked as one grey band
-UNMATCHED = "no_cwns_match"
-
 TICK_FONTSIZE = 12
 LABEL_FONTSIZE = 14
 LEGEND_FONTSIZE = 11
-SPINE_WIDTH = 1.6
 
 
 def system_type(processes, lookup):
     """Highest tier present among a facility's processes."""
     tiers = [lookup[p] for p in processes if p in lookup]
     return max(tiers, key=TIERS.index) if tiers else None
-
-
-def evaluate_curve(curves, system, construction, mgd):
-    """Return (cost, within_limit, basis) for one facility. Cost is Jan-2022 dollars."""
-    spec = curves["systems"][system][construction]
-    segment = next(s for s in spec["segments"] if s["max_mgd"] is None or mgd <= s["max_mgd"])
-    base = segment["a"] * mgd + segment["b"] if segment["form"] == "linear" else segment["a"] * mgd ** segment["b"]
-    scale = curves["cpi_adjustment"] * curves["location_factor"] / curves["national_average_location_factor"]
-    return base * scale, mgd <= spec["limit_mgd"], segment["basis"]
 
 
 def infer_construction(present, future, cur_mgd, fut_mgd, lookup):
@@ -101,39 +85,9 @@ def infer_construction(present, future, cur_mgd, fut_mgd, lookup):
     return "rehabilitation", None
 
 
-def facilities_as_of(docs, process_cols):
-    """Per-facility PRESENT/FUTURE process sets, unioned over one snapshot's documents in force.
-
-    A document's extraction never changes between years, so the year-over-year signal comes
-    entirely from which documents were in force -- a permit renewal replacing an older order.
-
-    A plain FUTURE is dropped when a sibling document reports the same process as present
-    (e.g. a concurrent permit that lists the project as built). PRESENT_AND_FUTURE survives,
-    being an expansion of something already there.
-    """
-    by_place = {}
-    for _, row in docs.iterrows():
-        place_id = row["Place ID"].strip()
-        fac = by_place.setdefault(place_id, {
-            "Place ID": place_id, "WDID": row["WDID"], "Facility Name": row["Facility Name"],
-            "present": set(), "expansion": set(), "planned": set(),
-        })
-        for col in process_cols:
-            status = parse_status(row[col])
-            if status in PRESENT_STATUSES:
-                fac["present"].add(col)
-            if status == "PRESENT_AND_FUTURE":
-                fac["expansion"].add(col)
-            elif status == "FUTURE":
-                fac["planned"].add(col)
-
-    for fac in by_place.values():
-        fac["future"] = fac["expansion"] | (fac["planned"] - fac["present"])
-    return list(by_place.values())
-
-
 def cost_facilities(facilities, curves, lookup, pid_to_cwns, flow, ciwqs_flow):
-    """Cost one snapshot's facilities; returns the full per-facility frame."""
+    """Cost one snapshot's facilities (Jan-2022 dollars); returns the full per-facility frame."""
+    scale = curves["cpi_adjustment"] * curves["location_factor"] / curves["national_average_location_factor"]
     rows = []
     for fac in facilities:
         present, future = fac["present"], fac["future"]
@@ -147,7 +101,7 @@ def cost_facilities(facilities, curves, lookup, pid_to_cwns, flow, ciwqs_flow):
         if pd.isna(cur_mgd):
             # no CWNS match; CIWQS gives one permitted design flow and no future value,
             # so expansion can't be inferred for these facilities
-            cur_mgd = ciwqs_flow.get(fac["WDID"].strip())
+            cur_mgd = ciwqs_flow.get(fac["WDID"])
             fut_mgd = None
             flow_source = "" if pd.isna(cur_mgd) else "CIWQS"
 
@@ -170,11 +124,15 @@ def cost_facilities(facilities, curves, lookup, pid_to_cwns, flow, ciwqs_flow):
             row.update({"cost_2022usd": None, "within_curve_limit": None, "curve_basis": "",
                         "excluded_reason": "no design flow" if no_flow else "unclassified system"})
         else:
-            system_key = "add_disinfection" if construction == "add_disinfection" else sys_type
-            curve_key = disinfectant if construction == "add_disinfection" else construction
-            cost, in_limit, basis = evaluate_curve(curves, system_key, curve_key, mgd)
-            row.update({"cost_2022usd": cost, "within_curve_limit": in_limit,
-                        "curve_basis": basis, "excluded_reason": ""})
+            if construction == "add_disinfection":
+                spec = curves["systems"]["add_disinfection"][disinfectant]
+            else:
+                spec = curves["systems"][sys_type][construction]
+            segment = next(s for s in spec["segments"] if s["max_mgd"] is None or mgd <= s["max_mgd"])
+            a, b = segment["a"], segment["b"]
+            base = a * mgd + b if segment["form"] == "linear" else a * mgd ** b
+            row.update({"cost_2022usd": base * scale, "within_curve_limit": mgd <= spec["limit_mgd"],
+                        "curve_basis": segment["basis"], "excluded_reason": ""})
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -182,26 +140,20 @@ def cost_facilities(facilities, curves, lookup, pid_to_cwns, flow, ciwqs_flow):
 def main():
     curves = json.loads(CURVES_JSON.read_text())
 
-    top_of, group_of = {}, {}
-    for top, val in unitprocess_keywords.items():
-        for name, _, group_id in extract_leaves({top: val}):
-            top_of[name] = top
-            group_of[name] = group_id
-
+    group_of = {name: group_id for name, _, group_id in leaves}
     lookup = {}
-    for leaf in top_of:
-        if leaf in ADVANCED_EXTRA or top_of[leaf] == "Nutrient Removal" or group_of[leaf] == "Membrane Process":
+    for leaf, top in column_top_category.items():
+        if leaf in ADVANCED_EXTRA or top == "Nutrient Removal" or group_of[leaf] == "Membrane Process":
             lookup[leaf] = "advanced"
-        elif leaf in SECONDARY_MECH_EXTRA or top_of[leaf] == "Activated Sludge":
+        elif leaf in SECONDARY_MECH_EXTRA or top == "Activated Sludge":
             lookup[leaf] = "secondary_mechanical"
         elif leaf == "Aerated Lagoon":
             lookup[leaf] = "aerated_lagoon"
-        elif top_of[leaf] == "Lagoon":
+        elif top == "Lagoon":
             lookup[leaf] = "lagoon"
 
-    perdoc = pd.read_csv(PERDOC_CSV, dtype=str).fillna("")
-    process_cols = [c for c in perdoc.columns if c not in META_COLS]
-    has_content = perdoc[process_cols].isin(STATUS_TOKENS).any(axis=1)
+    # per-document, so a snapshot's document set can be costed on its own
+    perdoc = pd.read_csv(PDF_LLM_CSV, dtype=str).fillna("")
 
     # cwns_mapping is already ciwqs_to_cwns.csv filtered to rows with a real CWNS_ID
     pid_to_cwns = cwns_mapping.drop_duplicates("Place ID").set_index("Place ID")["CWNS_ID"]
@@ -229,70 +181,82 @@ def main():
 
     # Extracted documents each facility held at each as-of date, cut to the permits in force
     # then (superseded orders stay attached to a facility's CIWQS page), as in step6 and figure_5
-    docs_by_year = {}
+    n_docs, facs_by_year = {}, {}
     for as_of in snapshots:
-        rel = pd.read_csv(OUTPUT_DIR / "site_data" / as_of / "site_data_relevant.csv", dtype=str).fillna("")
-        rel = rel[rel["PDF_File"].str.strip().ne("")]
-        pairs = set(zip(rel["Place ID"].str.strip(), rel["PDF_File"].str.strip()))
-        held = [(p.strip(), f.strip()) in pairs for p, f in zip(perdoc["Place ID"], perdoc["PDF_File"])]
+        rel = pd.read_csv(OUTPUT_DIR / "site_data" / as_of / "site_data_relevant.csv", dtype=str)
+        pairs = set(zip(rel["Place ID"], rel["PDF_File"]))
+        held = [pair in pairs for pair in zip(perdoc["Place ID"], perdoc["PDF_File"])]
         docs = perdoc[held]
-        docs_by_year[as_of] = docs[current_permit_mask(docs, as_of=as_of, content=has_content)]
-    facs_by_year = {as_of: facilities_as_of(docs, process_cols)
-                    for as_of, docs in docs_by_year.items()}
+        docs = docs[current_permit_mask(docs, as_of=as_of)]
+        n_docs[as_of] = len(docs)
 
-    # Balanced cohort: only facilities with an extracted document in EVERY snapshot. Without it
-    # the series is a coverage curve, not a trend -- the count of facilities holding an extracted
-    # document grows steeply across snapshots while the share of them planning work stays flat
-    # near 36%, so absolute totals would rise on document availability alone. Restricted this
-    # way, year-over-year movement can only come from a permit renewal changing what is planned.
-    # The cohort grows as step5 works through older documents; re-run this after step5/step6.
+        # Per-facility PRESENT/FUTURE process sets, unioned over the documents in force. A document's
+        # extraction never changes, so year-over-year change comes only from which documents are in force.
+        by_place = {}
+        for _, row in docs.iterrows():
+            fac = by_place.setdefault(row["Place ID"], {
+                "Place ID": row["Place ID"], "WDID": row["WDID"], "Facility Name": row["Facility Name"],
+                "present": set(), "expansion": set(), "planned": set(),
+            })
+            for col in leaf_names:
+                status = parse_status(row[col])
+                if status in PRESENT_STATUSES:
+                    fac["present"].add(col)
+                if status == "PRESENT_AND_FUTURE":
+                    fac["expansion"].add(col)
+                elif status == "FUTURE":
+                    fac["planned"].add(col)
+        # A plain FUTURE is dropped when a sibling document reports the process as present;
+        # PRESENT_AND_FUTURE stays, being an expansion of something already there
+        for fac in by_place.values():
+            fac["future"] = fac["expansion"] | (fac["planned"] - fac["present"])
+        facs_by_year[as_of] = list(by_place.values())
+
+    # Balanced cohort: only facilities with an extracted document in EVERY snapshot, so totals move on
+    # permit renewals, not on document coverage growing. It grows as step5 works through older documents.
     cohort_pids = set.intersection(*({f["Place ID"] for f in facs} for facs in facs_by_year.values()))
     print(f"balanced cohort: {len(cohort_pids)} facilities with an extracted document in all "
           f"{len(snapshots)} snapshots "
           f"(of {max(len(f) for f in facs_by_year.values())} in the fullest single year)")
 
-    per_year, est_by_year, year_rows = {}, {}, []
+    per_year, year_rows = {}, []
     for as_of in snapshots:
         facs = [f for f in facs_by_year[as_of] if f["Place ID"] in cohort_pids]
-        est_y = cost_facilities(facs, curves, lookup, pid_to_cwns, flow, ciwqs_flow)
+        est = cost_facilities(facs, curves, lookup, pid_to_cwns, flow, ciwqs_flow)
         # The costed cohort: within EPA's fitted MGD limit and under the small-plant cutoff
-        costed = est_y[est_y["cost_2022usd"].notna()]
+        costed = est[est["cost_2022usd"].notna()]
         small = costed[costed["mgd_used"] < MAX_MGD]
-        scored_y = small[small["within_curve_limit"]].copy()
-        per_year[as_of] = scored_y
-        est_by_year[as_of] = est_y
-        # Split the same way the figure stacks it: the per-category columns cover only the
-        # CWNS-matched facilities (what the CWNS marker can be compared against), with the
-        # unmatched ones carried as one total. Otherwise the CSV and the figure disagree.
-        is_matched = scored_y["CWNS_ID"].ne("")
-        by_cat = (scored_y[is_matched].replace({"construction_type": DISPLAY_GROUP})
+        scored = small[small["within_curve_limit"]]
+        per_year[as_of] = scored
+        # Per-category columns cover only the CWNS-matched facilities, as the figure stacks them
+        is_matched = scored["CWNS_ID"].ne("")
+        by_cat = (scored[is_matched].replace({"construction_type": DISPLAY_GROUP})
                   .groupby("construction_type")["cost_2022usd"].sum())
         year_rows.append({
-            "as_of": as_of, "documents_in_force": len(docs_by_year[as_of]),
+            "as_of": as_of, "documents_in_force": n_docs[as_of],
             "cohort_facilities": len(cohort_pids),
-            "facilities_with_planned_changes": len(est_y),
-            "facilities_costed": len(scored_y),
-            "total_2022usd": scored_y["cost_2022usd"].sum(),
+            "facilities_with_planned_changes": len(est),
+            "facilities_costed": len(scored),
+            "total_2022usd": scored["cost_2022usd"].sum(),
             "cwns_matched_facilities": int(is_matched.sum()),
-            "cwns_matched_2022usd": scored_y.loc[is_matched, "cost_2022usd"].sum(),
+            "cwns_matched_2022usd": scored.loc[is_matched, "cost_2022usd"].sum(),
             "no_cwns_match_facilities": int((~is_matched).sum()),
-            "no_cwns_match_2022usd": scored_y.loc[~is_matched, "cost_2022usd"].sum(),
-            **{f"{cat}_2022usd": by_cat.get(cat, 0.0)
+            "no_cwns_match_2022usd": scored.loc[~is_matched, "cost_2022usd"].sum(),
+            **{f"{cat}_2022usd": by_cat[cat]
                for cat in ("new", "system_expansion", "treatment_upgrade", "rehabilitation")},
         })
-        print(f"  {as_of}: {len(docs_by_year[as_of]):5} documents in force, {len(est_y):3} cohort "
-              f"facilities with planned changes, {len(scored_y):3} costed, "
-              f"${scored_y['cost_2022usd'].sum()/1e6:,.0f}M")
-
-    # The newest snapshot is the headline estimate
-    est = est_by_year[snapshots[-1]]
+        print(f"  {as_of}: {n_docs[as_of]:5} documents in force, {len(est):3} cohort "
+              f"facilities with planned changes, {len(scored):3} costed, "
+              f"${scored['cost_2022usd'].sum()/1e6:,.0f}M")
+    # est is left holding the newest snapshot, the headline estimate
 
     # CWNS reported need over the same facilities we costed in the CWNS year, so the marker is like-for-like
-    cwns_scored = per_year[CWNS_SNAPSHOT]
-    cohort = set(cwns_scored.loc[cwns_scored["CWNS_ID"].ne(""), "CWNS_ID"])
-    cwns_reported = needs_by_id.reindex(sorted(cohort)).fillna(0).sum()
-    print(f"CWNS {CWNS_SNAPSHOT[:4]}: {len(cohort)} matched facilities, ours "
-          f"${cwns_scored.loc[cwns_scored['CWNS_ID'].ne(''), 'cost_2022usd'].sum()/1e6:,.0f}M "
+    cwns_matched = per_year[CWNS_SNAPSHOT]
+    cwns_matched = cwns_matched[cwns_matched["CWNS_ID"].ne("")]
+    cwns_ids = set(cwns_matched["CWNS_ID"])
+    cwns_reported = needs_by_id.reindex(sorted(cwns_ids)).fillna(0).sum()
+    print(f"CWNS {CWNS_SNAPSHOT[:4]}: {len(cwns_ids)} matched facilities, ours "
+          f"${cwns_matched['cost_2022usd'].sum()/1e6:,.0f}M "
           f"vs CWNS reported ${cwns_reported/1e6:,.0f}M")
 
     est["cwns_reported_I_II_2022usd"] = est["CWNS_ID"].map(needs_by_id)
@@ -308,56 +272,47 @@ def main():
     over = int((ours_adv & ~check["cwns_has_advanced_need"]).sum())
     under = int((~ours_adv & check["cwns_has_advanced_need"]).sum())
     print(f"advanced/secondary agreement vs CWNS Category II: {agree}/{len(check)} "
-            f"({100*agree/len(check):.0f}%); ours advanced only {over}, CWNS Cat II only {under}")
+          f"({100*agree/len(check):.0f}%); ours advanced only {over}, CWNS Cat II only {under}")
     print("  (weak proxy: NEEDS_CATEGORY describes the funded project, not the plant's "
-            "treatment level, so an advanced plant can carry a Category I need and vice versa)")
+          "treatment level, so an advanced plant can carry a Category I need and vice versa)")
 
     est.sort_values(["system_type", "construction_type", "Facility Name"]).to_csv(
         NEEDS_DIR / "ca_needs_summary.csv", index=False)
 
-    year_df = pd.DataFrame(year_rows)
-    year_df.to_csv(NEEDS_DIR / "ca_needs_by_year.csv", index=False)
+    pd.DataFrame(year_rows).to_csv(NEEDS_DIR / "ca_needs_by_year.csv", index=False)
 
-    plot(per_year, cwns_reported, len(cohort))
+    plot(per_year, cwns_reported, len(cwns_ids))
     print(f"\nwrote {NEEDS_DIR/'ca_needs_summary.csv'}, {NEEDS_DIR/'ca_needs_by_year.csv'} "
           f"and {FIGURES_DIR/'figure_4'}.png/.tiff")
 
 
 def plot(per_year, cwns_reported, n_cohort):
     """Permit-extracted need as a stacked area over annual snapshots, with CWNS as one point.
-
-    Area rather than stacked bars: one polygon per category instead of one rectangle per
-    category per snapshot for the same part-to-whole reading, and the year axis reads continuously.
-
-    CWNS is a single marker at 2022, not a line across every year: it is one survey vintage,
-    so spanning it across the axis would imply an annual series that does not exist. It also
-    carries no comparable breakdown -- CWNS records dollars per (document, needs category) and
-    change types per (facility, facility type) with no link between them, so a matching
-    composition would be invented.
-    """
+    CWNS is one survey vintage, so it's one marker, not a line, and has no comparable breakdown."""
     keys = sorted(per_year)
     years = [int(k[:4]) for k in keys]
     fig, ax = plt.subplots(figsize=(6, 5))
 
     # bottom-to-top: biggest, steadiest category first so the thin ones ride on a flat base
     order = ("rehabilitation", "treatment_upgrade", "system_expansion", "new")
+    stack_order = order + (UNMATCHED,)
     shades = {"rehabilitation": "#8fabd2", "treatment_upgrade": "#5c82b8",
               "system_expansion": "#305993", "new": "#1f3b63", UNMATCHED: "#b3b9c0"}
 
-    # CWNS_ID is "" for facilities with no CWNS match
-    matched = [per_year[k][per_year[k]["CWNS_ID"].ne("")].replace({"construction_type": DISPLAY_GROUP}) for k in keys]
-    by_cat, n_cat = {}, {}
-    for cat in order:
-        groups = [m[m["construction_type"] == cat] for m in matched]
-        by_cat[cat] = [g["cost_2022usd"].sum() / 1e6 for g in groups]
-        n_cat[cat] = [len(g) for g in groups]
-    unmatched_rows = [per_year[k][per_year[k]["CWNS_ID"].eq("")] for k in keys]
-    by_cat[UNMATCHED] = [r["cost_2022usd"].sum() / 1e6 for r in unmatched_rows]
-    n_cat[UNMATCHED] = [len(r) for r in unmatched_rows]
-    stack_order = order + (UNMATCHED,)
+    by_cat = {cat: [] for cat in stack_order}
+    for k in keys:
+        scored = per_year[k].replace({"construction_type": DISPLAY_GROUP})
+        # CWNS_ID is "" for facilities with no CWNS match
+        is_matched = scored["CWNS_ID"].ne("")
+        groups = {cat: scored[is_matched & (scored["construction_type"] == cat)] for cat in order}
+        groups[UNMATCHED] = scored[~is_matched]
+        for cat in stack_order:
+            by_cat[cat].append(groups[cat]["cost_2022usd"].sum() / 1e6)
+    # labels quote the final year's facility counts
+    n_cat = {cat: len(group) for cat, group in groups.items()}
 
     ax.stackplot(years, *[by_cat[c] for c in stack_order],
-                 colors=[shades[c] for c in stack_order], edgecolor="white", linewidth=1.2)
+                 colors=[shades[c] for c in stack_order], edgecolor="white")
 
     cwns_m = cwns_reported / 1e6
     cwns_year = int(CWNS_SNAPSHOT[:4])
@@ -365,7 +320,7 @@ def plot(per_year, cwns_reported, n_cohort):
             color=COLORS["Clean Watershed Needs Survey"],
             markeredgecolor="white", markeredgewidth=1.4)
     ax.annotate(f"CWNS reported  ${cwns_m:,.0f}M (n = {n_cohort})", xy=(cwns_year, cwns_m),
-                xytext=(8, 6), textcoords="offset points", ha="left", va="bottom",
+                xytext=(8, 6), textcoords="offset points", va="bottom",
                 fontsize=LEGEND_FONTSIZE, color=COLORS["Clean Watershed Needs Survey"])
 
     # Band edges at the final year, so labels can sit near the right edge inside their own band.
@@ -380,19 +335,19 @@ def plot(per_year, cwns_reported, n_cohort):
     # fill, dark on the lighter shades and white on the darker one.
     inside_ink = {"rehabilitation": "#12263f", "treatment_upgrade": "#12263f",
                   "system_expansion": "white", UNMATCHED: "#12263f"}
-    labels = {**CATEGORY_LABELS, UNMATCHED: "No CWNS match"}
 
     for cat, ink in inside_ink.items():
         band_bottom, band_top = edges[cat]
-        ax.annotate(f"{labels[cat]} (n = {n_cat[cat][-1]})", xy=(label_x, (band_bottom + band_top) / 2),
+        ax.annotate(f"{CATEGORY_LABELS[cat]} (n = {n_cat[cat]})",
+                    xy=(label_x, (band_bottom + band_top) / 2),
                     ha="right", va="center", fontsize=LEGEND_FONTSIZE, color=ink)
 
     # New is a thin band, so it is labelled just above its own top edge at the left, where the
     # stack is lowest -- close enough to read without a leader line crossing other bands.
     new_top_first = sum(by_cat[c][0] for c in order)
-    ax.annotate(f"{labels['new']} (n = {n_cat['new'][-1]})", xy=(years[0] + 0.08, new_top_first),
-                xytext=(0, 4), textcoords="offset points",
-                ha="left", va="bottom", fontsize=LEGEND_FONTSIZE, color="#12263f")
+    ax.annotate(f"{CATEGORY_LABELS['new']} (n = {n_cat['new']})",
+                xy=(years[0] + 0.08, new_top_first), xytext=(0, 4), textcoords="offset points",
+                va="bottom", fontsize=LEGEND_FONTSIZE, color="#12263f")
 
     ax.set_xticks(years)
     ax.set_xticklabels(years, fontsize=TICK_FONTSIZE)
@@ -406,9 +361,9 @@ def plot(per_year, cwns_reported, n_cohort):
     ax.set_xlabel("Permit extraction, as of 1 June", fontsize=LABEL_FONTSIZE)
     ax.set_xlim(years[0], years[-1])
     ax.set_ylim(0, max(cwns_m, peak_total) * 1.16)
-    set_thick_spines(ax, linewidth=SPINE_WIDTH)
+    set_thick_spines(ax)
     fig.tight_layout()
-    save_and_close(fig, FIGURES_DIR / "figure_4", dpi=300)
+    save_and_close(fig, FIGURES_DIR / "figure_4")
 
 
 if __name__ == "__main__":

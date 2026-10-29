@@ -1,17 +1,6 @@
 import pandas as pd
 from helpers.utils import is_present, parse_status, precision_recall_f1, merge_column_statuses
 
-# 0–1 scalar metrics (per label or per facility); violin / summaries use this order.
-METRIC_SCORE_COLUMNS = (
-    "Hallucinated_Rate",
-    "Missed_Rate",
-    "Accuracy",
-    "Precision",
-    "Recall",
-    "F1",
-    "State_Accuracy",
-)
-
 
 def confusion_scores(manual_states, pred_states):
     """Confusion counts (tp, fp, fn, tn) and the scalar metrics over paired statuses."""
@@ -31,7 +20,7 @@ def confusion_scores(manual_states, pred_states):
             state_total += 1
             state_correct += int(manual_state == pred_state)
 
-    precision, recall, f1, _ = precision_recall_f1(tp, fp, fn)
+    precision, recall, f1 = precision_recall_f1(tp, fp, fn)
     scores = {
         "Precision": precision,
         "Recall": recall,
@@ -63,18 +52,11 @@ def aggregate_to_category_states(metric_df, category_to_leaves):
     return out
 
 
-def compute_metrics(
-    manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str
-) -> pd.DataFrame:
+def compute_metrics(manual_df, pred_df, label_cols, source_name):
+    # manual_df and pred_df come from build_metric_inputs (or their category version), so rows line up
     rows = []
-    manual_indexed = manual_df.set_index("key")
-    pred_indexed = pred_df.set_index("key")
-    keys = list(manual_indexed.index)
-
     for label in label_cols:
-        manual_states = manual_indexed.loc[keys, label]
-        pred_states = pred_indexed.loc[keys, label]
-        tp, fp, fn, tn, scores = confusion_scores(manual_states, pred_states)
+        tp, fp, fn, tn, scores = confusion_scores(manual_df[label], pred_df[label])
         rows.append(
             {
                 "Source": source_name,
@@ -90,20 +72,3 @@ def compute_metrics(
         )
 
     return pd.DataFrame(rows)
-
-
-def compute_facility_metric_rows(
-    manual_df: pd.DataFrame, pred_df: pd.DataFrame, label_cols: list, source_name: str
-) -> list:
-    """Compute per-facility metrics for violin/distribution plots."""
-    manual_indexed = manual_df.set_index("key")
-    pred_indexed = pred_df.set_index("key")
-    rows = []
-
-    for key in manual_indexed.index:
-        manual_states = manual_indexed.loc[key, label_cols]
-        pred_states = pred_indexed.loc[key, label_cols]
-        scores = confusion_scores(manual_states, pred_states)[-1]
-        rows.append({"Source": source_name, "key": key, **{col: scores[col] for col in METRIC_SCORE_COLUMNS}})
-
-    return rows

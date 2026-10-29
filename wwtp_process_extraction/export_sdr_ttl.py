@@ -1,10 +1,7 @@
-"""Build the SDR release: the unit-process CSV, a zip of per-facility TTL files, and a README.
+# SDR release: the unit-process CSV, a zip of per-facility TTL files (each extracted item typed with
+# WaTr classes, for the CSV's facilities and current-permit documents), and a README
 
-The TTL files are the ontology-native form of the ontology-based gpt-5-mini extraction: each item
-the LLM extracted, typed with WaTr classes, for the same facilities and current-permit documents
-that unit_processes_by_facility.csv is built from.
-"""
-
+import inspect
 import json
 import shutil
 import textwrap
@@ -16,28 +13,17 @@ import pandas as pd
 from rdflib import Graph, Literal, Namespace, RDF, RDFS
 
 from helpers.ontology_to_txt import load_ontology, WATR
-from helpers.utils import (
-    current_permit_mask, leaf_names, cwns_mapping, STATUS_TOKENS, OUTPUT_DIR, LLM_EXTRACTION_DIR,
-)
+from helpers.paths import *
+from helpers.utils import current_permit_mask, cwns_mapping
 
 RELEASE_DIR = OUTPUT_DIR / "sdr_release"
-FACILITY_CSV = OUTPUT_DIR / "unit_processes_by_facility.csv"
-PDF_LLM_CSV = OUTPUT_DIR / "unit_processes_by_pdf_llm.csv"
-EXTRACTION_DIR = LLM_EXTRACTION_DIR / "ontology-based_gpt-5-mini"
 ZIP_NAME = "wwtp_ontology_extraction.zip"
-ONTOLOGY_TO_TXT_PY = Path(__file__).resolve().parent / "helpers" / "ontology_to_txt.py"
 # Deposit README text; {placeholders} are filled with this run's counts
 README_TEMPLATE_MD = RELEASE_DIR / "README_TEMPLATE.md"
 
 S223 = Namespace("http://data.ashrae.org/standard223#")
 # Project namespace on the deposit's own purl, so IDs point back to the dataset
 WWTP = Namespace("https://purl.stanford.edu/nk282rk7079#")
-
-
-def slug(text):
-    # letters and digits only, joined by single underscores
-    cleaned = "".join(ch if ch.isalnum() else "_" for ch in text)
-    return "_".join(part for part in cleaned.split("_") if part)
 
 
 def main():
@@ -49,8 +35,7 @@ def main():
 
     # Same documents step6 collapses into the facility CSV: current permits only
     documents = pd.read_csv(PDF_LLM_CSV, dtype=str, keep_default_na=False)
-    has_content = documents[leaf_names].isin(STATUS_TOKENS).any(axis=1)
-    documents = documents[current_permit_mask(documents, content=has_content)]
+    documents = documents[current_permit_mask(documents)]
     documents = documents[documents["Place ID"].isin(permit_rows.index)]
     missing = set(permit_rows.index) - set(documents["Place ID"])
     if missing:
@@ -60,7 +45,7 @@ def main():
     dropped = Counter()
     n_items = 0
     with zipfile.ZipFile(RELEASE_DIR / ZIP_NAME, "w", zipfile.ZIP_DEFLATED) as zf:
-        for place_id, fac_docs in documents.groupby("Place ID", sort=True):
+        for place_id, fac_docs in documents.groupby("Place ID"):
             row = permit_rows.loc[place_id]
             graph = Graph()
             for prefix, ns in (("watr", WATR), ("s223", S223), ("wwtp", WWTP)):
@@ -77,15 +62,14 @@ def main():
                     graph.add((facility, prop, Literal(value)))
 
             for doc_index, doc in enumerate(fac_docs.itertuples(index=False), 1):
-                pdf_file = getattr(doc, "PDF_File")
                 document = WWTP[f"document-{place_id}-{doc_index}"]
                 graph.add((facility, WWTP.hasDocument, document))
                 graph.add((document, RDF.type, WWTP.PermitDocument))
-                graph.add((document, WWTP.pdfFile, Literal(pdf_file)))
-                if getattr(doc, "document_order_no"):
-                    graph.add((document, WWTP.orderNo, Literal(getattr(doc, "document_order_no"))))
+                graph.add((document, WWTP.pdfFile, Literal(doc.PDF_File)))
+                if doc.document_order_no:
+                    graph.add((document, WWTP.orderNo, Literal(doc.document_order_no)))
 
-                json_path = EXTRACTION_DIR / f"{Path(pdf_file).stem}_{place_id}.json"
+                json_path = MAIN_RUN_DIR / f"{Path(doc.PDF_File).stem}_{place_id}.json"
                 items = json.loads(json_path.read_text(encoding="utf-8"))["items"]
                 for item_index, extracted in enumerate(items, 1):
                     # WaTr URIs: Process-X and Role-X carry a prefix; equipment and substances don't
@@ -121,7 +105,9 @@ def main():
                             graph.add((item, prop, Literal(extracted[field])))
                     n_items += 1
 
-            zf.writestr(f"{place_id}_{slug(row['CIWQS Facility Name'])}.ttl", graph.serialize(format="turtle"))
+            # file name: Place ID + facility name as letters/digits joined by underscores
+            name_slug = "_".join("".join(ch if ch.isalnum() else " " for ch in row["CIWQS Facility Name"]).split())
+            zf.writestr(f"{place_id}_{name_slug}.ttl", graph.serialize())
 
     shutil.copy2(FACILITY_CSV, RELEASE_DIR / FACILITY_CSV.name)
 
@@ -129,8 +115,8 @@ def main():
     cwns_ids = set(facilities.loc[facilities["source"] != "ciwqs", "CIWQS PLACE_ID"])
     n_permit, n_both = len(permit_rows), len(cwns_ids & set(permit_rows.index))
 
-    # The drying TTL block, read from ontology_to_txt.py so it matches what the pipeline used
-    source = ONTOLOGY_TO_TXT_PY.read_text(encoding="utf-8")
+    # The drying TTL block, read from load_ontology so it matches what the pipeline used
+    source = inspect.getsource(load_ontology)
     start = source.index('PROCESSTYPES_ADDITIONS = """') + len('PROCESSTYPES_ADDITIONS = """')
     drying_block = textwrap.dedent(source[start:source.index('"""', start)]).strip()
 

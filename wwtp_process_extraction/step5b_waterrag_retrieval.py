@@ -1,47 +1,33 @@
-"""
-Retrieve wastewater-literature context for each permit from the WaterRAG index
-(Zhai et al. 2026, https://github.com/Mudi12138/WaterRAG) and cache it to disk for
-step5 --waterrag_context.
+# Cache WaterRAG literature context (Zhai et al. 2026, https://github.com/Mudi12138/WaterRAG) per permit
+# for step5 --waterrag_context. Only this file needs torch/langchain/faiss, so it runs in its own conda env.
+# Uses WaterRAG's retriever and reranker only; its generation returns prose and is limited to gpt-4o/gpt-4.1.
+# Authored with prompting to Claude Opus 4.8
 
-This is the only file in the pipeline that needs torch/langchain/faiss, so it runs in
-its own conda env. Everything downstream just reads the cached JSON.
-
-We use WaterRAG's retriever and reranker only, not its answer generation: generation
-returns prose and is whitelisted to gpt-4o/gpt-4.1, neither of which fits our task or
-our API proxy.
-
-Authored with prompting to Claude Opus 4.8
-"""
-
-import argparse
 import json
 import logging
-import os
-import pickle
 import sys
 from pathlib import Path
 
 import pandas as pd
 import requests
-import torch
-from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
 
+from helpers.paths import *
 from helpers.utils import (
     SEP,
     build_txt_jobs,
     leaves,
-    TXT_DIR,
-    MANUAL_CSV,
-    SITE_DATA_RELEVANT_CSV,
-    WATERRAG_RETRIEVAL_DIR,
 )
 from step4_keyword_extraction import search_processes_in_text
 
-# WATERRAG_RETRIEVAL_DIR is deliberately outside output/llm_extraction/: these are retrieved
-# literature chunks fed into step5's prompt, not extraction results. The schema-conformant
-# items land in output/llm_extraction/ontology-based_<model>-waterrag/.
 WATERRAG_DIR = Path.home() / "waterrag"
+if not (WATERRAG_DIR / "retrieval_simplified.py").exists():
+    raise SystemExit(
+        f"WaterRAG not found at {WATERRAG_DIR}. Clone it with:\n"
+        "  git lfs install && git clone https://github.com/Mudi12138/WaterRAG.git ~/waterrag"
+    )
+sys.path.insert(0, str(WATERRAG_DIR))
+from retrieval_simplified import RetrievalSystem
+from rag_llm_reranker_simplified import LLMReranker
 
 MAX_QUERY_TERMS = 8
 MAX_CHUNKS = 12
@@ -62,38 +48,6 @@ for noisy in ("httpx", "sentence_transformers", "transformers", "faiss", "Retrie
     logging.getLogger(noisy).setLevel(logging.WARNING)
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Cache WaterRAG literature context per permit for step5 --waterrag_context."
-    )
-    parser.add_argument("--all_facilities", action="store_true",
-                        help="Run the full CA set instead of the manually-read benchmark facilities.")
-    return parser.parse_args()
-
-
-# Their _load_indexes wraps FAISS and BM25 in one try, so a stale BM25 pickle takes the
-# whole system down. Load them independently and degrade to vector-only if BM25 fails.
-def load_indexes_independently(self):
-    self.bm25_retriever = None
-
-    faiss_path = os.path.join(self.index_path, "faiss_index")
-    embeddings = HuggingFaceEmbeddings(
-        model_name="BAAI/bge-large-en-v1.5",
-        model_kwargs={"device": "cuda" if torch.cuda.is_available() else "cpu"},
-        encode_kwargs={"normalize_embeddings": True},
-    )
-    self.faiss_index = FAISS.load_local(faiss_path, embeddings, allow_dangerous_deserialization=True)
-    print("  FAISS index loaded")
-
-    bm25_path = os.path.join(self.index_path, "bm25_retriever.pkl")
-    try:
-        with open(bm25_path, "rb") as handle:
-            self.bm25_retriever = pickle.load(handle)
-        print("  BM25 retriever loaded")
-    except Exception as exc:
-        print(f"  BM25 retriever failed to load ({exc}); falling back to vector-only retrieval.")
-
-
 # Their _call_api hardcodes max_tokens=2000 and throws away the usage block. gpt-5-mini
 # spends most of that on reasoning and returns empty content, so raise the ceiling and
 # record tokens on the way past for the cost column in table_1.
@@ -112,61 +66,23 @@ def call_api_with_usage(self, messages, api_model):
     )
     response.raise_for_status()
     data = response.json()
-    usage = data.get("usage", {})
-    rerank_usage["prompt"] += usage.get("prompt_tokens", 0)
-    rerank_usage["completion"] += usage.get("completion_tokens", 0)
+    rerank_usage["prompt"] += data["usage"]["prompt_tokens"]
+    rerank_usage["completion"] += data["usage"]["completion_tokens"]
     return data["choices"][0]["message"]["content"]
 
 
-def load_waterrag():
-    """Import WaterRAG from its clone and return (retrieval_system, reranker)."""
-    if not (WATERRAG_DIR / "retrieval_simplified.py").exists():
-        raise SystemExit(
-            f"WaterRAG not found at {WATERRAG_DIR}. Clone it with:\n"
-            "  git lfs install && git clone https://github.com/Mudi12138/WaterRAG.git ~/waterrag"
-        )
-    sys.path.insert(0, str(WATERRAG_DIR))
-
-    from retrieval_simplified import RetrievalSystem
-    from rag_llm_reranker_simplified import LLMReranker
-
-    RetrievalSystem._load_indexes = load_indexes_independently
-
-    index_path = str(WATERRAG_DIR / "0520_256")
-    key_path = Path("wwtp_process_extraction/API_key.txt")
-    if not key_path.exists():
-        raise SystemExit(f"{key_path} not found; needed for the reranker.")
-    api_key = key_path.read_text(encoding="utf-8").strip()
-    api_url = "https://aiapi-prod.stanford.edu/v1/chat/completions"
-
-    print(f"Loading WaterRAG index from {index_path} (this takes a few minutes)...")
-    retrieval = RetrievalSystem(index_path=index_path, openai_api_key=api_key, openai_api_url=api_url)
-
-    LLMReranker._call_api = call_api_with_usage
-    reranker = LLMReranker(api_key=api_key, default_model=RERANK_MODEL)
-    # __init__ takes no api_url and reads OPENAI_API_URL from the environment, defaulting to
-    # api.openai.com — which 401s on a Stanford key and then silently returns unranked order.
-    reranker.api_url = api_url
-    return retrieval, reranker
-
-
 def build_queries(description_text):
-    """One query per unit process the keyword matcher finds, plus one from the description opening.
-
-    Querying with the whole extract does not work: it is mostly legal boilerplate, and
-    bge-large truncates at 512 tokens anyway.
-    """
+    """One query per keyword-matched unit process, plus the description opening. The whole extract
+    is mostly legal boilerplate, and bge-large truncates at 512 tokens anyway."""
     hits = search_processes_in_text(description_text)
-    # drop the 'Unspecified X' catch-alls (priority 1000), which make useless literature queries
+    # drop priority-1000 matches (the 'Unspecified X' catch-alls and Secondary Filtration),
+    # which make useless literature queries
     processes = [
         name for name, details, _ in leaves
         if name in hits and details.get("priority") != 1000
     ]
-
     queries = [f"{name} wastewater treatment" for name in processes[:MAX_QUERY_TERMS]]
-    opening = " ".join(description_text.split())[:OVERVIEW_QUERY_CHARS]
-    if opening:
-        queries.append(opening)
+    queries.append(" ".join(description_text.split())[:OVERVIEW_QUERY_CHARS])
     return queries
 
 
@@ -189,7 +105,7 @@ def retrieve_context(retrieval, reranker, queries):
             if rank >= len(candidates):
                 continue
             doc = candidates[rank]
-            key = (doc.metadata.get("document_id"), doc.metadata.get("chunk_id"))
+            key = (doc.metadata["document_id"], doc.metadata["chunk_id"])
             if key in seen:
                 continue
             if len(chunks) >= MAX_CHUNKS or total + len(doc.page_content) > MAX_CONTEXT_CHARS:
@@ -197,9 +113,9 @@ def retrieve_context(retrieval, reranker, queries):
             seen.add(key)
             total += len(doc.page_content)
             chunks.append({
-                "document_id": doc.metadata.get("document_id"),
-                "chunk_id": doc.metadata.get("chunk_id"),
-                "citation": doc.metadata.get("citation_info"),
+                "document_id": doc.metadata["document_id"],
+                "chunk_id": doc.metadata["chunk_id"],
+                "citation": doc.metadata["citation_info"],
                 "query": query,
                 "text": doc.page_content,
             })
@@ -207,20 +123,24 @@ def retrieve_context(retrieval, reranker, queries):
 
 
 def main():
-    args = parse_args()
-    facilities_info = SITE_DATA_RELEVANT_CSV if args.all_facilities else MANUAL_CSV
-    jobs = build_txt_jobs(facilities_info)
+    jobs = build_txt_jobs(MANUAL_CSV)
     if not jobs:
-        raise SystemExit(f"No facilities found. Check {facilities_info} and {TXT_DIR}.")
+        raise SystemExit(f"No facilities found. Check {MANUAL_CSV} and {TXT_DIR}.")
 
-    retrieval, reranker = load_waterrag()
+    index_path = str(WATERRAG_DIR / "0520_256")
+    api_key = API_KEY_PATH.read_text(encoding="utf-8").strip()
+    api_url = f"{API_URL}/chat/completions"
+    print(f"Loading WaterRAG index from {index_path} (this takes a few minutes)...")
+    retrieval = RetrievalSystem(index_path=index_path, openai_api_key=api_key, openai_api_url=api_url)
+    LLMReranker._call_api = call_api_with_usage
+    reranker = LLMReranker(api_key=api_key, default_model=RERANK_MODEL)
+    # __init__ takes no api_url and reads OPENAI_API_URL from the environment, defaulting to
+    # api.openai.com — which 401s on a Stanford key and then silently returns unranked order.
+    reranker.api_url = api_url
 
     for _, txt_path, facility_name, place_id in jobs:
         description_text = txt_path.read_text(encoding="utf-8").split(SEP, 1)[0]
-        if not description_text.strip():
-            print(f"{facility_name}: empty description section, skipping.")
-            continue
-
+        # outside output/llm_extraction/: these are prompt context for step5, not extraction results
         output_path = WATERRAG_RETRIEVAL_DIR / f"{txt_path.stem}_{place_id}.json"
         if output_path.exists():
             print(f"{facility_name}: cached, skipping.")

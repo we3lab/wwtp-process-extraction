@@ -213,7 +213,7 @@ unmatched_df = pd.DataFrame({
     "Place ID": unmatched_pids,
     "FACILITY_NAME": [pid_to_name[pid] for pid in unmatched_pids],
     "has_kw_unit_process_data": ["yes" if pid in kw_has_data else "no" for pid in unmatched_pids],
-}).sort_values("has_kw_unit_process_data", key=lambda s: s.map({"yes": 0, "no": 1}))
+}).sort_values("has_kw_unit_process_data", key=lambda s: s.map({"yes": 0, "no": 1}), kind="stable")
 unmatched_df.to_csv(OUTPUT_DIR / "unmatched_kw_no_cwns.csv", index=False)
 print(f"  Unmatched KW/site_data (no CWNS): {len(unmatched_pids)} → unmatched_kw_no_cwns.csv")
 # print plain text, comma-separated around strings

@@ -1,30 +1,19 @@
-from contextlib import contextmanager
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from pathlib import Path
+import io
 import json
-import os
 import re
 import shutil
 import threading
 import time
 import requests
 import pandas as pd
-import uuid
-import tempfile
 import fitz
 import pdfplumber
 import unicodedata
 from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urljoin, urlunparse
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.select import Select
-from selenium.common.exceptions import TimeoutException
 from helpers.paths import *
 from helpers.utils import is_general_order, ZERO_WIDTH_CHARS
 # Modified using Claude 4.5
@@ -32,10 +21,11 @@ from helpers.utils import is_general_order, ZERO_WIDTH_CHARS
 # Run settings
 # None = today's active permit; a date like "2021-06-01" picks the order in force on that date
 AS_OF = None
-MAX_WORKERS = 24  # parallel Chrome sessions; raise if running on a server
+MAX_WORKERS = 24  # facilities fetched in parallel
 
 # Paths
-OTHER_PDFS_DIR = OUTPUT_DIR / "other_pdfs"
+# Downloads that are not (yet) accepted permits, plus the CIWQS Excel export
+OTHER_PDFS_DIR = PERMITS_DIR / "other_pdfs"
 # Every run writes its outputs to output/site_data/<date>/
 SNAPSHOT_DATE = AS_OF or datetime.now().strftime("%Y-%m-%d")
 SNAPSHOT_DIR = OUTPUT_DIR / "site_data" / SNAPSHOT_DATE
@@ -46,8 +36,6 @@ BASE_SIGNAL_CACHE_PATH = OUTPUT_DIR / "pdf_signal_cache.json"
 # True copies this run's facilities.json / site_data_all.csv / pdf_signal_cache.json to the top level and re-unions
 # site_data_relevant.csv from every dated folder (the 2026-08-13 folder is gone, so its rows would drop).
 UPDATE_TOP_LEVEL = False
-CHROME_BIN = Path.home() / "bin/chrome/chrome-linux64/chrome"
-CHROMEDRIVER_BIN = Path.home() / "bin/chrome/chromedriver-linux64/chromedriver"
 
 # CIWQS Interactive Regulated Facilities Report and its search filters
 CIWQS_ROOT = "https://ciwqs.waterboards.ca.gov"
@@ -58,17 +46,11 @@ ACCEPTED_PROGRAMS = set().union(*PROGRAMS.values())
 CIWQS_FACILITY_TYPE = "Wastewater Treatment Facility"
 CIWQS_WASTE_TYPE = "Domestic wastewater"
 CIWQS_RELATED_PERMIT_STATUS = "Active"
-CIWQS_DRILLDOWN_QUERY_DROP = ("enrollee",) # drop enrollee=Y filter
 FACILITY_CIWQS_COLUMNS = ["WDID", "Facility Name", "NPDES No."]
 COLLECTIVE_AGENCY = "organizations under" # watershed permits list this as the "agency"
 
-# Browser waits and page elements
-WAIT_TIME = 300  # CIWQS grid/export pages are large and slow
-CIWQS_OVERLAY_WAIT = 180  # loading overlay after changing page size
-XP_GRID = "//table[contains(@class,'ciwqsReportDataTable')]"
-PDF_XPATH = "//a[contains(text(), '.pdf') or contains(text(), '.PDF')]"
-# Older orders are occasionally filed as .doc
-ATTACHMENT_XPATH = "//a[contains(@href, 'PublicAttachmentRetriever')]"
+# Page-size value of the report grid's "ALL" option
+ALL_ROWS_PAGE_SIZE = "10000000"
 
 # Which order governs a facility: lowest rank wins, then newest effective date
 TYPE_RANK = {
@@ -97,9 +79,10 @@ MAX_SCAN_PAGES = 5
 MIN_PDF_PAGES = 10
 # WDR title phrases, matched against the text with all whitespace removed
 WDR_PHRASES = ("wastedischargerequirements", "wdrs", "waterrecyclingrequirements", "informationsheet")
-# Unicode spaces that PDFs put between letters; removed like ZERO_WIDTH_CHARS
-INVISIBLE_SPACES = dict.fromkeys(map(ord, "\u00a0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005"
-                                          "\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000"))
+# Zero-width characters plus the Unicode spaces PDFs put between letters; all removed
+INVISIBLE_CHARS = ZERO_WIDTH_CHARS | dict.fromkeys(map(ord, "\u00a0\u1680\u180e\u2000\u2001\u2002\u2003"
+                                                       "\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
+                                                       "\u202f\u205f\u3000"))
 # PDF text is messy: allow spaces, line breaks and hyphens between letters (soft hyphens are already removed)
 FUZZY_INNER_SEP = r"[\s\-]*"
 # Matches "the following ... subject to ... set forth in this ... order", up to 600 chars per gap
@@ -116,8 +99,12 @@ CAG_PERMIT_RE = re.compile(r"\bca\s*g\d+", re.IGNORECASE)
 # facility + order (Reg_Measure_ID, else Order_No) + PDF
 SNAPSHOT_UNION_KEY = ["Place ID", "order_key", "PDF_File"]
 
-# Each worker buffers its log lines; logged_facility prints them together so they don't interleave
+# Each worker buffers its log lines and prints them as one block, so workers don't interleave
 worker_log = threading.local()
+PRINT_LOCK = threading.Lock()
+# Orders already processed this run, shared by the download workers (single dict reads/writes are thread-safe)
+REG_ID_TO_INFO = {}
+ADDTL_REG_ID_TO_PDFS = {}
 
 
 def save_facilities(facilities_by_place):
@@ -193,6 +180,15 @@ def select_value(soup, name, wanted):
     return match.get("value", wanted)
 
 
+def ciwqs_session():
+    session = requests.Session()
+    session.headers["User-Agent"] = (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    )
+    return session
+
+
 def retry_request(session, method, url, data=None):
     """Retry timeouts and dropped connections (CIWQS drops big responses); HTTP errors raise at once."""
     for attempt in range(1, 5):
@@ -206,32 +202,6 @@ def retry_request(session, method, url, data=None):
                 raise
             time.sleep(3 * attempt)
 
-
-def new_chrome_driver(download_dir):
-    """Headless Chrome that saves downloads to download_dir (every browser session uses this)."""
-    options = webdriver.ChromeOptions()
-    prefs = {
-        "download.default_directory": os.path.abspath(download_dir),
-        "download.prompt_for_download": False,
-        "download.directory_upgrade": True,
-        "safebrowsing.enabled": True,
-        "profile.default_content_settings.popups": 0,
-        "profile.default_content_setting_values.automatic_downloads": 1,
-    }
-    options.add_experimental_option("prefs", prefs)
-    # "normal" waits for load event; CIWQS often omits programDrop until then (eager returns too early).
-    options.page_load_strategy = "normal"
-    options.add_argument("--blink-settings=imagesEnabled=false")
-    user_data_dir = os.path.join(tempfile.gettempdir(), f"chrome_user_data_{uuid.uuid4().hex}")
-    options.add_argument(f"--user-data-dir={user_data_dir}")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--headless")  # for server/SSH
-    options.binary_location = str(CHROME_BIN)
-    driver = webdriver.Chrome(service=Service(str(CHROMEDRIVER_BIN)), options=options)
-    driver.set_page_load_timeout(WAIT_TIME)
-    return driver
 
 
 def ciwqs_post_data(hidden, soup, programs):
@@ -257,30 +227,13 @@ def extract_drilldown_url(soup, *, allow_program_scope=True):
     ]
     excluded = ["place=", "majorminor="] + ([] if allow_program_scope else ["program="])
     filtered = [c for c in candidates if not any(k in c.lower() for k in excluded)]
-    chosen = filtered[0] if filtered else (candidates[0] if candidates else None)
+    chosen = next(iter(filtered + candidates), None)
     if not chosen:
         return None
     parts = urlparse(chosen)
-    kept = [
-        (k, v)
-        for k, v in parse_qsl(parts.query, keep_blank_values=True)
-        if k.lower() not in CIWQS_DRILLDOWN_QUERY_DROP
-    ]
+    # drop the enrollee=Y filter
+    kept = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k.lower() != "enrollee"]
     return urlunparse(parts._replace(query=urlencode(kept)))
-
-
-@contextmanager
-def open_in_new_tab(driver, url, main_window):
-    """Open `url` in a new tab, yield, then close the tab and switch back to main."""
-    driver.execute_script(f"window.open('{url}', '_blank');")
-    time.sleep(1)
-    new_window = next(h for h in driver.window_handles if h != main_window)
-    driver.switch_to.window(new_window)
-    try:
-        yield
-    finally:
-        driver.close()
-        driver.switch_to.window(main_window)
 
 
 def resolve_download_url(href, soup):
@@ -294,19 +247,10 @@ def resolve_download_url(href, soup):
     return href
 
 
-def find_best_order(driver, fac_url, main_window):
-    """(order_url, reg_measure_type, wdid, eff, addtl_orders, order_no) of the active order
-    (or active at AS_OF)
-
-    order_url is None without a link
-
-    addtl_orders = other linked NPDES PERMITs."""
-    with open_in_new_tab(driver, fac_url, main_window):
-        WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.TAG_NAME, "table")))
-        time.sleep(1)
-        page_html = driver.page_source
-
-    soup = BeautifulSoup(page_html, "html.parser")
+def find_best_order(session, fac_url):
+    """(order_url, reg_measure_type, wdid, eff, addtl_orders, order_no) of the active order (or the one
+    active at AS_OF). order_url is None without a link; addtl_orders are the other linked NPDES PERMITs."""
+    soup = BeautifulSoup(retry_request(session, "GET", fac_url).text, "html.parser")
     for table in soup.find_all("table"):
         all_rows = table.find_all("tr")
         for hdr_idx, row in enumerate(all_rows[:4]):
@@ -360,126 +304,54 @@ def find_best_order(driver, fac_url, main_window):
     return None, None, None, None, [], ""
 
 
-def download_order_pdfs(driver, order_url, worker_dir, main_window):
-    """Download an order page's PDFs into worker_dir, then move them to other_pdfs/.
-    Returns (downloaded_pdfs, missed_pdfs, total_on_page)."""
+def download_order_pdfs(session, order_url):
+    """Download an order page's PDFs into permits/other_pdfs/. Returns (downloaded_pdfs, missed_pdfs, total_on_page)."""
     downloaded_pdfs = []
     missed_pdfs = []
-    with open_in_new_tab(driver, order_url, main_window):
+    soup = BeautifulSoup(retry_request(session, "GET", order_url).text, "html.parser")
+    # Link text as a browser shows it (whitespace collapsed)
+    links = [(" ".join(a.get_text().split()), a) for a in soup.find_all("a")]
+    pdf_documents = [(text, a) for text, a in links if ".pdf" in text or ".PDF" in text]
+    all_attachments = [(text, a) for text, a in links if "PublicAttachmentRetriever" in a.get("href", "")]
+    # Count every attachment, so a page with only .doc files (some older orders) still counts as found
+    total_on_page = max(len(all_attachments), len(pdf_documents))
+    say(f"  Found {len(pdf_documents)} PDFs on page"
+        + (f" ({len(all_attachments)} attachments total)"
+           if len(all_attachments) != len(pdf_documents) else ""))
+    if all_attachments and not pdf_documents:
+        others = [text for text, _ in all_attachments if text]
+        say(f"  ! attachments present but none are PDF, skipping: {others}")
+
+    for pdf_name, link in pdf_documents:
         try:
-            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, ATTACHMENT_XPATH)))
-        except TimeoutException:
-            pass
-        pdf_documents = driver.find_elements(By.XPATH, PDF_XPATH)
-        all_attachments = driver.find_elements(By.XPATH, ATTACHMENT_XPATH)
-        # Count every attachment, so a page with only .doc files still counts as found
-        total_on_page = max(len(all_attachments), len(pdf_documents))
-        say(f"  Found {len(pdf_documents)} PDFs on page"
-            + (f" ({len(all_attachments)} attachments total)"
-               if len(all_attachments) != len(pdf_documents) else ""))
-        if all_attachments and not pdf_documents:
-            others = [a.text for a in all_attachments if a.text]
-            say(f"  ! attachments present but none are PDF, skipping: {others}")
-
-        for pdf_element in pdf_documents:
-            try:
-                pdf_name = pdf_element.text
-                if total_on_page > 1:
-                    if name_skipped(pdf_name):
-                        continue
-                    if any(w in pdf_name.lower() for w in CONTINGENT_SKIP_WORDS) and not name_kept(pdf_name):
-                        continue
-
-                # TODO: can remove if not re-running old dates
-                if any(os.path.exists(os.path.join(d, pdf_name)) for d in (OTHER_PDFS_DIR, PERMITS_DIR)):
-                    say(f"        Already exists, skipping: {pdf_name}")
-                    downloaded_pdfs.append(pdf_name)
+            if total_on_page > 1:
+                if name_skipped(pdf_name):
+                    continue
+                if any(w in pdf_name.lower() for w in CONTINGENT_SKIP_WORDS) and not name_kept(pdf_name):
                     continue
 
-                say(f"        Downloading: {pdf_name}")
-                before = {f for f in os.listdir(worker_dir) if f.lower().endswith(".pdf")}
-                pdf_element.click()
+            # TODO: can remove if not re-running old dates
+            if any((d / pdf_name).exists() for d in (OTHER_PDFS_DIR, PERMITS_DIR)):
+                say(f"        Already exists, skipping: {pdf_name}")
+                downloaded_pdfs.append(pdf_name)
+                continue
 
-                end = time.time() + 90
-                new_file = None
-                while time.time() < end:
-                    current = {f for f in os.listdir(worker_dir) if f.lower().endswith(".pdf")}
-                    new = current - before
-                    if new:
-                        newest = max(new, key=lambda f: os.path.getctime(os.path.join(worker_dir, f)))
-                        if file_stable(os.path.join(worker_dir, newest)):
-                            new_file = newest
-                            break
-                    time.sleep(0.5)
-
-                if not new_file:
-                    say(f"        X Timed out waiting for: {pdf_name}")
-                    missed_pdfs.append(pdf_name)
-                    continue
-                downloaded_pdfs.append(new_file)
-            except Exception as e:
-                say(f"        X Download failed: {pdf_name} — {e}")
-                missed_pdfs.append(pdf_name)
-
-    for fname in downloaded_pdfs:
-        src, dst = os.path.join(worker_dir, fname), os.path.join(OTHER_PDFS_DIR, fname)
-        if os.path.exists(src) and not os.path.exists(dst):
-            shutil.move(src, dst)
+            say(f"        Downloading: {pdf_name}")
+            response = retry_request(session, "GET", abs_url(link["href"]))
+            # saved under the server's file name, as a browser download would be
+            file_name = response.headers["Content-Disposition"].split("filename=", 1)[1].strip().strip('"')
+            if not (OTHER_PDFS_DIR / file_name).exists():
+                (OTHER_PDFS_DIR / file_name).write_bytes(response.content)
+            downloaded_pdfs.append(file_name)
+        except Exception as e:
+            say(f"        X Download failed: {pdf_name} — {e}")
+            missed_pdfs.append(pdf_name)
     return downloaded_pdfs, missed_pdfs, total_on_page
 
 
-def file_stable(path):
-    try:
-        s = os.path.getsize(path)
-        time.sleep(0.5)
-        return s > 0 and os.path.getsize(path) == s
-    except OSError:
-        return False
-
-
-def load_ciwqs_table(driver, url, label="url"):
-    wait = WebDriverWait(driver, WAIT_TIME)
-    for attempt in range(1, 4):
-        try:
-            driver.get(url)
-            wait.until(EC.presence_of_element_located((By.XPATH, XP_GRID)))
-            return
-        except TimeoutException:
-            print(f"[selenium] {label} slow ({attempt}/3)…")
-            if attempt == 3:
-                raise
-            driver.execute_script("window.stop();")
-
-
-def set_page_all(driver):
-    for attempt in range(1, 4):
-        try:
-            if driver.find_elements(By.NAME, "pagesizeselect"):
-                sel_el = WebDriverWait(driver, 120).until(
-                    EC.element_to_be_clickable((By.NAME, "pagesizeselect"))
-                )
-                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", sel_el)
-                Select(sel_el).select_by_visible_text("ALL")
-                time.sleep(2)
-            WebDriverWait(driver, CIWQS_OVERLAY_WAIT).until(
-                EC.invisibility_of_element_located((By.CLASS_NAME, "loading"))
-            )
-            return WebDriverWait(driver, WAIT_TIME).until(
-                EC.presence_of_element_located((By.XPATH, XP_GRID))
-            )
-        except Exception as e:
-            print(f"[selenium] pagesizeselect ALL did not stabilize ({attempt}/3): {e}")
-            if attempt == 3:
-                raise
-            time.sleep(3)
-
 
 def run_ciwqs_search():
-    ciwqs = requests.Session()
-    ciwqs.headers["User-Agent"] = (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
+    ciwqs = ciwqs_session()
     r = retry_request(ciwqs, 'GET', REGULATED_FACILITY_REPORT_URL)
     search_soup = BeautifulSoup(r.text, "html.parser")
     hidden_inputs = {
@@ -491,7 +363,7 @@ def run_ciwqs_search():
     # The all-programs search gives the Excel export link; per-program searches give flat tables
     print("[requests] Submitting filters")
     resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}",
-                        data=ciwqs_post_data(hidden_inputs, search_soup, list(PROGRAMS)))
+                        data=ciwqs_post_data(hidden_inputs, search_soup, PROGRAMS))
     total_url = extract_drilldown_url(
         BeautifulSoup(resp.text, "html.parser"), allow_program_scope=False
     )
@@ -501,7 +373,7 @@ def run_ciwqs_search():
 
     # Re-submit once per program to get per-facility flat-table drilldown URLs.
     program_urls = []
-    for prog in list(PROGRAMS):
+    for prog in PROGRAMS:
         prog_resp = retry_request(ciwqs, 'POST', f"{CIWQS_SERVLET}?OWASP_CSRFTOKEN={csrf}",
                                 data=ciwqs_post_data(hidden_inputs, search_soup, [prog]))
         prog_url = extract_drilldown_url(BeautifulSoup(prog_resp.text, "html.parser"))
@@ -511,48 +383,12 @@ def run_ciwqs_search():
         else:
             print(f"[requests] Warning: no drilldown URL found for {prog}")
 
-    # Fresh Chrome profile (no cookies), used only for the Excel export
-    driver = new_chrome_driver(OTHER_PDFS_DIR)
-    load_ciwqs_table(driver, total_url, "Facility page")
-    print("Detail page loaded for Excel export")
-    time.sleep(5)
+    # The "Excel" export is a tab-separated text file from new session
     parts = urlparse(total_url)
     pairs = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k != "exportToExcel"]
     pairs.append(("exportToExcel", "Y"))
-    excel_export_url = urlunparse(parts._replace(query=urlencode(pairs)))
-
-    # Only files that appear after the request count, so an old export left in other_pdfs/ is ignored
-    files_before = set(os.listdir(OTHER_PDFS_DIR))
-    requested_at = time.time()
-    for attempt in range(1, 3):
-        try:
-            driver.get(excel_export_url)
-            break
-        except TimeoutException:
-            if attempt == 2:
-                raise
-            driver.execute_script("window.stop();")
-    time.sleep(2)
-
-    # Wait for the download (.crdownload while in progress); give up if nothing starts in 90 s
-    excel_files = []
-    while time.time() < requested_at + WAIT_TIME:
-        new_files = [OTHER_PDFS_DIR / f for f in set(os.listdir(OTHER_PDFS_DIR)) - files_before]
-        if not new_files and time.time() > requested_at + 90:
-            break
-        finished = [f for f in new_files if ".xls" in f.name and not f.name.endswith(".crdownload")]
-        if finished and len(finished) == len(new_files) and all(map(file_stable, finished)):
-            excel_files = finished
-            break
-        time.sleep(0.5)
-
-    if not excel_files:
-        print(f"No Excel file found after {WAIT_TIME}s")
-        driver.quit()
-        raise SystemExit
-
-    excel_file = max(excel_files, key=os.path.getctime)
-    df = pd.read_csv(excel_file, sep='\t', encoding='latin-1', on_bad_lines='warn', dtype=str)
+    excel_export = retry_request(ciwqs_session(), "GET", urlunparse(parts._replace(query=urlencode(pairs))))
+    df = pd.read_csv(io.BytesIO(excel_export.content), sep='\t', encoding='latin-1', on_bad_lines='warn', dtype=str)
 
     # Re-apply the search form's filters to the export
     df = df[
@@ -574,8 +410,6 @@ def run_ciwqs_search():
 
     df_deduplicated.to_csv(SNAPSHOT_DIR / "site_data_all.csv", index=False)
     print(f"Saved {len(df_deduplicated)} rows to site_data/{SNAPSHOT_DATE}/site_data_all.csv")
-
-    driver.quit()
     return program_urls
 
 
@@ -587,13 +421,14 @@ def collect_facility_page_urls(program_urls):
 
     for prog, prog_url in program_urls:
         print(f"\n--- {prog}: {prog_url}")
-        # New Chrome per program: cookies from the search make tables load too slowly
-        driver = new_chrome_driver(OTHER_PDFS_DIR)
-        load_ciwqs_table(driver, prog_url, prog)
-        set_page_all(driver)
-
-        page_soup = BeautifulSoup(driver.page_source, "html.parser")
-        # set_page_all already waited for this grid table
+        # A fresh session per program: cookies from the search make tables load too slowly. The drilldown
+        # shows one page of rows; its page-size menu reloads the same report with every row.
+        session = ciwqs_session()
+        first_page = BeautifulSoup(retry_request(session, "GET", prog_url).text, "html.parser")
+        page_size_servlet = first_page.find("select", {"name": "pagesizeselect"})["onchange"].split("'")[1]
+        all_rows_url = (f"{CIWQS_ROOT}/ciwqs/readOnly/{page_size_servlet}"
+                        f"&newPageNumber=0&newPageSize={ALL_ROWS_PAGE_SIZE}")
+        page_soup = BeautifulSoup(retry_request(session, "GET", all_rows_url).text, "html.parser")
         data_table = page_soup.find("table", class_=lambda c: c and "ciwqsReportDataTable" in c)
         bs_rows_prog = data_table.find_all("tr")
         print(f"{prog}: {len(bs_rows_prog)} <tr> after ALL page size")
@@ -629,8 +464,6 @@ def collect_facility_page_urls(program_urls):
             if not any(f["Facility Name"] == facility["Facility Name"] for f in entry["facilities"]):
                 entry["facilities"].append(facility)
 
-        driver.quit()
-
     # Warn about site_data_all.csv facilities that no per-program table listed
     site_all = pd.read_csv(SNAPSHOT_DIR / "site_data_all.csv", dtype=str).fillna("")
     scraped_names = {
@@ -642,149 +475,113 @@ def collect_facility_page_urls(program_urls):
         if fac_name and fac_name not in scraped_names:
             print(f"  ! {fac_name} in site_data_all.csv but not found in any CIWQS table")
 
-    print(f"\n✓ Found {len(facilities_by_place)} unique facilities (placeIDs)")
+    print(f"\n Found {len(facilities_by_place)} unique placeIDs")
 
     save_facilities(facilities_by_place)
 
     return facilities_by_place
 
 
-def needs_retry(entry):
-    # Unprocessed (exception during process_facility left "facilities" key intact)
-    if "facilities" in entry:
-        return True
-    # Deliberately skipped (no link or pre-2004) — not a failure, never retry
-    if entry.get("pdf_skip_reason"):
-        return False
-    # Clicked an order but got 0 PDFs: usually a slow page, so retry
-    if entry.get("reg_measure_type") and not entry["pdfs"] and not entry["total_pdfs"]:
-        return True
-    return False
+def process_facility(args):
+    """Find one facility's order and download its PDFs; its log lines print as one block."""
+    idx, total, place_id, entry = args
+    worker_log.lines = []
+    session = ciwqs_session()
+    fac_url = facility_url(place_id)
+    fac_name = entry["facilities"][0]["Facility Name"] if "facilities" in entry else entry["Facility Name"]
+    say(f"[{idx}/{total}] {fac_name}")
+    try:
+        order_url, rm_type, wdid, eff, addtl_orders, order_no = find_best_order(session, fac_url)
+        reg_id = url_param(order_url, "regMeasID") if order_url else None
+        info = {
+            "Facility Name": fac_name,
+            "WDID": wdid,
+            "pdfs": [],
+            "total_pdfs": 0,
+            "reg_measure_id": reg_id,
+            "reg_measure_type": rm_type,
+            "order_no": order_no,
+        }
+        already_done = REG_ID_TO_INFO.get(reg_id) if reg_id else None
+
+        if rm_type is None:
+            say("  X No suitable active NPDES order found")
+        # Store order metadata but skip PDFs if no link or pre-2004
+        elif not order_url or eff.year < 2004:
+            info["pdf_skip_reason"] = "pre-2004" if eff.year < 2004 else "no link"
+            say(f"  Skipping PDFs ({info['pdf_skip_reason']}): {rm_type}, eff={eff.date()}")
+        elif already_done:
+            say(f"  Dedup: reusing already-processed order {reg_id}")
+            info = {**already_done, "Facility Name": fac_name, "WDID": wdid}
+        else:
+            downloaded_pdfs, missed_pdfs, total_pdfs = download_order_pdfs(session, order_url)
+            info.update(pdfs=downloaded_pdfs, missed_pdfs=missed_pdfs, total_pdfs=total_pdfs)
+
+            # Download PDFs for additional NPDES PERMIT orders (effective 2004+)
+            addtl_reg_ids, addtl_wdids = [], []
+            for addtl_url, addtl_wdid, addtl_eff in addtl_orders:
+                if addtl_eff.year < 2004:
+                    continue
+                addtl_reg_id = url_param(addtl_url, "regMeasID")
+                if addtl_reg_id in ADDTL_REG_ID_TO_PDFS:
+                    extra_pdfs = ADDTL_REG_ID_TO_PDFS[addtl_reg_id]
+                elif addtl_reg_id in REG_ID_TO_INFO:
+                    extra_pdfs = REG_ID_TO_INFO[addtl_reg_id]["pdfs"]
+                else:
+                    extra_pdfs, extra_missed, _ = download_order_pdfs(session, addtl_url)
+                    info["missed_pdfs"].extend(extra_missed)
+                    if addtl_reg_id:
+                        ADDTL_REG_ID_TO_PDFS[addtl_reg_id] = extra_pdfs
+                info["pdfs"].extend(extra_pdfs)
+                addtl_reg_ids.append(addtl_reg_id or "")
+                addtl_wdids.append(addtl_wdid or "")
+            if addtl_reg_ids:
+                info["addtl_reg_measure_id"] = ",".join(addtl_reg_ids)
+                info["addtl_WDID"] = ",".join(addtl_wdids)
+            if reg_id:
+                REG_ID_TO_INFO[reg_id] = info
+
+        entry.update(info)
+        entry.pop("facilities", None)
+    except Exception as e:
+        say(f"  X {e}")
+    lines, worker_log.lines = worker_log.lines, None
+    with PRINT_LOCK:
+        print("\n".join(lines), flush=True)
+
+
+def run_workers(items):
+    # Fills in pdfs, total_pdfs, reg_measure_id/type on each (place_id, entry) in place
+    jobs = [(idx, len(items), place_id, entry) for idx, (place_id, entry) in enumerate(items, 1)]
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        executor.map(process_facility, jobs)
 
 
 def download_facility_page_pdfs(facilities_by_place):
     print("\n STEP 2: Visiting facility pages and downloading PDFs")
-
-    reg_id_to_info = {}
-    addtl_reg_id_to_pdfs = {}
-    lock = threading.Lock()
-
-    items = list(facilities_by_place.items())
-    total = len(items)
-
-    def process_facility(args):
-        idx, (place_id, entry) = args
-        worker_dir = tempfile.mkdtemp(prefix="npdes_dl_")
-        driver = new_chrome_driver(worker_dir)
-        main_window = driver.window_handles[0]
-        fac_url = facility_url(place_id)
-        fac_name = entry["facilities"][0]["Facility Name"] if "facilities" in entry else entry.get("Facility Name", place_id)
-        say(f"[{idx}/{total}] {fac_name}")
-        try:
-            order_url, rm_type, wdid, eff, addtl_orders, order_no = find_best_order(driver, fac_url, main_window)
-            reg_id = url_param(order_url, "regMeasID") if order_url else None
-            info = {
-                "Facility Name": fac_name,
-                "WDID": wdid,
-                "pdfs": [],
-                "total_pdfs": 0,
-                "reg_measure_id": reg_id,
-                "reg_measure_type": rm_type,
-                "order_no": order_no,
-            }
-            with lock:
-                already_done = reg_id_to_info.get(reg_id) if reg_id else None
-
-            if rm_type is None:
-                say("  X No suitable active NPDES order found")
-            # Store order metadata but skip PDFs if no link or pre-2004
-            elif not order_url or eff.year < 2004:
-                info["pdf_skip_reason"] = "pre-2004" if eff.year < 2004 else "no link"
-                say(f"  Skipping PDFs ({info['pdf_skip_reason']}): {rm_type}, eff={eff.date()}")
-            elif already_done:
-                say(f"  Dedup: reusing already-processed order {reg_id}")
-                info = {**already_done, "Facility Name": fac_name, "WDID": wdid}
-            else:
-                downloaded_pdfs, missed_pdfs, total_pdfs = download_order_pdfs(
-                    driver, order_url, worker_dir, main_window
-                )
-                info.update(pdfs=downloaded_pdfs, missed_pdfs=missed_pdfs, total_pdfs=total_pdfs)
-
-                # Download PDFs for additional NPDES PERMIT orders (effective 2004+)
-                addtl_reg_ids, addtl_wdids = [], []
-                for addtl_url, addtl_wdid, addtl_eff in addtl_orders:
-                    if addtl_eff.year < 2004:
-                        continue
-                    addtl_reg_id = url_param(addtl_url, "regMeasID")
-                    with lock:
-                        if addtl_reg_id in addtl_reg_id_to_pdfs:
-                            extra_pdfs = addtl_reg_id_to_pdfs[addtl_reg_id]
-                        elif addtl_reg_id in reg_id_to_info:
-                            extra_pdfs = reg_id_to_info[addtl_reg_id].get("pdfs", [])
-                        else:
-                            extra_pdfs = None
-                    if extra_pdfs is None:
-                        extra_pdfs, extra_missed, _ = download_order_pdfs(
-                            driver, addtl_url, worker_dir, main_window
-                        )
-                        info["missed_pdfs"].extend(extra_missed)
-                        with lock:
-                            if addtl_reg_id:
-                                addtl_reg_id_to_pdfs[addtl_reg_id] = extra_pdfs
-                    info["pdfs"].extend(extra_pdfs)
-                    addtl_reg_ids.append(addtl_reg_id or "")
-                    addtl_wdids.append(addtl_wdid or "")
-                if addtl_reg_ids:
-                    info["addtl_reg_measure_id"] = ",".join(addtl_reg_ids)
-                    info["addtl_WDID"] = ",".join(addtl_wdids)
-                with lock:
-                    if reg_id:
-                        reg_id_to_info[reg_id] = info
-
-            entry.update(info)
-            entry.pop("facilities", None)
-        except Exception as e:
-            say(f"  X {e}")
-        finally:
-            try:
-                driver.quit()
-            except Exception:
-                pass
-            shutil.rmtree(worker_dir, ignore_errors=True)
-
-    def logged_facility(args):
-        """Print each facility's lines as one block, not mixed with other workers."""
-        worker_log.lines = []
-        try:
-            process_facility(args)
-        finally:
-            lines, worker_log.lines = worker_log.lines, None
-            if lines:
-                with lock:
-                    print("\n".join(lines), flush=True)
-
-    # Fills in pdfs, total_pdfs, reg_measure_id/type on each entry in place
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        executor.map(logged_facility, enumerate(items, 1))
+    run_workers(list(facilities_by_place.items()))
 
     retry_count = 0
     while True:
+        # Retry
+        # - facilities still unprocessed (an exception left the "facilities" key)
+        # - orders that gave 0 PDFs due to slow page
+        # Don't retry no link, pre-2004 skips
         retry_items = [
             (place_id, entry)
             for place_id, entry in facilities_by_place.items()
-            if needs_retry(entry)
+            if "facilities" in entry
+            or (not entry.get("pdf_skip_reason") and entry.get("reg_measure_type")
+                and not entry["pdfs"] and not entry["total_pdfs"])
         ]
         if not retry_items:
             break
         retry_count += 1
         print(f"\nRetry pass {retry_count}: {len(retry_items)} facilities with failed downloads")
-        with lock:
-            for _, entry in retry_items:
-                reg_id_to_info.pop(entry.get("reg_measure_id"), None)
-                entry.pop("missed_pdfs", None)
-        total = len(retry_items)
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            executor.map(logged_facility, enumerate(retry_items, 1))
+        for _, entry in retry_items:
+            REG_ID_TO_INFO.pop(entry.get("reg_measure_id"), None)
+            entry.pop("missed_pdfs", None)
+        run_workers(retry_items)
 
     save_facilities(facilities_by_place)
 
@@ -799,7 +596,7 @@ def portfolio_subdocs(doc):
             if doc.embfile_info(i)["filename"].lower().endswith(".pdf")]
 
 
-def extract_pdf_text(pdf_path: str) -> str:
+def extract_pdf_text(pdf_path: Path) -> str:
     """Text of the first MAX_SCAN_PAGES pages (per sub-file for a PDF Portfolio), original case."""
     parts = []
     with fitz.open(pdf_path) as doc:
@@ -817,16 +614,16 @@ def extract_pdf_text(pdf_path: str) -> str:
                         text = fitz_page.get_text(textpage=fitz_page.get_textpage_ocr())
                     parts.append(text)
     raw = unicodedata.normalize("NFKC", " ".join(parts))
-    return raw.translate(ZERO_WIDTH_CHARS).translate(INVISIBLE_SPACES)
+    return raw.translate(INVISIBLE_CHARS)
 
 
-def length_of_pdf(pdf_path: str) -> int:
+def length_of_pdf(pdf_path: Path) -> int:
     with fitz.open(pdf_path) as doc:
         subdocs = portfolio_subdocs(doc)
         return len(doc) if subdocs is None else sum(len(sub) for sub in subdocs)
 
 
-def detect_npdes(pdf_file: str) -> str | None:
+def detect_npdes(pdf_file: Path) -> str | None:
     """Doc type ("NPDES", "NOA", "WDR") of a PDF from the text of its first pages, or None."""
     if length_of_pdf(pdf_file) < MIN_PDF_PAGES:
         return None
@@ -855,7 +652,7 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     print("\n STEP 3: Detecting and moving NPDES PDFs")
 
     # Include PDFs already moved to permits/ in previous runs
-    npdes_pdfs = {f for f in os.listdir(PERMITS_DIR) if f.endswith(".pdf")}
+    npdes_pdfs = {f.name for f in PERMITS_DIR.iterdir() if f.name.endswith(".pdf")}
     # PDF -> reg measure groups (reg_measure_id, or place_id when there is none)
     pdf_to_groups = {}
     group_to_rm_type = {}
@@ -870,16 +667,16 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
     single_pdf_files = {entry["pdfs"][0] for entry in facilities_by_place.values()
                         if len(entry["pdfs"]) == 1}
 
-    with open(SIGNAL_CACHE_PATH if SIGNAL_CACHE_PATH.exists() else BASE_SIGNAL_CACHE_PATH) as f:
-        signal_cache = json.load(f)
+    cache_path = SIGNAL_CACHE_PATH if SIGNAL_CACHE_PATH.exists() else BASE_SIGNAL_CACHE_PATH
+    signal_cache = json.loads(cache_path.read_text())
 
-    # Detect NPDES signals for every PDF in other_pdfs/, then move NPDES-positive files to permits/.
-    pdf_files = [f for f in os.listdir(OTHER_PDFS_DIR) if f.endswith(".pdf")]
+    # Detect NPDES signals for every PDF in permits/other_pdfs/, then move NPDES-positive files to permits/.
+    pdf_files = [f for f in OTHER_PDFS_DIR.iterdir() if f.name.endswith(".pdf")]
     reused = kept_out = 0
-    for filename in pdf_files:
-        src = os.path.join(OTHER_PDFS_DIR, filename)
+    for src in pdf_files:
+        filename = src.name
         # Reset the cache entry if the file changed since it was cached; a surviving "signal" is a cache hit
-        st = os.stat(src)
+        st = src.stat()
         fingerprint = f"{st.st_size}:{st.st_mtime_ns}"
         entry = signal_cache.get(filename)
         if not entry or entry["fp"] != fingerprint:
@@ -891,7 +688,7 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
             entry["signal"] = detect_npdes(src)
         matched_type = entry["signal"]
 
-        stem = os.path.splitext(filename)[0]
+        stem = src.stem
         assoc_types = {group_to_rm_type[group] for group in pdf_to_groups.get(filename, set())}
         enrollee_only = bool(assoc_types) and all(t.startswith("ENROLLEE") for t in assoc_types)
         if matched_type and name_skipped(stem) and not name_kept(stem):
@@ -905,14 +702,13 @@ def detect_and_move_npdes_pdfs(facilities_by_place):
         if not matched_type and filename in single_pdf_files and "pages" not in entry:
             entry["pages"] = length_of_pdf(src)
         if matched_type or (filename in single_pdf_files and entry["pages"] >= 3):
-            os.rename(src, os.path.join(PERMITS_DIR, filename))
+            src.rename(PERMITS_DIR / filename)
             print(f"{matched_type} detected: {filename}" if matched_type else f"single PDF, kept: {filename}")
             npdes_pdfs.add(filename)
         else:
             kept_out += 1
 
-    with open(SIGNAL_CACHE_PATH, "w") as f:
-        json.dump(signal_cache, f, sort_keys=True, indent=0)
+    SIGNAL_CACHE_PATH.write_text(json.dumps(signal_cache, sort_keys=True, indent=0))
     print(f"  Scanned {len(pdf_files)} PDFs ({reused} reused from cache, "
           f"{len(pdf_files) - reused} newly scanned)")
     print(f"\nNPDES/NOA/WDR PDFs moved: {len(npdes_pdfs)}")
@@ -1027,7 +823,7 @@ def union_site_data_snapshots():
     current = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
     new_pdfs = set(union["PDF_File"]) - set(current["PDF_File"])
     missing = [f for f in union["PDF_File"].unique()
-               if f and not os.path.exists(PERMITS_DIR / f)]
+               if f and not (PERMITS_DIR / f).exists()]
     union.to_csv(SITE_DATA_RELEVANT_CSV, index=False)
 
     print("\nsnapshot rows:")

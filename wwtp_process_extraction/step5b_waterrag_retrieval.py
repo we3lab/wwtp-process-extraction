@@ -1,12 +1,12 @@
 # Cache WaterRAG literature context (Zhai et al. 2026, https://github.com/Mudi12138/WaterRAG) per permit
 # for step5 --waterrag_context. Only this file needs torch/langchain/faiss, so it runs in its own conda env.
 # Uses WaterRAG's retriever and reranker only; its generation returns prose and is limited to gpt-4o/gpt-4.1.
+# Needs WaterRAG at ~/waterrag: git lfs install && git clone https://github.com/Mudi12138/WaterRAG.git ~/waterrag
 # Authored with prompting to Claude Opus 4.8
 
 import json
 import logging
 import sys
-from pathlib import Path
 
 import pandas as pd
 import requests
@@ -20,11 +20,6 @@ from helpers.utils import (
 from step4_keyword_extraction import search_processes_in_text
 
 WATERRAG_DIR = Path.home() / "waterrag"
-if not (WATERRAG_DIR / "retrieval_simplified.py").exists():
-    raise SystemExit(
-        f"WaterRAG not found at {WATERRAG_DIR}. Clone it with:\n"
-        "  git lfs install && git clone https://github.com/Mudi12138/WaterRAG.git ~/waterrag"
-    )
 sys.path.insert(0, str(WATERRAG_DIR))
 from retrieval_simplified import RetrievalSystem
 from rag_llm_reranker_simplified import LLMReranker
@@ -48,9 +43,8 @@ for noisy in ("httpx", "sentence_transformers", "transformers", "faiss", "Retrie
     logging.getLogger(noisy).setLevel(logging.WARNING)
 
 
-# Their _call_api hardcodes max_tokens=2000 and throws away the usage block. gpt-5-mini
-# spends most of that on reasoning and returns empty content, so raise the ceiling and
-# record tokens on the way past for the cost column in table_1.
+# Their _call_api hardcodes max_tokens=2000 (gpt-5-mini spends it on reasoning and returns nothing)
+# and drops the usage block, so raise the ceiling and record tokens for table_1's cost column
 def call_api_with_usage(self, messages, api_model):
     response = requests.post(
         self.api_url,
@@ -71,21 +65,6 @@ def call_api_with_usage(self, messages, api_model):
     return data["choices"][0]["message"]["content"]
 
 
-def build_queries(description_text):
-    """One query per keyword-matched unit process, plus the description opening. The whole extract
-    is mostly legal boilerplate, and bge-large truncates at 512 tokens anyway."""
-    hits = search_processes_in_text(description_text)
-    # drop priority-1000 matches (the 'Unspecified X' catch-alls and Secondary Filtration),
-    # which make useless literature queries
-    processes = [
-        name for name, details, _ in leaves
-        if name in hits and details.get("priority") != 1000
-    ]
-    queries = [f"{name} wastewater treatment" for name in processes[:MAX_QUERY_TERMS]]
-    queries.append(" ".join(description_text.split())[:OVERVIEW_QUERY_CHARS])
-    return queries
-
-
 def retrieve_context(retrieval, reranker, queries):
     """Run every query, rerank, dedupe across queries, and cap the total context size."""
     per_query = []
@@ -94,9 +73,8 @@ def retrieve_context(retrieval, reranker, queries):
         candidates = reranker.rerank(query, candidates, top_k=FINAL_TOP_K, model=RERANK_MODEL)
         per_query.append((query, candidates))
 
-    # Interleave: take every query's best chunk before any query's second-best. Concatenating
-    # query by query instead would spend the whole budget on the first two processes, so a
-    # plant with UV disinfection would never see any UV literature.
+    # Interleave: every query's best chunk before any query's second-best, so the budget isn't
+    # spent on the first two processes (a plant with UV disinfection would never see UV literature)
     seen = set()
     chunks = []
     total = 0
@@ -122,75 +100,76 @@ def retrieve_context(retrieval, reranker, queries):
     return chunks
 
 
-def main():
-    jobs = build_txt_jobs(MANUAL_CSV)
-    if not jobs:
-        raise SystemExit(f"No facilities found. Check {MANUAL_CSV} and {TXT_DIR}.")
+# Main execution
+jobs = build_txt_jobs(MANUAL_CSV)
+if not jobs:
+    raise SystemExit(f"No facilities found. Check {MANUAL_CSV} and {TXT_DIR}.")
 
-    index_path = str(WATERRAG_DIR / "0520_256")
-    api_key = API_KEY_PATH.read_text(encoding="utf-8").strip()
-    api_url = f"{API_URL}/chat/completions"
-    print(f"Loading WaterRAG index from {index_path} (this takes a few minutes)...")
-    retrieval = RetrievalSystem(index_path=index_path, openai_api_key=api_key, openai_api_url=api_url)
-    LLMReranker._call_api = call_api_with_usage
-    reranker = LLMReranker(api_key=api_key, default_model=RERANK_MODEL)
-    # __init__ takes no api_url and reads OPENAI_API_URL from the environment, defaulting to
-    # api.openai.com — which 401s on a Stanford key and then silently returns unranked order.
-    reranker.api_url = api_url
+index_path = str(WATERRAG_DIR / "0520_256")
+api_key = API_KEY_PATH.read_text(encoding="utf-8").strip()
+api_url = f"{API_URL}/chat/completions"
+print(f"Loading WaterRAG index from {index_path} (this takes a few minutes)...")
+retrieval = RetrievalSystem(index_path=index_path, openai_api_key=api_key, openai_api_url=api_url)
+LLMReranker._call_api = call_api_with_usage
+reranker = LLMReranker(api_key=api_key, default_model=RERANK_MODEL)
+# __init__ takes no api_url and defaults to api.openai.com, which 401s on a Stanford key
+# and then silently returns the unranked order
+reranker.api_url = api_url
 
-    for _, txt_path, facility_name, place_id in jobs:
-        description_text = txt_path.read_text(encoding="utf-8").split(SEP, 1)[0]
-        # outside output/llm_extraction/: these are prompt context for step5, not extraction results
-        output_path = WATERRAG_RETRIEVAL_DIR / f"{txt_path.stem}_{place_id}.json"
-        if output_path.exists():
-            print(f"{facility_name}: cached, skipping.")
-            continue
+for _, txt_path, facility_name, place_id in jobs:
+    description_text = txt_path.read_text(encoding="utf-8").split(SEP, 1)[0]
+    # outside output/llm_extraction/: these are prompt context for step5, not extraction results
+    output_path = WATERRAG_RETRIEVAL_DIR / f"{txt_path.stem}_{place_id}.json"
+    if output_path.exists():
+        print(f"{facility_name}: cached, skipping.")
+        continue
 
-        print(f"\nProcessing {txt_path.name} for {facility_name}...")
-        queries = build_queries(description_text)
-        print(f"  {len(queries)} queries: {[q[:40] for q in queries]}")
+    print(f"\nProcessing {txt_path.name} for {facility_name}...")
+    # One query per keyword-matched unit process, plus the description opening: the whole extract
+    # is mostly legal boilerplate, and bge-large truncates at 512 tokens anyway. Priority-1000
+    # matches ('Unspecified X' and Secondary Filtration) make useless literature queries.
+    hits = search_processes_in_text(description_text)
+    processes = [name for name, details, _ in leaves if name in hits and details.get("priority") != 1000]
+    queries = [f"{name} wastewater treatment" for name in processes[:MAX_QUERY_TERMS]]
+    queries.append(" ".join(description_text.split())[:OVERVIEW_QUERY_CHARS])
+    print(f"  {len(queries)} queries: {[q[:40] for q in queries]}")
 
-        rerank_usage["prompt"] = rerank_usage["completion"] = 0
-        chunks = retrieve_context(retrieval, reranker, queries)
-        print(f"  kept {len(chunks)} chunks, rerank tokens "
-              f"prompt={rerank_usage['prompt']} completion={rerank_usage['completion']}")
+    rerank_usage["prompt"] = rerank_usage["completion"] = 0
+    chunks = retrieve_context(retrieval, reranker, queries)
+    print(f"  kept {len(chunks)} chunks, rerank tokens "
+          f"prompt={rerank_usage['prompt']} completion={rerank_usage['completion']}")
 
-        # LLMReranker.rerank swallows per-batch API errors and returns the unranked order, so a
-        # bad key or URL yields plausible-looking output that is silently retrieval-only. Zero
-        # tokens after a full facility means every batch failed; stop rather than cache it.
-        if rerank_usage["prompt"] == 0:
-            raise SystemExit(
-                "Reranking produced no tokens — every batch failed (check the API key and that "
-                f"{RERANK_MODEL} is served by the proxy)."
-            )
+    # LLMReranker.rerank swallows per-batch API errors and returns the unranked order, so zero
+    # tokens after a full facility means every batch failed; stop rather than cache it
+    if rerank_usage["prompt"] == 0:
+        raise SystemExit(
+            "Reranking produced no tokens — every batch failed (check the API key and that "
+            f"{RERANK_MODEL} is served by the proxy)."
+        )
 
-        output_path.write_text(json.dumps({
-            "facility_name": facility_name,
-            "place_id": place_id,
-            "queries": queries,
-            "chunks": chunks,
-            "rerank_model": RERANK_MODEL,
-            "rerank_prompt_token": rerank_usage["prompt"],
-            "rerank_completion_token": rerank_usage["completion"],
-        }, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps({
+        "facility_name": facility_name,
+        "place_id": place_id,
+        "queries": queries,
+        "chunks": chunks,
+        "rerank_model": RERANK_MODEL,
+        "rerank_prompt_token": rerank_usage["prompt"],
+        "rerank_completion_token": rerank_usage["completion"],
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    usage_rows = []
-    for context_path in sorted(WATERRAG_RETRIEVAL_DIR.glob("*.json")):
-        context = json.loads(context_path.read_text(encoding="utf-8"))
-        usage_rows.append({
-            "facility_name": context["facility_name"],
-            "place_id": context["place_id"],
-            "context_file": context_path.name,
-            "n_queries": len(context["queries"]),
-            "n_chunks": len(context["chunks"]),
-            "rerank_model": context["rerank_model"],
-            "prompt_token": context["rerank_prompt_token"],
-            "completion_token": context["rerank_completion_token"],
-        })
-    usage_path = WATERRAG_RETRIEVAL_DIR / "token_usage_summary.csv"
-    pd.DataFrame(usage_rows).to_csv(usage_path, index=False)
-    print(f"\nRerank token usage: {usage_path}")
-
-
-if __name__ == "__main__":
-    main()
+usage_rows = []
+for context_path in sorted(WATERRAG_RETRIEVAL_DIR.glob("*.json")):
+    context = json.loads(context_path.read_text(encoding="utf-8"))
+    usage_rows.append({
+        "facility_name": context["facility_name"],
+        "place_id": context["place_id"],
+        "context_file": context_path.name,
+        "n_queries": len(context["queries"]),
+        "n_chunks": len(context["chunks"]),
+        "rerank_model": context["rerank_model"],
+        "prompt_token": context["rerank_prompt_token"],
+        "completion_token": context["rerank_completion_token"],
+    })
+usage_path = WATERRAG_RETRIEVAL_DIR / "token_usage_summary.csv"
+pd.DataFrame(usage_rows).to_csv(usage_path, index=False)
+print(f"\nRerank token usage: {usage_path}")

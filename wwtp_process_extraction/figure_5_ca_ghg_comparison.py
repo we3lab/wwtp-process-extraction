@@ -3,7 +3,7 @@
 # Publication: https://eartharxiv.org/repository/view/7980/
 # Modified by WE3Lab: CA GHG under five unit-process data sources, on the Place IDs in both
 # unit_processes_by_facility_cwns.csv and the LLM output.
-# 
+#
 # Biosolids use per-train MC medians. electricity uses each WWTP's balancing-area grid carbon.
 # Re-derived sources get El Abbadi's flow-size-bin fallback (all CA is EPA Region 9). Published assignments need none.
 
@@ -13,14 +13,12 @@ import json
 import urllib.request
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from helpers.plotting import make_grouped_legend, save_and_close
 from helpers.paths import *
 from helpers.utils import (
-    build_cwns_facility_processes, collapse_facility_processes, current_permit_mask, is_present,
+    build_cwns_facility_processes, facility_table, is_present,
     leaves,
 )
 
@@ -91,7 +89,13 @@ NITRIFYING_TT = frozenset(tt for tt, req in TT_REQUIRES.items() if req & NITRIFY
 KEY_UPS = ['AS_BNR_P', 'AS_BNR_N', 'AS-PUREO', 'MBR-BNR', 'TF_ALL', 'MHI', 'FBI', 'LIME',
            'NIT', 'BASIC_AS', 'AND', 'AED', 'PRIMARY']
 
-# Source keys, in plot order. CSV/print order follows SOURCE_NAMES.
+# WERF codes the pivot flags and train logic read; codes no facility reported are added as 0
+PIVOT_CODES = ['AS', 'AS-A2O', 'AS-BDENIT', 'AS-EA', 'AS-OD', 'AS-P', 'AS-PUREO', 'AS-SA', 'AS-SBR',
+               'AED', 'AND', 'BIODRY', 'BNIT', 'BNR', 'CHEM-P', 'FBI', 'LAGOON', 'LAGOON_AER',
+               'LAGOON_ANAER', 'LAGOON_FAC', 'LIME', 'MBR-BNR', 'MHI', 'PRIMARY',
+               'STBL_POND', 'TF', 'TF-BF', 'TF-RBC']
+
+# Source keys, in plot order. Printouts follow SOURCE_NAMES order.
 PLOT_ORDER = ['cwns_only', 'cwns_external', 'published', 'permits', 'permits_external']
 SOURCE_NAMES = {
     'cwns_external': 'CWNS + WEF + DOE Biogas + EPA Nitrification',
@@ -99,14 +103,6 @@ SOURCE_NAMES = {
     'published': 'CWNS + WEF + DOE + EPA (published)',
     'permits': 'WE3Lab LLM',
     'permits_external': 'WE3Lab LLM + WEF + DOE + EPA',
-}
-# Labels printed by calc_ghg
-CALC_LABELS = {
-    'cwns_external': 'Source 1',
-    'cwns_only': 'Source 2',
-    'published': 'Source manual',
-    'permits': 'Source 3',
-    'permits_external': 'Source 4',
 }
 SOURCE_TICK_LABELS = {
     'cwns_external': '\nCWNS +\nWEF + DOE\n+ EPA',
@@ -141,19 +137,6 @@ SECONDARY_GROUPS = {
     'Lagoon': ('#84B07A', LAGOON_TRAINS),
 }
 TT_SECONDARY = {tt: group for group, (_, trains) in SECONDARY_GROUPS.items() for tt in trains}
-
-
-def load_llm_facility_table():
-    """Permit-derived processes collapsed per facility, as of GHG_AS_OF."""
-    raw = pd.read_csv(PDF_LLM_CSV, dtype=str).fillna('')
-    keep = current_permit_mask(raw, as_of=GHG_AS_OF)
-    facilities = collapse_facility_processes(
-        raw[keep], key_cols=['Place ID'],
-        meta_cols=['WDID', 'Order_No', 'NPDES No.', 'Agency', 'Facility Name', 'County',
-                   'PDF_File', 'document_order_no'])
-    print(f'  Permit basis {GHG_AS_OF}: {int(keep.sum())} of {len(raw)} documents '
-          f'-> {len(facilities)} facilities')
-    return facilities
 
 
 def load_cwns_col_to_werf(automatic=False):
@@ -230,12 +213,6 @@ def load_grid_carbon():
 def assign_treatment_trains(d):
     """Tarallo et al. 2015 trains from binary WERF-code columns: upstream's unit_process_pivot()
     flags (notebook cell 19), then its treatment_train_werf() (cell 20). The caller sets BIOGAS_EL."""
-    for col in ['AS', 'AS-A2O', 'AS-BDENIT', 'AS-EA', 'AS-OD', 'AS-P', 'AS-PUREO', 'AS-SA', 'AS-SBR',
-                'AED', 'AND', 'BIO-P', 'BIODRY', 'BNR', 'CHEM-P', 'FBI', 'LAGOON', 'LAGOON_AER',
-                'LAGOON_ANAER', 'LAGOON_FAC', 'LIME', 'MBR-BNR', 'MHI', 'NIT', 'PRIMARY',
-                'STBL_POND', 'TF', 'TF-BF', 'TF-RBC']:
-        if col not in d.columns:
-            d[col] = 0
     d['SUM_AS'] = (d['AS'] + d['AS-A2O'] + d['AS-BDENIT'] + d['AS-EA'] + d['AS-P'] + d['AS-PUREO']
                    + d['AS-SA'])
     d['BASIC_AS'] = ((d['AS'] + d['AS-EA'] + d['AS-SA'] + d['AS-OD'] + d['AS-SBR']) > 0).astype(int)
@@ -352,18 +329,6 @@ def load_biogas_cwns_set():
     return combined
 
 
-def load_epa_nitrification_set():
-    """CWNS_NUMs with nitrification from EPA PRES_AMMONIA_REMOVAL (2024), read back from El Abbadi's
-    UP_ID_NOTE since CWNS 2022 lacks it. CWNS shows no nitrification at any of the 318 common
-    facilities; these 25 carry 220.8 of the 556.7 kt CO2e/yr N2O in El Abbadi's published CA total."""
-    tt = pd.read_csv(fetch_ghg_file('treatment_train_assignment/output_data/tt_assignments_2022.csv'))
-    key = tt['CWNS_NUM'].astype(str).str.removesuffix('.0').str.zfill(11)
-    from_epa = tt['UP_ID_NOTE'].fillna('').str.contains('AMMONIA', case=False, regex=False)
-    out = set(key[from_epa])
-    print(f'  EPA nitrification set: {len(out)} CWNS facilities (PRES_AMMONIA_REMOVAL 2024)')
-    return out
-
-
 def build_werf_pivot(facility_rows, col_to_werf):
     """Binary WERF-code pivot, one row per Place ID, from PRESENT_STATUSES only for every source.
     Adds derived NIT and BIO-P, then clears lagoon codes where there is also secondary treatment."""
@@ -378,19 +343,21 @@ def build_werf_pivot(facility_rows, col_to_werf):
                 record |= dict.fromkeys(col_to_werf[col], 1)
         records.append(record)
     pivot = pd.DataFrame(records).fillna(0)
+    for code in PIVOT_CODES:
+        if code not in pivot.columns:
+            pivot[code] = 0
 
-    nit_cols = [c for c in ['BNIT', 'BNR', 'AS-BDENIT', 'AS-A2O'] if c in pivot.columns]
-    pivot['NIT'] = (pivot[nit_cols].sum(axis=1) > 0).astype(int)
+    pivot['NIT'] = (pivot[['BNIT', 'BNR', 'AS-BDENIT', 'AS-A2O']].sum(axis=1) > 0).astype(int)
     # Bio-P from A2O only (bio-P by design). BNR ("Unspecified Nutrient Removal") credited 103 of 318
     # CA plants where El Abbadi's CWNS data has 1, pushing them into the ~6x-N2O G-series; most of CA
     # has no P limit. BNR still derives NIT above.
-    pivot['BIO-P'] = (pivot['AS-A2O'] > 0).astype(int) if 'AS-A2O' in pivot.columns else 0
+    pivot['BIO-P'] = (pivot['AS-A2O'] > 0).astype(int)
 
     secondary = ['AS', 'AS-A2O', 'AS-BDENIT', 'AS-EA', 'AS-OD', 'AS-P', 'AS-PUREO', 'AS-SA',
                  'AS-SBR', 'TF', 'TF-BF', 'TF-RBC', 'MBR-BNR']
     lagoons = ['LAGOON', 'LAGOON_AER', 'LAGOON_ANAER', 'LAGOON_FAC', 'STBL_POND']
-    has_secondary = pivot[[c for c in secondary if c in pivot.columns]].sum(axis=1) > 0
-    pivot.loc[has_secondary, [c for c in lagoons if c in pivot.columns]] = 0
+    has_secondary = pivot[secondary].sum(axis=1) > 0
+    pivot.loc[has_secondary, lagoons] = 0
     return pivot
 
 
@@ -436,171 +403,135 @@ def stacked_bars(segments, figsize, width, ylabel):
     return fig, ax
 
 
-def plot_comparison(results, n_label):
-    segments = [(label, color, [results[s][f'{c}_ktyr'] for s in PLOT_ORDER])
-                for c, (label, color) in COMPONENTS.items()]
-    fig, ax = stacked_bars(segments, (6, 5), 0.5, f'kt CO₂e / year\n{n_label}')
-    handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles[::-1], labels[::-1], loc='upper left', fontsize=10, frameon=False,
-              bbox_to_anchor=(1.01, 1), borderaxespad=0)
-    save_and_close(fig, FIGURES_DIR / 'figure_5')
-
-
-def n2o_by_secondary(df, ef, label):
-    """Return dict[secondary group → N2O kt CO2e/yr] for one source dataframe."""
-    tt_flow = df[ef.index].div(df['TT_IDENTIFIED'], axis=0).mul(df['FLOW_2022_MGD_FINAL'], axis=0)
-    groups = {}
-    tt_n2o = {}
-    for tt in ef.index:
-        n2o = (tt_flow[tt] * ef.loc[tt, 'N2O_50'] * MG_2_m3 * KG_PER_DAY_TO_KT_PER_YEAR).sum()
-        tt_n2o[tt] = n2o
-        group = TT_SECONDARY.get(tt, NO_NUTRIENT_REMOVAL)
-        groups[group] = groups.get(group, 0) + n2o
-    top = sorted(tt_n2o.items(), key=lambda x: -x[1])[:8]
-    top_str = ', '.join(f'{t}={v:.1f}' for t, v in top if v > 0)
-    print(f'  [{label}] n={len(df)} rows, total N2O={sum(groups.values()):.1f} kt/yr | top TTs: {top_str}')
-    return groups
-
-
-def plot_n2o_breakdown(dfs, ef, n_label):
-    print('N2O breakdown diagnostics:')
-    breakdowns = {s: n2o_by_secondary(df, ef, label=s) for s, df in dfs.items()}
-    present = [g for g in SECONDARY_GROUPS if any(breakdowns[s][g] > 0 for s in PLOT_ORDER)]
-    segments = [(g, SECONDARY_GROUPS[g][0], [breakdowns[s][g] for s in PLOT_ORDER]) for g in present]
-    fig, ax = stacked_bars(segments, (8.6, 5), 0.45, f'N₂O  kt CO₂e / year\n{n_label}')
-    # Scale to the tallest stack, not the largest single segment
-    y_top = max(sum(breakdowns[s][g] for g in present) for s in PLOT_ORDER)
-    step = next(s for s in (25, 50, 100, 200, 250, 500, 1000, 2000) if y_top / s <= 6)
-    ax.set_yticks(np.arange(0, np.ceil(y_top / step) * step + step / 2, step))
-    legend_items = [(g, {'facecolor': SECONDARY_GROUPS[g][0]}) for g in reversed(present)]
-    make_grouped_legend(ax, [{'header': 'Treatment Type', 'items': legend_items}], fontsize=10)
-    fig.tight_layout()
-    save_and_close(fig, FIGURES_DIR / 'figure_s5')
-
-
 def pct_change(r, base, key):
     return (r[key] - base[key]) / base[key] * 100
 
 
-def main():
-    print('Loading MC emission factors...')
-    ef = load_mc_ef()
-    print(f'  Loaded EFs for {len(ef)} treatment trains')
-    print('Loading grid carbon intensity...')
-    grid_carbon = load_grid_carbon()
+# Main execution
+print('Loading MC emission factors...')
+ef = load_mc_ef()
+print(f'  Loaded EFs for {len(ef)} treatment trains')
+print('Loading grid carbon intensity...')
+grid_carbon = load_grid_carbon()
 
-    # Common set: Place IDs in both the CWNS table and the permit output, as in figure_3
-    print('\nBuilding common facility set (Place ID intersection: CWNS ∩ LLM)...')
-    cwns_table = pd.read_csv(CWNS_TABLE_CSV, dtype=str)
-    ciwqs = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str).rename(columns={'CWNS_ID': 'CWNS_NUM'})
-    llm = load_llm_facility_table()
-    in_cwns = ciwqs['CWNS_NUM'].isin(cwns_table['CWNS_ID'])
-    common_pids = set(ciwqs.loc[in_cwns, 'Place ID']) & set(llm['Place ID'])
-    print(f'  {len(common_pids)} common Place IDs')
+# Common set: Place IDs in both the CWNS table and the permit output, as in figure_3
+print('\nBuilding common facility set (Place ID intersection: CWNS ∩ LLM)...')
+cwns_table = pd.read_csv(CWNS_TABLE_CSV, dtype=str)
+ciwqs = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str).rename(columns={'CWNS_ID': 'CWNS_NUM'})
+llm = facility_table(PDF_LLM_CSV, as_of=GHG_AS_OF)
+in_cwns = ciwqs['CWNS_NUM'].isin(cwns_table['CWNS_ID'])
+common_pids = set(ciwqs.loc[in_cwns, 'Place ID']) & set(llm['Place ID'])
+print(f'  {len(common_pids)} common Place IDs')
 
-    # Place ID → CWNS_NUM → 2022 flow; a CWNS facility counts for one Place ID only
-    tt_published = pd.read_csv(fetch_ghg_file('GHG_accounting/input_data/tt_assignments_2022.csv'),
-                               dtype={'CWNS_NUM': str})
-    link = (ciwqs.loc[ciwqs['Place ID'].isin(common_pids), ['Place ID', 'CWNS_NUM']]
-            .merge(tt_published[['CWNS_NUM', 'FLOW_2022_MGD_FINAL']], on='CWNS_NUM')
-            .drop_duplicates(subset=['CWNS_NUM']))
+# Place ID → CWNS_NUM → 2022 flow; a CWNS facility counts for one Place ID only
+tt_published = pd.read_csv(fetch_ghg_file('GHG_accounting/input_data/tt_assignments_2022.csv'),
+                           dtype={'CWNS_NUM': str})
+link = (ciwqs.loc[ciwqs['Place ID'].isin(common_pids), ['Place ID', 'CWNS_NUM']]
+        .merge(tt_published[['CWNS_NUM', 'FLOW_2022_MGD_FINAL']], on='CWNS_NUM')
+        .drop_duplicates(subset=['CWNS_NUM']))
 
-    # El Abbadi & Feng's published trains (CWNS + WEF/DOE + EPA + manual checks); all have one
-    tt_published['LAGOON_UNCATEGORIZED'] = tt_published[['LAGOON_OTHER', 'STBL_POND']].max(axis=1)
-    published = link.merge(tt_published[['CWNS_NUM'] + ALL_TT], on='CWNS_NUM')
-    print(f'Source manual (published): {len(published)} CWNS rows')
+# El Abbadi & Feng's published trains (CWNS + WEF/DOE + EPA + manual checks); all have one
+tt_published['LAGOON_UNCATEGORIZED'] = tt_published[['LAGOON_OTHER', 'STBL_POND']].max(axis=1)
+published = link.merge(tt_published[['CWNS_NUM'] + ALL_TT], on='CWNS_NUM')
+print(f"{SOURCE_NAMES['published']}: {len(published)} CWNS rows")
 
-    cwns_rows, _ = build_cwns_facility_processes(cwns_table, target_facilities=common_pids)
-    llm_rows = llm[llm['Place ID'].isin(common_pids)]
-    external = (load_epa_nitrification_set(), load_biogas_cwns_set())
-    werf_curated = load_cwns_col_to_werf()
-    raw = {
-        'cwns_external': build_source('Source 1', cwns_rows, link, werf_curated, external),
-        'cwns_only': build_source('Source 2', cwns_rows, link, werf_curated),
-        'published': published,
-        'permits': build_source('Source 3', llm_rows, link, werf_curated, cogen_proxy=True),
-        'permits_external': build_source('Source 4', llm_rows, link, werf_curated, external,
-                                         cogen_proxy=True),
-    }
+cwns_rows, _ = build_cwns_facility_processes(cwns_table, target_facilities=common_pids)
+llm_rows = llm[llm['Place ID'].isin(common_pids)]
+# Nitrification from EPA PRES_AMMONIA_REMOVAL (2024), read back from El Abbadi's UP_ID_NOTE since
+# CWNS 2022 lacks it. CWNS shows no nitrification at any of the 318 common facilities; these 25
+# carry 220.8 of the 556.7 kt CO2e/yr N2O in El Abbadi's published CA total.
+from_epa = tt_published['UP_ID_NOTE'].fillna('').str.contains('AMMONIA', case=False, regex=False)
+epa_nitrification = set(tt_published.loc[from_epa, 'CWNS_NUM'])
+print(f'  EPA nitrification set: {len(epa_nitrification)} CWNS facilities (PRES_AMMONIA_REMOVAL 2024)')
+external = (epa_nitrification, load_biogas_cwns_set())
+werf_curated = load_cwns_col_to_werf()
+raw = {
+    'cwns_external': build_source(SOURCE_NAMES['cwns_external'], cwns_rows, link, werf_curated, external),
+    'cwns_only': build_source(SOURCE_NAMES['cwns_only'], cwns_rows, link, werf_curated),
+    'published': published,
+    'permits': build_source(SOURCE_NAMES['permits'], llm_rows, link, werf_curated, cogen_proxy=True),
+    'permits_external': build_source(SOURCE_NAMES['permits_external'], llm_rows, link, werf_curated,
+                                     external, cogen_proxy=True),
+}
 
-    # 1:1 matching: every source keeps the CWNS facilities Source 3 assigned a train
-    assigned_cwns = set(raw['permits'].loc[raw['permits']['TT_IDENTIFIED'] >= 1, 'CWNS_NUM'])
-    print(f'\nFiltering every source to the {len(assigned_cwns)} CWNS facilities '
-          f'where LLM assigned a TT...')
-    print('\n── GHG calculation ──')
-    ghg = {key: calc_ghg(df[df['CWNS_NUM'].isin(assigned_cwns)], ef, grid_carbon, CALC_LABELS[key])
-           for key, df in raw.items()}
+# 1:1 matching: every source keeps the CWNS facilities the permit source assigned a train
+assigned_cwns = set(raw['permits'].loc[raw['permits']['TT_IDENTIFIED'] >= 1, 'CWNS_NUM'])
+print(f'\nFiltering every source to the {len(assigned_cwns)} CWNS facilities '
+      f'where LLM assigned a TT...')
+print('\n── GHG calculation ──')
+ghg = {key: calc_ghg(df[df['CWNS_NUM'].isin(assigned_cwns)], ef, grid_carbon, SOURCE_NAMES[key])
+       for key, df in raw.items()}
 
-    # Enforce intersection across all sources
-    cwns_sets = {key: set(df['CWNS_NUM']) for key, df in ghg.items()}
-    common_cwns = set.intersection(*cwns_sets.values())
-    print('\n── intersection ──')
-    print('  ' + ' | '.join(f'{CALC_LABELS[key]}: {len(s)}' for key, s in cwns_sets.items()))
-    print(f'  Final intersection: {len(common_cwns)} CWNS facilities')
-    ghg = {key: df[df['CWNS_NUM'].isin(common_cwns)] for key, df in ghg.items()}
-    results = {key: totals_from_df(df) for key, df in ghg.items()}
+# Enforce intersection across all sources
+cwns_sets = {key: set(df['CWNS_NUM']) for key, df in ghg.items()}
+common_cwns = set.intersection(*cwns_sets.values())
+print('\n── intersection ──')
+print('  ' + ' | '.join(f'{SOURCE_NAMES[key]}: {len(s)}' for key, s in cwns_sets.items()))
+print(f'  Final intersection: {len(common_cwns)} CWNS facilities')
+ghg = {key: df[df['CWNS_NUM'].isin(common_cwns)] for key, df in ghg.items()}
+results = {key: totals_from_df(df) for key, df in ghg.items()}
 
-    print('GHG Emissions Source Comparison (for matched facilities)')
-    rows = []
-    for s, name in SOURCE_NAMES.items():
-        r = results[s]
-        rows.append({
-            'Source': name,
-            # only the published source imports El Abbadi & Feng's trains; the rest re-derive them
-            'TT assignment': 'published' if s == 'published' else 're-derived',
-            'N CWNS': r['n_facilities'],
-            'Flow (MGD)': f"{r['total_flow_MGD']:.0f}",
-            'CH4 (kt/yr)': f"{r['CH4_ktyr']:.1f}",
-            'N2O (kt/yr)': f"{r['N2O_ktyr']:.1f}",
-            'NC_CO2 (kt/yr)': f"{r['NC_CO2_ktyr']:.1f}",
-            'NG comb (kt/yr)': f"{r['NG_comb_ktyr']:.1f}",
-            'Biosolids (kt/yr)': f"{r['solids_ktyr']:.1f}",
-            'Elec (kt/yr)': f"{r['elec_ktyr']:.1f}",
-            'NG up (kt/yr)': f"{r['NG_up_ktyr']:.1f}",
-            'Scope 1': f"{r['Scope1_ktyr']:.1f}",
-            'Scope 2': f"{r['Scope2_ktyr']:.1f}",
-            'Scope 3': f"{r['Scope3_ktyr']:.1f}",
-            'TOTAL (kt/yr)': f"{r['total_ktyr']:.1f}",
-            'per MGD': f"{r['total_ktyr'] / r['total_flow_MGD']:.3f}",
-        })
-    summary = pd.DataFrame(rows)
-    print(summary.to_string(index=False))
+# Only the published source imports El Abbadi & Feng's trains; the rest re-derive them
+print('\nGHG emissions by source (kt CO2e / year, matched facilities)')
+summary = pd.DataFrame.from_dict(results, orient='index').rename(index=SOURCE_NAMES)
+print(summary.round(1).to_string())
 
-    for baseline_key, heading, comparisons in [
-        ('cwns_only', 'CWNS-only', [('cwns_external', 'El Abbadi (all sources)'),
-                                    ('permits', 'WE3Lab LLM'),
-                                    ('permits_external', 'WE3Lab LLM + WEF Biogas')]),
-        ('cwns_external', 'CWNS + WEF + DOE Biogas', [('permits', 'WE3Lab LLM'),
-                                                      ('permits_external', 'WE3Lab LLM + WEF Biogas')]),
+for baseline_key, comparisons in [
+    ('cwns_only', ['cwns_external', 'permits', 'permits_external']),
+    ('cwns_external', ['permits', 'permits_external'])
     ]:
-        base = results[baseline_key]
-        print(f'\n── % change relative to El Abbadi ({heading}) ──')
-        for key, name in comparisons:
-            r = results[key]
-            print(f'  {name}: N2O {pct_change(r, base, "N2O_ktyr"):+.1f}%,  '
-                  f'FNG {pct_change(r, base, "NG_comb_ktyr"):+.1f}%,  '
-                  f'Total {pct_change(r, base, "total_ktyr"):+.1f}%')
+    base = results[baseline_key]
+    print(f'\n── % change relative to {SOURCE_NAMES[baseline_key]} ──')
+    for key in comparisons:
+        r = results[key]
+        print(f'  {SOURCE_NAMES[key]}: N2O {pct_change(r, base, "N2O_ktyr"):+.1f}%,  '
+              f'FNG {pct_change(r, base, "NG_comb_ktyr"):+.1f}%,  '
+              f'Total {pct_change(r, base, "total_ktyr"):+.1f}%')
 
-    print('\n── EXPERIMENT: automatic WERF mapping (CSV-derived) vs curated JSON werf_codes ──')
-    print('  (CWNS-based sources only, both compared against Source manual = El Abbadi & Feng published)')
-    werf_automatic = load_cwns_col_to_werf(automatic=True)
-    manual = results['published']
-    for label, curated, source_external in [('Source 1', results['cwns_external'], external),
-                                            ('Source 2', results['cwns_only'], None)]:
-        auto_df = build_source(f'{label} (auto WERF)', cwns_rows, link, werf_automatic, source_external)
-        auto_ghg = calc_ghg(auto_df[auto_df['CWNS_NUM'].isin(assigned_cwns)], ef, grid_carbon,
-                            f'{label} (auto WERF)')
-        automatic = totals_from_df(auto_ghg[auto_ghg['CWNS_NUM'].isin(common_cwns)])
-        for mapping, r in [('curated werf_codes', curated), ('automatic WERF csv', automatic)]:
-            print(f'  {label}, {mapping}: N2O {pct_change(r, manual, "N2O_ktyr"):+.1f}% vs manual,  '
-                  f'Total {pct_change(r, manual, "total_ktyr"):+.1f}% vs manual  '
-                  f'(Total={r["total_ktyr"]:.1f}, N2O={r["N2O_ktyr"]:.1f})')
+print('\n── EXPERIMENT: automatic WERF mapping (CSV-derived) vs curated JSON werf_codes ──')
+print(f"  (CWNS-based sources only, both compared against {SOURCE_NAMES['published']})")
+werf_automatic = load_cwns_col_to_werf(automatic=True)
+manual = results['published']
+for key, source_external in [('cwns_external', external), ('cwns_only', None)]:
+    label = SOURCE_NAMES[key]
+    auto_df = build_source(f'{label} (auto WERF)', cwns_rows, link, werf_automatic, source_external)
+    auto_ghg = calc_ghg(auto_df[auto_df['CWNS_NUM'].isin(assigned_cwns)], ef, grid_carbon,
+                        f'{label} (auto WERF)')
+    automatic = totals_from_df(auto_ghg[auto_ghg['CWNS_NUM'].isin(common_cwns)])
+    for mapping, r in [('curated werf_codes', results[key]), ('automatic WERF csv', automatic)]:
+        print(f'  {label}, {mapping}: N2O {pct_change(r, manual, "N2O_ktyr"):+.1f}% vs manual,  '
+              f'Total {pct_change(r, manual, "total_ktyr"):+.1f}% vs manual  '
+              f'(Total={r["total_ktyr"]:.1f}, N2O={r["N2O_ktyr"]:.1f})')
 
-    first = results[PLOT_ORDER[0]]
-    n_label = f'n={first["n_facilities"]} facilities, {first["total_flow_MGD"]:.0f} MGD'
-    plot_comparison(results, n_label)
-    plot_n2o_breakdown(ghg, ef, n_label)
+first = results[PLOT_ORDER[0]]
+n_label = f'n={first["n_facilities"]} facilities, {first["total_flow_MGD"]:.0f} MGD'
 
+# Figure 5: emissions by component, one stacked bar per source
+segments = [(label, color, [results[s][f'{c}_ktyr'] for s in PLOT_ORDER])
+            for c, (label, color) in COMPONENTS.items()]
+fig, ax = stacked_bars(segments, (6, 5), 0.5, f'kt CO₂e / year\n{n_label}')
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles[::-1], labels[::-1], loc='upper left', fontsize=10, frameon=False,
+          bbox_to_anchor=(1.01, 1), borderaxespad=0)
+save_and_close(fig, FIGURES_DIR / 'figure_5')
 
-if __name__ == '__main__':
-    main()
+# Figure S5: N2O by secondary treatment group (kt CO2e/yr), per source
+print('N2O breakdown diagnostics:')
+breakdowns = {}
+for key, df in ghg.items():
+    tt_flow = df[ef.index].div(df['TT_IDENTIFIED'], axis=0).mul(df['FLOW_2022_MGD_FINAL'], axis=0)
+    tt_n2o = tt_flow.sum() * ef['N2O_50'] * MG_2_m3 * KG_PER_DAY_TO_KT_PER_YEAR
+    breakdowns[key] = tt_n2o.groupby(lambda tt: TT_SECONDARY.get(tt, NO_NUTRIENT_REMOVAL)).sum()
+    top_str = ', '.join(f'{t}={v:.1f}' for t, v in tt_n2o.nlargest(8).items() if v > 0)
+    print(f'  [{key}] n={len(df)} rows, total N2O={breakdowns[key].sum():.1f} kt/yr | top TTs: {top_str}')
+present = [g for g in SECONDARY_GROUPS if any(breakdowns[s][g] > 0 for s in PLOT_ORDER)]
+segments = [(g, SECONDARY_GROUPS[g][0], [breakdowns[s][g] for s in PLOT_ORDER]) for g in present]
+fig, ax = stacked_bars(segments, (8.6, 5), 0.45, f'N₂O  kt CO₂e / year\n{n_label}')
+# Scale to the tallest stack, not the largest single segment
+y_top = max(sum(breakdowns[s][g] for g in present) for s in PLOT_ORDER)
+step = next(s for s in (25, 50, 100, 200, 250, 500, 1000, 2000) if y_top / s <= 6)
+ax.set_yticks(np.arange(0, np.ceil(y_top / step) * step + step / 2, step))
+legend_items = [(g, {'facecolor': SECONDARY_GROUPS[g][0]}) for g in reversed(present)]
+make_grouped_legend(ax, [{'header': 'Treatment Type', 'items': legend_items}], fontsize=10)
+fig.tight_layout()
+save_and_close(fig, FIGURES_DIR / 'figure_s5')

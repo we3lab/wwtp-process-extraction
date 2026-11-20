@@ -18,7 +18,7 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
     - [wwtp_process_extraction/step3_get_facility_descriptions.py](wwtp_process_extraction/step3_get_facility_descriptions.py): extracts relevant text sections from permit PDFs into per-facility text files
 
 4. Detect treatment processes with keyword search
-    - [wwtp_process_extraction/step4_keyword_extraction.py](wwtp_process_extraction/step4_keyword_extraction.py): scans permit text against unitprocess_keywords.json and writes unit_processes_by_pdf_kw.csv / unit_processes_by_facility_kw.csv with present/future status
+    - [wwtp_process_extraction/step4_keyword_extraction.py](wwtp_process_extraction/step4_keyword_extraction.py): scans permit text against unitprocess_keywords.json and writes unit_processes_by_pdf_kw.csv with present/future status
 
 5. Detect treatment processes with LLM extraction
     - [wwtp_process_extraction/step5_llm_extraction.py](wwtp_process_extraction/step5_llm_extraction.py): runs LLM extraction on permit text
@@ -31,7 +31,7 @@ Researchers have utilized the CWNS to aggregate WWTP unit processes. However, th
     - [wwtp_process_extraction/step5b_waterrag_retrieval.py](wwtp_process_extraction/step5b_waterrag_retrieval.py): retrieves and reranks WaterRAG literature chunks per facility into output/waterrag_retrieval/ (separate Python 3.11 env)
 
 6. Post-process LLM output back to CWNS format
-    - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): maps LLM outputs onto the unit process columns and writes unit_processes_by_pdf_llm.csv / unit_processes_by_facility_llm.csv with present/future/past/offsite status
+    - [wwtp_process_extraction/step6_postprocess_llm_output.py](wwtp_process_extraction/step6_postprocess_llm_output.py): maps LLM outputs onto the unit process columns and writes unit_processes_by_pdf_llm.csv with present/future/past/offsite status
 
 **Figures and tables**
 - [wwtp_process_extraction/table_1_evaluate_model_performance.py](wwtp_process_extraction/table_1_evaluate_model_performance.py): evaluates keyword and LLM methods against manual labels (table_1, table_s3, table_s5)

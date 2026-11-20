@@ -11,19 +11,14 @@ COLORS = {
 
 
 def make_grouped_legend(ax, groups, fontsize):
-    # Legend to the right of the axes with bold group headers; items are Patches or (label, patch_kwargs)
+    # Legend to the right of the axes with bold group headers; items are (label, patch_kwargs)
     handles = []
     header_indices = set()
     for group in groups:
         header_indices.add(len(handles))
         handles.append(Patch(color="none", label=group["header"]))
-        for item in group["items"]:
-            if isinstance(item, tuple):
-                label, patch_kwargs = item
-                kwargs = {"edgecolor": "black", "linewidth": 0.5, **patch_kwargs}
-                handles.append(Patch(label=label, **kwargs))
-            else:
-                handles.append(item)
+        for label, patch_kwargs in group["items"]:
+            handles.append(Patch(label=label, **{"edgecolor": "black", "linewidth": 0.5, **patch_kwargs}))
     leg = ax.legend(
         handles=handles,
         loc="upper left",
@@ -36,7 +31,6 @@ def make_grouped_legend(ax, groups, fontsize):
         if i in header_indices:
             h.set_visible(False)
             t.set_fontweight("bold")
-    return leg
 
 
 def save_and_close(fig, path):
@@ -46,6 +40,6 @@ def save_and_close(fig, path):
     plt.close(fig)
 
 
-def set_thick_spines(ax, linewidth=1.6):
+def set_thick_spines(ax):
     for spine in ax.spines.values():
-        spine.set_linewidth(linewidth)
+        spine.set_linewidth(1.6)

@@ -18,7 +18,6 @@ ALL_MODELS = ["claude-3-haiku", "claude-4-5-sonnet", "gpt-5", "gpt-5-mini", "gem
 ALL_METHODS = ["ontology-based", "list-based"]
 MODEL = "gpt-5-mini"
 WEB_SEARCH_MODEL = "claude-sonnet-4-6"
-NUM_ICL_EXAMPLES = 1
 DEFAULT_MAX_TOKENS = 10000
 # Reasoning models spend most of their budget on hidden reasoning; claude-3-haiku caps output at 4096
 MAX_TOKENS_BY_MODEL = {"claude-3-haiku": 4096, "gpt-5": 32000, "gpt-5-mini": 32000}
@@ -57,7 +56,7 @@ def raise_with_raw_output(message, raw_output):
     raise err
 
 
-def build_example_schema(method, web=False):
+def build_example_schema(method, web):
     """JSON schema for the {"items": [...]} extraction output of one method."""
     if method == "list-based":
         props = {"Process": {**STRING_LIST, "minItems": 1}}
@@ -101,10 +100,11 @@ def build_example_schema(method, web=False):
     }
 
 
-def chat_completion_json(model, system_message, user_message, max_tokens, schema):
+def chat_completion_json(model, system_message, user_message, schema):
     """Request a JSON object from the Stanford proxy. Returns (parsed_json, completion_tokens,
     prompt_tokens, total_tokens, reasoning_tokens, structured_output)."""
     api_key = API_KEY_PATH.read_text(encoding="utf-8").strip()
+    max_tokens = MAX_TOKENS_BY_MODEL.get(model, DEFAULT_MAX_TOKENS)
     payload = {
         "model": model,
         "messages": [
@@ -193,10 +193,7 @@ def chat_completion_web(model, system_message, user_message, schema):
     ]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     if result.returncode != 0:
-        err = RuntimeError(f"CLI failed: {result.stderr[:200]}")
-        if result.stdout.strip():
-            err.raw_output = result.stdout
-        raise err
+        raise_with_raw_output(f"CLI failed: {result.stderr[:200]}", result.stdout)
     output = json.loads(result.stdout)
     if output["is_error"]:
         raise_with_raw_output(f"API error: {output.get('api_error_status')}", result.stdout)
@@ -239,11 +236,8 @@ def run_extraction(args, output_dir):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     reference_text = method_paths["reference_path"].read_text(encoding="utf-8")
-    prompt_examples = "\n\n".join(
-        f"Example {idx}:\n"
-        + (method_paths["examples_dir"] / f"example{idx}.txt").read_text(encoding="utf-8").strip()
-        for idx in range(1, NUM_ICL_EXAMPLES + 1)
-    )
+    example_text = (method_paths["examples_dir"] / "example1.txt").read_text(encoding="utf-8").strip()
+    prompt_examples = f"Example 1:\n{example_text}"
     system_prompt_template = method_paths["prompt_path"].read_text(encoding="utf-8")
     example_schema = build_example_schema(args.method, web=args.web_search)
 
@@ -260,8 +254,7 @@ def run_extraction(args, output_dir):
             continue
         print(f"Read text extract (length {len(permit_extract)})")
 
-        txt_stem = txt_path.stem
-        extraction_file_name = f"{txt_stem}_{place_id}.json"
+        extraction_file_name = f"{txt_path.stem}_{place_id}.json"
         output_json_path = output_dir / extraction_file_name
 
         if output_json_path.exists():
@@ -278,9 +271,6 @@ def run_extraction(args, output_dir):
             .replace("__UNIT_PROCESS_LIST__", reference_text)
             .replace("__PROMPT_EXAMPLES__", prompt_examples)
         )
-        if args.web_search:
-            system_msg += WEB_PROMPT_SUFFIX_PATH.read_text(encoding="utf-8")
-
         user_msg = (
             f"Find all the treatment processes explicitly used in the {facility_name} facility. "
             f"Here is the permit extract:\n{permit_extract}\n"
@@ -301,6 +291,7 @@ def run_extraction(args, output_dir):
             )
 
         if args.web_search:
+            system_msg += WEB_PROMPT_SUFFIX_PATH.read_text(encoding="utf-8")
             user_msg = (
                 f"Search the web for information about {facility_name} wastewater treatment "
                 f"facility to supplement the permit extract below.\n\n"
@@ -316,9 +307,8 @@ def run_extraction(args, output_dir):
                 structured_output = True
                 print(f"Cost: ${cost_usd:.6f}")
             else:
-                max_tokens = MAX_TOKENS_BY_MODEL.get(args.model, DEFAULT_MAX_TOKENS)
                 parsed, completion_token, prompt_token, total_token, reasoning_tokens, structured_output = (
-                    chat_completion_json(args.model, system_msg, user_msg, max_tokens, example_schema)
+                    chat_completion_json(args.model, system_msg, user_msg, example_schema)
                 )
                 cost_usd = None
                 print(
@@ -339,7 +329,7 @@ def run_extraction(args, output_dir):
             print("Error:", exc)
             raw = getattr(exc, "raw_output", None)
             if raw:
-                failed_path = output_dir / f"{txt_stem}_{place_id}_FAILED.json"
+                failed_path = output_dir / extraction_file_name.replace(".json", "_FAILED.json")
                 failed_path.write_text(raw, encoding="utf-8")
                 print(f"Saved raw output to {failed_path.name}")
             append_row_csv(token_usage_csv_path, {

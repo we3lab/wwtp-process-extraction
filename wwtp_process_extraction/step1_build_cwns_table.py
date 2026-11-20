@@ -180,7 +180,7 @@ ca_consolidated = (unit_processes_df[unit_processes_df['STATE_CODE'] == 'CA']
 # CA facilities with an NPDES permit (excluding stormwater CAS permits) or a CIWQS match get a
 # placeholder row even when CWNS lists no unit processes for them
 ca_permits = facility_permit[
-    (facility_permit['STATE_CODE'].str.strip() == 'CA')
+    (facility_permit['STATE_CODE'] == 'CA')
     & (facility_permit['PERMIT_SOURCE'] == 'NPDES')
     & (~facility_permit['PERMIT_NUMBER'].astype(str).str.upper().str.startswith('CAS'))
 ].drop_duplicates('CWNS_ID')
@@ -188,27 +188,25 @@ permit_by_cwns = dict(zip(ca_permits['CWNS_ID'], ca_permits['PERMIT_NUMBER'].ast
 
 ciwqs_mapping = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str).fillna('')
 mapped_cwns = ciwqs_mapping['CWNS_ID'].str.strip()
-ciwqs_rows = ciwqs_mapping[mapped_cwns.ne('') & mapped_cwns.str.upper().ne('NA')].copy()
+ciwqs_rows = ciwqs_mapping[mapped_cwns.ne('')].copy()
 ciwqs_rows['CWNS_ID'] = ciwqs_rows['CWNS_ID'].map(pad_cwns_id)
 ciwqs_npdes = ciwqs_rows.drop_duplicates('CWNS_ID').set_index('CWNS_ID')['NPDES No.'].to_dict()
 
-fac_name_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_NAME'].to_dict()
-fac_id_map_2022 = facility_names.set_index('CWNS_ID')['FACILITY_ID'].to_dict()
+fac_2022 = facility_names.set_index('CWNS_ID').to_dict('index')
 
 required_ids = set(permit_by_cwns) | set(ciwqs_npdes)
 missing_ids = sorted((required_ids - set(ca_consolidated['CWNS_ID'])) & us_ids)
 placeholder_rows = []
 for cwns_id in missing_ids:
     # the CIWQS mapping supplies the NPDES number when CWNS lists no NPDES permit
-    npdes = permit_by_cwns.get(cwns_id) or ciwqs_npdes[cwns_id].strip()
+    npdes = permit_by_cwns.get(cwns_id) or ciwqs_npdes[cwns_id]
     placeholder_rows.append({
         **{col: '0' for col in leaf_names},
         'CWNS_ID': cwns_id,
         'STATE_CODE': 'CA',
         'NPDES_PERMIT': npdes,
         'PERMIT_NUMBER': npdes,
-        'FACILITY_ID': fac_id_map_2022[cwns_id],
-        'FACILITY_NAME': fac_name_map_2022[cwns_id],
+        **fac_2022[cwns_id],
     })
 ca_consolidated = pd.concat(
     [ca_consolidated, pd.DataFrame(placeholder_rows).reindex(columns=ca_consolidated.columns)],
@@ -221,7 +219,7 @@ for idx in ca_consolidated.index:
     apply_secondary_category_backfill(status_dict)
     ca_consolidated.loc[idx, leaf_names] = pd.Series(status_dict)
 
-cwns_phys = pd.read_csv(CWNS_DATA_DIR / '2022' / 'PHYSICAL_LOCATION.csv', dtype=str).fillna("")
+cwns_phys = pd.read_csv(CWNS_DATA_DIR / '2022' / 'PHYSICAL_LOCATION.csv', dtype=str)
 ca_consolidated = ca_consolidated.merge(
     cwns_phys[['CWNS_ID', 'FACILITY_ID', 'LATITUDE', 'LONGITUDE']].drop_duplicates(),
     on=['CWNS_ID', 'FACILITY_ID'], how='left'
@@ -271,15 +269,15 @@ for label, ids in [('CA', ca_ids), ('US-wide', us_ids)]:
         procs_prev = procs
 
     total = len(cum)
+    # each metric as a count row, then a percent row
     for metric, counts in [
-        ('New facilities added (#)', n_new),
-        ('New facilities added (% of 2022 cumulative)', {y: percent_of(n_new[y], total) for y in YEARS}),
-        ('Facilities with process updates (#)', n_upd),
-        ('Facilities with process updates (% of 2022 cumulative)', {y: percent_of(n_upd[y], total) for y in YEARS}),
-        ('Facilities with most recent update in this year (#)', n_recent),
-        ('Facilities with most recent update in this year (% of 2022 cumulative)', {y: percent_of(n_recent[y], total) for y in YEARS}),
-    ]:
-        table_rows.append({'Region': label, 'Metric': metric, **{str(y): counts[y] for y in YEARS}})
+        ('New facilities added', n_new),
+        ('Facilities with process updates', n_upd),
+        ('Facilities with most recent update in this year', n_recent)
+        ]:
+        table_rows.append({'Region': label, 'Metric': f'{metric} (#)', **{str(y): counts[y] for y in YEARS}})
+        table_rows.append({'Region': label, 'Metric': f'{metric} (% of 2022 cumulative)',
+                           **{str(y): percent_of(counts[y], total) for y in YEARS}})
 
 table_s1 = pd.DataFrame(table_rows, dtype=object)
 table_s1.to_csv(FIGURES_DIR / 'table_s1.csv', index=False)

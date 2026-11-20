@@ -8,11 +8,9 @@ from helpers.utils import (
     leaf_names,
     group_to_columns,
     column_priority,
-    collapse_facility_processes,
     apply_secondary_category_backfill,
     keep_best_priority,
     add_county_and_sort,
-    current_permit_mask,
 )
 
 METADATA_COLUMNS = ["Place ID", "WDID", "Agency", "Facility Name", "Order_No", "NPDES No.", "PDF_File", "Shared_PDF",
@@ -71,20 +69,9 @@ def main():
         rows.append(site_df.iloc[row_idx][METADATA_COLUMNS].tolist() + [row_status[key] for key in leaf_names])
 
     raw_df = pd.DataFrame(rows, columns=METADATA_COLUMNS + leaf_names)
-    # Same current-permit restriction step6 applies, so the keyword and LLM facility tables
-    # are built from the same documents.
-    current = current_permit_mask(raw_df)
-    print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
-          f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
-    collapsed = collapse_facility_processes(
-        raw_df[current],
-        key_cols=["Place ID"],
-        meta_cols=[c for c in METADATA_COLUMNS if c != "Place ID"],
-    )
-    collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
-    collapsed.to_csv(FACILITY_KW_CSV, index=False)
+    # Per-document table; utils.facility_table collapses it to one row per facility when needed
     add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(PDF_KW_CSV, index=False)
-    print(f"Collapsed {int(current.sum())} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_kw.csv")
+    print(f"Wrote {len(raw_df)} PDF rows → {PDF_KW_CSV.name}")
 
 
 if __name__ == "__main__":

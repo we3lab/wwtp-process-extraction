@@ -19,10 +19,6 @@ ORDER_NUM = r"(?:R\d{1,2}[A-Z]?[-\s])?(?:WQ[-\s])?(?:20\d{2}|9\d)[-\s]\d{3,4}(?:
 ORDER_LABELLED_RE = re.compile(r"ORDER\s*(?:NO\.?|NUMBER)?\s*[:\s]\s*(" + ORDER_NUM + r")", re.IGNORECASE)
 ORDER_ANY_RE = re.compile(r"\b(" + ORDER_NUM + r")\b", re.IGNORECASE)
 ORDER_HEAD_CHARS = 2500
-WASTEWATER_VOCAB_RE = re.compile(
-    "|".join(re.escape(term) for _, details, _ in leaves for term in details["alt_names"]),
-    re.IGNORECASE,
-)
 DESC_PRIORITY_RE = re.compile(
     r"treatment process|consists of|leach\s*field|comprised of|upgraded"
     r"|headworks|preliminary treatment|primary treatment|secondary treatment",
@@ -39,10 +35,11 @@ BOILERPLATE_RE = re.compile(
 # "consists of"-style sentences mark a real description even when boilerplate follows
 # (common in small general-order permits)
 STRONG_DESC_PHRASES = ("consist of", "consists of", "consisting of", "comprised of", "comprising")
-# "pond" is a clustering-only term (not an alt_name): without it, pond-heavy paragraphs have no
-# vocab hits and cut the description off before its solids sections
+# Clustering vocabulary: every alt_name, the description cues, and "pond", a clustering-only term (not an
+# alt_name): without it, pond-heavy paragraphs have no vocab hits and cut the description off before its solids
 VOCAB_COMBINED_RE = re.compile(
-    WASTEWATER_VOCAB_RE.pattern + "|" + DESC_PRIORITY_RE.pattern + r"|\bponds?\b",
+    "|".join(re.escape(term) for _, details, _ in leaves for term in details["alt_names"])
+    + "|" + DESC_PRIORITY_RE.pattern + r"|\bponds?\b",
     re.IGNORECASE,
 )
 # section headers: uppercase or digit start, ≤80 chars (lowercase starts match sentence wraps too often)
@@ -384,9 +381,10 @@ def extract_one(args):
 
 def main():
     site_data = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
+    with_pdf = site_data[site_data["PDF_File"] != ""]
 
     # Breakdown by Reg_Measure_Type (NPDES vs WDR) over facilities with ≥1 PDF
-    has_pdf = site_data[site_data["PDF_File"] != ""]["Place ID"].unique()
+    has_pdf = with_pdf["Place ID"].unique()
     df_pdf = site_data.drop_duplicates(subset="Place ID")
     df_pdf = df_pdf[df_pdf["Place ID"].isin(has_pdf)]
     print(f"\n  Reg_Measure_Type breakdown (facilities with ≥1 PDF, n={len(df_pdf)}):")
@@ -394,7 +392,7 @@ def main():
         print(f"    {rmt}: {count} ({count / len(df_pdf):.1%})")
 
     args = []
-    for pdf_file, pdf_rows in site_data[site_data["PDF_File"] != ""].groupby("PDF_File", sort=False):
+    for pdf_file, pdf_rows in with_pdf.groupby("PDF_File", sort=False):
         # First matching row's type decides
         is_npdes = pdf_rows["Reg_Measure_Type"].iloc[0] not in FULL_DOCUMENT_TYPES
         # Multi-facility permit: one PDF covering several distinct Place IDs (e.g. OCSD, IEUA).
@@ -433,11 +431,10 @@ def main():
     print(f"Statewide general orders skipped: {flag_counts['general_order']}")
     print(f"Readable but no description found: {flag_counts['no_desc_in_attachment']}")
     print("Planned changes start:")
-    for term in sorted(CHANGES_PHRASES, key=lambda t: -phrase_counts[normalize_text(t)]):
-        print(f"  {phrase_counts[normalize_text(term)]:4d}  {term!r}")
-    print()
+    for term in sorted(CHANGES_PHRASES, key=lambda t: -phrase_counts[t]):
+        print(f"  {phrase_counts[term]:4d}  {term!r}")
 
-    print(f"\nTop text cache files in {TXT_DIR}:")
+    print(f"\n\nTop text cache files in {TXT_DIR}:")
     for f in sorted(TXT_DIR.glob("*.txt"), key=lambda f: f.stat().st_size, reverse=True)[:10]:
         print(f"  {f.name}: {f.stat().st_size} bytes")
 

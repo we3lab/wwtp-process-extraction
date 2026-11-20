@@ -11,14 +11,15 @@ import matplotlib.pyplot as plt
 from geopy.distance import geodesic
 from helpers.paths import *
 from helpers.utils import (
-    get_leaf_names,
     category_leaf_names,
+    scored_leaf_names,
+    unit_leaf_names,
     PRESENT_STATUSES,
+    mapping_df,
     cwns_mapping,
-    no_cwns_pids,
     build_cwns_facility_processes,
     add_county_and_sort,
-    unitprocess_keywords as keywords,
+    facility_table,
 )
 from helpers.plotting import COLORS, make_grouped_legend, save_and_close, set_thick_spines
 
@@ -136,8 +137,7 @@ def render_source_plot(
                     for patch in hatch_bar:
                         patch.set_hatch_linewidth(1.0)
                 bottom += val
-    ax.set_xticks(positions)
-    ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=12)
+    ax.set_xticks(positions, labels, rotation=45, ha="right", fontsize=12)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.tick_params(axis="y", labelsize=12)
     ax.set_ylabel("WWTP Count", fontsize=14)
@@ -159,10 +159,10 @@ def render_source_plot(
 
 # Load data
 
-proc_cols = sorted({leaf for leaves in category_leaf_names.values() for leaf in leaves})
+proc_cols = sorted(scored_leaf_names)
 
-llm_df = pd.read_csv(FACILITY_LLM_CSV, dtype=str)
-kw_df = pd.read_csv(FACILITY_KW_CSV, dtype=str)
+llm_df = facility_table(PDF_LLM_CSV)
+kw_df = facility_table(PDF_KW_CSV)
 ca_cwns = pd.read_csv(CWNS_TABLE_CSV, dtype=str)
 site = pd.read_csv(SITE_DATA_RELEVANT_CSV, dtype=str).fillna("")
 ciwqs = pd.read_csv(CIWQS_TO_CWNS_CSV, dtype=str, keep_default_na=False)
@@ -174,6 +174,8 @@ all_npdes = pd.read_csv(SITE_DATA_ALL_CSV, dtype=str).fillna("").rename(
 llm_facilities = set(llm_df["Place ID"])
 kw_facilities = set(kw_df["Place ID"])
 cwns_pids = set(cwns_mapping["Place ID"])
+# Facilities ciwqs_to_cwns.csv marks as having no CWNS counterpart
+no_cwns_pids = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq("NA"), "Place ID"])
 
 # Coverage summary — before filtering to overlap only
 print("\nFacility coverage (unique WDID + Facility Name, before overlap filter):")
@@ -282,7 +284,9 @@ for group_title, json_cats in PLOT_GROUPS.items():
     items = []
     for cat_name in json_cats:
         cat_items = []
-        for leaf in get_leaf_names(cat_name, keywords[cat_name], exclude_unspecified=True):
+        for leaf in category_leaf_names[cat_name]:
+            if leaf not in unit_leaf_names:  # "Unspecified X"
+                continue
             counts = counts_by_proc[leaf]
             if detected_count(counts["cwns"]) >= MIN_COUNT or detected_count(counts["llm"]) >= MIN_COUNT:
                 cat_items.append({"label": leaf, "cat": cat_name, **counts})
@@ -410,8 +414,7 @@ print(f"Unmapped facilities: {len(unmapped)}")
 
 # Match unmapped facilities by name against CWNS facilities
 cwns_by_name = {}
-cwns_names = ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME"]]
-for cwns_id, fac_id, cwns_name in cwns_names.itertuples(index=False):
+for cwns_id, fac_id, cwns_name in ca_cwns[["CWNS_ID", "FACILITY_ID", "FACILITY_NAME"]].itertuples(index=False):
     cwns_name = cwns_name.strip()
     cwns_by_name.setdefault(normalize(cwns_name), []).append(
         {"CWNS_ID": cwns_id, "FACILITY_ID": fac_id, "CWNS Facility Name": cwns_name}
@@ -458,8 +461,7 @@ else:
 
 coord_cols = ["Latitude_CIWQS", "Longitude_CIWQS", "Latitude_CWNS", "Longitude_CWNS"]
 geo = combined.copy()
-for col in coord_cols:
-    geo[col] = pd.to_numeric(geo[col], errors="coerce")
+geo[coord_cols] = geo[coord_cols].apply(pd.to_numeric, errors="coerce")
 geo = geo.dropna(subset=coord_cols)
 
 geo["dist_miles"] = geo.apply(

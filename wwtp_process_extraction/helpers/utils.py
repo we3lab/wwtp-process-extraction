@@ -1,7 +1,6 @@
 import pandas as pd
 import re
 import json
-from pathlib import Path
 import unicodedata
 
 from helpers.paths import *
@@ -9,7 +8,6 @@ from helpers.paths import *
 # Canonical status vocabulary; '' (or 0 / NaN) means absent
 STATUS_TOKENS = frozenset({"PRESENT", "PRESENT_AND_FUTURE", "FUTURE", "PAST", "OFFSITE"})
 PRESENT_STATUSES = frozenset({"PRESENT", "PRESENT_AND_FUTURE"}) # assumed present
-DETECTED_STATUSES = PRESENT_STATUSES | {"FUTURE", "OFFSITE"} # included in table_1 for state accuracy
 # Which status wins when one process gets several
 STATUS_RANK = {"": 0, "PAST": 1, "OFFSITE": 2, "FUTURE": 3, "PRESENT": 4}
 
@@ -26,8 +24,6 @@ mapping_df = mapping_df.sort_values(by="NPDES No.", key=lambda s: s.eq("")).drop
 cwns_mapping = mapping_df[
     mapping_df["CWNS_ID"].ne("") & mapping_df["CWNS_ID"].str.upper().ne("NA")
 ].copy()
-
-no_cwns_pids: set[str] = set(mapping_df.loc[mapping_df["CWNS_ID"].str.upper().eq("NA"), "Place ID"])
 
 unitprocess_keywords = json.loads(KEYWORDS_JSON.read_text())
 
@@ -116,7 +112,7 @@ def parse_status(val) -> str:
 
 
 def is_present(val, statuses=PRESENT_STATUSES) -> bool:
-    # The single presence rule for all scoring; table_1 passes DETECTED_STATUSES
+    # The single presence rule for all scoring; table_1 also counts FUTURE and OFFSITE
     return parse_status(val) in statuses
 
 
@@ -128,21 +124,19 @@ def precision_recall_f1(tp, fp, fn, empty=float("nan")):
     return precision, recall, f1
 
 
-def get_leaf_names(cat_name, cat_val, exclude_categories=("Disposal",), exclude_unspecified=False):
-    # Leaf process names under a category; exclude_unspecified drops the "Unspecified X" catch-alls
-    names = [name for name, _, _ in extract_leaves({cat_name: cat_val}, exclude_keys=exclude_categories)]
-    if exclude_unspecified:
-        names = [name for name in names if not name.lower().startswith("unspecified")]
-    return names
-
-
 # Leaf names per top-level category (without the Disposal group)
-category_leaf_names = {cat: get_leaf_names(cat, val) for cat, val in unitprocess_keywords.items()}
+category_leaf_names = {
+    cat: [name for name, _, _ in extract_leaves({cat: val}, exclude_keys=("Disposal",))]
+    for cat, val in unitprocess_keywords.items()
+}
+# All scored leaves, and the same without the "Unspecified X"
+scored_leaf_names = [leaf for names in category_leaf_names.values() for leaf in names]
+unit_leaf_names = [leaf for leaf in scored_leaf_names if not leaf.lower().startswith("unspecified")]
 
 
 def keep_best_priority(status_dict, cols, priority, cleared=""):
     """Among the present cols, clear every one ranked below the best (lowest) priority value."""
-    present_cols = [c for c in cols if status_dict.get(c) in PRESENT_STATUSES]
+    present_cols = [c for c in cols if status_dict[c] in PRESENT_STATUSES]
     if len(present_cols) <= 1:
         return
     best_priority = min(priority[c] for c in present_cols)
@@ -151,20 +145,20 @@ def keep_best_priority(status_dict, cols, priority, cleared=""):
             status_dict[col] = cleared
 
 
-def apply_secondary_category_backfill(status_dict, ontology_resolve_fn=None, excluded_cols=()):
+def apply_secondary_category_backfill(status_dict, ontology_matches=(), excluded_cols=()):
     # A PRESENT process whose secondary category has nothing PRESENT backfills one column there: the
-    # ontology's matches (step6 hook) if any, else the category's own "Unspecified X", else any catch-all.
+    # ontology's matches (step6) if any, else the category's own "Unspecified X", else any catch-all.
     # excluded_cols (cleared by exclude_if_any for this item) are never backfilled.
     present_cols = [c for c, v in status_dict.items() if v in PRESENT_STATUSES]
     for source_col in present_cols:
         for sec_cat in column_secondary_categories.get(source_col, []):
             sec_cols = top_category_to_columns.get(sec_cat, [])
-            if any(status_dict.get(c) in PRESENT_STATUSES for c in sec_cols):
+            if any(status_dict[c] in PRESENT_STATUSES for c in sec_cols):
                 continue
-            available = [c for c in sec_cols if c in status_dict and c not in excluded_cols]
+            available = [c for c in sec_cols if c not in excluded_cols]
             if not available:
                 continue
-            matched = ontology_resolve_fn(available) if ontology_resolve_fn else []
+            matched = [c for c in available if c in ontology_matches]
             target_unspecified = f"Unspecified {sec_cat}".lower()
             exact_unspecified = [c for c in available if c.lower() == target_unspecified]
             unspecified = [c for c in available if "Unspecified" in c]
@@ -278,6 +272,19 @@ def current_permit_mask(df, as_of=None):
         newest = years.groupby(df.loc[fallback, "Place ID"]).transform("max")
         keep.loc[fallback] = years == newest
     return keep
+
+
+def facility_table(pdf_csv, as_of=None):
+    # One row per facility from a per-document table (step4/step6). Only the permits in force on as_of
+    # (default: newest snapshot) count: unioning across cycles would read a process out of a superseded
+    # order as if the facility still ran it
+    docs = pd.read_csv(pdf_csv, dtype=str).fillna("")
+    keep = current_permit_mask(docs, as_of)
+    meta_cols = [c for c in docs.columns if c not in leaf_names and c != "Place ID"]
+    facilities = collapse_facility_processes(docs[keep], key_cols=["Place ID"], meta_cols=meta_cols)
+    print(f"  {pdf_csv.name} as of {as_of or 'newest snapshot'}: {int(keep.sum())} of {len(docs)} "
+          f"documents current -> {len(facilities)} facilities")
+    return facilities
 
 
 def add_county_and_sort(df, name_col, place_id_col=None, wdid_col=None, cwns_id_col=None):

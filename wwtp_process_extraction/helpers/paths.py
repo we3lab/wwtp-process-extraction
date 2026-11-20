@@ -23,9 +23,7 @@ SITE_DATA_ALL_CSV = OUTPUT_DIR / "site_data_all.csv"
 SITE_DATA_RELEVANT_CSV = OUTPUT_DIR / "site_data_relevant.csv"
 CWNS_TABLE_CSV = OUTPUT_DIR / "unit_processes_by_facility_cwns.csv"
 PDF_KW_CSV = OUTPUT_DIR / "unit_processes_by_pdf_kw.csv"
-FACILITY_KW_CSV = OUTPUT_DIR / "unit_processes_by_facility_kw.csv"
 PDF_LLM_CSV = OUTPUT_DIR / "unit_processes_by_pdf_llm.csv"
-FACILITY_LLM_CSV = OUTPUT_DIR / "unit_processes_by_facility_llm.csv"
 # CWNS + permit rows merged by figure_3 (the SDR release CSV)
 FACILITY_CSV = OUTPUT_DIR / "unit_processes_by_facility.csv"
 

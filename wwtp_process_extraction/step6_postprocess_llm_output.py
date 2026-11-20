@@ -1,17 +1,14 @@
 import pandas as pd
 import json
-from functools import partial
-from pathlib import Path
 from collections import Counter
 from rdflib import RDF, RDFS
 
 from helpers.ontology_to_txt import load_ontology, hasprocess_fragments, WATR
 from helpers.paths import *
 from helpers.utils import (
-    collapse_facility_processes, leaves, leaf_names, group_to_columns, column_priority,
-    top_category_to_columns, column_global_priority, apply_secondary_category_backfill,
-    keep_best_priority, add_county_and_sort, select_json_per_place_id, current_permit_mask,
-    STATUS_RANK,
+    leaves, leaf_names, group_to_columns, column_priority, top_category_to_columns,
+    column_global_priority, apply_secondary_category_backfill, keep_best_priority, add_county_and_sort,
+    select_json_per_place_id, STATUS_RANK,
 )
 
 ID_COLS = ["Place ID", "WDID", "Order_No", "NPDES No.", "Agency", "Facility Name", "PDF_File",
@@ -30,20 +27,17 @@ trigger_rules = []
 # Reactor/Tank) so an AnaerobicDigester never matches and can't leak its Anaerobic role.
 facility_multi_rules = []
 for name, details, group_id in leaves:
-    priority = column_priority[name]
-    exclude_tokens = details.get("exclude_if_any", [])
-    if exclude_tokens:
-        column_exclude_if_any[name] = exclude_tokens
+    if details.get("exclude_if_any"):
+        column_exclude_if_any[name] = details["exclude_if_any"]
     trigger = details.get("ontology_triggers")
     if trigger:
         # Normalize: single list → list-of-lists
         clauses = [trigger] if isinstance(trigger[0], str) else trigger
         column_trigger_clauses[name] = clauses
-        trigger_rules.append((name, clauses, priority, group_id))
-    multi_rules = details.get("ontology_triggers_multi")
-    if multi_rules:
-        for rule in (multi_rules if isinstance(multi_rules, list) else [multi_rules]):
-            facility_multi_rules.append((name, rule))
+        trigger_rules.append((name, clauses, column_priority[name], group_id))
+    multi_rules = details.get("ontology_triggers_multi", [])
+    for rule in (multi_rules if isinstance(multi_rules, list) else [multi_rules]):
+        facility_multi_rules.append((name, rule))
 trigger_rules.sort(key=lambda r: r[2])
 
 # Load ontology from Zenodo
@@ -89,13 +83,9 @@ def apply_implementation(existing, impl_value, location):
     return new if STATUS_RANK[new] > STATUS_RANK[existing] else existing
 
 
-def normalize_component_name(component_type, name):
-    return name.removeprefix(f"{component_type}-")
-
-
 def ontology_labels(component_type, name):
     """Returns own label + rdfs:subClassOf ancestors."""
-    clean_name = normalize_component_name(component_type, name)
+    clean_name = name.removeprefix(f"{component_type}-")
     uri_candidates = [WATR[clean_name]]
     if component_type in ("Process", "Substance"):
         uri_candidates.insert(0, WATR[f"{component_type}-{clean_name}"])
@@ -103,7 +93,7 @@ def ontology_labels(component_type, name):
     labels = {clean_name}
     for uri in uri_candidates:
         for ancestor_uri in ontology.transitive_objects(uri, RDFS.subClassOf):
-            labels.add(normalize_component_name(component_type, ancestor_uri.fragment))
+            labels.add(ancestor_uri.fragment.removeprefix(f"{component_type}-"))
 
     return labels
 
@@ -112,18 +102,13 @@ def matches_item(item, components):
     for comp_type in components:
         prefix = f"{comp_type}-"
         if item.startswith(prefix):
-            return normalize_component_name(comp_type, item) in components[comp_type]
+            return item.removeprefix(prefix) in components[comp_type]
     # unprefixed tokens are substances
     return item in components["Substance"]
 
 
 def clauses_match(clauses, components):
     return any(all(matches_item(token, components) for token in clause) for clause in clauses)
-
-
-def resolve_secondary_by_ontology(components, available_cols):
-    # ontology_resolve_fn hook for apply_secondary_category_backfill: the columns whose triggers match
-    return [c for c in available_cols if c in column_trigger_clauses and clauses_match(column_trigger_clauses[c], components)]
 
 
 def process_json_to_unit_process_dict(json_data, output_json_path=None):
@@ -139,10 +124,9 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         role_counts = Counter(normalize_values(item.get("Role")))
 
         for component_type in ["Process", "Equipment", "Substance"]:
-            expanded = set()
-            for name in components[component_type]:
-                expanded.update(ontology_labels(component_type, name))
-            components[component_type] = expanded
+            components[component_type] = {
+                label for name in components[component_type] for label in ontology_labels(component_type, name)
+            }
 
         # Inject each equipment's own + inherited hasProcess (per the ontology's SHACL
         # shapes), then expand those Process fragments' own ancestry too.
@@ -156,10 +140,7 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
 
         item_components.append((components, role_counts, impl_value, impl_location))
 
-        item_result = {col: "" for col in leaf_names}
-        for proc in components["Process"]:
-            if proc in item_result:
-                item_result[proc] = "PRESENT"
+        item_result = {col: "PRESENT" if col in components["Process"] else "" for col in leaf_names}
 
         fired_group_best_priority = {}
         for col, clauses, priority, group_id in trigger_rules:
@@ -189,12 +170,9 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
         # global_priority (lower wins): drop generic columns (e.g. Unspecified X) when a specific one fired
         keep_best_priority(item_result, list(item_result), column_global_priority)
 
-        # Fill missing secondary categories: ontology triggers first, else the Unspecified fallback
-        apply_secondary_category_backfill(
-            item_result,
-            ontology_resolve_fn=partial(resolve_secondary_by_ontology, components),
-            excluded_cols=excluded_cols,
-        )
+        # Fill missing secondary categories: columns whose ontology triggers match first, else the Unspecified fallback
+        ontology_matches = {c for c, clauses in column_trigger_clauses.items() if clauses_match(clauses, components)}
+        apply_secondary_category_backfill(item_result, ontology_matches, excluded_cols)
 
         if output_json_path is not None:
             item["trigger_process"] = sorted(col for col, v in item_result.items() if v == "PRESENT")
@@ -223,21 +201,8 @@ def process_json_to_unit_process_dict(json_data, output_json_path=None):
             result[col] = status
 
     if output_json_path is not None:
-        with open(output_json_path, "w") as f:
-            json.dump({"items": records}, f, indent=2)
+        output_json_path.write_text(json.dumps({"items": records}, indent=2))
 
-    return result
-
-
-def process_list_based_json(json_data):
-    # List-based items name unit-process columns directly, so no ontology mapping is needed
-    result = {col: "" for col in leaf_names}
-    for item in json_data["items"]:
-        impl_value = item.get("Implementation")
-        impl_location = item.get("Location")
-        for proc in normalize_values(item.get("Process")):
-            if proc in result:
-                result[proc] = apply_implementation(result[proc], impl_value, impl_location)
     return result
 
 
@@ -268,20 +233,7 @@ def main():
 
     raw_df = pd.DataFrame(results)[ID_COLS + leaf_names]
     print(f"Matched {len(results)} documents ({len(unmatched_files)} unmatched files skipped)")
-
-    # Collapse only the current permit. Unioning across cycles reads a process out of a
-    # superseded order as if the facility still ran it.
-    current = current_permit_mask(raw_df)
-    print(f"Current-permit documents: {int(current.sum())} of {len(raw_df)} "
-          f"({int((~current).sum())} superseded rows excluded from the facility collapse)")
-    collapsed = collapse_facility_processes(
-        raw_df[current],
-        key_cols=["Place ID"],
-        meta_cols=[c for c in ID_COLS if c != "Place ID"],
-    )
-    collapsed = add_county_and_sort(collapsed, "Facility Name", place_id_col="Place ID", wdid_col="WDID")
-    collapsed.to_csv(FACILITY_LLM_CSV, index=False)
-    print(f"Collapsed {int(current.sum())} PDF rows → {len(collapsed)} facilities → unit_processes_by_facility_llm.csv")
+    # Per-document table; utils.facility_table collapses it to one row per facility when needed
     add_county_and_sort(raw_df, "Facility Name", place_id_col="Place ID", wdid_col="WDID").to_csv(PDF_LLM_CSV, index=False)
     if unmatched_files:
         print(f"\nNo facility match found in site_data_relevant for {len(unmatched_files)} file(s):")
@@ -310,7 +262,14 @@ def build_model_comparison():
                     json_data, output_json_path=postprocess_dir / json_file.name
                 )
             else:
-                unit_process_result = process_list_based_json(json_data)
+                # List-based items name unit-process columns directly, so no ontology mapping is needed
+                unit_process_result = {col: "" for col in leaf_names}
+                for item in json_data["items"]:
+                    for proc in normalize_values(item.get("Process")):
+                        if proc in unit_process_result:
+                            unit_process_result[proc] = apply_implementation(
+                                unit_process_result[proc], item.get("Implementation"), item.get("Location")
+                            )
             row = {"Method": method_label, "Model": model_label, "Place ID": place_id}
             for col in proc_columns:
                 val = unit_process_result.get(col, "")

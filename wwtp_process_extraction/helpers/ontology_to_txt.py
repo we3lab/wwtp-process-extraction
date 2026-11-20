@@ -1,7 +1,6 @@
 import io
 import urllib.request
 import zipfile
-from pathlib import Path
 from rdflib import Graph, Namespace, RDF, RDFS
 
 from helpers.paths import *

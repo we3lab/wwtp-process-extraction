@@ -3,7 +3,7 @@ from helpers.utils import is_present, parse_status, precision_recall_f1, merge_c
 
 
 def confusion_scores(manual_states, pred_states):
-    """Confusion counts (tp, fp, fn, tn) and the scalar metrics over paired statuses."""
+    """Confusion counts (tp, fp, fn) and the scalar metrics over paired statuses."""
     tp = fp = fn = tn = 0
     state_correct = state_total = 0
 
@@ -30,7 +30,7 @@ def confusion_scores(manual_states, pred_states):
         "Hallucinated_Rate": fp / (tp + fp) if (tp + fp) else float("nan"),
         "State_Accuracy": state_correct / state_total if state_total else float("nan"),
     }
-    return tp, fp, fn, tn, scores
+    return tp, fp, fn, scores
 
 
 def build_metric_inputs(process_names, manual_df, pred_df):
@@ -56,17 +56,14 @@ def compute_metrics(manual_df, pred_df, label_cols, source_name):
     # manual_df and pred_df come from build_metric_inputs (or their category version), so rows line up
     rows = []
     for label in label_cols:
-        tp, fp, fn, tn, scores = confusion_scores(manual_df[label], pred_df[label])
+        tp, fp, fn, scores = confusion_scores(manual_df[label], pred_df[label])
         rows.append(
             {
                 "Source": source_name,
                 "Label": label,
                 "Support_Manual": int(tp + fn),
                 "Support_Pred": int(tp + fp),
-                "TP": tp,
                 "FP": fp,
-                "FN": fn,
-                "TN": tn,
                 **scores,
             }
         )
